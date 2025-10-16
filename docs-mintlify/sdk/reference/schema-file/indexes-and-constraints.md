@@ -1,18 +1,17 @@
 ---
-sidebar_position: 21
 title: Indexes and constraints
 description: Annotate indexed fields for faster queries
 ---
 
 # Indexes and unique constraints
 
-:::warning
+<Warning>
 The lack of indices is the most common cause of slow API queries
-:::
+</Warning>
 
 It is crucial to add database indexes to the entity fields on which one expects filtering and ordering. To add an index to a column, the corresponding entity field must be decorated with `@index`. The corresponding entity field will be decorated with [TypeORM `@Index()`](https://typeorm.io/indices#column-indices).
 
-One can additionally decorate the field with `@unique` to enforce uniqueness. It corresponds to the [`@Index({ unique: true })`](https://typeorm.io/indices#unique-indices) TypeORM decorator.
+One can additionally decorate the field with `@unique` to enforce uniqueness. It corresponds to the [`@Index(\{ unique: true \})`](https://typeorm.io/indices#unique-indices) TypeORM decorator.
 
 ### Example
 

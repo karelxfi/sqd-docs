@@ -1,6 +1,7 @@
 ---
 title: Data decoding
 description: Using the generated modules to decode data
+
 ---
 
 import Tabs from '@theme/Tabs';
@@ -12,7 +13,7 @@ import TabItem from '@theme/TabItem';
 ```
 Decoding events:
 
-```ts
+```typescript
 import * as depositsAbi from './abi/deposits'
 
 processor.run(new TypeormDatabase(), async (ctx) => {
@@ -39,25 +40,25 @@ Similar to `events`, transaction access is provided by the `functions` object fo
 To decode events and calls, first determine the appropriate runtime version with `.is()`, then decode them with `.decode()`:
 
 ```typescript
-import {events, calls} from './types'
+import \{events, calls\} from './types'
 
 processor.run(new TypeormDatabase(), async ctx => {
   for (let block of ctx.blocks) {
      for (let event of block.events) {
       if (event.name == events.balances.transfer.name) {
-        let rec: {from: Bytes, to: Bytes, amount: bigint}
+let rec: "\{from: Bytes, to: Bytes, amount: bigint\}"
         if (events.balances.transfer.v1020.is(event)) {
           let [from, to, amount, fee] =
             events.balances.transfer.v1020.decode(event)
-          rec = {from, to, amount}
+          rec = \{from, to, amount\}
         }
         // ... decode all runtime versions similarly
-        // with events.balances.transfer.${ver}.is/.decode
+        // with events.balances.transfer.$\{ver\}.is/.decode
       }
     }
     for (let call of block.calls) {
       if (call.name == calls.balances.forceTransfer.name) {
-        let rec: {source: Bytes, dest: Bytes, value: bigint} | undefined
+let rec: "\{source: Bytes, dest: Bytes, value: bigint\} | undefined"
         if (calls.balances.forceTransfer.v1020.is(call)) {
           let res =
             calls.balances.forceTransfer.v1020.decode(call)
@@ -70,7 +71,7 @@ processor.run(new TypeormDatabase(), async ctx => {
           }
         }
         // ... decode all runtime versions similarly
-        // with calls.balances.forceTransfer.${ver}.is/.decode
+        // with calls.balances.forceTransfer.$\{ver\}.is/.decode
     }
   }
 })
@@ -100,7 +101,7 @@ export function decodeConstructor(hex: string): Constructor {
 ```
 
 The usage in a batch handler is straightforward:
-```ts
+```typescript
 processor.run(new TypeormDatabase(), async ctx => {
   for (let block of ctx.blocks) {
     for (let event of block.events) {

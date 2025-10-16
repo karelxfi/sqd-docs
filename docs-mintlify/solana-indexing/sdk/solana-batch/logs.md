@@ -1,12 +1,11 @@
 ---
-sidebar_position: 40
 description: >-
   Subscribe to log messages with addLog()
 ---
 
 # Log messages
 
-#### `addLog(options)` {#add-log}
+#### `addLog(options)` \{#add-log\}
 
 Get log messages emitted by some _or all_ programs in the network. `options` has the following structure:
 

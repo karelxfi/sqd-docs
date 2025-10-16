@@ -1,12 +1,11 @@
 ---
-sidebar_position: 30
 description: >-
   Additional support for indexing Gear programs
 ---
 
 # Gear support
 
-:::info
+<Info>
 SQD Network has gateways for two networks that use Gear Protocol: **Vara** and **Vara Testnet**. Here are their endopint URLs:
 ```
 https://v2.archive.subsquid.io/network/vara
@@ -14,7 +13,7 @@ https://v2.archive.subsquid.io/network/vara
 ```
 https://v2.archive.subsquid.io/network/vara-testnet
 ```
-:::
+</Info>
 
 Indexing [Gear](https://gear-tech.io/) programs is supported with [`addGearMessageQueued()`](/sdk/reference/processors/substrate-batch/data-requests/#addgearmessagequeued) and [`addGearUserMessageSent()`](/sdk/reference/processors/substrate-batch/data-requests/#addgearusermessagesent) specialized data requests. These subscribe to the events [`Gear.MessageQueued`](https://wiki.gear-tech.io/docs/api/events/#messagequeued) and [`Gear.UserMessageSent`](https://wiki.gear-tech.io/docs/api/events/#usermessagesent) emitted by a specified Gear program.
 

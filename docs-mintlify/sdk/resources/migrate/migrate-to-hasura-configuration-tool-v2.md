@@ -1,5 +1,4 @@
 ---
-sidebar_position: 5
 title: hasura-configuration tool v2
 description: Breaking change in the Hasura configuration tool
 ---
@@ -11,7 +10,7 @@ Pre-2.0.0 [`@subsquid/hasura-configuration`](/sdk/resources/tools/hasura-configu
  - Forward relation fields were _always_ named after the type they referred to. Type names were `snake_case`d. For example, any field referring to an entity called `BurnTest` was called `burn_test`.
  - Inverse relation fields names were also determined by the relation type:
    + In one-to-one relation their names were `to_snake_case(typeName)`, where `typeName` is the name of the entity that the inverse field is typed with.
-   + In one-to-many inverse relations they were named `${to_snake_case(typeName)}s`.
+   + In one-to-many inverse relations they were named `$\{to_snake_case(typeName)\}s`.
 
 Any names given to the fields in the [schema](/sdk/reference/schema-file) were ignored.
 

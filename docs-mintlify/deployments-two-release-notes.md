@@ -15,7 +15,7 @@ Over the last 6 months we've seen hundreds of teams deploy thousands of squids t
 
 [I’ll read the story later, let me see what I can do with it!](/cloud/resources/slots-and-tags)
 
-![](https://github.com/user-attachments/assets/c32acb2f-51be-4047-b817-277eb8fe7eda)
+\{/* [\1](\2) */\}
 
 ## Why the change?
 
@@ -62,7 +62,7 @@ sqd deploy . -s 6x5efr --add-tag staging
 
 If the team then took a look at SQD cloud they'd see:
 
-![image](https://gist.github.com/user-attachments/assets/35fbee5a-b6fb-49f8-805a-4d91a7820fab)
+\{/* [\1](\2) */\}
 
 At a glance they can see what each deployment contains and the stage of development is at.
 

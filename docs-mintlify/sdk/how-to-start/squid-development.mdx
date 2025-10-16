@@ -1,5 +1,4 @@
 ---
-sidebar_position: 30
 title: Development flow
 description: A general approach to squid development
 ---
@@ -9,9 +8,9 @@ import TabItem from '@theme/TabItem';
 
 This page is a definitive end-to-end guide into practical squid development. It uses templates to simplify the process. Check out [Squid from scratch](/sdk/how-to-start/squid-from-scratch) for a more educational barebones approach.
 
-:::info
+<Info>
 Feel free to also use the template-specific `sqd` scripts defined in [`commands.json`](/squid-cli/commands-json) to simplify your workflow. See [sqd CLI cheatsheet](/sdk/how-to-start/cli-cheatsheet/) for a short intro.
-:::
+</Info>
 
 ## Prepare the environment
 
@@ -80,7 +79,7 @@ Suppose you want to create a BigQuery dataset with Kusama native tokens transfer
 
 </details>
 
-## Start from a template {#templates}
+## Start from a template \{#templates\}
 
 Although it is possible to [compose a squid from individual packages](/sdk/how-to-start/squid-from-scratch), in practice it is usually easier to start from a template.
 
@@ -258,11 +257,11 @@ Create a dataset with your BigQuery account, then follow the [template README](h
 </Tabs>
 ```
 
-## The bottom-up development cycle {#bottom-up-development}
+## The bottom-up development cycle \{#bottom-up-development\}
 
 The advantage of this approach is that the code remains buildable at all times, making it easier to catch issues early.
 
-### I. Regenerate the task-specific utilities {#typegen}
+### I. Regenerate the task-specific utilities \{#typegen\}
 
 ```mdx-code-block
 <Tabs>
@@ -310,7 +309,7 @@ npx squid-substrate-typegen ./typegen.json
 </Tabs>
 ```
 
-### II. Configure the data requests {#processor-config}
+### II. Configure the data requests \{#processor-config\}
 
 Data requests are [customarily](/sdk/how-to-start/layout) defined at `src/processor.ts`. The details depend on the network type:
 
@@ -365,7 +364,7 @@ See [reference documentation](/sdk/reference/processors/substrate-batch) for mor
 </Tabs>
 ```
 
-### III. Decode and normalize the data {#batch-handler-decoding}
+### III. Decode and normalize the data \{#batch-handler-decoding\}
 
 Next, change the batch handler to decode and normalize your data.
 
@@ -393,7 +392,7 @@ processor.run(db, async ctx => {
   for (let block of ctx.blocks) {
     for (let log of block.logs) {
       if (log.topics[0]===erc20abi.events.Transfer.topic) {
-        let {from, to, value} = erc20.events.Transfer.decode(log)
+        let \{from, to, value\} = erc20.events.Transfer.decode(log)
       }
     }
   }
@@ -410,20 +409,20 @@ Each item in `ctx.blocks` contains the data for the requested events, calls and,
 Use the `.is()` and `.decode()` functions to decode the data for each runtime version, e.g. like this:
 
 ```ts
-import {events} from './types'
+import \{events\} from './types'
 
 processor.run(db, async ctx => {
   for (let block of ctx.blocks) {
     for (let event of block.events) {
       if (event.name == events.balances.transfer.name) {
-        let rec: {from: string; to: string; amount: bigint}
+        let rec: \{from: string; to: string; amount: bigint\}
         if (events.balances.transfer.v1020.is(event)) {
           let [from, to, amount] = events.balances.transfer.v1020.decode(event)
-          rec = {from, to, amount}
+          rec = \{from, to, amount\}
         }
         else if (events.balances.transfer.v1050.is(event)) {
           let [from, to, amount] = events.balances.transfer.v1050.decode(event)
-          rec = {from, to, amount}
+          rec = \{from, to, amount\}
         }
         else if (events.balances.transfer.v9130.is(event)) {
           rec = events.balances.transfer.v9130.decode(event)
@@ -449,13 +448,13 @@ You can also decode the data of certain pallet-specific events and transactions 
 </Tabs>
 ```
 
-### (Optional) IV. Mix in external data and chain state calls output {#external-data}
+### (Optional) IV. Mix in external data and chain state calls output \{#external-data\}
 
 If you need external (i.e. non-blockchain) data in your transformation, take a look at the [External APIs and IPFS](/sdk/resources/external-api) page.
 
 If any of the on-chain data you need is unavalable from the processor or incovenient to retrieve with it, you have an option to get it via [direct chain queries](/sdk/resources/tools/typegen/state-queries).
 
-### V. Prepare the store {#store}
+### V. Prepare the store \{#store\}
 
 At `src/main.ts`, change the [`Database`](/sdk/resources/persisting-data/overview) object definition to accept your output data. The methods for saving data will be exposed by `ctx.store` within the [batch handler](/sdk/reference/processors/architecture).
 
@@ -517,7 +516,7 @@ Filesystem dataset writing, as performed by the `@subsquid/file-store` package a
 
 2. Define any tables you need at the `tables` field of the `Database` constructor argument:
    ```ts
-   import { Database } from '@subsquid/file-store'
+   import \{ Database \} from '@subsquid/file-store'
 
    const dbOptions = {
      tables: {
@@ -558,7 +557,7 @@ Follow the [guide](/sdk/resources/persisting-data/bigquery).
 </Tabs>
 ```
 
-### VI. Persist the transformed data to your data sink {#batch-handler-persistence}
+### VI. Persist the transformed data to your data sink \{#batch-handler-persistence\}
 
 Once your data is [decoded](#batch-handler-decoding), optionally [enriched with external data](#external-data) and transformed the way you need it to be, it is time to save it.
 
@@ -569,7 +568,7 @@ Once your data is [decoded](#batch-handler-decoding), optionally [enriched with 
 
 For each batch, create all the instances of all TypeORM model classes at once, then save them with the minimal number of calls to `upsert()` or `insert()`, e.g.:
 ```ts
-import { EntityA, EntityB } from './model'
+import \{ EntityA, EntityB \} from './model'
 
 processor.run(new TypeormDatabase(), async ctx => {
   const aEntities: Map<string, EntityA> = new Map() // id -> entity instance

@@ -1,12 +1,11 @@
 ---
-sidebar_position: 30
 description: >-
   Subscribe to outputs data with addOutput()
 ---
 
 # Outputs
 
-#### `addOutput(options)` {#add-output}
+#### `addOutput(options)` \{#add-output\}
 
 Get some _or all_ outputs on the network. `options` has the following structure:
 

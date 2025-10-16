@@ -1,18 +1,17 @@
 ---
-sidebar_position: 20
 description: >-
   Indexing EVMs running on Substrate
 ---
 
 # Frontier EVM support
 
-:::tip
+<Tip>
 Method documentation is also available inline and can be accessed via suggestions in most IDEs.
-:::
+</Tip>
 
-:::info
+<Info>
 Check out the [Caveats](#caveats) section of this page to avoid common issues.
-:::
+</Info>
 
 This section describes additional options available for Substrate chains with the Frontier EVM pallet like Astar. On ArrowSquid, use the [frontier-evm template](https://github.com/subsquid-labs/squid-frontier-evm-template) as the starting point.
 
@@ -60,7 +59,7 @@ processor.addEthereumTransaction({
 #### Request all `transfer(address,uint256)` EVM calls on the network:
 
 ```ts
-processor.addEthereumTransaction({sighash: ['0xa9059cbb']})
+processor.addEthereumTransaction(\{sighash: ['0xa9059cbb']\})
 ```
 
 #### Parse events and transactions
@@ -69,8 +68,8 @@ processor.addEthereumTransaction({sighash: ['0xa9059cbb']})
 const processor = new SubstrateBatchProcessor()
   .setGateway('https://v2.archive.subsquid.io/network/astar-substrate')
   .setRpcEndpoint('https://astar-rpc.dwellir.com')
-  .addEthereumTransaction({})
-  .addEvmLog({})
+  .addEthereumTransaction(\{\})
+  .addEvmLog(\{\})
 
 processor.run(new TypeormDatabase(), async ctx => {
   for (const block of ctx.blocks) {
@@ -78,7 +77,7 @@ processor.run(new TypeormDatabase(), async ctx => {
       if (event.name === 'EVM.Log') {
         // no need to supply any extra data to determine
         // the runtime version: event has all necessary references
-        const {address, data, topics} = getEvmLog(event)
+        const \{address, data, topics\} = getEvmLog(event)
 
         // process evm log data
       }
@@ -124,8 +123,8 @@ While the set of handler subscriptions is static and defined at the processor cr
 
 * Passing `[]` as a set of parameter values _selects no data_. Pass `undefined` for a wildcard selection:
   ```typescript 
-  .addEvmLog({address: []}) // selects no events
-  .addEvmLog({}) // selects all events
+  .addEvmLog(\{address: []\}) // selects no events
+  .addEvmLog(\{\}) // selects all events
   ```
 
 * If contract address(es) supplied to the processor configuration methods are stored in any wide-scope variables, it is recommended to convert them to flat lower case. This precaution is necessary because same variable(s) are often reused in the [batch handler](/sdk/reference/processors/architecture/#processorrun) for item filtration, and all contract addresses in the items are **always** in flat lower case.

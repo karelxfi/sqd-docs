@@ -1,6 +1,7 @@
 ---
 title: "Fuel Network API"
 description: "Access Fuel blockchain data through SQD Network API"
+
 ---
 
 # Fuel Network API
@@ -60,7 +61,7 @@ processor.addReceipt({
 ```typescript
 processor.addTransaction({
   status: ['SUCCESS'],
-  gasUsed: { min: 1000, max: 50000 }
+gasUsed: "\{ min: 1000, max: 50000 \}"
 })
 ```
 
@@ -104,11 +105,11 @@ const processor = new FuelBatchProcessor()
 processor.run(db, async (ctx) => {
   try {
     // Process data
-  } catch (error) {
+  \} catch (error) \{
     if (error.code === 'RATE_LIMIT_EXCEEDED') {
       // Handle rate limiting
       await new Promise(resolve => setTimeout(resolve, 1000))
-    } else if (error.code === 'GATEWAY_TIMEOUT') {
+    \} else if (error.code === 'GATEWAY_TIMEOUT') \{
       // Handle gateway issues
       ctx.log.warn('Gateway timeout, retrying...')
     }
@@ -128,10 +129,10 @@ processor.run(db, async (ctx) => {
 ### Custom Logging
 ```typescript
 processor.run(db, async (ctx) => {
-  ctx.log.info(`Processing block ${ctx.blocks[0]?.height}`)
+  ctx.log.info(`Processing block $\{ctx.blocks[0]?.height\}`)
   
   for (let block of ctx.blocks) {
-    ctx.log.debug(`Block ${block.height}: ${block.receipts.length} receipts`)
+ctx.log.debug(`Block $\{block.height\}: "$\{block.receipts.length\} receipts`)"
   }
 })
 ```

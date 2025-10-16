@@ -1,14 +1,13 @@
 ---
-sidebar_position: 40
 title: Substrate API
 description: Access the data of Substrate blockchains
 ---
 
 # Substrate SQD Network API
 
-:::warning
+<Warning>
 The Substrate API of SQD Network is currently in beta. Breaking changes may be introduced in the future releases.
-:::
+</Warning>
 
 SQD Network API distributes the requests over a ([potentially decentralized](/subsquid-network/faq)) network of _workers_. The main gateway URL points at a _router_ that provides URLs of workers that do the heavy lifting. Each worker has its own range of blocks on each dataset it serves.
 
@@ -18,9 +17,9 @@ Suppose you want to retrieve an output of some [query](#worker-api) on a block r
 
 2. Save the value of `firstBlock` to some variable, say `currentBlock`.
 
-3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /${currentBlock}/worker`.
+3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /$\{currentBlock\}/worker`.
 
-4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `${currentBlock}`.
+4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `$\{currentBlock\}`.
 
 5. Parse the retrieved data to get a batch of query data **plus** the height of the last block available from the current worker. Take the `header.number` field of the last element of the retrieved JSON array - it is the height you want. Even if your query returns no data, you'll still get the block data for the last block in the range, so this procedure is safe.
 
@@ -52,12 +51,12 @@ def dump(
     assert 0 <= first_block <= last_block
     query = dict(query)  # copy query to mess with it later
 
-    dataset_height = int(get_text(f'{gateway_url}/height'))
+    dataset_height = int(get_text(f'\{gateway_url\}/height'))
     next_block = first_block
     last_block = min(last_block, dataset_height)
 
     while next_block <= last_block:
-        worker_url = get_text(f'{gateway_url}/{next_block}/worker')
+        worker_url = get_text(f'\{gateway_url\}/\{next_block\}/worker')
 
         query['fromBlock'] = next_block
         query['toBlock'] = last_block
@@ -88,7 +87,7 @@ Full code [here](https://gist.github.com/eldargab/2e007a293ac9f82031d023f1af581a
 
 <summary><code>GET</code> <code><b>$&#123;firstBlock&#125;/worker</b></code> <code>(get a suitable worker URL)</code></summary>
 
-The returned worker is capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `${firstBlock}`.
+The returned worker is capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `$\{firstBlock\}`.
 
 **Example response:** `https://rb05.sqd-archive.net/worker/query/czM6Ly9wb2xrYWRvdC00`.
 
@@ -224,7 +223,7 @@ Note that the last block in the range is included despite having no matching eve
 }
 ```
 
-An event will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ name: [] }`) matches no events; omit all requests/pass an empty object to match all events.
+An event will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ name: [] \}`) matches no events; omit all requests/pass an empty object to match all events.
 
 See [`addEvent()` SDK function reference](/sdk/reference/processors/substrate-batch/data-requests/#events) for a detailed description of the fields of this data request; also see [Field selection](/sdk/reference/processors/substrate-batch/field-selection).
 
@@ -240,15 +239,15 @@ See [`addEvent()` SDK function reference](/sdk/reference/processors/substrate-ba
 }
 ```
 
-A call will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ name: [] }`) matches no calls; omit all requests/pass an empty object to match all calls.
+A call will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ name: [] \}`) matches no calls; omit all requests/pass an empty object to match all calls.
 
 See [`addCall()` SDK function reference](/sdk/reference/processors/substrate-batch/data-requests/#calls) for a detailed description of the fields of this data request; also see [Field selection](/sdk/reference/processors/substrate-batch/field-selection).
 
-### `Contracts.ContractEmitted` events {#contractsEvents}
+### `Contracts.ContractEmitted` events \{#contractsEvents\}
 
-:::info
+<Info>
 Contract addresses supplied with this data request must be hexadecimal (i.e. decoded from SS58) and lowecased. Addresses in all responses will be in the same format.
-:::
+</Info>
 
 ```ts
 {
@@ -259,15 +258,15 @@ Contract addresses supplied with this data request must be hexadecimal (i.e. dec
 }
 ```
 
-A `Contracts.ContractEmitted` event will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ contractAddress: [] }`) matches no events; omit all requests/pass an empty object to match all events.
+A `Contracts.ContractEmitted` event will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ contractAddress: [] \}`) matches no events; omit all requests/pass an empty object to match all events.
 
 See [`addContractsContractEmitted()` SDK function reference](/sdk/reference/processors/substrate-batch/data-requests/#addcontractscontractemitted) for a detailed description of the fields of this data request; also see [Field selection](/sdk/reference/processors/substrate-batch/field-selection) and [ink! contracts support](/sdk/resources/substrate/ink).
 
-### `EVM.Log` events {#evmLog}
+### `EVM.Log` events \{#evmLog\}
 
-:::info
+<Info>
 Contract addresses supplied with this data request must be in lowercase. Addresses in all responses will be in the same format.
-:::
+</Info>
 
 ```ts
 {
@@ -281,15 +280,15 @@ Contract addresses supplied with this data request must be in lowercase. Address
   extrinsic: boolean
 }
 ```
-An `EVM.Log` event will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ topic0: [] }`) matches no events; omit all requests/pass an empty object to match all events.
+An `EVM.Log` event will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ topic0: [] \}`) matches no events; omit all requests/pass an empty object to match all events.
 
 See [`addEvmLog()` SDK function reference](/sdk/reference/processors/substrate-batch/data-requests/#addevmlog) for a detailed description of the fields of this data request; also see [Field selection](/sdk/reference/processors/substrate-batch/field-selection) and [Frontier EVM support](/sdk/resources/substrate/frontier-evm).
 
-### `Ethereum.transact` calls {#ethereumTransact}
+### `Ethereum.transact` calls \{#ethereumTransact\}
 
-:::info
+<Info>
 Contract addresses supplied with this data request must be in lowercase. Addresses in all responses will be in the same format.
-:::
+</Info>
 
 ```ts
 {
@@ -301,11 +300,11 @@ Contract addresses supplied with this data request must be in lowercase. Address
 }
 ```
 
-An `Ethereum.transact` call will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ sighash: [] }`) matches no calls; omit all requests/pass an empty object to match all calls.
+An `Ethereum.transact` call will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ sighash: [] \}`) matches no calls; omit all requests/pass an empty object to match all calls.
 
 See [`addEthereumTransaction()` SDK function reference](/sdk/reference/processors/substrate-batch/data-requests/#addethereumtransaction) for a detailed description of the fields of this data request; also see [Field selection](/sdk/reference/processors/substrate-batch/field-selection) and [Frontier EVM support](/sdk/resources/substrate/frontier-evm).
 
-### `Gear.MessageQueued` events {#gearMessageQueued}
+### `Gear.MessageQueued` events \{#gearMessageQueued\}
 
 ```ts
 {
@@ -316,11 +315,11 @@ See [`addEthereumTransaction()` SDK function reference](/sdk/reference/processor
 }
 ```
 
-A `Gear.MessageQueued` event will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ programId: [] }`) matches no events; omit all requests/pass an empty object to match all events.
+A `Gear.MessageQueued` event will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ programId: [] \}`) matches no events; omit all requests/pass an empty object to match all events.
 
 See [`addGearMessageQueued()` SDK function reference](/sdk/reference/processors/substrate-batch/data-requests/#addgearmessagequeued) for a detailed description of the fields of this data request; also see [Field selection](/sdk/reference/processors/substrate-batch/field-selection) and [Gear support](/sdk/resources/substrate/gear).
 
-### `Gear.UserMessageSent` events {#gearUserMessageSent}
+### `Gear.UserMessageSent` events \{#gearUserMessageSent\}
 
 ```ts
 {
@@ -331,7 +330,7 @@ See [`addGearMessageQueued()` SDK function reference](/sdk/reference/processors/
 }
 ```
 
-A `Gear.UserMessageSent` event will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ programId: [] }`) matches no events; omit all requests/pass an empty object to match all events.
+A `Gear.UserMessageSent` event will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ programId: [] \}`) matches no events; omit all requests/pass an empty object to match all events.
 
 See [`addGearUserMessageSent()` SDK function reference](/sdk/reference/processors/substrate-batch/data-requests/#addgearusermessagesent) for a detailed description of the fields of this data request; also see [Field selection](/sdk/reference/processors/substrate-batch/field-selection) and [Gear support](/sdk/resources/substrate/gear).
 

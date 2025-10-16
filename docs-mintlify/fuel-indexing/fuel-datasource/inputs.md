@@ -1,12 +1,11 @@
 ---
-sidebar_position: 30
 description: >-
   Subscribe to Input data with addInput()
 ---
 
 # Inputs
 
-#### `addInput(options)` {#add-input}
+#### `addInput(options)` \{#add-input\}
 
 Get some _or all_ inputs on the network. `options` has the following structure:
 

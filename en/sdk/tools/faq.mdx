@@ -1,56 +1,118 @@
 ---
-title: FAQ
-description: Frequently asked questions
+title: "SDK FAQ"
+description: "Frequently asked questions about Squid SDK development"
 ---
 
-### What are some real-world applications for which Squid SDK was a good fit? {#real-world-applications}
+# SDK FAQ
 
-Here is an incomplete list:
-- DeFi dashboards, tracking addresses and internal transactions
-- NFT marketplaces, with a dynamic sets of NFT contracts to watch
-- Historical price feeds, tracking Uniswap trades and Chainlink oracle contracts
-- Mining smart contract deployments and the bytecode
-- Real-time bots (\<1sec delay) triggered by on-chain activity
+Common questions and answers about developing with Squid SDK.
 
+## Real-World Applications
+
+### What are some real-world applications for which Squid SDK was a good fit?
+
+Squid SDK is well-suited for a wide range of blockchain indexing applications:
+
+- **DeFi Dashboards** - Track addresses and internal transactions across multiple protocols
+- **NFT Marketplaces** - Index dynamic sets of NFT contracts and trading activity
+- **Historical Price Feeds** - Track Uniswap trades and Chainlink oracle contracts
+- **Smart Contract Analysis** - Mine contract deployments and analyze bytecode
+- **Real-time Bots** - Build bots with &lt;1sec delay triggered by on-chain activity
+
+<Tip>
+  Squid SDK excels at applications requiring high-performance indexing, complex
+  data transformations, and real-time processing.
+</Tip>
+
+## Technical Questions
 
 ### How does Squid SDK handle unfinalized blocks?
 
-The SQD Network only serves finalized blocks and is typically ~1000 blocks behind the tip. The most recent blocks, as well as the unfinalized blocks are seamlessly handled by the SDK from a complementary RPC data source, set by the `chain` config. Potential chain reorgs are automatically handled under the hood. See [Indexing unfinalized blocks](/sdk/resources/unfinalized-blocks) for details.
+The SQD Network serves finalized blocks and is typically ~1000 blocks behind the tip. Recent and unfinalized blocks are seamlessly handled by the SDK from a complementary RPC data source configured in your processor.
 
-### What is the latency for the data served by the squid? 
+<Info>
+  Potential chain reorganizations are automatically handled under the hood,
+  ensuring data consistency.
+</Info>
 
-Since the ArrowSquid release, the Squid SDK has the option to ingest unfinalized blocks directly from an RPC endpoint, making the indexing real-time. 
+For detailed information, see [Indexing unfinalized blocks](sdk/resources/unfinalized-blocks).
+
+### What is the latency for the data served by the squid?
+
+Since the ArrowSquid release, Squid SDK can ingest unfinalized blocks directly from an RPC endpoint, making indexing real-time with minimal latency.
+
+<Tip>
+  Configure your RPC endpoint in the processor to enable real-time indexing of
+  the latest blocks.
+</Tip>
 
 ### How do I enable GraphQL subscriptions for local runs?
 
-Add `--subscription` flag to the `serve` command defined in `commands.json`. See [Subscriptions](/sdk/reference/openreader-server/configuration/subscriptions) for details.
+Add the `--subscription` flag to the `serve` command in your `commands.json`:
+
+```json commands.json
+{
+  "commands": {
+    "serve:dev": {
+      "cmd": ["npx", "squid-graphql-server", "--subscription"]
+    }
+  }
+}
+```
+
+<Note>
+  See
+  [Subscriptions](sdk/reference/openreader-server/configuration/subscriptions)
+  for detailed configuration options.
+</Note>
 
 ### How do squids keep track of their sync progress?
 
-Depends on the data sink used. Squid processors that use [`TypeormDatabase`](/sdk/resources/persisting-data/typeorm) keep their state in a [schema](https://www.postgresql.org/docs/current/sql-createschema.html), not in a table. By default the schema is called `squid_processor` (name must be overridden in [multiprocessor squids](/sdk/resources/multichain)). You can view it with
-```sql
-select * from squid_processor.status;
-```
-and manually drop it with
-```sql
-drop schema squid_processor cascade;
-```
-to reset the processor status.
+Sync progress tracking depends on the data sink used:
 
-Squids that store their data in [file-based datasets](/sdk/resources/persisting-data/file) store their status in `status.txt` by default. This can be overridden by defining custom [database hooks](/sdk/resources/persisting-data/file/#hooks).
+**TypeORM Database**: Processors using [`TypeormDatabase`](sdk/resources/persisting-data/typeorm) store their state in a PostgreSQL schema (not a table). By default, the schema is called `squid_processor`.
+
+<Note>
+  The schema name must be overridden in [multiprocessor
+  squids](sdk/resources/multichain).
+</Note>
+
+View sync status:
+
+```sql
+SELECT * FROM squid_processor.status;
+```
+
+Reset processor status:
+
+```sql
+DROP SCHEMA squid_processor CASCADE;
+```
+
+**File-based datasets**: Squids using [file-based storage](sdk/resources/persisting-data/file) store their status in `status.txt` by default. This can be customized using [database hooks](sdk/resources/persisting-data/file/#hooks).
 
 ### Is there a healthcheck endpoint for the indexer?
 
-Yes, the processor exposes the key prometheus metrics at the `${process.env.PROMETHEUS_PORT}/metric` endpoint. The squids deployed to the SQD Cloud also publicly explose the metrics, see [Monitoring in the Cloud](/cloud/resources/monitoring/)
+Yes! The processor exposes Prometheus metrics at the `${process.env.PROMETHEUS_PORT}/metric` endpoint.
+
+<Info>
+  For squids deployed to SQD Cloud, metrics are publicly exposed. See
+  [Monitoring in the Cloud](cloud/resources/monitoring/) for details.
+</Info>
 
 ### Do squids have a debug mode?
 
-Yes. To see all debug messages, set the `SQD_DEBUG` anv variable to `*`:
-```bash title=".env"
+Yes. Enable debug mode by setting the `SQD_DEBUG` environment variable:
+
+```bash .env
+# Enable all debug messages
 SQD_DEBUG=*
-```
-You can also enable debug messages just for a specific namespace. For example,
-```bash title=".env"
+
+# Enable specific namespace (e.g., SQD Network queries)
 SQD_DEBUG=sqd:processor:archive
 ```
-will show only the messages related to your squid's queries to the SQD Network.
+
+<Tip>
+  Use specific namespaces to focus on particular components and reduce log noise
+  during debugging.
+</Tip>

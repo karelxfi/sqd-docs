@@ -1,13 +1,12 @@
 ---
-sidebar_position: 20
 title: Environment variables
 description: |- 
   Variables, contexts, secrets
 ---
 
-:::info
+<Info>
 Store all your sensitive inputs (API keys, passwords etc) as [secrets](#secrets).
-:::
+</Info>
 
 SQD Cloud supports adding environment variables to squid deployments. The variables can be defined as key-value pairs at any of the `env:` sections of the [manifest](/cloud/reference/manifest).
 
@@ -32,7 +31,7 @@ Variables can be assigned either to strings, or to member variables of [contexts
 deploy:
   processor:
     env:
-      RPC_ENDPOINT: ${{ secrets.API_KEY }}
+      RPC_ENDPOINT: $\{\{ secrets.API_KEY \}\}
 ```
 
 ## Variable shadowing
@@ -47,7 +46,7 @@ deploy:
     DB_PORT: 5432
     DB_NAME: squid-tests
     DB_USER: me
-    DB_PASS: ${{ secrets.DATABASE_PASSWORD }}
+    DB_PASS: $\{\{ secrets.DATABASE_PASSWORD \}\}
     DB_SSL: true
 ```
 
@@ -77,7 +76,7 @@ To add a secret:
    ```yaml
    deploy:
      env:
-       RPC_ENDPOINT: ${{ secrets.MOONRIVER_GRPC_ENDPOINT }}
+       RPC_ENDPOINT: $\{\{ secrets.MOONRIVER_GRPC_ENDPOINT \}\}
    ```
    Note: **a deployment requesting a secret unknown to the Cloud will fail**.
 3. Access the value in the squid with `process.env`, e.g.
@@ -90,9 +89,9 @@ To add a secret:
    ```
 Inspect, remove and update the secrets using the [`sqd secrets`](/squid-cli/secrets) command.
 
-:::info
+<Info>
 Any changes to secrets will take effect only when the squid is restarted, e.g. with
 ```bash
 sqd deploy .
 ```
-:::
+</Info>

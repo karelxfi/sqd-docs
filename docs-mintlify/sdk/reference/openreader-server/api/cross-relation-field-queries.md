@@ -1,5 +1,4 @@
 ---
-sidebar_position: 40
 title: Cross-relation queries
 description: >-
   Filtering by fields of nested entities
@@ -37,7 +36,7 @@ With the functionality offered by cross-relation field queries, we could ask for
 
 ```graphql
 query MyQuery {
-  accounts(where: {historicalBalances_some: {balance_lt: "10000000000"}}) {
+  accounts(where: \{historicalBalances_some: \{balance_lt: "10000000000"\}\}) \{
     id
   }
 }
@@ -53,7 +52,7 @@ Returns entities for which **all** of the nested entities linked via the related
 
 ```graphql title="schema.graphql"
 query MyQuery {
-  accounts(where: {historicalBalances_every: {balance_lt: "10000000000"}}) {
+  accounts(where: \{historicalBalances_every: \{balance_lt: "10000000000"\}\}) \{
     id
   }
 }
@@ -67,7 +66,7 @@ Returns entities for which **none** of the nested entities linked via the relate
 
 ```graphql
 query MyQuery {
-  accounts(where: {historicalBalances_none: {balance_lt: "10000000000"}}) {
+  accounts(where: \{historicalBalances_none: \{balance_lt: "10000000000"\}\}) \{
     id
   }
 }
@@ -81,7 +80,7 @@ Returns entities for which **at least one** of the nested entities linked via th
 
 ```graphql
 query MyQuery {
-  accounts(where: {historicalBalances_some: {balance_lt: "10000000000"}}) {
+  accounts(where: \{historicalBalances_some: \{balance_lt: "10000000000"\}\}) \{
     id
   }
 }
@@ -89,12 +88,12 @@ query MyQuery {
 
 All `Account`s that have at least some `historicalBalance`s with a `balance` smaller than `10000000000` will be returned. This means that a single `HistoricalBalance` satisfying the condition is sufficient for the related `Account` to become a part of the results.
 
-## `{entityName}sConnection` queries
+## `\{entityName\}sConnection` queries
 
-Same as always, the `where` argument works for these queries in exactly the same way as it does for `{entityName}s` queries used in examples above. For example this query
+Same as always, the `where` argument works for these queries in exactly the same way as it does for `\{entityName\}s` queries used in examples above. For example this query
 ```graphql
 query MyQuery {
-  accountsConnection(orderBy: id_ASC, where: {historicalBalances_some: {balance_lt: "10000000000"}}) {
+  accountsConnection(orderBy: id_ASC, where: \{historicalBalances_some: \{balance_lt: "10000000000"\}\}) \{
     edges {
       node {
         id

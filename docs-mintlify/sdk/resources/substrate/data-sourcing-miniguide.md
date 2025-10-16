@@ -1,5 +1,4 @@
 ---
-sidebar_position: 60
 description: >-
   Picking the right data on Substrate
 title: Substrate data sourcing

@@ -1,12 +1,11 @@
 ---
-sidebar_position: 20
 description: >-
   Track instruction execution with addInstruction()
 ---
 
 # Instructions
 
-#### `addInstruction(options)` {#add-instruction}
+#### `addInstruction(options)` \{#add-instruction\}
 
 This allows for tracking program instructions. `options` has the following structure:
 

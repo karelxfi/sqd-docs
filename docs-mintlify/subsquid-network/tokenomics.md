@@ -1,5 +1,4 @@
 ---
-sidebar_position: 40
 title: Tokenomics
 description: SQD Tokenomics overview
 ---
@@ -33,4 +32,4 @@ The SQD token’s innovative curation component allows the SQD community to dele
 
 *Please note that all figures are approximate based on date estimates, and may be impacted by alternate dates and other events.
 
-![token distribution](https://s3-us-west-1.amazonaws.com/compliance-ico-af-us-west-1/production/images/attachments/original/0cb/c17/cb-/0cbc17cb-54f2-47b6-a1df-f0e87b3b7b74-1704220851-1ebd638dcaaf078a359bafcf15d62c1cbf723834.png)
+\{/* [\1](\2) */\}

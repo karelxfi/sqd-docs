@@ -1,12 +1,11 @@
 ---
-sidebar_position: 100
 description: >-
   Fine-tuning data requests with setFields()
 ---
 
 # Field selection
 
-#### `setFields(options)` {#set-fields}
+#### `setFields(options)` \{#set-fields\}
 
 Set the fields to be retrieved for data items of each supported type. The `options` object has the following structure:
 
@@ -92,9 +91,9 @@ Disabling unused fields will improve sync performance, as the fields' data will 
 
 ## Data item types and field selectors
 
-:::tip
+<Tip>
 Most IDEs support smart suggestions to show the possible field selectors. For VS Code, press `Ctrl+Space`.
-:::
+</Tip>
 
 Here we describe the data item types as functions of the field selectors. On Tron, each data item type field maps to the eponymous field of its corresponding field selector. Item fields are divided into three categories:
 

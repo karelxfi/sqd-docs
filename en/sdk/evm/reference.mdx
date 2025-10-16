@@ -1,11 +1,16 @@
 ---
 title: "EVM Reference"
-description: "Complete API reference for EVM development with Squid SDK"
+description: "Complete API reference for building EVM blockchain indexers with Squid SDK"
 ---
 
 # EVM Reference
 
 Complete API reference documentation for building EVM indexers with Squid SDK.
+
+<Info>
+  This reference covers the core components, methods, and patterns for indexing
+  Ethereum and EVM-compatible blockchains.
+</Info>
 
 ## Core Components
 
@@ -62,35 +67,54 @@ Complete API reference documentation for building EVM indexers with Squid SDK.
 ## Configuration Options
 
 ### Processor Configuration
-```typescript
+
+```typescript main.ts
 const processor = new EvmBatchProcessor()
-  .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')
-  .setRpcEndpoint('https://rpc.ankr.com/eth')
-  .setFinalityConfirmation(75)
+  .setGateway("https://v2.archive.subsquid.io/network/ethereum-mainnet")
+  .setRpcEndpoint("https://rpc.ankr.com/eth")
+  .setFinalityConfirmation(75);
 ```
 
+<Note>
+  Configure your gateway endpoint based on the network you're indexing. See the
+  [supported networks](/subsquid-network/reference/networks) list.
+</Note>
+
 ### Data Selection
-```typescript
+
+```typescript main.ts
 processor
   .addLog({
-    address: ['0x...'],
-    topic0: ['0x...'],
-    range: { from: 1000000 }
+    address: ["0x..."],
+    topic0: ["0x..."],
+    range: { from: 1000000 },
   })
   .setFields({
     log: {
       transactionHash: true,
       block: {
-        timestamp: true
-      }
-    }
-  })
+        timestamp: true,
+      },
+    },
+  });
 ```
+
+<Tip>
+  Select only the fields you need to minimize data transfer and improve indexing
+  performance.
+</Tip>
 
 ## Best Practices
 
-- Use SQD Network gateways for optimal performance
-- Configure appropriate finality confirmation
-- Select only required data fields
-- Implement proper error handling
-- Use batch processing for efficiency
+Follow these best practices for optimal EVM indexer performance:
+
+- **Use SQD Network gateways** for optimal performance and reliability
+- **Configure appropriate finality confirmation** to balance speed and chain reorganization handling
+- **Select only required data fields** to minimize bandwidth and processing overhead
+- **Implement proper error handling** for network failures and data inconsistencies
+- **Use batch processing** for efficient database operations
+
+<Warning>
+  Always test your indexer locally before deploying to production to catch
+  configuration issues early.
+</Warning>

@@ -2,7 +2,6 @@
 title: "Step 2: Owners & tokens"
 description: >-
   Deriving entities for NFTs and their owners
-sidebar_position: 20
 ---
 
 # Step 2: Deriving owners and tokens
@@ -104,7 +103,7 @@ Further, at each step we will [process the data for the whole batch](/sdk/resour
 With all that in mind, let's create a batch processor that generates and persists all of our entities:
 
 ```typescript title="src/main.ts"
-import {Owner, Token} from './model'
+import \{Owner, Token\} from './model'
 
 processor.run(new TypeormDatabase(), async (ctx) => {
     let rawTransfers: RawTransfer[] = getRawTransfers(ctx)
@@ -132,7 +131,7 @@ interface RawTransfer {
 ```
 is an interface very similar to that of the `Transfer` entity as it was at the beginning of this part of the tutorial. This allows us to reuse most of the code of the old batch handler in `getRawTransfers()`:
 ```typescript title="src/main.ts"
-import {Context} from './processor'
+import \{Context\} from './processor'
 
 function getRawTransfers(ctx: Context): RawTransfer[] {
     let transfers: RawTransfer[] = []
@@ -140,7 +139,7 @@ function getRawTransfers(ctx: Context): RawTransfer[] {
     for (let block of ctx.blocks) {
         for (let log of block.logs) {
             if (log.address === CONTRACT_ADDRESS && log.topics[0] === bayc.events.Transfer.topic) {
-                let {from, to, tokenId} = bayc.events.Transfer.decode(log)
+                let \{from, to, tokenId\} = bayc.events.Transfer.decode(log)
                 transfers.push({
                     id: log.id,
                     tokenId,
@@ -163,8 +162,8 @@ The next step involves creating `Owner` entity instances. We will need these to 
 function createOwners(rawTransfers: RawTransfer[]): Map<string, Owner> {
     let owners: Map<string, Owner> = new Map()
     for (let t of rawTransfers) {
-        owners.set(t.from, new Owner({id: t.from}))
-        owners.set(t.to, new Owner({id: t.to}))
+        owners.set(t.from, new Owner(\{id: t.from\}))
+        owners.set(t.to, new Owner(\{id: t.to\}))
     }
     return owners
 }
@@ -179,7 +178,7 @@ function createTokens(
 
     let tokens: Map<string, Token> = new Map()
     for (let t of rawTransfers) {
-        let tokenIdString = `${t.tokenId}`
+        let tokenIdString = `$\{t.tokenId\}`
         tokens.set(tokenIdString, new Token({
             id: tokenIdString,
             tokenId: t.tokenId,
@@ -191,9 +190,9 @@ function createTokens(
 ```
 Some `Token` and `Owner` instances might have been created in previous batches, so we use `ctx.store.upsert()` to store these instances while updating any existing ones.
 
-:::info
+<Info>
 In some circumstances we might have had to retrieve the old entity instances from the database before updating, but here we have all the required fields populated, so we simply overwrite the whole entity with `ctx.store.upsert()`. 
-:::
+</Info>
 
 Finally, we create an array of `Transfer` entity instances through a simple mapping:
 ```typescript title="src/main.ts"
@@ -205,7 +204,7 @@ function createTransfers(
 
     return rawTransfers.map(t => new Transfer({
         id: t.id,
-        token: tokens.get(`${t.tokenId}`),
+        token: tokens.get(`$\{t.tokenId\}`),
         from: owners.get(t.from),
         to: owners.get(t.to),
         timestamp: t.timestamp,
@@ -238,7 +237,7 @@ npx squid-graphql-server
 ```
 in separate terminals. Then, visit the [GraphiQL playground](http://localhost:4350/graphql):
 
-![BAYC GraphiQL at step two](./bayc-playground-step-two.png)
+\{/* [\1](\2) */\}
 
 The new entities should be displayed in the query schema.
 

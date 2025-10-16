@@ -2,6 +2,7 @@
 title: Supported networks
 description: Networks supported by SQD Network
 mode: wide
+
 ---
 
 # Public gateways
@@ -14,15 +15,15 @@ mode: wide
 
 ## EVM / Ethereum-compatible
 
-This section lists public EVM gateways available from the [open private network](/en/subsquid-network/overview/#open-private-network). If you are developing a squid, supply the gateway URL of your network to [`setGateway()`](/en/sdk/reference/processors/evm-batch/general/#set-gateway) `EvmBatchProcessor` configuration method, for example:
+This section lists public EVM gateways available from the [open private network](en/subsquid-network/overview/#open-private-network). If you are developing a squid, supply the gateway URL of your network to [`setGateway()`](en/sdk/reference/processors/evm-batch/general/#set-gateway) `EvmBatchProcessor` configuration method, for example:
 
-```ts
+````typescript
 const processor = new EvmBatchProcessor().setGateway(
   "https://v2.archive.subsquid.io/network/ethereum-mainnet"
 );
 ```
 
-See [EVM API](/en/subsquid-network/reference/evm-api) if you're looking to interface with one of these gateways directly.
+See [EVM API](en/subsquid-network/reference/evm-api) if you're looking to interface with one of these gateways directly.
 
 |            Network             |  Chain ID   |       State diffs        |               Traces                |                             Gateway URL                              |
 | :----------------------------: | :---------: | :----------------------: | :---------------------------------: | :------------------------------------------------------------------: |
@@ -167,13 +168,13 @@ See [EVM API](/en/subsquid-network/reference/evm-api) if you're looking to inter
 
 (\*4) The first available block for CrossFI networks is 1.
 
-(\*5) Hyperliquid Testnet support is in beta. The first available block is subject to change; currently it is 18374838. Unlike all other supported networks, Hyperliquid skips some blocks; these have `timestamp === 0`. You have to [request the timestamp field](/en/sdk/reference/processors/evm-batch/field-selection/#block-headers) to identify these. If you notice that some of the non-skipped blocks are missing, please let us know at [the SquidDevs Telegram channel](https://t.me/HydraDevs).
+(\*5) Hyperliquid Testnet support is in beta. The first available block is subject to change; currently it is 18374838. Unlike all other supported networks, Hyperliquid skips some blocks; these have `timestamp === 0`. You have to [request the timestamp field](en/sdk/reference/processors/evm-batch/field-selection/#block-headers) to identify these. If you notice that some of the non-skipped blocks are missing, please let us know at [the SquidDevs Telegram channel](https://t.me/HydraDevs).
 
 (\*6) Genesis block for Neon EVM Devnet is 177455580.
 
 ### L1 fields availability
 
-Extra information on L1 [height](/en/sdk/reference/processors/evm-batch/field-selection/#block-headers) and [transaction fees](/en/sdk/reference/processors/evm-batch/field-selection/#transactions) is available for select Layer 2 EVM networks:
+Extra information on L1 [height](en/sdk/reference/processors/evm-batch/field-selection/#block-headers) and [transaction fees](en/sdk/reference/processors/evm-batch/field-selection/#transactions) is available for select Layer 2 EVM networks:
 
 - Optimism
 - Optimism Sepolia
@@ -186,7 +187,7 @@ Extra information on L1 [height](/en/sdk/reference/processors/evm-batch/field-se
 
 ## Substrate-based
 
-This section lists public Substrate gateways of the [open private network](/en/subsquid-network/overview/#open-private-network). Gateway URLs should be used with the [`setGateway()`](/en/sdk/reference/processors/substrate-batch/general/#set-gateway) `SubstrateBatchProcessor` configuration method, for example:
+This section lists public Substrate gateways of the [open private network](en/subsquid-network/overview/#open-private-network). Gateway URLs should be used with the [`setGateway()`](en/sdk/reference/processors/substrate-batch/general/#set-gateway) `SubstrateBatchProcessor` configuration method, for example:
 
 ```typescript
 const processor = new SubstrateBatchProcessor()
@@ -194,7 +195,7 @@ const processor = new SubstrateBatchProcessor()
   .setRpcEndpoint("https://api.phala.network/rpc"); // required on Substrate
 ```
 
-See [Substate API](/en/subsquid-network/reference/substrate-api) if you're looking to interface with one of these gateways directly.
+See [Substate API](en/subsquid-network/reference/substrate-api) if you're looking to interface with one of these gateways directly.
 
 |           Network           |                          Gateway URL                          |
 | :-------------------------: | :-----------------------------------------------------------: |
@@ -292,7 +293,7 @@ See [Substate API](/en/subsquid-network/reference/substrate-api) if you're looki
 
 ## Solana and compatibles
 
-This section lists public gateways of the [open private network](/en/subsquid-network/overview/#open-private-network) that serve data of Solana and compatible networks. Gateway URLs should be used with the [`setGateway()`](/en/solana-indexing/sdk/solana-batch/general/#set-gateway) `SolanaDataSource` configuration method, for example:
+This section lists public gateways of the [open private network](en/subsquid-network/overview/#open-private-network) that serve data of Solana and compatible networks. Gateway URLs should be used with the [`setGateway()`](en/solana-indexing/sdk/solana-batch/general/#set-gateway) `SolanaDataSource` configuration method, for example:
 
 ```typescript
 const dataSource = new SolanaDataSource().setGateway(
@@ -300,9 +301,9 @@ const dataSource = new SolanaDataSource().setGateway(
 );
 ```
 
-Read more about Solana indexing in the [dedicated section](/en/solana-indexing).
+Read more about Solana indexing in the [dedicated section](en/solana-indexing).
 
-See [Solana API](/en/solana-indexing/network-api/solana-api) if you're looking to interface with one of these gateways directly.
+See [Solana API](en/solana-indexing/network-api/solana-api) if you're looking to interface with one of these gateways directly.
 
 |        Network         |                      Gateway URL                       |
 | :--------------------: | :----------------------------------------------------: |
@@ -323,14 +324,14 @@ See [Solana API](/en/solana-indexing/network-api/solana-api) if you're looking t
 
 ## Fuel
 
-SQD's [open private network](/en/subsquid-network/overview/#open-private-network) serves Fuel Network data via the following gateways:
+SQD's [open private network](en/subsquid-network/overview/#open-private-network) serves Fuel Network data via the following gateways:
 
 |   Network    |                     Gateway URL                     |
 | :----------: | :-------------------------------------------------: |
 | Fuel Mainnet | https://v2.archive.subsquid.io/network/fuel-mainnet |
 | Fuel Testnet | https://v2.archive.subsquid.io/network/fuel-testnet |
 
-Gateway URL should be used with the [`setGateway()`](/en/fuel-indexing/fuel-datasource/general/#set-gateway) `FuelDataSource` configuration method:
+Gateway URL should be used with the [`setGateway()`](en/fuel-indexing/fuel-datasource/general/#set-gateway) `FuelDataSource` configuration method:
 
 ```typescript
 const dataSource = new FuelDataSource().setGateway(
@@ -338,36 +339,38 @@ const dataSource = new FuelDataSource().setGateway(
 );
 ```
 
-Read more about Fuel indexing in the [dedicated section](/en/fuel-indexing).
+Read more about Fuel indexing in the [dedicated section](en/fuel-indexing).
 
-See [Fuel API](/en/fuel-indexing/network-api/fuel-api) if you're looking to interface with any of the Fuel gateways directly.
+See [Fuel API](en/fuel-indexing/network-api/fuel-api) if you're looking to interface with any of the Fuel gateways directly.
 
 ## Tron
 
-SQD's [open private network](/en/subsquid-network/overview/#open-private-network) serves Tron data via the following gateway:
+SQD's [open private network](en/subsquid-network/overview/#open-private-network) serves Tron data via the following gateway:
 
-```
+````
+
 https://v2.archive.subsquid.io/network/tron-mainnet
-```
 
-Gateway URL should be used with the [`setGateway()`](/en/tron-indexing/tron-batch-processor/general/#set-gateway) `TronBatchProcessor` configuration method:
+````
+
+Gateway URL should be used with the [`setGateway()`](en/tron-indexing/tron-batch-processor/general/#set-gateway) `TronBatchProcessor` configuration method:
 
 ```typescript
 qconst processor = new TronBatchProcessor()
   .setGateway('https://v2.archive.subsquid.io/network/tron-mainnet')
-```
+````
 
-Read more about Tron indexing in the [dedicated section](/en/tron-indexing).
+Read more about Tron indexing in the [dedicated section](en/tron-indexing).
 
-See [Tron API](/en/tron-indexing/network-api/tron-api) if you're looking to interface with the Tron gateway directly.
+See [Tron API](en/tron-indexing/network-api/tron-api) if you're looking to interface with the Tron gateway directly.
 
 ## Starknet
 
-SQD's [open private network](/en/subsquid-network/overview/#open-private-network) serves Starknet data via the following gateways:
+SQD's [open private network](en/subsquid-network/overview/#open-private-network) serves Starknet data via the following gateways:
 
 |     Network      |                       Gateway URL                       |
 | :--------------: | :-----------------------------------------------------: |
 | Starknet Mainnet | https://v2.archive.subsquid.io/network/starknet-mainnet |
 | Starknet Sepolia | https://v2.archive.subsquid.io/network/starknet-sepolia |
 
-See [Starknet API](/en/data/reference/starknet-api) to learn how to interface with it.
+See [Starknet API](en/data/reference/starknet-api) to learn how to interface with it.

@@ -1,5 +1,4 @@
 ---
-sidebar_position: 24
 title: Interfaces
 description: Queriable interfaces
 ---
@@ -61,9 +60,9 @@ query {
         name
     }
     __typename
-    ... on Foo { foo }
-    ... on Bar { bar }
-    ... on Baz { baz }
+    ... on Foo \{ foo \}
+    ... on Bar \{ bar \}
+    ... on Baz \{ baz \}
   }
 }
 ```

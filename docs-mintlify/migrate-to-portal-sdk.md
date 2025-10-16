@@ -1,5 +1,4 @@
 ---
-sidebar_position: 1
 title: Source data from a portal
 description: Get data from the permissionless SQD Network  
 sidebar_class_name: hidden
@@ -9,9 +8,9 @@ pagination_prev: null
 
 # Source data from a portal
 
-:::info
+<Info>
 SQD Network portals are currently in closed beta. Please report any bugs or suggestions to the SQD Portal chat or to [Squid Devs](https://t.me/HydraDevs).
-:::
+</Info>
 
 This guide lets you replace a gateway of the [open private version of SQD Network](/subsquid-network/overview/#open-private-network) with a *portal* of the [permissionless SQD Network](/subsquid-network/overview/#permissionless-public-network) as your primary source of data.
 
@@ -70,7 +69,7 @@ Configure your squid to ingest data from the portal by replacing the call to `.s
 
  - If you intend to run your squid in [the Cloud](/cloud), you should source the URL from the environment variable you configured in the manifest, e.g.
    ```diff
-   +import { assertNotNull } from '@subsquid/util-internal';
+   +import \{ assertNotNull \} from '@subsquid/util-internal';
 
     export const processor = new EvmBatchProcessor()
    -  .setGateway('<gateway URL for your dataset>')

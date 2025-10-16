@@ -1,5 +1,4 @@
 ---
-sidebar_position: 20
 title: Run a worker
 description: Serve SQD Network data
 ---
@@ -8,9 +7,9 @@ description: Serve SQD Network data
 
 ## Requirements
 
-:::danger
+<Warning>
 We strongly advise against using Hetzner for running Subsquid Network nodes.
-:::
+</Warning>
 
 To run a single worker you'll need:
 
@@ -31,7 +30,7 @@ Your Primary Wallet should have browser support. We recommend Metamask.
 
 You can run a worker from a Docker image or from its source code. Note that you'll need Docker either way, as our configuration script uses it.
 
-## Configuring your setup {#configuration}
+## Configuring your setup \{#configuration\}
 
 1. Pick a location for worker data. It should be able to accommodate at least 1Tb. Do not create the data folder manually, just find a place for it.
 
@@ -72,11 +71,11 @@ You can run a worker from a Docker image or from its source code. Note that you'
 
 Proceed to [Worker registration](#registration).
 
-## Worker registration {#registration}
+## Worker registration \{#registration\}
 
-:::info
+<Info>
 By registering a worker you're committing your tokens for a period of 50000 Ethereum blocks (a bit less than seven days) + the time until the end of the current [epoch](/subsquid-network/faq/#epoch) (20 minutes or less). Withdrawal will not be possible during that time.
-:::
+</Info>
 
 Before you run a worker node, you need to register it on-chain using our web application. Here are the steps to do this:
 
@@ -84,11 +83,11 @@ Before you run a worker node, you need to register it on-chain using our web app
 
 2. Connect your Primary Wallet.
 
-   ![Connect wallet button](./worker_registration_wallet.png)
+\{/* [\1](\2) */\}
 
 3. Go to the Workers tab and press the "Add Worker" button. You should see a worker registration form:
 
-   ![Worker registration form](./worker_registration_form.png)
+\{/* [\1](\2) */\}
 
 4. Fill the form and submit it by signing a transaction:
    - In the top drop down menu, choose either "Wallet" (to use `SQD`s from your wallet directly) or "Vesting contract" (to use `SQD`s from a vesting contract).
@@ -98,7 +97,7 @@ Before you run a worker node, you need to register it on-chain using our web app
 
 Proceed to [Running a worker](#running).
 
-## Running a worker {#running}
+## Running a worker \{#running\}
 
 Make sure you're still in the folder where you executed `setup_worker.sh` during [configuration](#configuration) before proceeding.
 
@@ -215,11 +214,11 @@ In both cases, the log line you are looking for should look like this
 
 [//]: # (### How do I get `SQD` tokens ?)
 
-#### I see `Failed to download chunk ... operation timed out` in the worker logs {#download-timeouts}
+#### I see `Failed to download chunk ... operation timed out` in the worker logs \{#download-timeouts\}
 
 Depending on your connection quality, you might want to tune the `S3_TIMEOUT` and `CONCURRENT_DOWNLOADS` environment variables in the `.env` file. If you encounter this error frequently,  try to set `S3_TIMEOUT` to `180`. If it still doesn't help, set `CONCURRENT_DOWNLOADS` to `1` and `S3_READ_TIMEOUT` to `30`.
 
-#### I see `Unable to get assignment: deadline has elapsed` in the worker logs {#assignment-timeouts}
+#### I see `Unable to get assignment: deadline has elapsed` in the worker logs \{#assignment-timeouts\}
 
 This should only be an issue on version 2.0.2. As a workaround please set `ASSIGNMENT_FETCH_TIMEOUT_SEC=90` in the `.env` file and restart.
 
@@ -263,7 +262,7 @@ cd worker-rs
 git checkout v1.0.0
 ```
 
-#### What are the consequences of losing my key file / getting it stolen? {#key-loss}
+#### What are the consequences of losing my key file / getting it stolen? \{#key-loss\}
 
 If you lose your key file you won't be able to run your worker until you get a new one and register it.
 

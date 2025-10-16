@@ -1,14 +1,15 @@
 ---
+title: "Field Selection"
 description: >-
   Fine-tuning data requests with setFields()
 ---
 
 # Fields selection
 
-#### `setFields(options)` {#set-fields}
+#### `setFields(options)` \{#set-fields\}
 
 Set the fields to be retrieved for data items of each supported type. The `options` object has the following structure:
-```ts
+```typescript
 {
   event?:     // field selector for logs
   call?:      // field selector for transactions
@@ -18,7 +19,7 @@ Set the fields to be retrieved for data items of each supported type. The `optio
 ```
 
 Every field selector is a collection of boolean fields mapping one-to-one to the fields of data items within the batch context [iterables](../context-interfaces). Setting a field of a field selector of a given type to true, like this
-```ts
+```typescript
 let processor = new SubstrateBatchProcessor()
   .setFields({
     call: {
@@ -27,7 +28,7 @@ let processor = new SubstrateBatchProcessor()
   })
 ```
 will cause the processor to populate the corresponding field (in this case `origin`) of all data items of that type (in this case `Call`). The field will be available in all data items of the type, including nested items. Suppose we used the processor defined above to subscribe to some calls as well as some events, and for each event we requested a parent call:
-```ts
+```typescript
 processor
   .addEvent({
     // some event data requests
@@ -38,7 +39,7 @@ processor
   })
 ```
 As a result, the `origin` field would be available both within the call items retrieved due to `.addCall()` and within the call items that provide parent call information for the events:
-```ts
+```typescript
 processor.run(db, async ctx => {
   for (let block of ctx.blocks) {
     for (let call of block.calls) {
@@ -52,7 +53,7 @@ processor.run(db, async ctx => {
 ```
 
 Some data fields are enabled by default but can be disabled by setting a field of a field selector to `false`. For example, this code will not compile:
-```ts
+```typescript
 let processor = new SubstrateBatchProcessor()
   .setFields({
     call: {
@@ -75,10 +76,10 @@ Disabling unused fields will improve sync performance, as the disabled fields wi
 
 ## Data item types and field selectors
 
-:::tip
+<Tip>
 Most IDEs support smart suggestions to show the possible field selectors. For VS Code, press `Ctrl+Space`:
-![selector auto-complete](./autocomplete-selectors.png)
-:::
+
+</Tip>
 
 Here we describe the data item types as functions of the field selectors. In `SubstrateBatchProcessor` each field of a field selector maps to the eponymous field of its corresponding data item type. Item data fields are divided into three categories:
 * Fields that are added independently of the `setFields()` call. These are either fixed or depend on the related data retrieval flags (e.g. `call` for events).
@@ -90,7 +91,7 @@ In addition to data fields, data items have methods that simplify access to rela
 ### Events
 
 `Event` data items may have the following fields:
-```ts
+```typescript
 Event {
   // can be requested with field selectors
   phase: 'ApplyExtrinsic' | 'Initialization' | 'Finalization'
@@ -121,7 +122,7 @@ Definition of the types mentioned are available in their respective sections:
 ### Calls
 
 `Call` data items may have the following fields:
-```ts
+```typescript
 Call {
   // can be requested with field selectors
   error?: any
@@ -155,7 +156,7 @@ Definition of the types mentioned are available in their respective sections:
 ### Extrinsics
 
 `Extrinsic` data items may have the following fields:
-```ts
+```typescript
 Extrinsic {
   // can be requested with field selectors
   success: boolean
@@ -192,7 +193,7 @@ Definition of mentioned types are available in their respective sections:
 ### Block headers
 
 `BlockHeader` data items may have the following fields:
-```ts
+```typescript
 BlockHeader{
   // can be requested with field selectors
   digest: { // request with "digest: true"
@@ -223,12 +224,12 @@ BlockHeader{
   }
 }
 ```
-`Runtime` is an internal type that tools like [squid-substrate-typegen](/sdk/resources/tools/typegen) use for dealing with Substrate runtime versions. The curious may take a look at the definition [here](https://github.com/subsquid/squid-sdk/blob/master/substrate/substrate-runtime/src/runtime/runtime.ts).
+`Runtime` is an internal type that tools like [squid-substrate-typegen](sdk/resources/tools/typegen) use for dealing with Substrate runtime versions. The curious may take a look at the definition [here](https://github.com/subsquid/squid-sdk/blob/master/substrate/substrate-runtime/src/runtime/runtime.ts).
 
 ## A complete example
 
 Fetch `Balances.Transfer` events and `Balances.transfer_keep_alive` calls along with their parent extrinsics. Enrich the extrinsics with hashes, fees and success flags:
-```ts
+```typescript
 const processor = new SubstrateBatchProcessor()
   .addEvent({
     name: ['Balances.Transfer'],

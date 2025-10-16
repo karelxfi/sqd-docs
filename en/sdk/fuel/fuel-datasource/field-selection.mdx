@@ -1,15 +1,16 @@
 ---
+title: "Field Selection"
 description: >-
   Fine-tuning data requests with setFields()
 ---
 
 # Field selection
 
-#### `setFields(options)` {#set-fields}
+#### `setFields(options)` \{#set-fields\}
 
 Set the fields to be retrieved for data items of each supported type. The `options` object has the following structure:
 
-```ts
+```typescript
 {
   block?:       // field selector for block headers
   transaction?: // field selector for transactions
@@ -19,9 +20,9 @@ Set the fields to be retrieved for data items of each supported type. The `optio
 }
 ```
 
-Every field selector is a collection of boolean fields that map to the fields of data items within the batch context [iterables](/fuel-indexing/fuel-datasource/context-interfaces). Defining a field of a field selector of a given type and setting it to true will cause the processor to populate the corresponding field of all data items of that type. Here is a definition of a processor that requests `hash` and `status` fields for transactions and the `contract` field for receipts:
+Every field selector is a collection of boolean fields that map to the fields of data items within the batch context [iterables](fuel-indexing/fuel-datasource/context-interfaces). Defining a field of a field selector of a given type and setting it to true will cause the processor to populate the corresponding field of all data items of that type. Here is a definition of a processor that requests `hash` and `status` fields for transactions and the `contract` field for receipts:
 
-```ts
+```typescript
 const dataSource = new DataSourceBuilder().setFields({
   transaction: {
     hash: true,
@@ -35,7 +36,7 @@ const dataSource = new DataSourceBuilder().setFields({
 
 Same fields will be available for all data items of any given type, including the items accessed via nested references. Suppose we used the processor defined above to subscribe to some transactions as well as some receipts, and for each receipt we requested its parent transaction:
 
-```ts
+```typescript
 dataSource
   .addTransaction({
     // some transaction data requests
@@ -48,9 +49,9 @@ dataSource
   .build();
 ```
 
-After populating the convenience reference fields with `augmentBlock()` from `@subsquid/fuel-objects`, the `contract` field will be available both within the data items of the `transactions` iterable of [block data](/fuel-indexing/fuel-datasource/context-interfaces) and within the transaction items that provide parent transaction information for the receipts matching the `addReceipt()` data request:
+After populating the convenience reference fields with `augmentBlock()` from `@subsquid/fuel-objects`, the `contract` field will be available both within the data items of the `transactions` iterable of [block data](fuel-indexing/fuel-datasource/context-interfaces) and within the transaction items that provide parent transaction information for the receipts matching the `addReceipt()` data request:
 
-```ts
+```typescript
 run(dataSource, database, async (ctx) => {
   let blocks = ctx.blocks.map(augmentBlock)
   for (let block of blocks) {
@@ -68,7 +69,7 @@ run(dataSource, database, async (ctx) => {
 
 Some data fields, like `hash` for transactions, are enabled by default but can be disabled by setting a field of a field selector to `false`. For example, this code will not compile:
 
-```ts
+```typescript
 const dataSource = new DataSourceBuilder()
   .setFields({
     transaction: {
@@ -90,9 +91,9 @@ Disabling unused fields will improve sync performance, as the fields' data will 
 
 ## Data item types and field selectors
 
-:::tip
+<Tip>
 Most IDEs support smart suggestions to show the possible field selectors. For VS Code, press `Ctrl+Space`.
-:::
+</Tip>
 
 Here we describe the data item types as functions of the field selectors. Unless otherwise mentioned, each data item type field maps to the eponymous field of its corresponding field selector. Item fields are divided into three categories:
 
@@ -106,7 +107,7 @@ Fields of `Transaction` data items may be requested by the eponymous fields of t
 
 Here's a detailed description of possible `Transaction` fields:
 
-```ts
+```typescript
 Transaction {
   // independent of field selectors
   index: number
@@ -161,7 +162,7 @@ Transaction {
 
 - `transactionType` field has the following type:
 
-  ```ts
+  ```typescript
   type TransactionType =
     "Script" |
     "Create" |
@@ -172,7 +173,7 @@ Transaction {
 
 - `status` field has the following type:
 
-  ```ts
+  ```typescript
   type Status =
     SubmittedStatus |
     SuccessStatus |
@@ -181,7 +182,7 @@ Transaction {
   ```
   `Status` can be one of the following:
 
-  ```ts
+  ```typescript
   interface SubmittedStatus {
     type: "SubmittedStatus"
     time: bigint
@@ -211,7 +212,7 @@ Transaction {
   ```
   `ProgramState` is defined as follows:
 
-  ```ts
+  ```typescript
   interface ProgramState {
     returnType: "RETURN" | "RETURN_DATA" | "REVERT";
     data: string;
@@ -220,7 +221,7 @@ Transaction {
 
 - `policies` field has the following interface:
 
-  ```ts
+  ```typescript
   interface Policies {
     gasPrice?: bigint
     witnessLimit?: bigint
@@ -230,7 +231,7 @@ Transaction {
   ```
 
 - `upgradePurpose` field is of type `ConsensusParametersPurpose | StateTransitionPurpose`, where the types are defined as:
-  ```ts
+  ```typescript
   interface ConsensusParametersPurpose {
     type: 'ConsensusParametersPurpose'
     witnessIndex: number
@@ -247,7 +248,7 @@ Transaction {
 
 Fields of `Receipt` data items may be requested by the eponymous fields of the field selector. Here's a detailed description of possible `Receipt` fields:
 
-```ts
+```typescript
 Receipt {
   // independent of field selectors
   index: number
@@ -289,7 +290,7 @@ Receipt {
 
 - `receiptType` has the following type:
 
-  ```ts
+  ```typescript
   type ReceiptType =
     | "CALL"
     | "RETURN"
@@ -309,7 +310,7 @@ Receipt {
 ### Input
 
 `Input` data items can be of types `InputCoin`, `InputContract` or `InputMessage`. Each type has its own set of fields. To access the type-specific fields, narrow down the type by asserting the value of the `type` field, e.g.
-```ts
+```typescript
 if (input.type === "InputCoin") {
   // use InputCoin-specific fields here
 }
@@ -324,7 +325,7 @@ All `Input*` data types have `transactionIndex`, `index` and `type` fields. Thes
 
 `InputCoin` data items may have the following fields:
 
-```ts
+```typescript
 interface InputCoin {
   type: "InputCoin";
   index: number;
@@ -343,7 +344,7 @@ interface InputCoin {
 
 `InputContract` data items may have the following fields:
 
-```ts
+```typescript
 interface InputContract {
   type: "InputContract";
   index: number;
@@ -358,7 +359,7 @@ interface InputContract {
 
 `InputMessage` data items may have the following fields:
 
-```ts
+```typescript
 InputMessage {
   type: "InputMessage";
   index: number;
@@ -377,7 +378,7 @@ InputMessage {
 
 It is possible to request more than one type of input in the same data request. For example, to request all inputs of type `InputCoin` and `InputContract`:
 
-```ts
+```typescript
 dataSource
   .addInput({
     type: ["InputCoin", "InputContract"],
@@ -388,7 +389,7 @@ dataSource
 ### Output
 
 `Output` data items can be of types `CoinOutput`, `ContractOutput`, `ChangeOutput`, `VariableOutput` or `'ContractCreated'`. Each type has its own set of fields. To access the type-specific fields, narrow down the type by asserting the value of the `type` field, e.g.
-```ts
+```typescript
 if (output.type === "CoinOutput") {
   // use CoinOutput-specific fields here
 }
@@ -407,7 +408,7 @@ All output data types have `transactionIndex`, `index` and `type` fields. These 
 
 `CoinOutput` data items may have the following fields:
 
-```ts
+```typescript
 CoinOutput {
   type: 'CoinOutput'
   index: number
@@ -420,7 +421,7 @@ CoinOutput {
 
 `ContractOutput` data items may have the following fields:
 
-```ts
+```typescript
 ContractOutput {
   type: "ContractOutput";
   index: number;
@@ -433,7 +434,7 @@ ContractOutput {
 
 `ChangeOutput` data items may have the following fields:
 
-```ts
+```typescript
 ChangeOutput {
   type: 'ChangeOutput'
   index: number
@@ -447,7 +448,7 @@ ChangeOutput {
 
 `VariableOutput` data items may have the following fields:
 
-```ts
+```typescript
 VariableOutput {
   type: 'VariableOutput'
   index: number
@@ -460,7 +461,7 @@ VariableOutput {
 
 `ContractCreated` data items may have the following fields:
 
-```ts
+```typescript
 ContractCreated {
   type: 'ContractCreated'
   index: number
@@ -473,7 +474,7 @@ ContractCreated {
 ### Block header
 
 `BlockHeader` data items may have the following fields:
-```ts
+```typescript
 BlockHeader {
 	// independent of field selectors
   hash: string
@@ -499,12 +500,12 @@ Request the fields with eponymous field request flags.
 
 ## A complete example
 
-```ts
-import { run } from "@subsquid/batch-processor";
-import { augmentBlock } from "@subsquid/fuel-objects";
-import { DataSourceBuilder } from "@subsquid/fuel-stream";
-import { TypeormDatabase } from "@subsquid/typeorm-store";
-import { Contract } from "./model";
+```typescript
+import \{ run \} from "@subsquid/batch-processor";
+import \{ augmentBlock \} from "@subsquid/fuel-objects";
+import \{ DataSourceBuilder \} from "@subsquid/fuel-stream";
+import \{ TypeormDatabase \} from "@subsquid/typeorm-store";
+import \{ Contract \} from "./model";
 
 const dataSource = new DataSourceBuilder()
   .setGateway("https://v2.archive.subsquid.io/network/fuel-mainnet")
@@ -535,7 +536,7 @@ const dataSource = new DataSourceBuilder()
   .addTransaction({
     type: ['Mint', 'Script'],
     inputs: true,
-    range: { from: 1_000_000 }
+    range: \{ from: 1_000_000 \}
   })
   .addReceipt({
     type: ['LOG_DATA']

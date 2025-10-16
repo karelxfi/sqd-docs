@@ -1,12 +1,11 @@
 ---
-sidebar_position: 50
 description: >-
   Subscribe to internal txn data
 ---
 
 # Internal transactions
 
-#### `addInternalTransaction(options)` {#add-internal-transaction}
+#### `addInternalTransaction(options)` \{#add-internal-transaction\}
 
 Get some _or all_ internal transactions on the network. `options` has the following structure:
 

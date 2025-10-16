@@ -1,5 +1,4 @@
 ---
-sidebar_position: 50
 title: TypeORM migration generation
 description: Generate TypeORM models from a schema file
 ---

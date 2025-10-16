@@ -1,5 +1,4 @@
 ---
-sidebar_position: 60
 title: Access control
 description: Authentication and authorization
 ---
@@ -20,8 +19,8 @@ export async function requestCheck(
 ```
 Once defined, this function will be called every time a request arrives. Then,
 * if the function returns `true`, the request is processed as usual;
-* if the function returns `false`, the server responds with `'{"errors":[{"message":"not allowed"}]}'`;
-* if the function returns an `errorString`, the server responds with `` `{{"errors":[{"message":"${errorString}"}]}` ``.
+* if the function returns `false`, the server responds with `'\{"errors":[\{"message":"not allowed"\}]\}'`;
+* if the function returns an `errorString`, the server responds with `` `\{\{"errors":[\{"message":"$\{errorString\}"\}]\}` ``.
 
 The request information such as HTTP headers and GraphQL selections is available in the context. This makes it possible to authenticate the user that sent the query and either allow or deny access. The decision may take the query contents into account, allowing for some authorization granularity.
 
@@ -30,7 +29,7 @@ The request information such as HTTP headers and GraphQL selections is available
 The context type has the following interface:
 ```typescript
 RequestCheckContext {
-  http: {uri: string, method: string, headers: HttpHeaders}
+  http: \{uri: string, method: string, headers: HttpHeaders\}
   operation: OperationDefinitionNode
   operationName: string | null
   schema: GraphQLSchema
@@ -77,7 +76,7 @@ export class UserCommentResolver {
         .query(`
           SELECT COUNT(*) as total
           FROM user_comment
-          WHERE "user" = '${user}'
+          WHERE "user" = '$\{user\}'
         `)
     return result
   }
@@ -90,7 +89,7 @@ export class UserCommentResolver {
     let user = ctx.openreader.user
     let manager = await this.tx()
     await manager.save(new UserComment({
-      id: `${user}-${comment}`,
+      id: `$\{user\}-$\{comment\}`,
       user,
       comment
     }))

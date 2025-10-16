@@ -1,5 +1,4 @@
 ---
-sidebar_position: 40
 title: Saving to BigQuery
 description: >-
   Support for Google's data warehouse
@@ -16,7 +15,7 @@ import {
   Types,
   Database
 } from '@subsquid/bigquery-store'
-import {BigQuery} from '@google-cloud/bigquery'
+import \{BigQuery\} from '@google-cloud/bigquery'
 
 const db = new Database({
   bq: new BigQuery(),
@@ -38,15 +37,15 @@ processor.run(db, async ctx => {
   let from: string = ...
   let to: string = ...
   let value: bigint | number = ...
-  ctx.store.TransfersTable.insert({from, to, value})
+  ctx.store.TransfersTable.insert(\{from, to, value\})
 })
 ```
 Here,
  * `bq` is a `BigQuery` instance. When created without arguments like this it'll look at the `GOOGLE_APPLICATION_CREDENTIALS` environment variable for a path to a JSON with authentication details.
  * `dataset` is the path to the target dataset.
-:::warning
+<Warning>
 The dataset must be created prior to running the processor.
-:::
+</Warning>
  * `tables` lists the tables that will be created and populated within the dataset. For every field of the `tables` object an eponymous field of the `ctx.store` object will be created; calling `insert()` or `insertMany()` on such a field will result in data being queued for writing to the corresponding dataset table. The actual writing will be done at the end of the batch in a single transaction, ensuring dataset integrity.
 
 Tables are made out of statically typed columns. Available types are listed on the [reference page](/sdk/reference/store/bigquery).
@@ -68,7 +67,7 @@ Set the `GOOGLE_APPLICATION_CREDENTIALS` variable and request the secret in the 
 deploy:
   processor:
     env:
-      GAC_JSON_FILE: ${{ secrets.GAC_JSON_FILE }}
+      GAC_JSON_FILE: $\{\{ secrets.GAC_JSON_FILE \}\}
       GOOGLE_APPLICATION_CREDENTIALS: creds.json
 ```
 
@@ -124,7 +123,7 @@ Squid produced too much data per batch per table and BigQuery refused to handle 
 ```ts
 const db = new Database({
   bq: new BigQuery(), // set GOOGLE_APPLICATION_CREDENTIALS at .env
-  dataset: `${projectId}.${datasetId}`,
+  dataset: `$\{projectId\}.$\{datasetId\}`,
   tables: {
     TransfersTable: new Table(
       'transfers',

@@ -1,6 +1,7 @@
 ---
 title: Run a worker
 description: Serve SQD Network data
+
 ---
 
 # Run a worker
@@ -83,7 +84,7 @@ Proceed to [Worker registration](#worker-registration).
 ## Worker registration
 
 <Info>
-By registering a worker you're committing your tokens for a period of 50000 Ethereum blocks (a bit less than seven days) + the time until the end of the current [epoch](/subsquid-network/faq/#epoch) (20 minutes or less). Withdrawal will not be possible during that time.
+By registering a worker you're committing your tokens for a period of 50000 Ethereum blocks (a bit less than seven days) + the time until the end of the current [epoch](subsquid-network/faq/#epoch) (20 minutes or less). Withdrawal will not be possible during that time.
 </Info>
 
 Before you run a worker node, you need to register it on-chain using our web application. Here are the steps to do this:
@@ -92,18 +93,14 @@ Before you run a worker node, you need to register it on-chain using our web app
 
 2. Connect your Primary Wallet.
 
-   ![Connect wallet button](/images/network/participate/worker_registration_wallet.png)
-
 3. Go to the Workers tab and press the "Add Worker" button. You should see a worker registration form:
-
-   ![Worker registration form](/images/network/participate/worker_registration_form.png)
 
 4. Fill the form and submit it by signing a transaction:
 
    - In the top drop down menu, choose either "Wallet" (to use `SQD`s from your wallet directly) or "Vesting contract" (to use `SQD`s from a vesting contract).
    - Use the peer ID you copied at step 4 of [Configuring your setup](#configuring-your-setup).
 
-5. Go to the "Workers" tab and wait until the status of the registered worker changes to "Offline" or "Active". Since workers can only be activated at the beginning of an [epoch](/subsquid-network/faq/#epoch), you may have to wait for a few minutes.
+5. Go to the "Workers" tab and wait until the status of the registered worker changes to "Offline" or "Active". Since workers can only be activated at the beginning of an [epoch](subsquid-network/faq/#epoch), you may have to wait for a few minutes.
 
 Proceed to [Running a worker](#running).
 
@@ -228,7 +225,7 @@ In both cases, the log line you are looking for should look like this
 2024-05-28T07:43:55.591440Z  INFO subsquid_worker::transport::p2p: Local peer ID: <PEER_ID>
 ```
 
-{/* ### How do I get `SQD` tokens ? */}
+\{/* ### How do I get `SQD` tokens ? */\}
 
 #### I see `Failed to download chunk ... operation timed out` in the worker logs
 

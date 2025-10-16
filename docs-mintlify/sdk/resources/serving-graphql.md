@@ -1,5 +1,4 @@
 ---
-sidebar_position: 80
 title: Serving GraphQL
 description: GraphQL servers commonly used in squids
 ---
@@ -40,7 +39,7 @@ You can integrate Hasura with your squid in two ways:
 
    If you run your squid in our [Cloud](/cloud) you can find database credentials in [the app](https://app.subsquid.io/squids):
 
-   ![database creds](serving-graphql-database-creds.png)
+\{/* [\1](\2) */\}
 
 2. **Run a dedicated Hasura instance for serving the data just from your squid.**
 

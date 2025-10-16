@@ -1,215 +1,148 @@
 ---
 title: "Solana SDK Reference"
-description: "Complete reference for Solana indexing with Squid SDK"
+description: "Complete API reference for Solana batch processor and development tools"
 ---
 
 # Solana SDK Reference
 
-Complete API reference for building Solana indexers with Squid SDK.
+Complete API reference for building Solana blockchain indexers with Squid SDK's `SolanaBatchProcessor`.
 
-## SolanaBatchProcessor
+## Batch Processor API
 
-The main processor class for indexing Solana blockchain data.
-
-### Configuration Methods
-
-```typescript
-import { SolanaBatchProcessor } from '@subsquid/solana-processor'
-
-const processor = new SolanaBatchProcessor()
-  .setGateway('https://v2.archive.subsquid.io/network/solana-mainnet')
-  .setRpcEndpoint('https://api.mainnet-beta.solana.com')
-  .setBlockRange({ from: 150_000_000 })
-```
-
-### Data Selection
-
-#### Instructions
-```typescript
-processor.addInstruction({
-  programId: ['11111111111111111111111111111112'],
-  isCommitted: true,
-  innerInstructions: true
-})
-```
-
-#### Transactions
-```typescript
-processor.addTransaction({
-  signatures: ['signature1', 'signature2'],
-  accounts: ['account1', 'account2']
-})
-```
-
-#### Logs
-```typescript
-processor.addLog({
-  programId: ['program-id'],
-  logFilter: ['Program log: Transfer']
-})
-```
-
-### Field Selection
-
-```typescript
-processor.setFields({
-  instruction: {
-    programId: true,
-    accounts: true,
-    data: true,
-    innerInstructions: true
-  },
-  transaction: {
-    signatures: true,
-    err: true,
-    fee: true,
-    accountKeys: true
-  },
-  block: {
-    timestamp: true,
-    blockhash: true,
-    parentSlot: true
-  }
-})
-```
+<CardGroup cols={2}>
+  <Card
+    title="General Settings"
+    icon="gear"
+    href="/en/sdk/solana/sdk/solana-batch/general"
+  >
+    Configure your Solana batch processor
+  </Card>
+  <Card
+    title="Field Selection"
+    icon="list-check"
+    href="/en/sdk/solana/sdk/solana-batch/field-selection"
+  >
+    Select specific data fields to optimize performance
+  </Card>
+  <Card
+    title="Context Interfaces"
+    icon="brackets-curly"
+    href="/en/sdk/solana/sdk/solana-batch/context-interfaces"
+  >
+    TypeScript interfaces for batch context
+  </Card>
+  <Card
+    title="Transactions"
+    icon="arrow-right-arrow-left"
+    href="/en/sdk/solana/sdk/solana-batch/transactions"
+  >
+    Index Solana transactions
+  </Card>
+</CardGroup>
 
 ## Data Types
 
-### Block
-```typescript
-interface Block {
-  header: {
-    slot: number
-    timestamp: number
-    blockhash: string
-    parentSlot: number
-  }
-  instructions: Instruction[]
-  transactions: Transaction[]
-  logs: Log[]
-}
-```
-
-### Instruction
-```typescript
-interface Instruction {
-  programId: string
-  accounts: string[]
-  data: string
-  innerInstructions?: InnerInstruction[]
-  transactionIndex: number
-  instructionIndex: number
-}
-```
-
-### Transaction
-```typescript
-interface Transaction {
-  signatures: string[]
-  accountKeys: string[]
-  err: any
-  fee: number
-  preBalances: number[]
-  postBalances: number[]
-  instructions: Instruction[]
-}
-```
-
-## Program-Specific Decoders
-
-### SPL Token Program
-```typescript
-import { splToken } from '@subsquid/solana-objects'
-
-// Decode token transfer instruction
-const transfer = splToken.instructions.transfer.decode(instruction)
-console.log(transfer.amount)
-```
-
-### System Program
-```typescript
-import { systemProgram } from '@subsquid/solana-objects'
-
-// Decode system transfer
-const transfer = systemProgram.instructions.transfer.decode(instruction)
-console.log(transfer.lamports)
-```
-
-## Account Data Parsing
-
-```typescript
-import { AccountInfo } from '@solana/web3.js'
-
-// Parse token account data
-function parseTokenAccount(data: Buffer): TokenAccount {
-  // Implementation for parsing token account data
-  return {
-    mint: data.slice(0, 32).toString('hex'),
-    owner: data.slice(32, 64).toString('hex'),
-    amount: data.readBigUInt64LE(64)
-  }
-}
-```
-
-## Error Handling
-
-```typescript
-processor.run(db, async (ctx) => {
-  try {
-    for (let block of ctx.blocks) {
-      for (let instruction of block.instructions) {
-        // Process instruction
-      }
-    }
-  } catch (error) {
-    ctx.log.error('Processing error:', error)
-    throw error
-  }
-})
-```
-
-## Performance Optimization
-
-### Selective Data Fetching
-Only request the data fields you need:
-
-```typescript
-processor.setFields({
-  instruction: {
-    programId: true,
-    data: true
-    // Don't fetch accounts if not needed
-  }
-})
-```
-
-### Program Filtering
-Filter by specific programs to reduce data volume:
-
-```typescript
-processor.addInstruction({
-  programId: [
-    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', // SPL Token
-    '11111111111111111111111111111112' // System Program
-  ]
-})
-```
-
-## Best Practices
-
-- Use SQD Network gateways for optimal performance
-- Filter data at the processor level, not in handlers
-- Batch database operations for efficiency
-- Handle transaction errors gracefully
-- Monitor slot progression for real-time indexing
-
-## Examples
-
 <CardGroup cols={2}>
-  <Card title="Token Transfers" href="/en/sdk/solana/examples/token-transfers">
-    Index SPL token transfers
+  <Card
+    title="Instructions"
+    icon="code"
+    href="/en/sdk/solana/sdk/solana-batch/instructions"
+  >
+    Process program instructions
   </Card>
-  <Card title="Program Interactions" href="/en/sdk/solana/examples/programs">
-    Monitor specific program calls
+  <Card
+    title="Logs"
+    icon="file-lines"
+    href="/en/sdk/solana/sdk/solana-batch/logs"
+  >
+    Index transaction logs
+  </Card>
+  <Card
+    title="Balances"
+    icon="coins"
+    href="/en/sdk/solana/sdk/solana-batch/balances"
+  >
+    Track account balances
+  </Card>
+  <Card
+    title="Token Balances"
+    icon="money-bill-1-wave"
+    href="/en/sdk/solana/sdk/solana-batch/token-balances"
+  >
+    Monitor SPL token balances
   </Card>
 </CardGroup>
+
+## Advanced Features
+
+<CardGroup cols={2}>
+  <Card
+    title="Rewards"
+    icon="award"
+    href="/en/sdk/solana/sdk/solana-batch/rewards"
+  >
+    Index staking and validator rewards
+  </Card>
+  <Card
+    title="Typegen"
+    icon="wand-magic-sparkles"
+    href="/en/sdk/solana/sdk/typegen"
+  >
+    Generate TypeScript code from IDL files
+  </Card>
+</CardGroup>
+
+## Overview
+
+The `SolanaBatchProcessor` is the main class for indexing Solana blockchain data. It provides:
+
+- **High-performance batch processing**: Process thousands of blocks efficiently
+- **Flexible data selection**: Choose exactly what data you need
+- **Type-safe interfaces**: Full TypeScript support with generated types
+- **Real-time sync**: Near real-time indexing with chain reorganization handling
+
+## Basic Usage
+
+```typescript main.ts
+import { SolanaBatchProcessor } from "@subsquid/solana-processor";
+import { TypeormDatabase } from "@subsquid/typeorm-store";
+
+const processor = new SolanaBatchProcessor()
+  .setGateway("https://v2.archive.subsquid.io/network/solana-mainnet")
+  .setRpcEndpoint("<RPC_ENDPOINT_URL>")
+  .setBlockRange({ from: 150000000 })
+  .addInstruction({
+    programId: ["<PROGRAM_ID>"],
+    isCommitted: true,
+  });
+
+processor.run(new TypeormDatabase(), async (ctx) => {
+  for (let block of ctx.blocks) {
+    for (let instruction of block.instructions) {
+      // Process instruction data
+    }
+  }
+});
+```
+
+<Info>
+  The Solana batch processor integrates seamlessly with [SQD
+  Network](/en/data/networks/solana) for fast historical data retrieval and
+  falls back to RPC for real-time data.
+</Info>
+
+## Network API
+
+<Card
+  title="Solana Network API"
+  icon="network-wired"
+  href="/en/sdk/solana/network-api"
+>
+  Learn about the SQD Network gateway for Solana
+</Card>
+
+<Tip>
+  Start with the [General Settings](/en/sdk/solana/sdk/solana-batch/general)
+  page to understand processor configuration, then explore specific data types
+  based on your indexing needs.
+</Tip>

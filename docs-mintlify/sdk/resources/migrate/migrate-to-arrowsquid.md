@@ -1,5 +1,4 @@
 ---
-sidebar_position: 3
 title: ArrowSquid for EVM
 description: A step-by-step migration guide for EVM
 sidebar_class_name: hidden
@@ -41,7 +40,7 @@ Replace the old `setDataSource()` processor configuration call with a combinatio
 ```diff
  processor
 -  .setDataSource({
--    archive: lookupArchive('eth-mainnet', {release: 'FireSquid'})
+-    archive: lookupArchive('eth-mainnet', \{release: 'FireSquid'\})
 -  })
 +  .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')
 +  .setRpcEndpoint({
@@ -110,7 +109,7 @@ const processor = new EvmBatchProcessor()
   .addLog(CONTRACT_ADDRESS, {
     filter: [[ abi.events.Transfer.topic ]],
     data: {
-      evmLog: { /* ...some log field selections... */ },
+      evmLog: \{ /* ...some log field selections... */ \},
       transaction: {
         hash: true
       }
@@ -131,7 +130,7 @@ then the new global selector should be added like this:
  const processor = new EvmBatchProcessor()
    // ... addLog() and addTransaction() calls ...
    .setFields({
-     log: { /* ...some log field selections... */ },
+     log: \{ /* ...some log field selections... */ \},
 +    transaction: {
 +      hash: true,
 +      gas: true,
@@ -146,17 +145,17 @@ See the [Field selection](/sdk/reference/processors/evm-batch/field-selection) p
 
 Replace the old calls to `addLog()` and `addTransaction()` with calls using the [new signatures](/sdk/reference/processors/evm-batch).
 
-:::warning
+<Warning>
 The meaning of passing `[]` as a set of parameter values has been changed in the ArrowSquid release: now it _selects no data_. Pass `undefined` for a wildcard selection:
 ```typescript
-.addLog({address: []}) // selects no logs
-.addLog({}) // selects all logs
+.addLog(\{address: []\}) // selects no logs
+.addLog(\{\}) // selects all logs
 ```
 ```typescript
-.addTransaction({from: []}) // selects no transactions
-.addTransaction({}) // selects all transactions
+.addTransaction(\{from: []\}) // selects no transactions
+.addTransaction(\{\}) // selects all transactions
 ```
-:::
+</Warning>
 
 Old data requests will be erased during the process. Make sure to request the appropriate data with the boolean flags (`transaction` for `addLog()` and `logs` for `addTransaction()`) while doing that.
 
@@ -221,7 +220,7 @@ Finally, update the batch handler to use the new [batch context](/sdk/reference/
    ```
    then transform the new context to the old format at the beginning of the batch handler:
    ```typescript title="src/processor.ts"
-   import {transformContext} from './transformContext'
+   import \{transformContext\} from './transformContext'
    
    // ...
 
@@ -242,7 +241,7 @@ Update your transactions/events decoding code. The big change here is that now d
 Iteratively reconcile any type errors arising when building your squid (e.g. with `npm run build`). In case you're using `tranformContext.ts` you may find the types it exports helpful. If you need to specify the field selection generic argument explicitly, get it as a `typeof` of the `setFields` argument value:
 
 ```ts
-import { OldBlockData } from './transformContext'
+import \{ OldBlockData \} from './transformContext'
 
 const fieldSelection = {
   log: {

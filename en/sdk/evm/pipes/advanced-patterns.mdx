@@ -1,0 +1,522 @@
+---
+title: "Advanced Patterns"
+description: "Advanced techniques and patterns for building production-ready pipelines with Pipes SDK"
+---
+
+# Advanced Patterns
+
+This guide covers advanced patterns and techniques for building production-ready blockchain indexing pipelines with Pipes SDK.
+
+## Factory Contract Indexing
+
+Factory contracts create multiple child contracts dynamically. Here's how to index them:
+
+### Tracking Child Contracts
+
+```typescript
+import { createEvmSource, createEvmDecoder } from "@sqd-pipes/evm-processor";
+import * as factoryAbi from "./abi/factory";
+import * as pairAbi from "./abi/pair";
+
+const FACTORY_ADDRESS = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"; // Uniswap V2
+
+// Track all created pairs
+const childContracts = new Set<string>();
+
+// Transformer to extract child contract addresses
+const factoryTransformer = {
+  query: (builder) => {
+    builder.addLog({
+      address: [FACTORY_ADDRESS],
+      topic0: [factoryAbi.events.PairCreated.topic],
+    });
+  },
+  transform: async (data) => {
+    const newPairs = [];
+
+    for (const block of data.blocks) {
+      for (const log of block.logs) {
+        if (log.address === FACTORY_ADDRESS) {
+          const event = factoryAbi.events.PairCreated.decode(log);
+          childContracts.add(event.pair);
+          newPairs.push(event.pair);
+        }
+      }
+    }
+
+    return { newPairs };
+  },
+};
+
+// Transformer to track events from all child contracts
+const pairEventsTransformer = {
+  query: (builder) => {
+    // Add logs from all known child contracts
+    if (childContracts.size > 0) {
+      builder.addLog({
+        address: Array.from(childContracts),
+        topic0: [pairAbi.events.Swap.topic],
+      });
+    }
+  },
+  transform: async (data) => {
+    // Process swap events from all pairs
+    return extractSwaps(data);
+  },
+};
+
+// Combine transformers
+const pipeline = source.pipeComposite({
+  factory: factoryTransformer,
+  swaps: pairEventsTransformer,
+});
+```
+
+<Tip>
+  Factory pattern requires two passes: first to discover child contracts, then
+  to index their events. Consider pre-indexing known child contracts for faster
+  initial sync.
+</Tip>
+
+## Raw Data Caching
+
+Cache raw blockchain data locally for faster development iteration:
+
+```typescript
+import fs from "fs/promises";
+import path from "path";
+
+const CACHE_DIR = "./cache";
+
+// Create cache directory
+await fs.mkdir(CACHE_DIR, { recursive: true });
+
+// Caching transformer
+const cachingTransformer = {
+  transform: async (data) => {
+    // Save raw data to cache
+    const cacheKey = `blocks-${data.blocks[0].header.number}-${
+      data.blocks[data.blocks.length - 1].header.number
+    }.json`;
+    const cachePath = path.join(CACHE_DIR, cacheKey);
+
+    await fs.writeFile(cachePath, JSON.stringify(data));
+    console.log(`Cached: ${cacheKey}`);
+
+    return data;
+  },
+};
+
+// Load from cache instead of network
+async function loadFromCache(from: number, to: number) {
+  const cacheKey = `blocks-${from}-${to}.json`;
+  const cachePath = path.join(CACHE_DIR, cacheKey);
+
+  try {
+    const data = await fs.readFile(cachePath, "utf-8");
+    return JSON.parse(data);
+  } catch {
+    return null;
+  }
+}
+
+// Use cache in development
+const USE_CACHE = process.env.NODE_ENV === "development";
+
+if (USE_CACHE) {
+  const cached = await loadFromCache(20_000_000, 20_000_100);
+  if (cached) {
+    console.log("Using cached data");
+    await target.write(cached);
+    process.exit(0);
+  }
+}
+
+// Otherwise fetch from network
+const pipeline = source.pipe(cachingTransformer);
+```
+
+<Warning>
+  Cache files can be large. Only cache data for development, not production.
+</Warning>
+
+## Custom Metrics and Profiling
+
+Track performance metrics in your pipelines:
+
+```typescript
+interface Metrics {
+  blocksProcessed: number;
+  eventsDecoded: number;
+  rowsInserted: number;
+  processingTime: number;
+  startTime: number;
+}
+
+const metrics: Metrics = {
+  blocksProcessed: 0,
+  eventsDecoded: 0,
+  rowsInserted: 0,
+  processingTime: 0,
+  startTime: Date.now(),
+};
+
+// Profiling transformer
+const profilingTransformer = {
+  transform: async (data) => {
+    const start = Date.now();
+
+    // Track metrics
+    metrics.blocksProcessed += data.blocks.length;
+    metrics.eventsDecoded += data.transfer?.length || 0;
+
+    const processed = await processData(data);
+
+    metrics.processingTime += Date.now() - start;
+
+    return processed;
+  },
+};
+
+// Profiling target
+const profilingTarget = createTarget({
+  write: async (data) => {
+    const start = Date.now();
+
+    await database.insert(data);
+
+    metrics.rowsInserted += data.length;
+
+    // Log metrics every 100 blocks
+    if (metrics.blocksProcessed % 100 === 0) {
+      const elapsed = (Date.now() - metrics.startTime) / 1000;
+      const bps = metrics.blocksProcessed / elapsed;
+
+      console.log({
+        blocks: metrics.blocksProcessed,
+        events: metrics.eventsDecoded,
+        rows: metrics.rowsInserted,
+        blocksPerSec: bps.toFixed(2),
+        avgProcessingTime:
+          (metrics.processingTime / metrics.blocksProcessed).toFixed(2) + "ms",
+      });
+    }
+  },
+});
+```
+
+## Multi-Chain Indexing
+
+Index multiple blockchains in parallel:
+
+```typescript
+const ethereumSource = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: { range: { from: 20_000_000 } },
+});
+
+const polygonSource = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/polygon-mainnet",
+  chain: "polygon-mainnet",
+  query: { range: { from: 50_000_000 } },
+});
+
+// Run pipelines in parallel
+async function main() {
+  await Promise.all([
+    indexEthereum(ethereumSource),
+    indexPolygon(polygonSource),
+  ]);
+}
+
+async function indexEthereum(source) {
+  const pipeline = source.pipe(ethereumTransformer);
+  for await (const batch of pipeline.read()) {
+    await ethereumTarget.write(batch);
+  }
+}
+
+async function indexPolygon(source) {
+  const pipeline = source.pipe(polygonTransformer);
+  for await (const batch of pipeline.read()) {
+    await polygonTarget.write(batch);
+  }
+}
+
+main().catch(console.error);
+```
+
+## Graceful Shutdown
+
+Handle shutdown signals gracefully:
+
+```typescript
+let isShuttingDown = false;
+
+process.on("SIGINT", () => {
+  console.log("Received SIGINT, shutting down gracefully...");
+  isShuttingDown = true;
+});
+
+process.on("SIGTERM", () => {
+  console.log("Received SIGTERM, shutting down gracefully...");
+  isShuttingDown = true;
+});
+
+const target = createTarget({
+  write: async (data) => {
+    if (isShuttingDown) {
+      console.log("Skipping batch due to shutdown");
+      return;
+    }
+
+    await database.insert(data);
+
+    // Save progress
+    await saveCursor(getLastBlock(data));
+  },
+});
+
+async function main() {
+  try {
+    for await (const batch of pipeline.read()) {
+      if (isShuttingDown) {
+        console.log("Stopping pipeline");
+        break;
+      }
+
+      await target.write(batch);
+    }
+  } finally {
+    // Cleanup
+    await database.close();
+    console.log("Shutdown complete");
+  }
+}
+
+main().catch(console.error);
+```
+
+## Error Handling and Retries
+
+Implement retry logic for transient failures:
+
+```typescript
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries = 3,
+  delay = 1000
+): Promise<T> {
+  let lastError;
+
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      lastError = e;
+      console.log(`Attempt ${i + 1} failed, retrying in ${delay}ms...`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      delay *= 2; // Exponential backoff
+    }
+  }
+
+  throw lastError;
+}
+
+const resilientTarget = createTarget({
+  write: async (data) => {
+    await withRetry(
+      async () => {
+        await database.insert(data);
+      },
+      5,
+      2000
+    );
+  },
+});
+```
+
+## Incremental Aggregations
+
+Maintain running aggregations efficiently:
+
+```typescript
+// Track aggregations in memory
+const aggregations = new Map<
+  string,
+  {
+    transferCount: number;
+    totalVolume: bigint;
+  }
+>();
+
+const aggregatingTransformer = {
+  transform: async (data) => {
+    for (const transfer of data.transfer) {
+      const address = transfer.event.from;
+      const current = aggregations.get(address) || {
+        transferCount: 0,
+        totalVolume: 0n,
+      };
+
+      aggregations.set(address, {
+        transferCount: current.transferCount + 1,
+        totalVolume: current.totalVolume + transfer.event.value,
+      });
+    }
+
+    return data;
+  },
+};
+
+// Periodically flush aggregations
+let blockCounter = 0;
+
+const flushingTarget = createTarget({
+  write: async (data) => {
+    // Write raw data
+    await rawDataTarget.write(data);
+
+    // Flush aggregations every 1000 blocks
+    blockCounter += data.blocks.length;
+    if (blockCounter >= 1000) {
+      await flushAggregations();
+      blockCounter = 0;
+    }
+  },
+});
+
+async function flushAggregations() {
+  const rows = Array.from(aggregations.entries()).map(([address, stats]) => ({
+    address,
+    transfer_count: stats.transferCount,
+    total_volume: stats.totalVolume.toString(),
+  }));
+
+  await database.upsertAggregations(rows);
+
+  // Clear memory
+  aggregations.clear();
+  console.log(`Flushed ${rows.length} aggregations`);
+}
+```
+
+## Performance Optimization
+
+### Parallel Processing
+
+Process multiple batches in parallel:
+
+```typescript
+const PARALLEL_BATCHES = 3;
+const batches = [];
+
+for await (const batch of pipeline.read()) {
+  batches.push(batch);
+
+  if (batches.length >= PARALLEL_BATCHES) {
+    await Promise.all(batches.map((b) => target.write(b)));
+    batches.length = 0;
+  }
+}
+
+// Process remaining batches
+if (batches.length > 0) {
+  await Promise.all(batches.map((b) => target.write(b)));
+}
+```
+
+<Warning>
+  Be careful with parallel processing and cursor management. Ensure batches are
+  processed in order for correct progress tracking.
+</Warning>
+
+### Field Selection Optimization
+
+Only request fields you need:
+
+```typescript
+const optimizedSource = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: { from: 20_000_000 },
+    logs: [{ address: [CONTRACT] }],
+    fields: {
+      log: {
+        transactionHash: true,
+        data: true,
+        topics: true,
+        // Don't request unnecessary fields
+      },
+      block: {
+        number: true,
+        timestamp: true,
+        // Only what you need
+      },
+    },
+  },
+});
+```
+
+## Best Practices Summary
+
+<AccordionGroup>
+<Accordion title="Monitor and log metrics">
+  Track blocks per second, event counts, and processing times to identify bottlenecks.
+</Accordion>
+
+<Accordion title="Implement proper error handling">
+  Use retries for transient failures, but fail fast for permanent errors.
+</Accordion>
+
+<Accordion title="Handle shutdown gracefully">
+  Listen for SIGINT/SIGTERM and finish processing the current batch before
+  exiting.
+</Accordion>
+
+<Accordion title="Cache data in development">
+  Cache raw blockchain data locally to speed up development iteration.
+</Accordion>
+
+<Accordion title="Use batched database operations">
+  Insert/update in batches, not row-by-row, for better performance.
+</Accordion>
+
+<Accordion title="Profile and optimize">
+  Measure performance and optimize hot paths. The 80/20 rule applies: focus on the slowest 20%.
+</Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Examples" icon="code" href="/en/sdk/evm/pipes/examples">
+    See complete advanced examples
+  </Card>
+
+  <Card
+    title="API Reference"
+    icon="file-code"
+    href="/en/sdk/evm/pipes/api-reference"
+  >
+    Complete API documentation
+  </Card>
+
+  <Card
+    title="Data Persistence"
+    icon="database"
+    href="/en/sdk/evm/pipes/data-persistence"
+  >
+    Learn about database integration
+  </Card>
+
+  <Card
+    title="Transformers"
+    icon="wand-magic-sparkles"
+    href="/en/sdk/evm/pipes/transformers"
+  >
+    Master transformer patterns
+  </Card>
+</CardGroup>

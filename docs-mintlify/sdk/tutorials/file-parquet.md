@@ -2,7 +2,6 @@
 title: Index to Parquet files
 description: >-
   Storing data in files for analysis
-sidebar_position: 26
 ---
 
 # Save indexed data in Parquet files
@@ -19,9 +18,9 @@ The subject of this tutorial is the Uniswap DApp, namely the data from its pool 
 
 An article about this demo project [has been published on Medium](https://link.medium.com/7gU0BrLbDxb). The project source code can be found in the [`squid-parquet-storage` repo](https://github.com/subsquid-labs/squid-parquet-storage).
 
-:::warning
+<Warning>
 As of 2023-12-17, the `squid-parquet-storage` repo is mostly still sound, but already somewhat outdated. You can take a look at the less sophisticated, yet regularly updated example [here](https://github.com/subsquid-labs/file-store-parquet-example/).
-:::
+</Warning>
 
 [//]: # (!!!! Update all github URLs)
 [//]: # (!!!! Update all outdated benchmark figures "figure/figures out of date")
@@ -42,11 +41,11 @@ sqd init local-parquet-indexing -t evm
 
 Here, `local-parquet-indexing` is the name of the project, and can be changed to anything else. The `-t evm` option specifies that the [`evm` template](https://github.com/subsquid-labs/squid-evm-template) should be used as a starting point.
 
-:::info
+<Info>
 **Note:** The template actually has more than what we need for this project. Unnecessary packages have been removed in the tutorial repository. You can grab [`package.json`](https://github.com/subsquid-labs/squid-parquet-storage/blob/main/package.json) from there to do the same.
 
 Files-wise, `docker-compose.yml`, `schema.graphql` and `squid.yaml` were removed. [`commands.json`](/squid-cli/commands-json), the list of local `sqd` scripts, has been significantly shortened ([here is the updated version](https://github.com/subsquid-labs/squid-parquet-storage/blob/main/commands.json)).
-:::
+</Info>
 
 Finally, make sure to install the dependencies:
 
@@ -66,13 +65,13 @@ For this project, you will need:
 * The address of any deployed Maker DAO's Multicall smart contract. Luckily, [Uniswap have their own](https://etherscan.io/address/0x5ba1e12693dc8f9c48aad8770482f4739beed696)
 * The ABI of an ERC-20 token (can be compiled from [OpenZeppelin repository](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol), or downloaded, for example from [here](https://gist.github.com/veox/8800debbf56e24718f9f483e1e40c35c), or from the [repository of this article's project](https://github.com/subsquid-labs/squid-parquet-storage/tree/main/abi)). Save it as `abi/ERC20.json`.
 
-:::info
+<Info>
 **Note:** The project also uses [`ERC20NameBytes`](https://github.com/subsquid-labs/squid-parquet-storage/blob/main/abi/ERC20NameBytes.json) and [`ERC20SymbolBytes`](https://github.com/subsquid-labs/squid-parquet-storage/blob/main/abi/ERC20SymbolBytes.json) ABIs, which OpenZeppelin defines in [`IERC20Metadata.sol`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/extensions/IERC20Metadata.sol) and includes in [`ERC20.sol`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol). Save these files to `./abi`.
-:::
+</Info>
 
-:::info
+<Info>
 **Note:** you can find a pool and its ABI by inspecting the internal calls of one of the [Create Pool transactions of the Factory contract](https://etherscan.io/tx/0xd9e0fc1d737479e940d9807a535c75a31a2c8458792e2c66e2cc33f19f88e546#internal).
-:::
+</Info>
 
 Generate TypeScript code for them:
 
@@ -104,7 +103,7 @@ It's advisable to define these tables in a separate file. The original project h
 Here's a snippet:
 
 ```typescript
-import {Table, Column, Compression, Types} from '@subsquid/file-store-parquet'
+import \{Table, Column, Compression, Types\} from '@subsquid/file-store-parquet'
 
 export const Tokens = new Table(
     'tokens.parquet',
@@ -131,7 +130,7 @@ Here are the contents of this file in full:
 
 ```typescript
 import assert from 'assert'
-import {Database, LocalDest, Store} from '@subsquid/file-store'
+import \{Database, LocalDest, Store\} from '@subsquid/file-store'
 import {
     FactoryPairCreated,
     PoolBurn,
@@ -144,8 +143,8 @@ import {
     PositionTransfer,
     Tokens,
 } from './tables'
-import {PoolsRegistry} from './utils'
-import {S3Dest} from '@subsquid/file-store-s3'
+import \{PoolsRegistry\} from './utils'
+import \{S3Dest\} from '@subsquid/file-store-s3'
 
 type Metadata = {
     height: number
@@ -169,7 +168,7 @@ export const db = new Database({
     hooks: {
         async onConnect(dest) {
             if (await dest.exists('status.json')) {
-                let {height, pools}: Metadata = await dest.readFile('status.json').then(JSON.parse)
+                let \{height, pools\}: Metadata = await dest.readFile('status.json').then(JSON.parse)
                 assert(Number.isSafeInteger(height))
 
                 let registry = PoolsRegistry.getRegistry()
@@ -178,7 +177,7 @@ export const db = new Database({
                 }
 
                 return height
-            } else {
+            \} else \{
                 return -1
             }
         },
@@ -196,27 +195,27 @@ export const db = new Database({
 export type Store_ = typeof db extends Database<infer R, any> ? Store<R> : never
 ```
 
-:::info
+<Info>
 **Note:** the `chunkSizeMb` option defines the size (in MB) of a parquet file before it's saved on disk, and a new one is created.
-:::
+</Info>
 
 ### Data indexing
 
 The orchestration of the indexing logic is defined in the file named `src/processor.ts`:
 
 ```typescript
-import {EvmBatchProcessor} from '@subsquid/evm-processor'
+import \{EvmBatchProcessor\} from '@subsquid/evm-processor'
 import * as positionsAbi from './abi/NonfungiblePositionManager'
 import * as factoryAbi from './abi/factory'
 import * as poolAbi from './abi/pool'
-import {db} from './db'
-import {processFactory} from './mappings/factory'
-import {processPools} from './mappings/pools'
-import {FACTORY_ADDRESS, POSITIONS_ADDRESS} from './utils/constants'
-import {processPositions} from './mappings/positions'
+import \{db\} from './db'
+import \{processFactory\} from './mappings/factory'
+import \{processPools\} from './mappings/pools'
+import \{FACTORY_ADDRESS, POSITIONS_ADDRESS\} from './utils/constants'
+import \{processPositions\} from './mappings/positions'
 
 let processor = new EvmBatchProcessor()
-    .setBlockRange({from: 12369621})
+    .setBlockRange(\{from: 12369621\})
     .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')
     .setRpcEndpoint({
         url: process.env.ETH_CHAIN_NODE,
@@ -289,13 +288,13 @@ node -r dotenv/config lib/main.js
 
 The indexer should be able to catch up with the Ethereum blockchain, and **reach the chain's head in a very short time**. 
 
-:::info
+<Info>
 Bear in mind that this may vary a lot, depending on the Ethereum node used and on your hardware, as well as the connection, or physical distance from the Ethereum node. It took ~45 minutes while testing for this article. A test on a connection with a much higher latency and the same configuration finished indexing in 5 hours (figures out of date).
-:::
+</Info>
 
 The process will generate a series of sub-folders in the `data` folder, labelled after the block ranges where the data is coming from, and in each one of these folders there should be one `*.parquet` file for each of the *tables* we defined.
 
-![multiple folders containing CSV files](</img/parquet-files.png>)
+\{/* [\1](\2)) */\}
 
 ### Data analysis with Python
 
@@ -307,9 +306,9 @@ The purpose of this tutorial was to demonstrate how to use the SQD indexing fram
 
 The project described here was able to index the entirety of Uniswap Pool events, across all the pools created by the Factory contract, as well as the Positions held by investors, in less than an hour (~45 minutes) (figure out of date).
 
-:::info
+<Info>
 **Note:** Indexing time may vary, depending on factors, such as the Ethereum node used, on the hardware, and quality of the connection.
-:::
+</Info>
 
 The simple Python script in the project's repository shows how to read multiple Parquet files, and perform some data analysis with Pandas.
 

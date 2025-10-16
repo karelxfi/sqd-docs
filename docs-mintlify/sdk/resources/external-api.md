@@ -1,5 +1,4 @@
 ---
-sidebar_position: 40
 description: Use external APIs and IPFS from a squid
 ---
 
@@ -32,7 +31,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
 async function getETHPriceByDate(timestamp: number): Promise<bigint> {
   const formatted = moment(new Date(timestamp).toISOString()).format("DD-MM-yyyy")
   const res = await axios.get(
-    `https://api.coingecko.com/api/v3/coins/ethereum/history?date=${formatted}&localization=false`
+    `https://api.coingecko.com/api/v3/coins/ethereum/history?date=$\{formatted\}&localization=false`
   )
   return res.data.market_data.current_price.usd
 }
@@ -57,7 +56,7 @@ export const api = Axios.create({
   },
   withCredentials: false,
   timeout: 5000,
-  httpsAgent: new https.Agent({ keepAlive: true }),
+  httpsAgent: new https.Agent(\{ keepAlive: true \}),
 })
 
 export const fetchMetadata = async (
@@ -65,14 +64,14 @@ export const fetchMetadata = async (
   cid: string
 ): Promise<any | null> => {
   try {
-    const { status, data } = await api.get(`${BASE_URL}/${cid}`)
-    ctx.log.info(`[IPFS] ${status} CID: ${cid}`)
+    const \{ status, data \} = await api.get(`$\{BASE_URL\}/$\{cid\}`)
+    ctx.log.info(`[IPFS] $\{status\} CID: $\{cid\}`)
     if (status < 400) {
       return data
     }
-  } catch (e) {
+  \} catch (e) \{
     ctx.log.warn(
-      `[IPFS] ERROR CID: ${cid} TRY ${(e as Error).message}`
+      `[IPFS] ERROR CID: $\{cid\} TRY $\{(e as Error).message\}`
     )
   }
   return null

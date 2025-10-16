@@ -1,12 +1,11 @@
 ---
-sidebar_position: 60
 description: >-
   Fine-tuning data requests with setFields()
 ---
 
 # Field selection
 
-#### `setFields(options)` {#set-fields}
+#### `setFields(options)` \{#set-fields\}
 
 Set the fields to be retrieved for data items of each supported type. The `options` object has the following structure:
 ```ts
@@ -78,9 +77,9 @@ Disabling unused fields will improve sync performance, as the disabled fields wi
 
 ## Data item types and field selectors
 
-:::tip
+<Tip>
 Most IDEs support smart suggestions to show the possible field selectors. For VS Code, press `Ctrl+Space`.
-:::
+</Tip>
 
 Here we describe the data item types as functions of the field selectors. Unless otherwise mentioned, each data item type field maps to the eponymous field of its corresponding field selector. Item fields are divided into three categories:
 * Fields that are added independently of the `setFields()` call. These are either fixed or depend on the related data retrieval flags (e.g. `transaction` for logs).
@@ -298,10 +297,10 @@ The `l1BlockNumber` field can only be requested for networks from [this list](/s
 ## A complete example
 
 ```ts
-import {EvmBatchProcessor} from '@subsquid/evm-processor'
+import \{EvmBatchProcessor\} from '@subsquid/evm-processor'
 import * as gravatarAbi from './abi/gravatar'
 import * as erc721abi from './abi/erc721'
-import {TypeormDatabase} from '@subsquid/typeorm-store'
+import \{TypeormDatabase\} from '@subsquid/typeorm-store'
 
 const gravatarRegistryContract = '0x2e645469f354bb4f5c8a05b3b30a929361cf77ec'
 const gravatarTokenContract = '0xac5c7493036de60e63eb81c5e9a440b42f47ebf5'
@@ -310,7 +309,7 @@ const processor = new EvmBatchProcessor()
   .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')
   .setRpcEndpoint('<my_eth_rpc_url>')
   .setFinalityConfirmation(75)
-  .setBlockRange({ from: 6_000_000 })
+  .setBlockRange(\{ from: 6_000_000 \})
   .addLog({
     address: [
       gravatarRegistryContract
@@ -324,7 +323,7 @@ const processor = new EvmBatchProcessor()
     to: [
       gravatarTokenContract
     ],
-    range: { from: 15_500_000 },
+    range: \{ from: 15_500_000 \},
     sighash: [
       erc721abi.functions.setApprovalForAll.sighash
     ]

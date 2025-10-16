@@ -1,6 +1,7 @@
 ---
 title: "Fuel Development"
 description: "Build Fuel indexers with Squid SDK"
+
 ---
 
 # Fuel Development
@@ -18,7 +19,7 @@ Index Fuel blockchain data including transactions, receipts, and smart contract 
   
   <Step title="Configure Processor">
     ```typescript
-    import { FuelBatchProcessor } from '@subsquid/fuel-processor'
+    import \{ FuelBatchProcessor \} from '@subsquid/fuel-processor'
     
     const processor = new FuelBatchProcessor()
       .setGateway('https://v2.archive.subsquid.io/network/fuel-mainnet')
@@ -51,8 +52,8 @@ Index Fuel blockchain data including transactions, receipts, and smart contract 
 ## Basic Processor Setup
 
 ```typescript
-import { FuelBatchProcessor } from '@subsquid/fuel-processor'
-import { TypeormDatabase } from '@subsquid/typeorm-store'
+import \{ FuelBatchProcessor \} from '@subsquid/fuel-processor'
+import \{ TypeormDatabase \} from '@subsquid/typeorm-store'
 
 const processor = new FuelBatchProcessor()
   .setGateway('https://v2.archive.subsquid.io/network/fuel-mainnet')
@@ -84,7 +85,7 @@ processor.run(db, async (ctx) => {
   for (let block of ctx.blocks) {
     for (let receipt of block.receipts) {
       // Process Fuel receipts
-      console.log(`Receipt type: ${receipt.receiptType}`)
+console.log(`Receipt type: "$\{receipt.receiptType\}`)"
     }
   }
 })
@@ -240,6 +241,6 @@ processor.addReceipt({
 
 ## Next Steps
 
-- Explore [Fuel Network API](/en/sdk/fuel/network-api)
+- Explore [Fuel Network API](en/sdk/fuel/network-api)
 - Learn about [Sway programming language](https://docs.fuel.network/docs/sway/)
 - Check [Fuel examples](https://github.com/subsquid-labs/fuel-examples)

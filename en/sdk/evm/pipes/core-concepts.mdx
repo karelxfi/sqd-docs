@@ -1,0 +1,375 @@
+---
+title: "Core Concepts"
+description: "Understand the fundamental architecture and concepts of Pipes SDK"
+---
+
+# Core Concepts
+
+Pipes SDK is built around a simple, composable architecture that makes it easy to build blockchain data pipelines. This guide explains the core concepts you need to understand to work effectively with Pipes SDK.
+
+## Pipeline Architecture
+
+At its core, a Pipes SDK pipeline consists of three types of components:
+
+```
+        ┌─────────┐      ┌──────────────┐      ┌────────┐
+        │ Source  │ ───> │ Transformer  │ ───> │ Target │
+        └─────────┘      └──────────────┘      └────────┘
+```
+
+### The Data Flow
+
+1. **Source** fetches raw blockchain data from the SQD Network
+2. **Transformer** processes and enriches the data (optional)
+3. **Target** persists or outputs the processed data
+
+This simple pattern can be composed and extended to create complex data pipelines while keeping each component focused and reusable.
+
+## Sources
+
+Sources are responsible for fetching blockchain data from the SQD Network.
+
+### Creating a Source
+
+```typescript
+import { createEvmSource } from "@sqd-pipes/evm-processor";
+
+const source = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: { from: 20_000_000, to: 20_100_000 },
+    logs: [
+      {
+        address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+        topic0: [
+          "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+        ],
+      },
+    ],
+  },
+});
+```
+
+### Key Features
+
+- **Gateway Connection**: Connects to SQD Network for fast historical data access
+- **Query Definition**: Specifies what blockchain data to fetch
+- **Block Ranges**: Controls which blocks to process
+- **Data Filtering**: Filters by addresses, topics, and other criteria
+
+### Reading from Sources
+
+Sources implement an async iterator that yields data in batches:
+
+```typescript
+for await (const batch of source.read()) {
+  // Process batch
+  console.log(
+    `Processing blocks ${batch.blocks[0].header.number} - ${
+      batch.blocks[batch.blocks.length - 1].header.number
+    }`
+  );
+}
+```
+
+## Transformers
+
+Transformers process and enrich data as it flows through the pipeline.
+
+### Basic Transformer
+
+```typescript
+const transformer = {
+  transform: async (data) => {
+    // Process the data
+    return data.blocks.map((block) => ({
+      blockNumber: block.header.number,
+      logCount: block.logs.length,
+    }));
+  },
+};
+```
+
+### Piping Transformers
+
+Connect transformers to sources using the `.pipe()` method:
+
+```typescript
+const pipeline = source.pipe(transformer);
+
+for await (const processedData of pipeline.read()) {
+  console.log(processedData);
+}
+```
+
+### Query from Transformer
+
+Transformers can dynamically add queries to the source:
+
+```typescript
+const transformer = {
+  transform: async (data) => {
+    // Process data
+    return processedData;
+  },
+  query: (builder) => {
+    // Add queries to the source
+    builder.addLog({
+      address: ["0x..."],
+      topic0: ["0x..."],
+    });
+  },
+};
+```
+
+<Tip>
+  The query callback allows transformers to be self-contained modules that
+  request their own data, making them highly reusable.
+</Tip>
+
+### Composite Transformers
+
+Combine multiple transformers to process different data streams:
+
+```typescript
+const pipeline = source.pipeComposite({
+  usdcTransfers: usdcTransformer,
+  swapEvents: swapTransformer,
+});
+
+for await (const data of pipeline.read()) {
+  console.log(data.usdcTransfers); // USDC transfer data
+  console.log(data.swapEvents); // Swap event data
+}
+```
+
+## Targets
+
+Targets define what happens to the processed data.
+
+### Basic Target
+
+```typescript
+import { createTarget } from "@sqd-pipes/pipes";
+
+const target = createTarget({
+  write: async (data) => {
+    // Handle the data
+    console.log(JSON.stringify(data, null, 2));
+  },
+});
+```
+
+### Running the Pipeline
+
+Connect everything together:
+
+```typescript
+const pipeline = source.pipe(transformer);
+
+for await (const batch of pipeline.read()) {
+  await target.write(batch);
+}
+```
+
+### Targets with Cursors
+
+Targets can save progress and resume from where they left off:
+
+```typescript
+let lastBlock = 0;
+
+const target = createTarget({
+  write: async (data) => {
+    // Process and save data
+    await saveToDatabase(data);
+
+    // Update cursor
+    lastBlock = data.blocks[data.blocks.length - 1].header.number;
+  },
+});
+
+// Resume from last processed block
+for await (const batch of source.read({ number: lastBlock })) {
+  await target.write(batch);
+}
+```
+
+## Queries
+
+Queries specify what blockchain data to fetch.
+
+### Query Structure
+
+```typescript
+{
+  range: {
+    from: 20_000_000,  // Starting block
+    to: 20_100_000     // Ending block (optional)
+  },
+  logs: [{
+    address: ['0x...'],     // Contract addresses
+    topic0: ['0x...'],      // Event signatures
+    topic1: ['0x...']       // Additional topics (optional)
+  }],
+  transactions: [{
+    from: ['0x...'],        // Transaction sender
+    to: ['0x...']           // Transaction recipient
+  }]
+}
+```
+
+### Data Types
+
+You can query four types of blockchain data:
+
+- **logs** - Event logs emitted by smart contracts
+- **transactions** - Transaction data
+- **traces** - Internal transaction traces
+- **stateDiffs** - State changes
+
+## Cursors
+
+Cursors allow pipelines to resume from a specific position.
+
+### Cursor Structure
+
+```typescript
+interface Cursor {
+  number: number; // Block number
+}
+```
+
+### Using Cursors
+
+```typescript
+// Read from a specific block
+for await (const batch of source.read({ number: 20_000_500 })) {
+  await target.write(batch);
+}
+```
+
+<Info>
+  When a cursor is provided, the source starts fetching from the block
+  immediately after the cursor position.
+</Info>
+
+## Fork Handling
+
+Blockchains can reorganize, causing previously indexed blocks to become invalid. Pipes SDK handles this with fork exceptions.
+
+### Implementing Fork Handling
+
+```typescript
+const target = createTarget({
+  write: async (data) => {
+    await database.insert(data);
+  },
+  fork: async (cursor) => {
+    // Rollback to the fork point
+    await database.deleteBlocksAfter(cursor.number);
+    console.log(`Rolled back to block ${cursor.number}`);
+  },
+});
+```
+
+<Warning>
+  Always implement fork handling in production pipelines to maintain data
+  consistency during blockchain reorganizations.
+</Warning>
+
+## Pipeline Composition
+
+Pipes SDK encourages building modular, reusable components.
+
+### Self-Contained Modules
+
+Create transformers that bundle data selection and processing:
+
+```typescript
+// USDC transformer that requests its own data
+export const usdcTransformer = {
+  query: (builder) => {
+    builder.addLog({
+      address: [USDC_ADDRESS],
+      topic0: [TRANSFER_TOPIC],
+    });
+  },
+  transform: async (data) => {
+    return decodeUsdcTransfers(data);
+  },
+};
+
+// Use it in any pipeline
+const pipeline = source.pipe(usdcTransformer);
+```
+
+### Combining Multiple Modules
+
+```typescript
+const pipeline = source.pipeComposite({
+  usdc: usdcTransformer,
+  weth: wethTransformer,
+  swaps: swapTransformer,
+});
+```
+
+## Best Practices
+
+<AccordionGroup>
+<Accordion title="Keep transformers focused">
+  Each transformer should do one thing well. Use composite transformers to combine multiple focused transformers rather than creating complex, monolithic transformers.
+</Accordion>
+
+<Accordion title="Use query callbacks for self-contained modules">
+  When a transformer needs specific data, use the `query` callback to request
+  it. This makes the transformer reusable and self-documenting.
+</Accordion>
+
+<Accordion title="Implement cursor management">
+  Always save progress in your targets so pipelines can resume from the last
+  processed block after restarts.
+</Accordion>
+
+<Accordion title="Handle forks in production">
+  Implement the `fork` callback in your targets to handle blockchain
+  reorganizations gracefully.
+</Accordion>
+
+<Accordion title="Batch operations">
+  Process data in batches rather than individual items for better performance.
+</Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Data Sources"
+    icon="database"
+    href="/en/sdk/evm/pipes/data-sources"
+  >
+    Learn how to configure data sources
+  </Card>
+
+{" "}
+
+<Card
+  title="Transformers"
+  icon="wand-magic-sparkles"
+  href="/en/sdk/evm/pipes/transformers"
+>
+  Explore transformer patterns
+</Card>
+
+{" "}
+
+<Card title="Targets" icon="bullseye" href="/en/sdk/evm/pipes/targets">
+  Understand target implementations
+</Card>
+
+  <Card title="Examples" icon="code" href="/en/sdk/evm/pipes/examples">
+    See complete pipeline examples
+  </Card>
+</CardGroup>

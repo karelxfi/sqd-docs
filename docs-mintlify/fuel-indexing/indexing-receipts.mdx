@@ -2,7 +2,6 @@
 title: Indexing Fuel Network data
 description: >-
   Indexing Fuel Network data with Squid SDK.
-sidebar_position: 10
 ---
 
 # Indexing transaction receipts
@@ -55,7 +54,7 @@ With a data source it becomes possible to retrieve filtered blockchain data from
 
 The other part of the squid processor (the ingester process of the indexer) is the callback function used to process batches of the filtered data, the [batch handler](/sdk/reference/processors/architecture/#processorrun). In Fuel Squid SDK it is typically defined within a `run()` call, like this:
 ```typescript
-import {run} from '@subsquid/batch-processor'
+import \{run\} from '@subsquid/batch-processor'
 
 run(dataSource, database, async ctx => {
   // data transformation and persistence code here
@@ -84,7 +83,7 @@ run(dataSource, database, async ctx => {
       if (receipt.receiptType == 'LOG_DATA' && receipt.contract != null) {
         let contract = contracts.get(receipt.contract)
         if (!contract) {
-          contract = await ctx.store.findOne(Contract, {where: {id: receipt.contract}})
+          contract = await ctx.store.findOne(Contract, \{where: \{id: receipt.contract\}\})
           if (!contract) {
             contract = new Contract({
               id: receipt.contract,

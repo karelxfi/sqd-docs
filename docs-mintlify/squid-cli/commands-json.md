@@ -1,5 +1,4 @@
 ---
-sidebar_position: 20
 title: commands.json
 description: Dynamic sqd commands
 ---
@@ -27,7 +26,7 @@ The `sqd` tool automatically discovers and loads any extra commands defined in t
       "command": [
         "squid-evm-typegen", // node_modules/.bin is in the PATH
         "../src/abi",
-        {"glob": "*.json"} // cross-platform glob expansion
+        \{"glob": "*.json"\} // cross-platform glob expansion
       ],
       "env": { // additional environment variables
         "DEBUG": "*"

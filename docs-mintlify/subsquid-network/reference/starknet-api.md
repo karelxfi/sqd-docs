@@ -1,14 +1,13 @@
 ---
-sidebar_position: 50
 title: Starknet API
 description: Access the Starknet data
 ---
 
 # Starknet SQD Network API
 
-:::warning
+<Warning>
 The Starknet API of SQD Network is currently in beta. Breaking changes may be introduced in the future releases.
-:::
+</Warning>
 
 SQD Network API distributes the requests over a ([potentially decentralized](/subsquid-network/faq)) network of _workers_. The main gateway URL points at a _router_ that provides URLs of workers that do the heavy lifting. Each worker has its own range of blocks on each dataset it serves.
 
@@ -18,9 +17,9 @@ Suppose you want to retrieve an output of some [query](#worker-api) on a block r
 
 2. Save the value of `firstBlock` to some variable, say `currentBlock`.
 
-3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /${currentBlock}/worker`.
+3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /$\{currentBlock\}/worker`.
 
-4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `${currentBlock}`.
+4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `$\{currentBlock\}`.
 
 5. Parse the retrieved data to get a batch of query data **plus** the height of the last block available from the current worker. Take the `header.number` field of the last element of the retrieved JSON array - it is the height you want. Even if your query returns no data, you'll still get the block data for the last block in the range, so this procedure is safe.
 
@@ -33,9 +32,9 @@ The main URL of the Starknet gateway is
 https://v2.archive.subsquid.io/network/starknet-mainnet
 ```
 
-:::warning
+<Warning>
 Unlike in [the explorer](https://starkscan.co), addresses in this API do not have leading zeros (both in valid requests and in the returned data). For example, explorer's `0x00ce6c...0552` becomes `0xce6c...0552`. This is the format that Starknet RPC nodes use.
-:::
+</Warning>
 
 Implementation examples:
 
@@ -73,8 +72,8 @@ Suppose we want data on all txs sent by `Layerswap`/`0x19252b1deef483477c4d30cfc
        "type": "starknet",
        "fromBlock":600000,
        "toBlock":632494,
-       "fields":{"transaction":{"transactionHash":true}},
-       "transactions":[{"senderAddress":["0x19252b1deef483477c4d30cfcc3e5ed9c82fafea44669c182a45a01b4fdb97a"]}]
+       "fields":\{"transaction":\{"transactionHash":true\}\},
+       "transactions":[\{"senderAddress":["0x19252b1deef483477c4d30cfcc3e5ed9c82fafea44669c182a45a01b4fdb97a"]\}]
    }' | jq
    ```
 
@@ -141,12 +140,12 @@ def dump(
     assert 0 <= first_block <= last_block
     query = dict(query)  # copy query to mess with it later
 
-    dataset_height = int(get_text(f'{gateway_url}/height'))
+    dataset_height = int(get_text(f'\{gateway_url\}/height'))
     next_block = first_block
     last_block = min(last_block, dataset_height)
 
     while next_block <= last_block:
-        worker_url = get_text(f'{gateway_url}/{next_block}/worker')
+        worker_url = get_text(f'\{gateway_url\}/\{next_block\}/worker')
 
         query['fromBlock'] = next_block
         query['toBlock'] = last_block
@@ -177,7 +176,7 @@ Full code [here](https://gist.github.com/eldargab/2e007a293ac9f82031d023f1af581a
 
 <summary><code>GET</code> <code><b>$&#123;firstBlock&#125;/worker</b></code> <code>(get a suitable worker URL)</code></summary>
 
-The returned worker is capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `${firstBlock}`.
+The returned worker is capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `$\{firstBlock\}`.
 
 **Example response:** `https://rb06.sqd-archive.net/worker/query/czM6Ly9zdGFya25ldC1tYWlubmV0`.
 
@@ -401,7 +400,7 @@ A selector of fields for the returned data items. Its structure is as follows:
   sequencerAddress
 }
 ```
-A valid field selector for blocks is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"status": true, "timestamp": true}`.
+A valid field selector for blocks is a JSON that has a subset of these fields as keys and `true` as values, e.g. `\{"status": true, "timestamp": true\}`.
 
 ### Transaction fields
 
@@ -423,7 +422,7 @@ A valid field selector for blocks is a JSON that has a subset of these fields as
   constructorCalldata
 }
 ```
-A valid field selector for transactions is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"transactionHash": true, "type": true, "calldata": true}`.
+A valid field selector for transactions is a JSON that has a subset of these fields as keys and `true` as values, e.g. `\{"transactionHash": true, "type": true, "calldata": true\}`.
 
 ### Event fields
 
@@ -434,4 +433,4 @@ A valid field selector for transactions is a JSON that has a subset of these fie
   data
 }
 ```
-A valid field selector for logs is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"fromAddress": true, "data": true}`.
+A valid field selector for logs is a JSON that has a subset of these fields as keys and `true` as values, e.g. `\{"fromAddress": true, "data": true\}`.

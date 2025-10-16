@@ -1,5 +1,4 @@
 ---
-sidebar_position: 20
 title: Indexer from scratch
 description: Learn to compose SDK packages
 ---
@@ -91,10 +90,10 @@ To make the indexer, follow these steps:
        db:
          image: postgres:15
          environment:
-           POSTGRES_DB: "${DB_NAME}"
+           POSTGRES_DB: "$\{DB_NAME\}"
            POSTGRES_PASSWORD: postgres
          ports:
-           - "${DB_PORT}:5432"
+           - "$\{DB_PORT\}:5432"
      ```
    * start the database container
      ```bash
@@ -121,7 +120,7 @@ To make the indexer, follow these steps:
      ```
 
    - Find the ABI at the ["Contract" tab of the contract page on Etherscan](https://etherscan.io/address/0xdAC17F958D2ee523a2206206994597C13D831ec7#code). Scroll down a bit:
-     ![Getting ABI from Etherscan](./squid-from-scratch-abi-fetching.png)
+\{/* [\1](\2) */\}
 
    - Copy the ABI, then paste to a new file at `./abi/usdt.json`.
 
@@ -135,10 +134,10 @@ To make the indexer, follow these steps:
 8. Tie all the generated code together with a `src/main.ts` executable with the following code blocks:
    * Imports
      ```ts
-     import { EvmBatchProcessor } from '@subsquid/evm-processor'
-     import { TypeormDatabase } from '@subsquid/typeorm-store'
+     import \{ EvmBatchProcessor \} from '@subsquid/evm-processor'
+     import \{ TypeormDatabase \} from '@subsquid/typeorm-store'
      import * as usdtAbi from './abi/usdt'
-     import { Transfer } from './model'
+     import \{ Transfer \} from './model'
      ```
    * [`EvmBatchProcessor`](/sdk/reference/processors/evm-batch) object definition
      ```ts
@@ -164,7 +163,7 @@ To make the indexer, follow these steps:
        const transfers: Transfer[] = []
        for (let block of ctx.blocks) {
          for (let log of block.logs) {
-           let {from, to, value} = usdtAbi.events.Transfer.decode(log)
+           let \{from, to, value\} = usdtAbi.events.Transfer.decode(log)
            transfers.push(new Transfer({
              id: log.id,
              from, to, value
@@ -199,6 +198,6 @@ The finished GraphQL API with GraphiQL is available at [localhost:4350/graphql](
 
 Final code for this mini-tutorial is available in [this repo](https://github.com/subsquid-labs/squid-from-scratch).
 
-:::tip
+<Tip>
 The commands listed here are often abbreviated as [custom `sqd` commands](/squid-cli/commands-json) in squids. If you'd like to do that too you can use the [`commands.json` file of the EVM template](https://github.com/subsquid-labs/squid-evm-template/blob/main/commands.json) as a starter.
-:::
+</Tip>

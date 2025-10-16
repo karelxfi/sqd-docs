@@ -1,5 +1,4 @@
 ---
-sidebar_position: 50
 title: DoS protection
 description: Enforce limits in the queries
 ---
@@ -164,7 +163,7 @@ query C {
     bars {
         id
         bar {
-            foos(where: { id_in ["1", "2" ]}) {
+            foos(where: \{ id_in ["1", "2" ]\}) \{
                 id
             }
             id

@@ -1,14 +1,16 @@
 ---
+title: "Field Selection"
 description: >-
   Fine-tuning data requests with setFields()
 ---
 
 # Field selection
 
-#### `setFields(options)` {#set-fields}
+#### `setFields(options)` \{#set-fields\}
 
 Set the fields to be retrieved for data items of each supported type. The `options` object has the following structure:
-```ts
+
+````typescript
 {
   log?:         // field selector for logs
   transaction?: // field selector for transactions
@@ -18,8 +20,8 @@ Set the fields to be retrieved for data items of each supported type. The `optio
 }
 ```
 
-Every field selector is a collection of boolean fields, typically (with a notable exception of [trace field selectors](#traces)) mapping one-to-one to the fields of data items within the batch context [iterables](/sdk/reference/processors/evm-batch/context-interfaces). Defining a field of a field selector of a given type and setting it to true will cause the processor to populate the corresponding field of all data items of that type. Here is a definition of a processor that requests `gas` and `value` fields for transactions:
-```ts
+Every field selector is a collection of boolean fields, typically (with a notable exception of [trace field selectors](#traces)) mapping one-to-one to the fields of data items within the batch context [iterables](sdk/reference/processors/evm-batch/context-interfaces). Defining a field of a field selector of a given type and setting it to true will cause the processor to populate the corresponding field of all data items of that type. Here is a definition of a processor that requests `gas` and `value` fields for transactions:
+```typescript
 let processor = new EvmBatchProcessor()
   .setFields({
     transaction: {
@@ -29,7 +31,7 @@ let processor = new EvmBatchProcessor()
   })
 ```
 Same fields will be available for all data items of any given type, including nested items. Suppose we used the processor defined above to subscribe to some transactions as well as some logs, and for each log we requested a parent transaction:
-```ts
+```typescript
 processor
   .addLog({
     // some log data requests
@@ -39,8 +41,8 @@ processor
     // some transaction data requests
   })
 ```
-As a result, `gas` and `value` fields would be available both within the transaction items of the `transactions` iterable of [block data](/sdk/reference/processors/evm-batch/context-interfaces) and within the transaction items that provide parent transaction information for the logs:
-```ts
+As a result, `gas` and `value` fields would be available both within the transaction items of the `transactions` iterable of [block data](sdk/reference/processors/evm-batch/context-interfaces) and within the transaction items that provide parent transaction information for the logs:
+```typescript
 processor.run(db, async ctx => {
   for (let block of ctx.blocks) {
     for (let txn of block.transactions) {
@@ -54,7 +56,7 @@ processor.run(db, async ctx => {
 ```
 
 Some data fields, like `hash` for transactions, are enabled by default but can be disabled by setting a field of a field selector to `false`. For example, this code will not compile:
-```ts
+```typescript
 let processor = new EvmBatchProcessor()
   .setFields({
     transaction: {
@@ -77,9 +79,9 @@ Disabling unused fields will improve sync performance, as the disabled fields wi
 
 ## Data item types and field selectors
 
-:::tip
+<Tip>
 Most IDEs support smart suggestions to show the possible field selectors. For VS Code, press `Ctrl+Space`.
-:::
+</Tip>
 
 Here we describe the data item types as functions of the field selectors. Unless otherwise mentioned, each data item type field maps to the eponymous field of its corresponding field selector. Item fields are divided into three categories:
 * Fields that are added independently of the `setFields()` call. These are either fixed or depend on the related data retrieval flags (e.g. `transaction` for logs).
@@ -89,7 +91,7 @@ Here we describe the data item types as functions of the field selectors. Unless
 ### Logs
 
 `Log` data items may have the following fields:
-```ts
+```typescript
 Log {
   // independent of field selectors
   id: string
@@ -112,7 +114,7 @@ See the [block headers section](#block-headers) for the definition of `BlockHead
 ### Transactions
 
 `Transaction` data items may have the following fields:
-```ts
+```typescript
 Transaction {
   // independent of field selectors
   id: string
@@ -160,12 +162,12 @@ Transaction {
 
 See the [block headers section](#block-headers) for the definition of `BlockHeader`.
 
-`l1*` fields can only be requested for networks from [this list](/subsquid-network/reference/networks/#l1-fields-availability). Requesting them for other networks may cause HTTP 500 responses.
+`l1*` fields can only be requested for networks from [this list](subsquid-network/reference/networks/#l1-fields-availability). Requesting them for other networks may cause HTTP 500 responses.
 
 ### State diffs
 
 `StateDiff` data items may have the following fields:
-```ts
+```typescript
 StateDiff {
   // independent of field selectors
   transactionIndex: number
@@ -193,7 +195,7 @@ See the [block headers section](#block-headers) for the definition of `BlockHead
 ### Traces
 
 Field selection for trace data items is somewhat more involved because its fixed fields `action` and `result` may contain different fields depending on the value of the `type` field. The retrieval of each one of these subfields is configured independently. For example, to ensure that all traces of `'call'` type contain the `.action.gas` field, the processor must be configured as follows:
-```ts
+```typescript
 processor.setFields({
   trace: {
     callGas: true
@@ -202,7 +204,7 @@ processor.setFields({
 ```
 The full `Trace` type with all its possible (sub)fields looks like this:
 
-```ts
+```typescript
 Trace {
   // independent of field selectors
   transactionIndex: number
@@ -260,7 +262,7 @@ Trace {
 ### Block headers
 
 `BlockHeader` data items may have the following fields:
-```ts
+```typescript
 BlockHeader{
   // independent of field selectors
   hash: string
@@ -292,15 +294,15 @@ BlockHeader{
 }
 ```
 
-The `l1BlockNumber` field can only be requested for networks from [this list](/subsquid-network/reference/networks/#l1-fields-availability). Requesting it for other networks may cause HTTP 500 responses.
+The `l1BlockNumber` field can only be requested for networks from [this list](subsquid-network/reference/networks/#l1-fields-availability). Requesting it for other networks may cause HTTP 500 responses.
 
 ## A complete example
 
-```ts
-import {EvmBatchProcessor} from '@subsquid/evm-processor'
+```typescript
+import \{EvmBatchProcessor\} from '@subsquid/evm-processor'
 import * as gravatarAbi from './abi/gravatar'
 import * as erc721abi from './abi/erc721'
-import {TypeormDatabase} from '@subsquid/typeorm-store'
+import \{TypeormDatabase\} from '@subsquid/typeorm-store'
 
 const gravatarRegistryContract = '0x2e645469f354bb4f5c8a05b3b30a929361cf77ec'
 const gravatarTokenContract = '0xac5c7493036de60e63eb81c5e9a440b42f47ebf5'
@@ -309,7 +311,7 @@ const processor = new EvmBatchProcessor()
   .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')
   .setRpcEndpoint('<my_eth_rpc_url>')
   .setFinalityConfirmation(75)
-  .setBlockRange({ from: 6_000_000 })
+  .setBlockRange(\{ from: 6_000_000 \})
   .addLog({
     address: [
       gravatarRegistryContract
@@ -323,7 +325,7 @@ const processor = new EvmBatchProcessor()
     to: [
       gravatarTokenContract
     ],
-    range: { from: 15_500_000 },
+    range: \{ from: 15_500_000 \},
     sighash: [
       erc721abi.functions.setApprovalForAll.sighash
     ]
@@ -346,4 +348,4 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   // but not guaranteed to not have any other data.
   ctx.log.info(ctx.blocks, "Got blocks")
 })
-```
+````

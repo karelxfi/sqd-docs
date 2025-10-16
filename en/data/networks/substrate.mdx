@@ -2,6 +2,7 @@
 title: "Substrate Networks"
 description: "Complete list of supported Substrate-based networks for data indexing"
 mode: "wide"
+
 ---
 
 <Info>
@@ -10,7 +11,7 @@ mode: "wide"
   available via the public network.
 </Info>
 
-This section lists public Substrate gateways of the [open private network](/en/subsquid-network/overview/#open-private-network). Gateway URLs should be used with the [`setGateway()`](/en/sdk/reference/processors/substrate-batch/general/#set-gateway) `SubstrateBatchProcessor` configuration method, for example:
+This section lists public Substrate gateways of the [open private network](en/subsquid-network/overview/#open-private-network). Gateway URLs should be used with the [`setGateway()`](en/sdk/reference/processors/substrate-batch/general/#set-gateway) `SubstrateBatchProcessor` configuration method, for example:
 
 ```typescript
 const processor = new SubstrateBatchProcessor()
@@ -18,7 +19,7 @@ const processor = new SubstrateBatchProcessor()
   .setRpcEndpoint("https://api.phala.network/rpc"); // required on Substrate
 ```
 
-See [Substrate API](/en/subsquid-network/reference/substrate-api) if you're looking to interface with one of these gateways directly.
+See [Substrate API](en/subsquid-network/reference/substrate-api) if you're looking to interface with one of these gateways directly.
 
 |           Network           |                          Gateway URL                          |
 | :-------------------------: | :-----------------------------------------------------------: |

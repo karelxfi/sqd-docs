@@ -1,5 +1,4 @@
 ---
-sidebar_position: 30
 description: Native logger of Squid SDK
 ---
 
@@ -61,7 +60,7 @@ sqd logs -n <name> -t <tag> -f --level=<level>
 
 <summary>For older version-based deployments...</summary>
 
-...the slot string is `v${version}`, so use
+...the slot string is `v$\{version\}`, so use
 ```bash
 sqd logs -n <name> -s v<version> -f --level=<level>
 ```

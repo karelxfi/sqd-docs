@@ -1,5 +1,4 @@
 ---
-sidebar_position: 41
 description: >-
   Query entities with Object-typed fields
 ---
@@ -36,7 +35,7 @@ Let's now look at a simple query:
 query {
     entities(orderBy: id_ASC) {
         id
-        a { a }
+        a \{ a \}
     }
 }
 ```
@@ -46,10 +45,10 @@ This will return a result such as this one (imagining this data exists in the da
 ```graphql
 {
   entities: [
-    {id: '1', a: {a: 'a'}},
-    {id: '2', a: {a: 'A'}},
-    {id: '3', a: {a: null}},
-    {id: '4', a: null}
+    \{id: '1', a: \{a: 'a'\}\},
+    \{id: '2', a: \{a: 'A'\}\},
+    \{id: '3', a: \{a: null\}\},
+    \{id: '4', a: null\}
   ]
 }
 ```

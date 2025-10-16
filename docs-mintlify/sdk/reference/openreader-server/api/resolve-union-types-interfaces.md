@@ -1,5 +1,4 @@
 ---
-sidebar_position: 70
 description: >-
   Use the __typename field to resolve types
 ---

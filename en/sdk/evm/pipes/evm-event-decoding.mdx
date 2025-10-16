@@ -1,0 +1,414 @@
+---
+title: "EVM Event Decoding"
+description: "Decode smart contract events and function calls with Pipes SDK"
+---
+
+# EVM Event Decoding
+
+Pipes SDK provides powerful utilities for decoding EVM smart contract events and function calls. This guide covers how to use `createEvmDecoder` to automatically decode blockchain data.
+
+## Quick Start
+
+The `createEvmDecoder` function creates a transformer that requests and decodes smart contract events:
+
+```typescript
+import { createEvmDecoder } from "@sqd-pipes/evm-processor";
+import * as usdcAbi from "./abi/usdc";
+
+const usdcDecoder = createEvmDecoder({
+  address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  events: {
+    transfer: usdcAbi.events.Transfer,
+  },
+});
+
+const pipeline = source.pipe(usdcDecoder);
+
+for await (const data of pipeline.read()) {
+  for (const transfer of data.transfer) {
+    console.log({
+      from: transfer.event.from,
+      to: transfer.event.to,
+      value: transfer.event.value,
+    });
+  }
+}
+```
+
+<Info>
+  The decoder automatically adds the necessary queries to the source and decodes
+  matching events.
+</Info>
+
+## Generating ABI Typings
+
+Before you can decode events, you need TypeScript types for your contract's ABI.
+
+### Install the Typegen Tool
+
+<CodeGroup>
+```bash npm
+npm install -D @subsquid/evm-typegen
+```
+
+```bash yarn
+yarn add -D @subsquid/evm-typegen
+```
+
+```bash bun
+bun add -D @subsquid/evm-typegen
+```
+
+</CodeGroup>
+
+### Generate Types from ABI
+
+Place your contract ABI JSON file in an `abi/` directory, then generate types:
+
+```bash
+npx squid-evm-typegen src/abi abi/usdc.json
+```
+
+This creates a TypeScript file (`src/abi/usdc.ts`) with strongly-typed event and function objects.
+
+<Tip>
+  You can generate types for multiple contracts at once by passing multiple ABI
+  files.
+</Tip>
+
+### Generated Event Objects
+
+The generated file exports event objects you can use with `createEvmDecoder`:
+
+```typescript abi/usdc.ts
+export const events = {
+  Transfer: {
+    topic: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+    decode(log: Log): { from: string; to: string; value: bigint } {
+      // Decoding logic
+    },
+  },
+  Approval: {
+    topic: "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925",
+    decode(log: Log): { owner: string; spender: string; value: bigint } {
+      // Decoding logic
+    },
+  },
+};
+```
+
+## Using Common ABIs
+
+For popular contract standards, use pre-generated ABIs from `commonAbis`:
+
+```typescript
+import { createEvmDecoder, commonAbis } from "@sqd-pipes/evm-processor";
+
+const erc20Decoder = createEvmDecoder({
+  address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  events: {
+    transfer: commonAbis.erc20.events.Transfer,
+    approval: commonAbis.erc20.events.Approval,
+  },
+});
+```
+
+Available common ABIs:
+
+- `commonAbis.erc20` - ERC-20 token standard
+- `commonAbis.erc721` - ERC-721 NFT standard
+- `commonAbis.erc1155` - ERC-1155 multi-token standard
+
+## Decoding Multiple Events
+
+Decode multiple event types from the same contract:
+
+```typescript
+import * as uniswapV3PoolAbi from "./abi/uniswapV3Pool";
+
+const poolDecoder = createEvmDecoder({
+  address: "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640", // WETH-USDC pool
+  events: {
+    swap: uniswapV3PoolAbi.events.Swap,
+    mint: uniswapV3PoolAbi.events.Mint,
+    burn: uniswapV3PoolAbi.events.Burn,
+    collect: uniswapV3PoolAbi.events.Collect,
+  },
+});
+
+for await (const data of source.pipe(poolDecoder).read()) {
+  console.log(`Swaps: ${data.swap.length}`);
+  console.log(`Mints: ${data.mint.length}`);
+  console.log(`Burns: ${data.burn.length}`);
+  console.log(`Collects: ${data.collect.length}`);
+}
+```
+
+## Decoded Event Structure
+
+Decoded events have this structure:
+
+```typescript
+{
+  // Blockchain context
+  block: {
+    header: {
+      number: 20000000,
+      hash: '0x...',
+      timestamp: 1234567890,
+      ...
+    }
+  },
+
+  // Transaction context
+  transactionHash: '0x...',
+  logIndex: 123,
+
+  // Raw event data
+  rawEvent: {
+    address: '0x...',
+    data: '0x...',
+    topics: ['0x...', '0x...']
+  },
+
+  // Decoded event parameters
+  event: {
+    from: '0x...',
+    to: '0x...',
+    value: 1000000n
+  }
+}
+```
+
+Access both decoded parameters and blockchain context:
+
+```typescript
+for (const transfer of data.transfer) {
+  console.log({
+    // Decoded event data
+    from: transfer.event.from,
+    to: transfer.event.to,
+    value: transfer.event.value,
+
+    // Blockchain context
+    blockNumber: transfer.block.header.number,
+    timestamp: transfer.block.header.timestamp,
+    txHash: transfer.transactionHash,
+  });
+}
+```
+
+## Decoding Multiple Contracts
+
+Use composite transformers to decode events from multiple contracts:
+
+```typescript
+const USDC = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
+const USDT = "0xdac17f958d2ee523a2206206994597c13d831ec7";
+const DAI = "0x6b175474e89094c44da98b954eedeac495271d0f";
+
+const pipeline = source.pipeComposite({
+  usdc: createEvmDecoder({
+    address: USDC,
+    events: { transfer: usdcAbi.events.Transfer },
+  }),
+  usdt: createEvmDecoder({
+    address: USDT,
+    events: { transfer: usdtAbi.events.Transfer },
+  }),
+  dai: createEvmDecoder({
+    address: DAI,
+    events: { transfer: daiAbi.events.Transfer },
+  }),
+});
+
+for await (const data of pipeline.read()) {
+  console.log(`USDC transfers: ${data.usdc.transfer.length}`);
+  console.log(`USDT transfers: ${data.usdt.transfer.length}`);
+  console.log(`DAI transfers: ${data.dai.transfer.length}`);
+}
+```
+
+## Complete Example: USDC and Uniswap V3
+
+This example decodes both USDC transfers and Uniswap V3 swap events:
+
+```typescript
+import { createEvmSource, createEvmDecoder } from "@sqd-pipes/evm-processor";
+import { createTarget } from "@sqd-pipes/pipes";
+import * as usdcAbi from "./abi/usdc";
+import * as uniswapV3PoolAbi from "./abi/uniswapV3Pool";
+
+const USDC = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
+const WETH_USDC_POOL = "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640";
+
+// Create source
+const source = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: { from: 20_000_000, to: 20_000_100 },
+  },
+});
+
+// Create composite decoder
+const decoder = source.pipeComposite({
+  usdcTransfers: createEvmDecoder({
+    address: USDC,
+    events: {
+      transfer: usdcAbi.events.Transfer,
+    },
+  }),
+  swaps: createEvmDecoder({
+    address: WETH_USDC_POOL,
+    events: {
+      swap: uniswapV3PoolAbi.events.Swap,
+    },
+  }),
+});
+
+// Create target
+const target = createTarget({
+  write: async (data) => {
+    // Process USDC transfers
+    for (const transfer of data.usdcTransfers.transfer) {
+      console.log("USDC Transfer:", {
+        from: transfer.event.from,
+        to: transfer.event.to,
+        value: transfer.event.value,
+        block: transfer.block.header.number,
+      });
+    }
+
+    // Process swaps
+    for (const swap of data.swaps.swap) {
+      console.log("Uniswap Swap:", {
+        sender: swap.event.sender,
+        recipient: swap.event.recipient,
+        amount0: swap.event.amount0,
+        amount1: swap.event.amount1,
+        block: swap.block.header.number,
+      });
+    }
+  },
+});
+
+// Run pipeline
+async function main() {
+  for await (const batch of decoder.read()) {
+    await target.write(batch);
+  }
+}
+
+main().catch(console.error);
+```
+
+## Function Call Decoding
+
+Decode transaction function calls:
+
+```typescript
+import * as contractAbi from "./abi/contract";
+
+const functionDecoder = createEvmDecoder({
+  address: CONTRACT_ADDRESS,
+  functions: {
+    transfer: contractAbi.functions.transfer,
+    approve: contractAbi.functions.approve,
+  },
+});
+```
+
+<Note>
+  Function decoding works the same way as event decoding. The typegen tool
+  generates both event and function objects.
+</Note>
+
+## Working with Event Data
+
+### Convert BigInt Values
+
+Event parameters are decoded as `bigint`. Convert them for display or calculations:
+
+```typescript
+for (const transfer of data.transfer) {
+  const valueInTokens = Number(transfer.event.value) / 1e6; // USDC has 6 decimals
+  console.log(`Transfer: ${valueInTokens} USDC`);
+}
+```
+
+### Filter Decoded Events
+
+Filter events based on decoded parameters:
+
+```typescript
+const largeTransfers = data.transfer.filter(
+  (t) => t.event.value > 1_000_000n * 10n ** 6n // > 1M USDC
+);
+```
+
+### Aggregate Event Data
+
+```typescript
+const totalVolume = data.transfer.reduce((sum, t) => sum + t.event.value, 0n);
+
+console.log(`Total USDC transferred: ${totalVolume}`);
+```
+
+## Best Practices
+
+<AccordionGroup>
+<Accordion title="Generate types for all contracts">
+  Always use the typegen tool to generate TypeScript types. This provides type safety and autocomplete.
+</Accordion>
+
+<Accordion title="Use semantic names">
+  Give decoded events meaningful names in the decoder configuration (e.g.,
+  `transfer`, `swap`, not `event1`, `event2`).
+</Accordion>
+
+<Accordion title="Handle BigInt carefully">
+  Remember that numeric event parameters are `bigint`. Convert them
+  appropriately for your use case.
+</Accordion>
+
+<Accordion title="Keep ABIs up to date">
+  When contract ABIs change, regenerate your types to stay in sync.
+</Accordion>
+
+<Accordion title="Consider contract upgrades">
+  If indexing proxy contracts, account for potential ABI changes across upgrades.
+</Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Data Persistence"
+    icon="database"
+    href="/en/sdk/evm/pipes/data-persistence"
+  >
+    Save decoded data to Clickhouse
+  </Card>
+
+  <Card
+    title="Transformers"
+    icon="wand-magic-sparkles"
+    href="/en/sdk/evm/pipes/transformers"
+  >
+    Process decoded events further
+  </Card>
+
+  <Card title="Examples" icon="code" href="/en/sdk/evm/pipes/examples">
+    See complete decoding examples
+  </Card>
+
+  <Card
+    title="Advanced Patterns"
+    icon="rocket"
+    href="/en/sdk/evm/pipes/advanced-patterns"
+  >
+    Learn advanced decoding techniques
+  </Card>
+</CardGroup>

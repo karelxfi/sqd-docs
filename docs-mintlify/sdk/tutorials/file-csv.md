@@ -2,7 +2,6 @@
 title: Index to local CSV files
 description: >-
   Storing data in files for analysis
-sidebar_position: 25
 ---
 
 # Save indexed data to local CSV files
@@ -19,9 +18,9 @@ An article about this demo project [has been published on Medium](https://link.m
 
 [//]: # (!!!! Update all github URLs)
 
-:::warning
+<Warning>
 As of 2023-12-17, the `local-csv-indexing` repo is mostly still sound, but already somewhat outdated. You can take a look at the less sophisticated, yet regularly updated example [here](https://github.com/subsquid-labs/file-store-csv-example).
-:::
+</Warning>
 
 ## Pre-requisites
 
@@ -38,11 +37,11 @@ sqd init local-csv-indexing -t evm
 
 Here, `local-csv-indexing` is the name of the project, and can be changed to anything else. The `-t evm` option specifies that the [`evm` template](https://github.com/subsquid-labs/squid-evm-template) should be used as a starting point.
 
-:::info
+<Info>
 **Note:** The template actually has more than what we need for this project. Unnecessary packages have been removed in the tutorial repository. You can grab [`package.json`](https://github.com/subsquid-labs/local-csv-indexing/blob/main/package.json) from there to do the same.
 
 Files-wise, `docker-compose.yml`, `schema.graphql` and `squid.yaml` were removed. [`commands.json`](/squid-cli/commands-json), the list of local `sqd` scripts, has been significantly shortened ([here is the updated version](https://github.com/subsquid-labs/local-csv-indexing/blob/main/commands.json)).
-:::
+</Info>
 
 ### ERC-20 token ABI
 
@@ -55,11 +54,11 @@ The indexer needs the ABI for locating the contract events or functions in the E
 ```bash
 npx squid-evm-typegen src/abi 0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0#matic
 ```
-:::info
+<Info>
 The typegen tool uses Etherscan API to fetch the contract ABI. Other compatible APIs are supported via the `--etherscan-api` flag. For example, if the contract was deployed to Polygon and its ABI was available from Polygonscan, it could still be fetched with the same command extended with `--etherscan-api https://api.polygonscan.io`.
 
 Alternatilvely, the same command can be used with a path (local or URL) to a JSON ABI in place of the contract address.
-:::
+</Info>
 
 This will generate some files under the `src/abi` folder, the most interesting of which is `matic.ts`.
 
@@ -70,14 +69,14 @@ For writing local CSVs we will need the `file-store-csv` package:
 ```bash
 npm i @subsquid/file-store-csv
 ```
-:::info
+<Info>
 Packages are also available for [writing to parquet files](/sdk/reference/store/file/parquet) and for [uploading to S3-compatible cloud services](/sdk/reference/store/file/s3-dest).
-:::
+</Info>
 
 Next, let's create a new file at `src/tables.ts`. This is where it's possible to provide filenames for the CSV files, as well as configure their data structure, in much the same way as if they were a database table (the class name is no coincidence):
 
 ```typescript
-import {Table, Column, Types} from '@subsquid/file-store-csv'
+import \{Table, Column, Types\} from '@subsquid/file-store-csv'
 
 export const Transfers = new Table(
   'transfers.csv',
@@ -98,8 +97,8 @@ export const Transfers = new Table(
 Let's create another file next, this time named `src/db.ts`, to configure the data abstraction layer. Here we export an instance of the [`Database` class](/sdk/resources/persisting-data/overview) implementation from the `file-store` package (a dependency of `file-store-csv`). We will use this instance in much the same way as we would use a [`TypeormDatabase`](/sdk/resources/persisting-data/typeorm) instance in a PostgreSQL-based squid.
 
 ```typescript
-import {Database, LocalDest, Store} from '@subsquid/file-store'
-import { Transfers } from './tables'
+import \{Database, LocalDest, Store\} from '@subsquid/file-store'
+import \{ Transfers \} from './tables'
 
 export const db = new Database({
   tables: {
@@ -110,9 +109,9 @@ export const db = new Database({
 })
 ```
 
-:::info
+<Info>
 Note the `chunkSizeMb` option. A new chunk (that is, a new folder with a new CSV file in it) will be written when either the amount of data stored in the processor buffer exceeds `chunkSizeMb`, or at the end of the batch during which [`ctx.store.setForceFlush()`](/sdk/resources/persisting-data/file/#setforceflush) was called.
-:::
+</Info>
 
 ### Data indexing
 
@@ -135,7 +134,7 @@ const processor = new EvmBatchProcessor()
   });
 ```
 
-:::warning
+<Warning>
 Note: the RPC_ENDPOINT environment variable is used, so make sure to edit the `.env` file and use a valid URL of an Ethereum RPC node, e.g.:
 
 ```bash
@@ -145,7 +144,7 @@ GQL_PORT=4350
 # JSON-RPC node endpoint, both wss and https endpoints are accepted
 RPC_ENDPOINT="<eth_rpc_endpoint_url>"
 ```
-:::
+</Warning>
 
 Let's define the logic to process a batch of EVM log data, and save it to CSV files.
 
@@ -162,7 +161,7 @@ processor.run(db, async (ctx) => {
       if (log.address !== contractAddress) continue;
       if (log.topic0 !== events.Transfer.topic) continue;
 
-      const { from, to, value } = events.Transfer.decode(log);
+      const \{ from, to, value \} = events.Transfer.decode(log);
 
       ctx.store.Transfers.write(({
         blockNumber: block.header.height,
@@ -177,9 +176,9 @@ processor.run(db, async (ctx) => {
 });
 ```
 
-:::info
+<Info>
 The file in the GitHub repository is slightly different, as there's some added logic to obtain the number of decimals for the token. For that, the processor [interacts with the smart contract deployed on chain](/sdk/resources/tools/typegen/state-queries).
-:::
+</Info>
 
 [//]: # (!!!! Consider dropping the contract state query use here)
 
@@ -193,7 +192,7 @@ npm run build
 node -r dotenv/config lib/main.js
 ```
 And in a few minutes, a few sub-folders (whose names are the block ranges where the data is coming from) should be created under the `data` directory, each containing a `transfer.csv` file.
-![multiple folders containing CSV files](</img/csv-files.png>)
+\{/* [\1](\2)) */\}
 
 ### Data analysis with Python
 

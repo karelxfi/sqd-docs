@@ -1,5 +1,4 @@
 ---
-sidebar_position: 25
 title: bigquery-store
 description: >-
   @subsquid/bigquery-store reference

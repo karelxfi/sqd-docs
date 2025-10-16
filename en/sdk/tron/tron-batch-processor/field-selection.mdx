@@ -1,15 +1,16 @@
 ---
+title: "Field Selection"
 description: >-
   Fine-tuning data requests with setFields()
 ---
 
 # Field selection
 
-#### `setFields(options)` {#set-fields}
+#### `setFields(options)` \{#set-fields\}
 
 Set the fields to be retrieved for data items of each supported type. The `options` object has the following structure:
 
-```ts
+```typescript
 {
   block?:               // field selector for block headers
   transaction?:         // field selector for transactions
@@ -18,9 +19,9 @@ Set the fields to be retrieved for data items of each supported type. The `optio
 }
 ```
 
-Every field selector is a collection of boolean fields that map to the fields of data items within the batch context [iterables](/tron-indexing/tron-batch-processor/context-interfaces). Defining a field of a field selector of a given type and setting it to true will cause the processor to populate the corresponding field of all data items of that type. Here is a definition of a processor that requests `hash` and `fee` fields for transactions and the `data` field for logs:
+Every field selector is a collection of boolean fields that map to the fields of data items within the batch context [iterables](tron-indexing/tron-batch-processor/context-interfaces). Defining a field of a field selector of a given type and setting it to true will cause the processor to populate the corresponding field of all data items of that type. Here is a definition of a processor that requests `hash` and `fee` fields for transactions and the `data` field for logs:
 
-```ts
+```typescript
 const processor = new TronBatchProcessor().setFields({
   transaction: {
     hash: true,
@@ -34,7 +35,7 @@ const processor = new TronBatchProcessor().setFields({
 
 Same fields will be available for all data items of any given type, including the items accessed via nested references. Suppose we used the processor defined above to subscribe to some transactions as well as some logs, and for each log we requested its parent transaction:
 
-```ts
+```typescript
 processor
   .addTransaction({
     where: {
@@ -51,9 +52,9 @@ processor
   })
 ```
 
-The `hash` and `fee` fields will be available both within the data items of the `transactions` iterable of [block data](/tron-indexing/tron-batch-processor/context-interfaces) and within the transaction items populating the `.transaction` field of log data items:
+The `hash` and `fee` fields will be available both within the data items of the `transactions` iterable of [block data](tron-indexing/tron-batch-processor/context-interfaces) and within the transaction items populating the `.transaction` field of log data items:
 
-```ts
+```typescript
 processor.run(database, async (ctx) => {
   for (let block of blocks) {
     for (let txn of block.transactions) {
@@ -70,7 +71,7 @@ processor.run(database, async (ctx) => {
 
 Some data fields, like `hash` for transactions, are enabled by default but can be disabled by setting a field of a field selector to `false`. For example, this code will not compile:
 
-```ts
+```typescript
 const processor = new TronBatchProcessor()
   .setFields({
     transaction: {
@@ -91,9 +92,9 @@ Disabling unused fields will improve sync performance, as the fields' data will 
 
 ## Data item types and field selectors
 
-:::tip
+<Tip>
 Most IDEs support smart suggestions to show the possible field selectors. For VS Code, press `Ctrl+Space`.
-:::
+</Tip>
 
 Here we describe the data item types as functions of the field selectors. On Tron, each data item type field maps to the eponymous field of its corresponding field selector. Item fields are divided into three categories:
 
@@ -105,7 +106,7 @@ Here we describe the data item types as functions of the field selectors. On Tro
 
 Fields of `Transaction` data items may be requested by the eponymous fields of the field selector. Here's a detailed description of possible `Transaction` fields:
 
-```ts
+```typescript
 Transaction {
   // independent of field selectors
   transactionIndex: number
@@ -146,7 +147,7 @@ Transaction {
 
 Here, `TransactionResult` is defined as follows:
 
-```ts
+```typescript
 {
   contractRet?: string
 }
@@ -158,7 +159,7 @@ Request the fields with eponymous field request flags.
 
 Fields of `Log` data items may be requested by the eponymous fields of the field selector. Here's a detailed description of possible `Log` fields:
 
-```ts
+```typescript
 Log {
   // independent of field selectors
   transactionIndex: number
@@ -177,7 +178,7 @@ Request the fields with eponymous field request flags.
 
 Fields of `InternalTransaction` data items may be requested by the eponymous fields of the field selector. Here's a detailed description of possible `InternalTransaction` fields:
 
-```ts
+```typescript
 InternalTransaction {
   // independent of field selectors
   transactionIndex: number
@@ -198,7 +199,7 @@ InternalTransaction {
 
 Here, `CallValueInfo` is defined as follows:
 
-```ts
+```typescript
 {
   callValue?: bigint
   tokenId?: string
@@ -211,7 +212,7 @@ Request the fields with eponymous field request flags.
 
 `BlockHeader` data items may have the following fields:
 
-```ts
+```typescript
 BlockHeader {
 	// independent of field selectors
   height: number

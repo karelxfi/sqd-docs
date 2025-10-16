@@ -1,5 +1,4 @@
 ---
-sidebar_position: 22
 title: Entity relations
 description: Define entity relations
 ---
@@ -36,10 +35,10 @@ The `User` entity references `Account` and owns the one-to-one relation. This is
 - On the TypeORM side: the `account` property of the `User` entity gets decorated with `@OneToOne` and `@JoinColumn`.
 - On the GraphQL side: sub-selection of the `account` property is made available in `user`-related queries. Sub-selection of the `user` property is made available in `account`-related queries.
 
-:::info
+<Info>
 Unlike for the many-to-one case, the codegen will not add a virtual reverse lookup property to the TypeORM code for one-to-one relations. You can add it manually:
 ```typescript title="src/model/generated/account.model.ts"
-import {OneToOne as OneToOne_} from "typeorm"
+import \{OneToOne as OneToOne_\} from "typeorm"
 
 @Entity_()
 export class Account {
@@ -49,7 +48,7 @@ export class Account {
 }
 ```
 If you are using this feature, please let us know at [the SquidDevs Telegram channel](https://t.me/HydraDevs).
-:::
+</Info>
 
 ## Many-to-one/One-to-many relations
 

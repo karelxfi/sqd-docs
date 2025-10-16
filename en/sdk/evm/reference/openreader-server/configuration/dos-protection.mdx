@@ -1,13 +1,14 @@
 ---
 title: DoS protection
 description: Enforce limits in the queries
+
 ---
 
 # DoS protection
 
 The squid [GraphQL API server](https://github.com/subsquid/squid-sdk/tree/master/graphql/graphql-server) accepts the following optional start arguments to fend off heavy queries. 
 
-To enable the protection, add the corresponding flags to `serve` and `serve:prod` command definitions at [`commands.json`](/squid-cli/commands-json):
+To enable the protection, add the corresponding flags to `serve` and `serve:prod` command definitions at [`commands.json`](squid-cli/commands-json):
 
 ```json
 ...
@@ -21,7 +22,7 @@ To enable the protection, add the corresponding flags to `serve` and `serve:prod
   },
 ...
 ```
-When deploying to [SQD Cloud](/cloud), make sure to use `serve:prod` to start the GraphQL `api` service in the [deployment manifest](/cloud/reference/manifest/#deploy):
+When deploying to [SQD Cloud](cloud), make sure to use `serve:prod` to start the GraphQL `api` service in the [deployment manifest](cloud/reference/manifest/#deploy):
 
 ```yaml title="squid.yaml"
 # ...
@@ -64,7 +65,7 @@ In a nutshell, assuming that the schema file is properly decorated with `@cardin
 
 **`--subscription-max-response-size <nodes>`**
 
-Same as `--max-response-size` but for live query [subscriptions](/sdk/reference/openreader-server/configuration/subscriptions).
+Same as `--max-response-size` but for live query [subscriptions](sdk/reference/openreader-server/configuration/subscriptions).
 
 #### Example
 
@@ -163,7 +164,7 @@ query C {
     bars {
         id
         bar {
-            foos(where: { id_in ["1", "2" ]}) {
+foos(where: "\{ id_in ["1", "2" ]\}) \{"
                 id
             }
             id

@@ -1,5 +1,4 @@
 ---
-sidebar_position: 10
 title: Entity queries
 description: >-
   Basic data retrieval
@@ -29,7 +28,7 @@ query {
   }
 }
 ```
-or, using a [newer](/sdk/reference/openreader-server/overview/#supported-queries) and [more advanced](/sdk/reference/openreader-server/api/paginate-query-results) `{entityName}sConnection` query
+or, using a [newer](/sdk/reference/openreader-server/overview/#supported-queries) and [more advanced](/sdk/reference/openreader-server/api/paginate-query-results) `\{entityName\}sConnection` query
 
 ```graphql
 query {
@@ -50,14 +49,14 @@ Fetch a channel by a unique id or handle:
 
 ```graphql
 query Query1 {
-  channelByUniqueInput(where: { id: "1" }) {
+  channelByUniqueInput(where: \{ id: "1" \}) \{
     id
     handle
   }
 }
 
 query Query2 {
-  channelByUniqueInput(where: { handle: "Joy Channel" }) {
+  channelByUniqueInput(where: \{ handle: "Joy Channel" \}) \{
     id
     handle
   }
@@ -74,16 +73,16 @@ For example, to fetch data for a channel named `Joy Channel`:
 
 ```graphql
 query {
-  channels(where: { handle_eq: "Joy Channel" }) {
+  channels(where: \{ handle_eq: "Joy Channel" \}) \{
     id
     handle
   }
 }
 ```
-Note that `{entityName}sConnection` queries support exactly the same format of the `where` argument:
+Note that `\{entityName\}sConnection` queries support exactly the same format of the `where` argument:
 ```graphql
 query {
-  channelsConnection(orderBy: id_ASC, where: { handle_eq: "Joy Channel"}) {
+  channelsConnection(orderBy: id_ASC, where: \{ handle_eq: "Joy Channel"\}) \{
     edges {
       node {
         id
@@ -118,21 +117,21 @@ The following are examples of using this operator on different types:
 
 ```graphql
 query Query1 {
-  videos(where: { title_eq: "Bitcoin" }) {
+  videos(where: \{ title_eq: "Bitcoin" \}) \{
     id
     title
   }
 }
 
 query Query2 {
-  videos(where: { isExplicit_eq: true }) {
+  videos(where: \{ isExplicit_eq: true \}) \{
     id
     title
   }
 }
 
 query Query3 {
-  videos(where: { publishedOn_eq: "2021-01-05" }) {
+  videos(where: \{ publishedOn_eq: "2021-01-05" \}) \{
     id
     title
   }
@@ -150,14 +149,14 @@ The following are examples of using these operators on different types:
 
 ```graphql
 query Query1 {
-  videos(where: { publishedOn_gte: "2021-01-05" }) {
+  videos(where: \{ publishedOn_gte: "2021-01-05" \}) \{
     id
     title
   }
 }
 
 query Query2 {
-  channels(where: { block_lte: "999" }) {
+  channels(where: \{ block_lte: "999" \}) \{
     id
     handle
   }
@@ -172,14 +171,14 @@ Example:
 
 ```graphql
 query Query1 {
-  videos(where: { title_contains: "Bitcoin" }) {
+  videos(where: \{ title_contains: "Bitcoin" \}) \{
     id
     title
   }
 }
 
 query Query2 {
-  videos(where: { title_endsWith: "cryptocurrency" }) {
+  videos(where: \{ title_endsWith: "cryptocurrency" \}) \{
     id
     title
   }

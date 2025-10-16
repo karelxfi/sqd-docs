@@ -1,11 +1,12 @@
 ---
+title: "Internal Transactions"
 description: >-
   Subscribe to internal txn data
 ---
 
 # Internal transactions
 
-#### `addInternalTransaction(options)` {#add-internal-transaction}
+#### `addInternalTransaction(options)` \{#add-internal-transaction\}
 
 Get some _or all_ internal transactions on the network. `options` has the following structure:
 
@@ -36,7 +37,7 @@ Omit the `where` field to subscribe to all txs network-wide.
 
 - `transaction = true`: will retrieve parent transactions for each selected internal txn.
 
-The data will be added to the `.transactions` iterable within [block data](/tron-indexing/tron-batch-processor/context-interfaces) and made available via the `.transaction` field of each internal transaction item.
+The data will be added to the `.transactions` iterable within [block data](tron-indexing/tron-batch-processor/context-interfaces) and made available via the `.transaction` field of each internal transaction item.
 
 Note that internal transactions can also be requested by the other `TronBatchProcessor` methods as related data.
 

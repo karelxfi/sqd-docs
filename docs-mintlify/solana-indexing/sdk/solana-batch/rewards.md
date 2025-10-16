@@ -1,12 +1,11 @@
 ---
-sidebar_position: 70
 description: >-
   Track rewards with addReward()
 ---
 
 # Rewards
 
-#### `addReward(options)` {#add-reward}
+#### `addReward(options)` \{#add-reward\}
 
 This allows for tracking rewards. `options` has the following structure:
 

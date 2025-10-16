@@ -1,5 +1,4 @@
 ---
-sidebar_position: 60
 title: Multichain
 description: Combine data from multiple chains
 ---

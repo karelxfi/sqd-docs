@@ -1,5 +1,4 @@
 ---
-sidebar_position: 60
 ---
 
 # Troubleshooting
@@ -8,7 +7,7 @@ sidebar_position: 60
 
 This occurs when you have a squid deployed, then create, remove or change some [secrets](/squid-cli/secrets) of [relevance](/cloud/resources/organizations). Squids must be restarted manually for such changes to have effect. Navigate to the squid version page (e.g. by clicking on the warning sign) and click restart. The restart will not touch the database, so unless your new secret values cause the squid to crash this procedure should be quick and easy.
 
-![Secrets outdated](</img/secrets-outdated.png>)
+\{/* [\1](\2)) */\}
 
 ### My squid is stuck in "Building", "Deploying" or "Starting" state
 

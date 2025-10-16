@@ -1,5 +1,4 @@
 ---
-sidebar_position: 30
 title: Custom API extensions
 description: Extend the API with custom resolvers
 ---
@@ -20,9 +19,9 @@ Custom resolvers are normally used in combination with [TypeORM EntityManager](h
 #### Simple entity counter
 
 ```typescript
-import { Query, Resolver } from 'type-graphql'
-import type { EntityManager } from 'typeorm'
-import { Burn } from '../model'
+import \{ Query, Resolver \} from 'type-graphql'
+import type \{ EntityManager \} from 'typeorm'
+import \{ Burn \} from '../model'
 
 @Resolver()
 export class CountResolver {
@@ -42,7 +41,7 @@ This example is designed to work with the `evm` template:
 3. save the example code to `src/server-extension/resolver.ts`;
 4. re-export `CountResolver` at `src/server-extension/resolvers/index.ts`:
    ```ts
-   export { CountResolver } from '../resolver'
+   export \{ CountResolver \} from '../resolver'
    ```
 5. rebuild the squid with `npm run build`;
 6. (re)start the GraphQL server with `npx squid-graphql-server`.
@@ -52,17 +51,17 @@ This example is designed to work with the `evm` template:
 #### Custom SQL query
 
 ```typescript
-import { Arg, Field, ObjectType, Query, Resolver } from 'type-graphql'
-import type { EntityManager } from 'typeorm'
-import { MyEntity } from '../model'
+import \{ Arg, Field, ObjectType, Query, Resolver \} from 'type-graphql'
+import type \{ EntityManager \} from 'typeorm'
+import \{ MyEntity \} from '../model'
 
 // Define custom GraphQL ObjectType of the query result
 @ObjectType()
 export class MyQueryResult {
-  @Field(() => Number, { nullable: false })
+  @Field(() => Number, \{ nullable: false \})
   total!: number
 
-  @Field(() => Number, { nullable: false })
+  @Field(() => Number, \{ nullable: false \})
   max!: number
 
   constructor(props: Partial<MyQueryResult>) {
@@ -101,7 +100,7 @@ For more examples of resolvers, see [TypeGraphQL examples repo](https://github.c
 To keep logging consistent across the entire GraphQL server, use `@subsquid/logger`:
 
 ```ts
-import {createLogger} from '@subsquid/logger'
+import \{createLogger\} from '@subsquid/logger'
 
 // using a custom namespace ':my-resolver' for resolver logs
 const LOG = createLogger('sqd:graphql-server:my-resolver')

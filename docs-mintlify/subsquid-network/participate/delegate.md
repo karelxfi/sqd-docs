@@ -1,14 +1,13 @@
 ---
-sidebar_position: 10
 title: Delegate
 description: Delegate your tokens to workers
 ---
 
 # Delegate
 
-:::info
+<Info>
 By delegating you're committing your tokens for a period of 50000 Ethereum blocks (a bit less than seven days) + the time until the end of the current [epoch](/subsquid-network/faq/#epoch) (20 minutes or less). Withdrawal will not be possible during that time.
-:::
+</Info>
 
 The easiest way to participate in SQD Network is to delegate your `SQD` tokens to one of the workers. Here's how to do it.
 
@@ -16,11 +15,11 @@ The easiest way to participate in SQD Network is to delegate your `SQD` tokens t
 
 2. Go to the "Dashboard" tab if you aren't there already. You should see something like this:
 
-   ![Network app dashboard](./delegate_dashboard.png)
+\{/* [\1](\2) */\}
 
 3. Pick a worker and press the "Delegate" button. You should see a form like this:
 
-   ![Delegation form](./delegate_form.png)
+\{/* [\1](\2) */\}
 
    Enter the amount of `SQD`s you'd like to delegate and press the button.
 
@@ -28,7 +27,7 @@ The easiest way to participate in SQD Network is to delegate your `SQD` tokens t
 
 5. Go to the "Delegate" tab to view your delegations. Note that the "Undelegate" button is inactive - you cannot undelegate until the current [epoch](/subsquid-network/faq/#epoch) ends.
 
-   ![My delegations](./delegate_my_delegations.png)
+\{/* [\1](\2) */\}
 
 ## Undelegating
 
@@ -40,7 +39,7 @@ The easiest way to participate in SQD Network is to delegate your `SQD` tokens t
 
 4. Click the "Undelegate" button. You should see a form like this one:
 
-   ![Undelegation form](./delegate_undelegate.png)
+\{/* [\1](\2) */\}
 
    :::info
    An inactive "Undelegate" button likely indicates the delegation lockup period still haven't passed.

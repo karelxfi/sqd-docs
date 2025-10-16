@@ -1,12 +1,11 @@
 ---
-sidebar_position: 60
 description: >-
   Fine-tuning data requests with setFields()
 ---
 
 # Fields selection
 
-#### `setFields(options)` {#set-fields}
+#### `setFields(options)` \{#set-fields\}
 
 Set the fields to be retrieved for data items of each supported type. The `options` object has the following structure:
 ```ts
@@ -76,10 +75,10 @@ Disabling unused fields will improve sync performance, as the disabled fields wi
 
 ## Data item types and field selectors
 
-:::tip
+<Tip>
 Most IDEs support smart suggestions to show the possible field selectors. For VS Code, press `Ctrl+Space`:
-![selector auto-complete](./autocomplete-selectors.png)
-:::
+\{/* [\1](\2) */\}
+</Tip>
 
 Here we describe the data item types as functions of the field selectors. In `SubstrateBatchProcessor` each field of a field selector maps to the eponymous field of its corresponding data item type. Item data fields are divided into three categories:
 * Fields that are added independently of the `setFields()` call. These are either fixed or depend on the related data retrieval flags (e.g. `call` for events).

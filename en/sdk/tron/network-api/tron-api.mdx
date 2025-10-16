@@ -1,19 +1,20 @@
 ---
 title: Tron API
 description: Access Tron data
+
 ---
 
 # Tron SQD Network API
 
-:::warning
+<Warning>
 The Tron API of SQD Network is currently in beta. Breaking changes may be introduced in the future releases.
-:::
+</Warning>
 
-[Open private SQD Network](/subsquid-network/overview/#open-private-network) offers access to Tron data. The gateway is at
+[Open private SQD Network](subsquid-network/overview/#open-private-network) offers access to Tron data. The gateway is at
 ```
 https://v2.archive.subsquid.io/network/tron-mainnet
 ```
-SQD Network API distributes the requests over a ([potentially decentralized](/subsquid-network/faq)) network of _workers_. The main gateway URL points at a _router_ that provides URLs of workers that do the heavy lifting. Each worker has its own range of blocks.
+SQD Network API distributes the requests over a ([potentially decentralized](subsquid-network/faq)) network of _workers_. The main gateway URL points at a _router_ that provides URLs of workers that do the heavy lifting. Each worker has its own range of blocks.
 
 Suppose you want to retrieve an output of some [query](#worker-api) on a block range starting at `firstBlock` (can be the genesis block) and ending at the highest available block. Proceed as follows:
 
@@ -34,7 +35,6 @@ Suppose you want to retrieve an output of some [query](#worker-api) on a block r
 Implementation examples:
 
 <details>
-
 <summary>Manually with cURL</summary>
 
 Suppose we want data on [token burns](https://developers.tron.network/docs/faq#3-what-is-the-destruction-address-of-tron) from block 58_000_000. We have to:
@@ -66,7 +66,7 @@ Suppose we want data on [token burns](https://developers.tron.network/docs/faq#3
    -d '{
        "fromBlock":58000000,
        "toBlock":59286799,
-       "fields":{"transaction":{"hash":true}},
+       "fields": {"transaction":{"hash":true}},
        "transactions":[{
          "to":[
            "0x0000000000000000000000000000000000000000"
@@ -128,18 +128,16 @@ Suppose we want data on [token burns](https://developers.tron.network/docs/faq#3
    -d '{
        "fromBlock":16031420,
        "toBlock":18593441,
-       "fields":{"transaction":{"hash":true}},
-       "transactions":[{"to":["0xd8da6bf26964af9d7eed9e03e53415d37aa96045"]}]
+       "fields": {"transaction":{"hash":true}},
+       "transactions": [{"to":["0xd8da6bf26964af9d7eed9e03e53415d37aa96045"]}]
    }' | jq
    ```
    Output is similar to that of step 3.
 
 6. Repeat steps 4 and 5 until the dataset height of 18593441 reached.
 
-</details>
 
 <details>
-
 <summary>In Python</summary>
 
 ```python
@@ -182,7 +180,6 @@ Full code [here](https://gist.github.com/eldargab/2e007a293ac9f82031d023f1af581a
 ## Router API
 
 <details>
-
 <summary><code>GET</code> <code><b>/height</b></code> <code>(get height of the dataset)</code></summary>
 
 **Example response:** `65900614`.
@@ -190,7 +187,6 @@ Full code [here](https://gist.github.com/eldargab/2e007a293ac9f82031d023f1af581a
 </details>
 
 <details>
-
 <summary><code>GET</code> <code><b>$&#123;firstBlock&#125;/worker</b></code> <code>(get a suitable worker URL)</code></summary>
 
 The returned worker will be capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `${firstBlock}`.
@@ -202,7 +198,6 @@ The returned worker will be capable of processing `POST /` requests in which the
 ## Worker API
 
 <details>
-
 <summary><code>POST</code> <code><b>/</b></code> <code>(query logs and transactions)</code></summary>
 
 ##### Query Fields
@@ -219,7 +214,6 @@ The returned worker will be capable of processing `POST /` requests in which the
 - **internalTransactions**: (optional) A list of [internal transaction requests](#internal-transactions). An empty list requests no data.
 
 <details>
-
 <summary>
 
 ##### Example Request
@@ -255,7 +249,6 @@ The returned worker will be capable of processing `POST /` requests in which the
 </details>
 
 <details>
-
 <summary>
 
 ##### Example Response
@@ -385,23 +378,21 @@ The returned worker will be capable of processing `POST /` requests in which the
   }
 ]
 ```
-</details>
 
-</details>
 
 ## Data requests
 
-:::warning
+<Warning>
 Addresses in all data requests must be in hex without `0x` and in lowercase. Example:
 ```
 a614f803b6fd780986a42c78ec9c7f77e6ded13c
 ```
 All addresses in the responses will be in this format, too.
-:::
+</Warning>
 
 ### Logs
 
-```ts
+```typescript
 {
   // data requests
   address: string[],
@@ -423,9 +414,9 @@ With `transaction: true` all parent transactions will be included into the respo
 
 ### Transactions
 
-#### General {#general-transactions}
+#### General \{#general-transactions\}
 
-```ts
+```typescript
 {
   // data requests
   type: string[],
@@ -441,9 +432,9 @@ A transaction will be included in the response if it matches all the requests (j
 
 With `logs: true` all logs emitted by the transactions will be included into the response. With `internalTransactions: true` all the internal transactions induced by the selected transactions will be included into the response.
 
-#### "transfer" {#transfer-transactions}
+#### "transfer" \{#transfer-transactions\}
 
-```ts
+```typescript
 {
   // data requests
   owner: string[],
@@ -461,9 +452,9 @@ A transaction will be included in the response if it matches all the requests. A
 
 With `logs: true` all logs emitted by the transactions will be included into the response. With `internalTransactions: true` all the internal transactions induced by the selected transactions will be included into the response.
 
-#### "transfer asset" {#transfer-asset-transactions}
+#### "transfer asset" \{#transfer-asset-transactions\}
 
-```ts
+```typescript
 {
   // data requests
   owner: string[],
@@ -483,9 +474,9 @@ A transaction will be included in the response if it matches all the requests. A
 
 With `logs: true` all logs emitted by the transactions will be included into the response. With `internalTransactions: true` all the internal transactions induced by the selected transactions will be included into the response.
 
-#### "trigger smart contract" {#trigger-smart-contract-transactions}
+#### "trigger smart contract" \{#trigger-smart-contract-transactions\}
 
-```ts
+```typescript
 {
   // data requests
   owner: string[],
@@ -503,9 +494,9 @@ A transaction will be included in the response if it matches all the requests. A
 
 With `logs: true` all logs emitted by the transactions will be included into the response. With `internalTransactions: true` all the internal transactions induced by the selected transactions will be included into the response.
 
-### Internal transactions {#internal-transactions}
+### Internal transactions \{#internal-transactions\}
 
-```ts
+```typescript
 {
   // data requests
   caller: string[],
@@ -555,7 +546,7 @@ A valid field selector for blocks is a JSON that has a subset of these fields as
 
 ### Log fields
 
-```ts
+```typescript
 {
   logIndex
   transactionHash
@@ -617,3 +608,7 @@ A valid field selector for transactions is a JSON that has a subset of these fie
 }
 ```
 A valid field selector for internal transactions is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"hash": true, "callerAddress": true, "callValueInfo": true}`.
+
+</details>
+</details>
+</details>

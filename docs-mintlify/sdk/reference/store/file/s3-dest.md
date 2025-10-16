@@ -1,5 +1,4 @@
 ---
-sidebar_position: 50
 title: S3 support
 description: >-
   A Dest class for uploading data to buckets
@@ -28,9 +27,9 @@ Writing to Amazon S3-compatible file storage services such as [AWS](https://aws.
 This saves the processor data in the `transfers-data` folder of the `subsquid-testing-bucket` bucket at the [Filebase](https://filebase.com) service. The service only has one region and one endpoint, and here they are hardcoded to reduce the number of required envirionment variables and illustrate how connection parameters can be supplied programmatically. Full squid code is available in [this repo](https://github.com/subsquid-labs/file-store-s3-example).
 
 ```typescript
-import {Database} from '@subsquid/file-store'
-import {S3Dest} from '@subsquid/file-store-s3'
-import {assertNotNull} from '@subsquid/util-internal' // pulled by @subsquid/file-store-s3
+import \{Database\} from '@subsquid/file-store'
+import \{S3Dest\} from '@subsquid/file-store-s3'
+import \{assertNotNull\} from '@subsquid/util-internal' // pulled by @subsquid/file-store-s3
 
 ...
 

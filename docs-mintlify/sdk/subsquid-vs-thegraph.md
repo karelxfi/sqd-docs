@@ -1,5 +1,4 @@
 ---
-sidebar_position: 90
 title: SQD vs The Graph
 description: Comparison of SQD and The Graph
 ---
@@ -43,7 +42,7 @@ The data transformation and presentation is enabled by a growing list of tools a
 
 ## Architecture difference
 
-![SQD vs The Graph](</img/thegraph-vs-subsquid.png>)
+\{/* [\1](\2)) */\}
 
 By design, The Graph indexing node is a black-box that executes subgraphs compiled into WASM. The data is sourced directly from the archival node and local IPFS, and the processed data is stored in a built-in Postgres database. The data stored in the database is considered to be "sealed", so that no external process can modify or read the data except through the GraphQL interface. 
 

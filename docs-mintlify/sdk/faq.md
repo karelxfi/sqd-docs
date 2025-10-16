@@ -1,10 +1,9 @@
 ---
-sidebar_position: 80
 title: FAQ
 description: Frequently asked questions
 ---
 
-### What are some real-world applications for which Squid SDK was a good fit? {#real-world-applications}
+### What are some real-world applications for which Squid SDK was a good fit? \{#real-world-applications\}
 
 Here is an incomplete list:
 - DeFi dashboards, tracking addresses and internal transactions
@@ -42,7 +41,7 @@ Squids that store their data in [file-based datasets](/sdk/resources/persisting-
 
 ### Is there a healthcheck endpoint for the indexer?
 
-Yes, the processor exposes the key prometheus metrics at the `${process.env.PROMETHEUS_PORT}/metric` endpoint. The squids deployed to the SQD Cloud also publicly explose the metrics, see [Monitoring in the Cloud](/cloud/resources/monitoring/)
+Yes, the processor exposes the key prometheus metrics at the `$\{process.env.PROMETHEUS_PORT\}/metric` endpoint. The squids deployed to the SQD Cloud also publicly explose the metrics, see [Monitoring in the Cloud](/cloud/resources/monitoring/)
 
 ### Do squids have a debug mode?
 

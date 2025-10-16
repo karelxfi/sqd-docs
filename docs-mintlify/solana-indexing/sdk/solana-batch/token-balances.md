@@ -1,12 +1,11 @@
 ---
-sidebar_position: 60
 description: >-
   Track token balance changes with addTokenBalance()
 ---
 
 # Token balances
 
-#### `addTokenBalance(options)` {#add-token-balance}
+#### `addTokenBalance(options)` \{#add-token-balance\}
 
 This allows for tracking token balances. `options` has the following structure:
 

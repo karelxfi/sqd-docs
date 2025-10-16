@@ -2,7 +2,6 @@
 title: Case studies
 description: >-
   Deep dives into larger projects built with SQD
-sidebar_position: 80
 ---
 
 Follow the links from the [SQD Medium blog](https://medium.com/subsquid) for deep dives into the development process of larger projects built from scratch. They use the FireSquid version of the framework, so much of the involved code is outdated. Still, the general approaches they illustrate endure.

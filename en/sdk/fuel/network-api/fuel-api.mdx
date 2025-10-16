@@ -1,15 +1,16 @@
 ---
 title: Fuel Network API
 description: Access the data of Fuel Network
+
 ---
 
 # Fuel SQD Network API
 
-:::warning
+<Warning>
 The Fuel API of SQD Network is currently in beta. Breaking changes may be introduced in the future releases.
-:::
+</Warning>
 
-SQD Network API distributes the requests over a ([potentially decentralized](/subsquid-network/faq)) network of _workers_. The main gateway URL points at a _router_ that provides URLs of workers that do the heavy lifting. Each worker has its own range of blocks on each dataset it serves.
+SQD Network API distributes the requests over a ([potentially decentralized](subsquid-network/faq)) network of _workers_. The main gateway URL points at a _router_ that provides URLs of workers that do the heavy lifting. Each worker has its own range of blocks on each dataset it serves.
 
 Suppose you want to retrieve an output of some [query](#worker-api) on a block range starting at `firstBlock` (can be the genesis block) and ending at the highest available block. Proceed as follows:
 
@@ -17,9 +18,9 @@ Suppose you want to retrieve an output of some [query](#worker-api) on a block r
 
 2. Save the value of `firstBlock` to some variable, say `currentBlock`.
 
-3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /${currentBlock}/worker`.
+3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /$\{currentBlock\}/worker`.
 
-4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `${currentBlock}`.
+4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `$\{currentBlock\}`.
 
 5. Parse the retrieved data to get a batch of query data **plus** the height of the last block available from the current worker. Take the `header.number` field of the last element of the retrieved JSON array - it is the height you want. Even if your query returns no data, you'll still get the block data for the last block in the range, so this procedure is safe.
 
@@ -27,12 +28,11 @@ Suppose you want to retrieve an output of some [query](#worker-api) on a block r
 
 7. Repeat steps 3-6 until all the required data is retrieved.
 
-See the [Fuel section of the public gateways list](/subsquid-network/reference/networks/#fuel) for URL gateways.
+See the [Fuel section of the public gateways list](subsquid-network/reference/networks/#fuel) for URL gateways.
 
 Implementation examples:
 
 <details>
-
 <summary>Manually with cURL</summary>
 
 Suppose we want data on Fuel receipts from block `1000000`. We begin by finding the main URL for the Fuel Mainnet dataset. Then we have to:
@@ -71,8 +71,8 @@ Suppose we want data on Fuel receipts from block `1000000`. We begin by finding 
    -d '{
        "type": "fuel",
        "fromBlock":1000000,
-       "fields":{"receipt":{"contract":true, "receiptType": true}},
-       "receipts":[ {"type": ["LOG_DATA"]} ]
+"fields": "\{"receipt":\{"contract":true, "receiptType": true\}\},"
+"receipts": "[ \{"type": ["LOG_DATA"]\} ]"
    }' | jq
    ```
 
@@ -117,10 +117,8 @@ Suppose we want data on Fuel receipts from block `1000000`. We begin by finding 
 
 7. Repeat steps 3-6 until all the required data is retrieved.
 
-</details>
 
 <details>
-
 <summary>In Python</summary>
 
 ```python
@@ -138,12 +136,12 @@ def dump(
     assert 0 <= first_block <= last_block
     query = dict(query)  # copy query to mess with it later
 
-    dataset_height = int(get_text(f'{gateway_url}/height'))
+    dataset_height = int(get_text(f'\{gateway_url\}/height'))
     next_block = first_block
     last_block = min(last_block, dataset_height)
 
     while next_block <= last_block:
-        worker_url = get_text(f'{gateway_url}/{next_block}/worker')
+        worker_url = get_text(f'\{gateway_url\}/\{next_block\}/worker')
 
         query['fromBlock'] = next_block
         query['toBlock'] = last_block
@@ -164,7 +162,6 @@ Full code [here](https://gist.github.com/eldargab/2e007a293ac9f82031d023f1af581a
 ## Router API
 
 <details>
-
 <summary><code>GET</code> <code><b>/height</b></code> <code>(get height of the dataset)</code></summary>
 
 **Example response:** `16576911`.
@@ -172,10 +169,9 @@ Full code [here](https://gist.github.com/eldargab/2e007a293ac9f82031d023f1af581a
 </details>
 
 <details>
-
 <summary><code>GET</code> <code><b>$&#123;firstBlock&#125;/worker</b></code> <code>(get a suitable worker URL)</code></summary>
 
-The returned worker will be capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `${firstBlock}`.
+The returned worker will be capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `$\{firstBlock\}`.
 
 **Example response:** `https://rb03.sqd-archive.net/worker/query/czM6Ly9mdWVsLXRlc3RuZXQ`.
 
@@ -184,7 +180,6 @@ The returned worker will be capable of processing `POST /` requests in which the
 ## Worker API
 
 <details>
-
 <summary><code>POST</code> <code><b>/</b></code> <code>(query inputs and receipts)</code></summary>
 
 ##### Query Fields
@@ -199,7 +194,6 @@ The returned worker will be capable of processing `POST /` requests in which the
 - **transactions**: (optional) A list of [transactions requests](#transactions). An empty list requests no data.
 
 <details>
-
 <summary>
 
 ##### Example Request
@@ -211,16 +205,15 @@ The returned worker will be capable of processing `POST /` requests in which the
   "type": "fuel",
   "fromBlock": 1000000,
   "toBlock": 1100000,
-  "fields": { "receipt": { "contract": true, "receiptType": true } },
-  "receipts": [{ "type": ["LOG_DATA"] }],
-  "inputs": [{ "type": ["InputCoin"] }]
+"fields": "\{ "receipt": \{ "contract": true, "receiptType": true \} \},"
+"receipts": "[\{ "type": ["LOG_DATA"] \}],"
+"inputs": "[\{ "type": ["InputCoin"] \}]"
 }
 ```
 
 </details>
 
 <details>
-
 <summary>
 
 ##### Example Response
@@ -271,13 +264,12 @@ The returned worker will be capable of processing `POST /` requests in which the
 
 </details>
 
-</details>
 
 ## Data requests
 
 ### Receipts
 
-```ts
+```typescript
 {
   type?: ReceiptType[]
   contract?: string[]
@@ -286,11 +278,11 @@ The returned worker will be capable of processing `POST /` requests in which the
 ```
 Receipts will be included in the response if it matches all the requests. An empty array matches no instructions; omit all requests to match all receipts.
 
-See [addReceipt()](/fuel-indexing/fuel-datasource/receipts) SDK data request method for details on this request; also see [Receipt fields](../../fuel-datasource/field-selection/#receipt).
+See [addReceipt()](fuel-indexing/fuel-datasource/receipts) SDK data request method for details on this request; also see [Receipt fields](../../fuel-datasource/field-selection/#receipt).
 
 ### Transactions
 
-```ts
+```typescript
 {
   type?: TransactionType[]
   receipts?: boolean
@@ -301,11 +293,11 @@ See [addReceipt()](/fuel-indexing/fuel-datasource/receipts) SDK data request met
 
 A transaction will be included in the response if it matches all the requests. An empty array matches no transactions; omit all requests to match all transactions.
 
-See [addTransaction()](/fuel-indexing/fuel-datasource/transactions) SDK data request method for details on this request; also see [Transaction fields](../../fuel-datasource/field-selection/#transaction).
+See [addTransaction()](fuel-indexing/fuel-datasource/transactions) SDK data request method for details on this request; also see [Transaction fields](../../fuel-datasource/field-selection/#transaction).
 
 ### Inputs
 
-```ts
+```typescript
 {
   type?: InputType[]
   coinOwner?: Bytes[]
@@ -319,11 +311,11 @@ See [addTransaction()](/fuel-indexing/fuel-datasource/transactions) SDK data req
 
 An input will be included in the response if it matches all the requests. An empty array matches no inputs; omit all requests to match all inputs.
 
-See [addInput()](/fuel-indexing/fuel-datasource/inputs) SDK data request method for details on this request; also see [Input fields](../../fuel-datasource/field-selection/#input).
+See [addInput()](fuel-indexing/fuel-datasource/inputs) SDK data request method for details on this request; also see [Input fields](../../fuel-datasource/field-selection/#input).
 
 ### Outputs
 
-```ts
+```typescript
 {
   type?: OutputType[]
   transaction?: boolean
@@ -332,8 +324,12 @@ See [addInput()](/fuel-indexing/fuel-datasource/inputs) SDK data request method 
 
 An output will be included in the response if it matches all the requests. An empty array matches no outputs; omit all requests to match all outputs.
 
-See [addOutput()](/fuel-indexing/fuel-datasource/outputs) SDK data request method for details on this request; also see [Output fields](../../fuel-datasource/field-selection/#output).
+See [addOutput()](fuel-indexing/fuel-datasource/outputs) SDK data request method for details on this request; also see [Output fields](../../fuel-datasource/field-selection/#output).
 
 ## Data fields selector
 
 A JSON selector of fields for the returned data items. Documented in the [Field selectors](../../fuel-datasource/field-selection) section.
+
+</details>
+
+</details>

@@ -1,3 +1,8 @@
+---
+title: "View Logs"
+description: "View squid logs from SQD Cloud"
+---
+
 `sqd logs`
 ==========
 
@@ -41,7 +46,7 @@ ORG FLAGS
 
 Notes:
  * `--since` accepts the notation of the [`ms` library](https://www.npmjs.com/package/ms): 1d, 10h, 1m.
- * With `--level=error` `sqd` will fetch logs emitted by three different calls to the [SDK Logger](/sdk/reference/logger), namely
+ * With `--level=error` `sqd` will fetch logs emitted by three different calls to the [SDK Logger](sdk/reference/logger), namely
    - `ctx.log.error`
    - `ctx.log.fatal`
    - `ctx.log.trace`

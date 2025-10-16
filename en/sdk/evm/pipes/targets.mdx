@@ -1,0 +1,447 @@
+---
+title: "Targets"
+description: "Persist and output processed blockchain data with targets in Pipes SDK"
+---
+
+# Targets
+
+Targets are the final destination for your processed blockchain data. They handle writing data to databases, files, or other outputs, and manage important production concerns like progress tracking and fork handling.
+
+## Basic Targets
+
+Create a target with the `createTarget` function:
+
+```typescript
+import { createTarget } from "@sqd-pipes/pipes";
+
+const target = createTarget({
+  write: async (data) => {
+    console.log(JSON.stringify(data, null, 2));
+  },
+});
+```
+
+### Running a Pipeline with a Target
+
+```typescript
+const pipeline = source.pipe(transformer);
+
+for await (const batch of pipeline.read()) {
+  await target.write(batch);
+}
+```
+
+## Console Target
+
+The simplest target logs data to the console:
+
+```typescript
+const consoleTarget = createTarget({
+  write: async (data) => {
+    console.log(`Processing ${data.blocks?.length || 0} blocks`);
+    console.log(JSON.stringify(data, null, 2));
+  },
+});
+```
+
+<Tip>
+  Console targets are useful for debugging and development. Use structured
+  logging for production.
+</Tip>
+
+## Database Targets
+
+### Clickhouse Target
+
+Pipes SDK provides built-in support for Clickhouse:
+
+```typescript
+import { createClickhouseTarget } from "@sqd-pipes/pipes";
+import { createClient } from "@clickhouse/client";
+
+const client = createClient({
+  host: "http://localhost:8123",
+  database: "default",
+});
+
+// Create table
+await client.exec(`
+  CREATE TABLE IF NOT EXISTS usdc_transfers (
+    block_number UInt64,
+    transaction_hash String,
+    from_address String,
+    to_address String,
+    value UInt256
+  )
+  ENGINE = MergeTree()
+  ORDER BY (block_number, transaction_hash)
+`);
+
+const target = createClickhouseTarget({
+  client,
+  table: "usdc_transfers",
+  write: async (data, insert) => {
+    const rows = [];
+
+    for (const transfer of data.transfer) {
+      rows.push({
+        block_number: transfer.block.header.number,
+        transaction_hash: transfer.transactionHash,
+        from_address: transfer.event.from,
+        to_address: transfer.event.to,
+        value: transfer.event.value.toString(),
+      });
+    }
+
+    if (rows.length > 0) {
+      await insert(rows);
+    }
+  },
+});
+```
+
+<Info>
+  Clickhouse targets automatically handle progress tracking and fork recovery.
+</Info>
+
+### Custom Database Target
+
+For other databases, implement a custom target:
+
+```typescript
+import { Pool } from "pg";
+
+const pool = new Pool({
+  host: "localhost",
+  database: "indexer",
+});
+
+const postgresTarget = createTarget({
+  write: async (data) => {
+    const client = await pool.connect();
+
+    try {
+      await client.query("BEGIN");
+
+      for (const transfer of data.transfer) {
+        await client.query(
+          `INSERT INTO transfers (block_number, tx_hash, from_addr, to_addr, value)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [
+            transfer.block.header.number,
+            transfer.transactionHash,
+            transfer.event.from,
+            transfer.event.to,
+            transfer.event.value.toString(),
+          ]
+        );
+      }
+
+      await client.query("COMMIT");
+    } catch (e) {
+      await client.query("ROLLBACK");
+      throw e;
+    } finally {
+      client.release();
+    }
+  },
+  fork: async (cursor) => {
+    // Rollback data after fork point
+    await pool.query("DELETE FROM transfers WHERE block_number > $1", [
+      cursor.number,
+    ]);
+  },
+});
+```
+
+## Cursor Management
+
+Cursors track progress so pipelines can resume from the last processed block.
+
+### Saving Progress
+
+```typescript
+let lastProcessedBlock = 0;
+
+const target = createTarget({
+  write: async (data) => {
+    await saveToDatabase(data);
+
+    // Update cursor
+    if (data.blocks && data.blocks.length > 0) {
+      lastProcessedBlock = data.blocks[data.blocks.length - 1].header.number;
+      await saveCursor({ number: lastProcessedBlock });
+    }
+  },
+});
+```
+
+### Resuming from Cursor
+
+```typescript
+// Load saved cursor
+const cursor = await loadCursor();
+
+// Resume from saved position
+for await (const batch of source.read(cursor)) {
+  await target.write(batch);
+}
+```
+
+<Check>
+  The source will start fetching from the block immediately after the cursor
+  position.
+</Check>
+
+### Complete Cursor Example
+
+```typescript
+import fs from "fs/promises";
+
+const CURSOR_FILE = "cursor.json";
+
+async function loadCursor() {
+  try {
+    const data = await fs.readFile(CURSOR_FILE, "utf-8");
+    return JSON.parse(data);
+  } catch {
+    return null;
+  }
+}
+
+async function saveCursor(cursor) {
+  await fs.writeFile(CURSOR_FILE, JSON.stringify(cursor));
+}
+
+const target = createTarget({
+  write: async (data) => {
+    // Process data
+    await processData(data);
+
+    // Save progress
+    if (data.blocks && data.blocks.length > 0) {
+      const lastBlock = data.blocks[data.blocks.length - 1];
+      await saveCursor({ number: lastBlock.header.number });
+      console.log(`Processed up to block ${lastBlock.header.number}`);
+    }
+  },
+});
+
+// Main execution
+async function main() {
+  const cursor = await loadCursor();
+
+  if (cursor) {
+    console.log(`Resuming from block ${cursor.number}`);
+  }
+
+  for await (const batch of source.read(cursor)) {
+    await target.write(batch);
+  }
+}
+
+main().catch(console.error);
+```
+
+## Fork Handling
+
+Blockchains can reorganize, making previously indexed blocks invalid. Handle this with the `fork` callback:
+
+```typescript
+const target = createTarget({
+  write: async (data) => {
+    await database.insert(data);
+  },
+  fork: async (cursor) => {
+    console.log(`Fork detected! Rolling back to block ${cursor.number}`);
+
+    // Remove data from orphaned blocks
+    await database.deleteBlocksAfter(cursor.number);
+
+    // Update saved cursor
+    await saveCursor(cursor);
+  },
+});
+```
+
+<Warning>
+  Always implement fork handling in production pipelines to maintain data
+  consistency during blockchain reorganizations.
+</Warning>
+
+### Fork Handling with Clickhouse
+
+```typescript
+const target = createClickhouseTarget({
+  client,
+  table: "transfers",
+  write: async (data, insert) => {
+    // ... insert logic
+  },
+  fork: async (cursor, deleteFrom) => {
+    console.log(`Rolling back from block ${cursor.number}`);
+    await deleteFrom(cursor.number);
+  },
+});
+```
+
+## File Targets
+
+Write data to files for offline analysis:
+
+### JSON File Target
+
+```typescript
+import fs from "fs/promises";
+
+const jsonTarget = createTarget({
+  write: async (data) => {
+    const filename = `data-block-${data.blocks[0].header.number}.json`;
+    await fs.writeFile(filename, JSON.stringify(data, null, 2));
+    console.log(`Wrote ${filename}`);
+  },
+});
+```
+
+### CSV File Target
+
+```typescript
+import { createWriteStream } from "fs";
+import { stringify } from "csv-stringify";
+
+const csvStream = createWriteStream("transfers.csv");
+const stringifier = stringify({ header: true });
+stringifier.pipe(csvStream);
+
+const csvTarget = createTarget({
+  write: async (data) => {
+    for (const transfer of data.transfer) {
+      stringifier.write({
+        block: transfer.block.header.number,
+        from: transfer.event.from,
+        to: transfer.event.to,
+        value: transfer.event.value.toString(),
+      });
+    }
+  },
+});
+
+// Don't forget to close the stream when done
+process.on("beforeExit", () => {
+  stringifier.end();
+  csvStream.end();
+});
+```
+
+## Multiple Targets
+
+Send data to multiple destinations:
+
+```typescript
+const consoleTarget = createTarget({
+  write: async (data) =>
+    console.log(`Processed ${data.transfer.length} transfers`),
+});
+
+const dbTarget = createTarget({
+  write: async (data) => await database.insert(data.transfer),
+});
+
+// Write to both targets
+for await (const batch of pipeline.read()) {
+  await Promise.all([consoleTarget.write(batch), dbTarget.write(batch)]);
+}
+```
+
+## Target API Reference
+
+### Write Function
+
+The `write` function receives processed data:
+
+```typescript
+{
+  write: async (data: Data) => Promise<void>;
+}
+```
+
+**Parameters:**
+
+- `data` - Processed data from the pipeline
+
+### Fork Callback
+
+The optional `fork` callback handles blockchain reorganizations:
+
+```typescript
+{
+  fork: async (cursor: Cursor) => Promise<void>;
+}
+```
+
+**Parameters:**
+
+- `cursor` - Block number where the fork occurred
+
+## Best Practices
+
+<AccordionGroup>
+<Accordion title="Use transactions for databases">
+  Wrap database writes in transactions to ensure atomicity. If one write fails, all writes in the batch should be rolled back.
+</Accordion>
+
+<Accordion title="Save cursors atomically">
+  Update cursor position in the same transaction as data writes to prevent
+  inconsistencies.
+</Accordion>
+
+<Accordion title="Implement fork handling">
+  Always implement the `fork` callback in production to handle blockchain
+  reorganizations.
+</Accordion>
+
+<Accordion title="Batch writes">
+  Accumulate multiple items and write them in batches for better database
+  performance.
+</Accordion>
+
+<Accordion title="Handle errors gracefully">
+  Implement retry logic for transient failures. Log errors for debugging.
+</Accordion>
+
+<Accordion title="Monitor progress">
+  Log processed block numbers and throughput to monitor pipeline health.
+</Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Data Persistence"
+    icon="database"
+    href="/en/sdk/evm/pipes/data-persistence"
+  >
+    Learn about Clickhouse integration
+  </Card>
+
+  <Card title="Examples" icon="code" href="/en/sdk/evm/pipes/examples">
+    See complete target examples
+  </Card>
+
+  <Card
+    title="Advanced Patterns"
+    icon="rocket"
+    href="/en/sdk/evm/pipes/advanced-patterns"
+  >
+    Explore advanced target patterns
+  </Card>
+
+  <Card
+    title="API Reference"
+    icon="file-code"
+    href="/en/sdk/evm/pipes/api-reference"
+  >
+    Complete API documentation
+  </Card>
+</CardGroup>

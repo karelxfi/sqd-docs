@@ -2,6 +2,7 @@
 title: "Fuel Networks"
 description: "Complete list of supported Fuel networks for data indexing"
 mode: "wide"
+
 ---
 
 <Info>
@@ -10,14 +11,14 @@ mode: "wide"
   available via the public network.
 </Info>
 
-SQD's [open private network](/en/subsquid-network/overview/#open-private-network) serves Fuel Network data via the following gateways:
+SQD's [open private network](en/subsquid-network/overview/#open-private-network) serves Fuel Network data via the following gateways:
 
 |   Network    |                     Gateway URL                     |
 | :----------: | :-------------------------------------------------: |
 | Fuel Mainnet | https://v2.archive.subsquid.io/network/fuel-mainnet |
 | Fuel Testnet | https://v2.archive.subsquid.io/network/fuel-testnet |
 
-Gateway URL should be used with the [`setGateway()`](/en/fuel-indexing/fuel-datasource/general/#set-gateway) `FuelDataSource` configuration method:
+Gateway URL should be used with the [`setGateway()`](en/fuel-indexing/fuel-datasource/general/#set-gateway) `FuelDataSource` configuration method:
 
 ```typescript
 const dataSource = new FuelDataSource().setGateway(
@@ -25,6 +26,6 @@ const dataSource = new FuelDataSource().setGateway(
 );
 ```
 
-Read more about Fuel indexing in the [dedicated section](/en/fuel-indexing).
+Read more about Fuel indexing in the [dedicated section](en/fuel-indexing).
 
-See [Fuel API](/en/fuel-indexing/network-api/fuel-api) if you're looking to interface with any of the Fuel gateways directly.
+See [Fuel API](en/fuel-indexing/network-api/fuel-api) if you're looking to interface with any of the Fuel gateways directly.

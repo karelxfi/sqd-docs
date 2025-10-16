@@ -1,12 +1,11 @@
 ---
-sidebar_position: 100
 description: >-
   Fine-tuning data requests with setFields()
 ---
 
 # Field selection
 
-#### `setFields(options)` {#set-fields}
+#### `setFields(options)` \{#set-fields\}
 
 Set the fields to be retrieved for data items of each supported type. The `options` object has the following structure:
 
@@ -102,13 +101,13 @@ Disabling unused fields will improve sync performance, as the disabled fields wi
 
 ## Data item types and field selectors
 
-:::tip
+<Tip>
 Most IDEs support smart suggestions to show the possible field selectors. For VS Code, press `Ctrl+Space`.
-:::
+</Tip>
 
-:::info
+<Info>
 All addresses and pubkeys are represented as base58-encoded strings.
-:::
+</Info>
 
 Here we describe the data item types as functions of the field selectors. Unless otherwise mentioned, each data item type field maps to the eponymous field of its corresponding field selector. Item fields are divided into three categories:
 
@@ -278,10 +277,10 @@ BlockHeader{
 ## A complete example
 
 ```ts
-import { run } from "@subsquid/batch-processor";
-import { augmentBlock } from "@subsquid/solana-objects";
-import { DataSourceBuilder, SolanaRpcClient } from "@subsquid/solana-stream";
-import { TypeormDatabase } from "@subsquid/typeorm-store";
+import \{ run \} from "@subsquid/batch-processor";
+import \{ augmentBlock \} from "@subsquid/solana-objects";
+import \{ DataSourceBuilder, SolanaRpcClient \} from "@subsquid/solana-stream";
+import \{ TypeormDatabase \} from "@subsquid/typeorm-store";
 import * as whirlpool from "./abi/whirpool";
 
 const dataSource = new DataSourceBuilder()
@@ -292,7 +291,7 @@ const dataSource = new DataSourceBuilder()
      }),
      strideConcurrency: 10,
   })
-  .setBlockRange({ from: 259_984_950 });
+  .setBlockRange(\{ from: 259_984_950 \});
   .setFields({
     block: {
       timestamp: false

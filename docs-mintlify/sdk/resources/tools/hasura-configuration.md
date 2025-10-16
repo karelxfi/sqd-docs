@@ -1,14 +1,13 @@
 ---
-sidebar_position: 110
 title: Hasura configuration tool
 description: Configure Hasura for your squid
 ---
 
 # Hasura configuration tool
 
-:::info
+<Info>
 For info on migrating to `@subsquid/hasura-configuration>=2.0.0` see [this page](/sdk/resources/migrate/migrate-to-hasura-configuration-tool-v2).
-:::
+</Info>
 
 [`@subsquid/hasura-configuration`](https://www.npmjs.com/package/@subsquid/hasura-configuration) is a tool for managing Hasura configuration in [PostgreSQL-powered squids](/sdk/resources/persisting-data/typeorm). Install it with
 ```bash
@@ -75,13 +74,13 @@ or import it using the _Settings > Metadata Actions > Import metadata_ function 
 
 ## Persisting configuration changes
 
-:::warning
+<Warning>
 Regenerating `hasura_metadata.json` removes any modifications you might have made via metadata exporting. So, it is advisable that you finalize your schema before you begin any manual API fine-tuning.
-:::
+</Warning>
 
 When running a squid with a dedicated Hasura instance you will notice that squid resetting operations (`docker compose down; docker compose up -d` and `sqd deploy -r`) restore your Hasura API to its non-configured state. As you develop your API further you may want to persist your changes. `squid-hasura-configuration` helps with that by being compatible with the _Settings > Metadata Actions > Import/Export metadata_ functions of the web GUI.
 
-![Web UI import and export](hasura-configuration-web-ui-import-export.png)
+\{/* [\1](\2) */\}
 
 Any extra configuration you may make via the web GUI or [Hasura metadata API](https://hasura.io/docs/2.0/api-reference/metadata-api/index) can be persisted by exporting the metadata to `hasura_metadata.json` via the _Export metadata_ function, then applying it to blank Hasura instances with
 ```bash

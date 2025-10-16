@@ -1,0 +1,277 @@
+---
+title: "Quickstart"
+description: "Build your first blockchain data pipeline in 5 minutes with Pipes SDK"
+---
+
+# Quickstart
+
+This 5-minute tutorial shows you how to build a blockchain data pipeline using Pipes SDK. You'll create a simple pipeline that fetches USDC transfer events from Ethereum and displays them in your console.
+
+## What You'll Build
+
+Your pipeline will:
+
+- Fetch USDC Transfer events from Ethereum block 20,000,000
+- Display the transfer data in your console
+- Demonstrate the basic Source → Target pattern
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- **Node.js v18+** - [Download here](https://nodejs.org/)
+- **npm, yarn, or Bun** - Package manager of your choice
+- **Basic TypeScript knowledge** - Familiarity with TypeScript syntax
+
+<Steps>
+<Step title="Install Pipes SDK">
+
+Create a new directory and initialize your project:
+
+<CodeGroup>
+```bash npm
+mkdir my-first-pipeline
+cd my-first-pipeline
+npm init -y
+npm install @sqd-pipes/pipes @sqd-pipes/evm-processor
+```
+
+```bash yarn
+mkdir my-first-pipeline
+cd my-first-pipeline
+yarn init -y
+yarn add @sqd-pipes/pipes @sqd-pipes/evm-processor
+```
+
+```bash bun
+mkdir my-first-pipeline
+cd my-first-pipeline
+bun init -y
+bun add @sqd-pipes/pipes @sqd-pipes/evm-processor
+```
+
+</CodeGroup>
+
+<Check>Packages installed successfully</Check>
+
+</Step>
+
+<Step title="Install TypeScript dependencies">
+
+Since Pipes SDK is written in TypeScript, install the required dev dependencies:
+
+<CodeGroup>
+```bash npm
+npm install -D typescript ts-node @types/node
+```
+
+```bash yarn
+yarn add -D typescript ts-node @types/node
+```
+
+```bash bun
+bun add -D typescript @types/node
+```
+
+</CodeGroup>
+
+Initialize TypeScript configuration:
+
+```bash
+npx tsc --init
+```
+
+</Step>
+
+<Step title="Create your first pipeline">
+
+Create a file called `index.ts` with the following code:
+
+```typescript index.ts
+import { createEvmSource } from "@sqd-pipes/evm-processor";
+import { createTarget } from "@sqd-pipes/pipes";
+
+// Define the USDC contract address
+const USDC_CONTRACT = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
+
+// Create a data source
+const source = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: {
+      from: 20_000_000,
+      to: 20_000_000,
+    },
+    logs: [
+      {
+        address: [USDC_CONTRACT],
+        topic0: [
+          "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+        ], // Transfer event signature
+      },
+    ],
+  },
+});
+
+// Create a console target
+const target = createTarget({
+  write: async (data) => {
+    console.log("Received data:");
+    console.log(JSON.stringify(data, null, 2));
+  },
+});
+
+// Run the pipeline
+async function main() {
+  for await (const batch of source.read()) {
+    await target.write(batch);
+  }
+}
+
+main().catch(console.error);
+```
+
+<Info>
+  This pipeline fetches all Transfer events from the USDC contract at Ethereum
+  block 20,000,000 and prints them to the console.
+</Info>
+
+</Step>
+
+<Step title="Run your pipeline">
+
+Execute your pipeline:
+
+<CodeGroup>
+```bash npm
+npx ts-node index.ts
+```
+
+```bash bun
+bun index.ts
+```
+
+</CodeGroup>
+
+You should see output similar to:
+
+```json
+Received data:
+{
+  "blocks": [
+    {
+      "header": {
+        "number": 20000000,
+        "hash": "0x...",
+        ...
+      },
+      "logs": [
+        {
+          "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "data": "0x...",
+          "topics": [
+            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+            ...
+          ],
+          ...
+        }
+      ]
+    }
+  ]
+}
+```
+
+<Check>
+  Congratulations! You've successfully built and run your first Pipes SDK
+  pipeline.
+</Check>
+
+</Step>
+</Steps>
+
+## Understanding the Code
+
+Let's break down what each part does:
+
+### Data Source
+
+```typescript
+const source = createEvmSource({
+  gateway: 'https://v2.archive.subsquid.io/network/ethereum-mainnet',
+  chain: 'ethereum-mainnet',
+  query: { ... }
+})
+```
+
+The source connects to the SQD Network gateway and specifies:
+
+- Which blockchain to query (`ethereum-mainnet`)
+- What block range to fetch (`20_000_000` to `20_000_000`)
+- What event logs to retrieve (USDC Transfer events)
+
+### Target
+
+```typescript
+const target = createTarget({
+  write: async (data) => {
+    console.log(JSON.stringify(data, null, 2));
+  },
+});
+```
+
+The target defines what to do with the data. In this case, it simply logs the data to the console.
+
+### Pipeline Execution
+
+```typescript
+for await (const batch of source.read()) {
+  await target.write(batch);
+}
+```
+
+This loop reads data batches from the source and writes them to the target.
+
+## Next Steps
+
+Now that you've built your first pipeline, explore more advanced features:
+
+<CardGroup cols={2}>
+  <Card
+    title="Core Concepts"
+    icon="book"
+    href="/en/sdk/evm/pipes/core-concepts"
+  >
+    Learn about Sources, Transformers, and Targets
+  </Card>
+
+  <Card
+    title="Add Transformers"
+    icon="wand-magic-sparkles"
+    href="/en/sdk/evm/pipes/transformers"
+  >
+    Decode and transform blockchain data
+  </Card>
+
+  <Card
+    title="Event Decoding"
+    icon="code"
+    href="/en/sdk/evm/pipes/evm-event-decoding"
+  >
+    Decode smart contract events
+  </Card>
+
+  <Card
+    title="Data Persistence"
+    icon="database"
+    href="/en/sdk/evm/pipes/data-persistence"
+  >
+    Save data to Clickhouse or other databases
+  </Card>
+</CardGroup>
+
+<Tip>
+  Check out the [Examples](/en/sdk/evm/pipes/examples) page for more complete
+  pipeline examples including event decoding, data persistence, and advanced
+  patterns.
+</Tip>

@@ -1,5 +1,4 @@
 ---
-sidebar_position: 30
 title: Nested field queries
 description: >-
   Query entities related to other entities
@@ -13,7 +12,7 @@ As an example, this query searches for all `accounts` whose balance is bigger th
 
 ```graphql
 query {
-  accounts(orderBy: balance_ASC, where: {balance_gte: "250000000000000000"}) {
+  accounts(orderBy: balance_ASC, where: \{balance_gte: "250000000000000000"\}) \{
     id
     balance
     historicalBalances {
@@ -32,10 +31,10 @@ In the following query the `historicalBalances` are filtered in order to only re
 
 ```graphql
 query {
-  accounts(orderBy: balance_ASC, where: {balance_gte: "250000000000000000"}) {
+  accounts(orderBy: balance_ASC, where: \{balance_gte: "250000000000000000"\}) \{
     id
     balance
-    historicalBalances(where: {date_lte: "2020-10-31T11:59:59.000Z"}, orderBy: balance_DESC) {
+    historicalBalances(where: \{date_lte: "2020-10-31T11:59:59.000Z"\}, orderBy: balance_DESC) \{
       balance
       date
       id
@@ -44,4 +43,4 @@ query {
 }
 
 ```
-Note that the [newer](/sdk/reference/openreader-server/overview/#supported-queries) and [more advanced](/sdk/reference/openreader-server/api/paginate-query-results) `{entityName}sConnection` queries support exactly the same format of the `where` argument as the older `{entityName}s` queries used in the examples provided here.
+Note that the [newer](/sdk/reference/openreader-server/overview/#supported-queries) and [more advanced](/sdk/reference/openreader-server/api/paginate-query-results) `\{entityName\}sConnection` queries support exactly the same format of the `where` argument as the older `\{entityName\}s` queries used in the examples provided here.

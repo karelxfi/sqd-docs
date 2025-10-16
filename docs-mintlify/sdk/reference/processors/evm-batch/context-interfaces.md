@@ -1,5 +1,4 @@
 ---
-sidebar_position: 5
 description: >-
   Block data for EVM
 ---
@@ -37,8 +36,8 @@ The exact fields available in each data item type are inferred from the `setFiel
 The handler below simply outputs all the log items emitted by the contract `0x2E645469f354BB4F5c8a05B3b30A929361cf77eC` in [real time](/sdk/resources/unfinalized-blocks):
 
 ```ts
-import { TypeormDatabase } from '@subsquid/typeorm-store'
-import { EvmBatchProcessor } from '@subsquid/evm-processor'
+import \{ TypeormDatabase \} from '@subsquid/typeorm-store'
+import \{ EvmBatchProcessor \} from '@subsquid/evm-processor'
 
 const CONTRACT_ADDRESS = '0x2E645469f354BB4F5c8a05B3b30A929361cf77eC'.toLowerCase()
 
@@ -46,7 +45,7 @@ const processor = new EvmBatchProcessor()
   .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')
   .setRpcEndpoint('<my_eth_rpc_url>')
   .setFinalityConfirmation(75)
-  .setBlockRange({ from: 17000000 })
+  .setBlockRange(\{ from: 17000000 \})
   .addLog({
     address: [CONTRACT_ADDRESS]
   })

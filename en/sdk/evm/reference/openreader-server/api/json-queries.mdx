@@ -1,11 +1,12 @@
 ---
+title: "JSON Queries"
 description: >-
   Query entities with Object-typed fields
 ---
 
 # JSON queries
 
-The possibility of defining JSON objects as fields of a type in a GraphQL schema has been explained in the [schema reference](/sdk/reference/schema-file).
+The possibility of defining JSON objects as fields of a type in a GraphQL schema has been explained in the [schema reference](sdk/reference/schema-file).
 
 This guide is focusing on how to query such objects and how to fully leverage their potential. Let's take the example of this (non-crypto related, for once😁) schema:
 
@@ -35,7 +36,7 @@ Let's now look at a simple query:
 query {
     entities(orderBy: id_ASC) {
         id
-        a { a }
+        a \{ a \}
     }
 }
 ```
@@ -45,10 +46,10 @@ This will return a result such as this one (imagining this data exists in the da
 ```graphql
 {
   entities: [
-    {id: '1', a: {a: 'a'}},
-    {id: '2', a: {a: 'A'}},
-    {id: '3', a: {a: null}},
-    {id: '4', a: null}
+    \{id: '1', a: \{a: 'a'\}\},
+    \{id: '2', a: \{a: 'A'\}\},
+    \{id: '3', a: \{a: null\}\},
+    \{id: '4', a: null\}
   ]
 }
 ```

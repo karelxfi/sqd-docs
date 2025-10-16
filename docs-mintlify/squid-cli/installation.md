@@ -1,5 +1,4 @@
 ---
-sidebar_position: 10
 description: Setup Squid CLI
 ---
 
@@ -28,15 +27,15 @@ sqd --version
 ```
 Make sure the output looks like `@subsquid/cli@<version>`.
 
-:::info
+<Info>
 The next steps are **optional** for building and running squids. A key is required to enable the CLI commands managing the [SQD Cloud](/cloud) deployments.
-:::
+</Info>
 
 ## 1. Obtain a SQD Cloud deployment key
 
 Sign in to [Cloud](https://app.subsquid.io/), and obtain (or refresh) the deployment key page by clicking at the profile picture > "Deployment key":
 
-![Cloud deployment key page](./installation-deployment-key.png)
+\{/* [\1](\2) */\}
 
 ## 2. Authenticate Squid CLI
 

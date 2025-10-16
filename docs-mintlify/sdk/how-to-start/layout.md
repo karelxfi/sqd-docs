@@ -1,5 +1,4 @@
 ---
-sidebar_position: 40
 title: Project structure
 description: The folder layout of a squid project
 ---

@@ -1,5 +1,4 @@
 ---
-sidebar_position: 33
 title: addons.hasura section
 description: Run a Hasura instance
 ---
@@ -12,7 +11,7 @@ To provision a [Hasura](https://hasura.io) instance, add an empty `deploy.addons
 ```yaml
 deploy:
   env:
-    HASURA_GRAPHQL_ADMIN_SECRET: "${{ secrets.HASURA_SECRET }}"
+    HASURA_GRAPHQL_ADMIN_SECRET: "$\{\{ secrets.HASURA_SECRET \}\}"
     HASURA_GRAPHQL_UNAUTHORIZED_ROLE: user
     HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: "true"
   addons:

@@ -2,7 +2,6 @@
 title: Frontier EVM-indexing squid
 description: >-
   Build a squid indexing NFTs on Astar
-sidebar_position: 60
 ---
 
 # Frontier EVM-indexing Squid
@@ -114,8 +113,8 @@ Before we begin defining the mapping logic of the squid, we are going to write a
 Here are the full file contents:
 
 ```ts title="src/contracts.ts"
-import { Store } from '@subsquid/typeorm-store'
-import { Contract } from './model'
+import \{ Store \} from '@subsquid/typeorm-store'
+import \{ Contract \} from './model'
 
 export const astarDegensAddress = '0xd59fC6Bfd9732AB19b03664a45dC29B8421BDA9a'.toLowerCase();
 export const astarCatsAddress = '0x8b5d62f396Ca3C6cF19803234685e693733f9779'.toLowerCase();
@@ -146,7 +145,7 @@ The `src/processor.ts` file is where squids instantiate and configure their proc
 We adapt the template code to handle two contracts instead of one and point the processor data source setting to the `astar` [SQD Network gateway URL](/subsquid-network/reference/networks). Here is the end result:
 
 ```ts title="src/processor.ts"
-import {assertNotNull} from '@subsquid/util-internal'
+import \{assertNotNull\} from '@subsquid/util-internal'
 import {
     BlockHeader,
     DataHandlerContext,
@@ -158,10 +157,10 @@ import {
 } from '@subsquid/substrate-processor'
 import * as erc721 from './abi/erc721'
 
-import {astarDegensAddress, astarCatsAddress} from './contracts'
+import \{astarDegensAddress, astarCatsAddress\} from './contracts'
 
 const processor = new SubstrateBatchProcessor()
-  .setBlockRange({ from: 442693 })
+  .setBlockRange(\{ from: 442693 \})
   .setGateway('https://v2.archive.subsquid.io/network/astar-substrate')
   .setRpcEndpoint({
     url: assertNotNull(process.env.RPC_ENDPOINT),
@@ -169,12 +168,12 @@ const processor = new SubstrateBatchProcessor()
   })
   .addEvmLog({
     address: [astarDegensAddress],
-    range: { from: 442693 },
+    range: \{ from: 442693 \},
     topic0: [erc721.events.Transfer.topic]
   })
   .addEvmLog({
     address: [astarCatsAddress],
-    range: { from: 800854 },
+    range: \{ from: 800854 \},
     topic0: [erc721.events.Transfer.topic]
   })
 
@@ -186,23 +185,23 @@ export type Extrinsic = _Extrinsic<Fields>
 export type ProcessorContext<Store> = DataHandlerContext<Store, Fields>
 ```
 
-:::warning
+<Warning>
 This code expects to find an URL of a working Astar RPC endpoint in the `RPC_ENDPOINT` environment variable. Set it in the `.env` file and in [SQD Cloud secrets](/cloud/resources/env-variables) if and when you deploy your squid there. We tested the code using a public endpoint available at `wss://astar.public.blastapi.io`; for production, we recommend using private endpoints or our [RPC addon](/cloud/resources/rpc-proxy).
-:::
+</Warning>
 
 ## Define the batch handler
 
 We change the batch handler logic taking care to avoid token ID clashing:
 
 ```ts title="src/main.ts"
-import { Store, TypeormDatabase } from '@subsquid/typeorm-store'
-import { In } from 'typeorm'
+import \{ Store, TypeormDatabase \} from '@subsquid/typeorm-store'
+import \{ In \} from 'typeorm'
 import {
   astarDegensAddress,
   astarCatsAddress,
   contractMapping
 } from './contracts'
-import { Owner, Token, Transfer } from './model'
+import \{ Owner, Token, Transfer \} from './model'
 import * as erc721 from './abi/erc721'
 import {
   processor,
@@ -243,7 +242,7 @@ type TransferData = {
 }
 
 function handleTransfer(block: Block, event: Event): TransferData {
-  const { from, to, tokenId } = erc721.events.Transfer.decode(event)
+  const \{ from, to, tokenId \} = erc721.events.Transfer.decode(event)
   return {
     id: event.id,
     from,
@@ -259,7 +258,7 @@ async function saveTransfers(
   ctx: ProcessorContext<Store>,
   transfersData: TransferData[]
 ) {
-  const getTokenId = transferData => `${contractMapping.get(transferData.contractAddress)?.symbol ?? ""}-${transferData.token.toString()}`
+  const getTokenId = transferData => `$\{contractMapping.get(transferData.contractAddress)?.symbol ?? ""\}-$\{transferData.token.toString()\}`
 
   const tokensIds: Set<string> = new Set()
   const ownersIds: Set<string> = new Set()
@@ -271,12 +270,12 @@ async function saveTransfers(
   }
 
   const tokens: Map<string, Token> = new Map(
-    (await ctx.store.findBy(Token, { id: In([...tokensIds]) }))
+    (await ctx.store.findBy(Token, \{ id: In([...tokensIds]) \}))
       .map(token => [token.id, token])
   )
 
   const owners: Map<string, Owner> = new Map(
-    (await ctx.store.findBy(Owner, { id: In([...ownersIds]) }))
+    (await ctx.store.findBy(Owner, \{ id: In([...ownersIds]) \}))
       .map(owner => [owner.id, owner])
   )
 
@@ -286,20 +285,20 @@ async function saveTransfers(
     const contract = new erc721.Contract(
       // temporary workaround for SDK issue 212
       // passing just the ctx as first arg may already work
-      {_chain: {client: ctx._chain.rpc}},
-      { height: transferData.block },
+      \{_chain: \{client: ctx._chain.rpc\}\},
+      \{ height: transferData.block \},
       transferData.contractAddress
     )
 
     let from = owners.get(transferData.from)
     if (from == null) {
-      from = new Owner({ id: transferData.from, balance: 0n })
+      from = new Owner(\{ id: transferData.from, balance: 0n \})
       owners.set(from.id, from)
     }
 
     let to = owners.get(transferData.to)
     if (to == null) {
-      to = new Owner({ id: transferData.to, balance: 0n })
+      to = new Owner(\{ id: transferData.to, balance: 0n \})
       owners.set(to.id, to)
     }
 
@@ -316,7 +315,7 @@ async function saveTransfers(
 
     token.owner = to
 
-    const { id, block, timestamp } = transferData
+    const \{ id, block, timestamp \} = transferData
 
     const transfer = new Transfer({
       id,
@@ -338,9 +337,9 @@ async function saveTransfers(
 
 [//]: # (!!!! Remove the Contract ctx hack once the alias is added by SDK)
 
-:::info
+<Info>
 The `contract.tokenURI` call is accessing the **state** of the contract via a chain RPC endpoint. This is slowing down the indexing a little bit, but this data is only available this way. You'll find more information on accessing state in the [dedicated section of our docs](/sdk/resources/substrate/frontier-evm#access-contract-state).
-:::
+</Info>
 
 ## Database and the migration
 
@@ -398,7 +397,7 @@ Visit [`localhost:4350/graphql`](http://localhost:4350/graphql) to access the [G
 
 ```graphql
 query MyQuery {
-  owners(limit: 10, where: {}, orderBy: balance_DESC) {
+  owners(limit: 10, where: \{\}, orderBy: balance_DESC) \{
     balance
     id
   }
@@ -409,7 +408,7 @@ Or this other one, looking up the tokens owned by a given owner:
 
 ```graphql
 query MyQuery {
-  tokens(where: {owner: {id_eq: "0x1210f3ea18ef463c162fff9084cee5b6e5ccab37"}}) {
+  tokens(where: \{owner: \{id_eq: "0x1210f3ea18ef463c162fff9084cee5b6e5ccab37"\}\}) \{
     uri
     contract {
       id

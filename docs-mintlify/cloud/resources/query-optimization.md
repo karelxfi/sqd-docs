@@ -1,5 +1,4 @@
 ---
-sidebar_position: 65
 title: Query optimization
 description: Ensuring your squid's perfomance
 ---

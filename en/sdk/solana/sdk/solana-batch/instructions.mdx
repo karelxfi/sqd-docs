@@ -1,11 +1,12 @@
 ---
+title: "Instructions"
 description: >-
   Track instruction execution with addInstruction()
 ---
 
 # Instructions
 
-#### `addInstruction(options)` {#add-instruction}
+#### `addInstruction(options)` \{#add-instruction\}
 
 This allows for tracking program instructions. `options` has the following structure:
 
@@ -63,6 +64,6 @@ Related data retrieval flags:
 - `logs = true`: retrieve all logs emitted due to the instruction
 - `innerInstructions = true`: retrieve the data for all instruction calls due to the matching instruction
 
-The related data will be added to the appropriate iterables within the [block data](/solana-indexing/sdk/solana-batch/context-interfaces). You can also call `augmentBlock()` from `@subsquid/solana-objects` on the block data to populate the convenience reference fields like `instruction.inner`.
+The related data will be added to the appropriate iterables within the [block data](solana-indexing/sdk/solana-batch/context-interfaces). You can also call `augmentBlock()` from `@subsquid/solana-objects` on the block data to populate the convenience reference fields like `instruction.inner`.
 
 Selection of the exact fields to be retrieved for each instruction item and the related data is done with the `setFields()` method documented on the [Field selection](../field-selection) page.

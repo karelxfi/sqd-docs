@@ -1,13 +1,14 @@
 ---
 title: Self-hosting
 description: Deploy squid locally or on-premises
+
 ---
 
 # Self-hosting
 
-:::tip
-Many tips from our [best practices guide](/cloud/resources/best-practices) apply to self-hosted squids, too. Check it out if you intend to use your squid in production.
-:::
+<Tip>
+Many tips from our [best practices guide](cloud/resources/best-practices) apply to self-hosted squids, too. Check it out if you intend to use your squid in production.
+</Tip>
 
 To deploy a squid locally or on-premises, use the following Dockerfile template to build a single image for both `api` and `processor` services:
 
@@ -112,4 +113,4 @@ services:
         condition: service_healthy
 ```
 
-Note that `sqd serve:prod` and `sqd process:prod` commands are defined in the [`commands.json` file](/squid-cli/commands-json).
+Note that `sqd serve:prod` and `sqd process:prod` commands are defined in the [`commands.json` file](squid-cli/commands-json).

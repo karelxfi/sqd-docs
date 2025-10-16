@@ -2,7 +2,6 @@
 title: "Indexing Orca Whirlpool"
 description: >-
   Indexing Orca Whirlpool transactions on Solana
-sidebar_position: 10
 ---
 
 # Indexing the Orca DEX
@@ -65,14 +64,14 @@ Here, `d8` are the eight bytes that the relevant instruction data starts with.
 "Data source" is a component that defines what data should be retrieved and where to get it. To configure the data source to retrieve the data produced by the `swap` instruction of the Whirlpool program, we initialize it like this:
 ```typescript title="src/main.ts"
 // ...
-import {run} from '@subsquid/batch-processor'
-import {augmentBlock} from '@subsquid/solana-objects'
-import {DataSourceBuilder, SolanaRpcClient} from '@subsquid/solana-stream'
-import {TypeormDatabase} from '@subsquid/typeorm-store'
+import \{run\} from '@subsquid/batch-processor'
+import \{augmentBlock\} from '@subsquid/solana-objects'
+import \{DataSourceBuilder, SolanaRpcClient\} from '@subsquid/solana-stream'
+import \{TypeormDatabase\} from '@subsquid/typeorm-store'
 import assert from 'assert'
 import * as tokenProgram from './abi/token-program'
 import * as whirlpool from './abi/whirpool'
-import {Exchange} from './model'
+import \{Exchange\} from './model'
 
 const dataSource = new DataSourceBuilder()
   // Provide SQD Network Gateway URL.
@@ -84,7 +83,7 @@ const dataSource = new DataSourceBuilder()
     }),
     strideConcurrency: 10 // max concurrent RPC connections
   })
-  .setBlockRange({from: 259_984_950})
+  .setBlockRange(\{from: 259_984_950\})
   .setFields({
     block: {
       timestamp: true
@@ -145,7 +144,7 @@ With a data source it becomes possible to retrieve filtered blockchain data from
 
 The other part the squid processor (the ingester process of the indexer) is the callback function used to process batches of the filtered data, the [batch handler](/sdk/reference/processors/architecture/#processorrun). In Solana Squid SDK it is typically defined within a `run()` call, like this:
 ```typescript
-import {run} from '@subsquid/batch-processor'
+import \{run\} from '@subsquid/batch-processor'
 
 run(dataSource, database, async ctx => {
     // data transformation and persistence code here

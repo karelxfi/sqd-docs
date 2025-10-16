@@ -1,12 +1,11 @@
 ---
-sidebar_position: 50
 description: >-
   Track balance changes with addBalance()
 ---
 
 # Balances
 
-#### `addBalance(options)` {#add-balance}
+#### `addBalance(options)` \{#add-balance\}
 
 This allows for tracking SOL account balances. `options` has the following structure:
 

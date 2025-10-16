@@ -1,4 +1,5 @@
 ---
+title: "Factory Contracts"
 description: >-
   Indexing a dynamic set of contracts
 ---
@@ -42,7 +43,7 @@ let factoryPools: Set<string>
 
 processor.run(new TypeormDatabase(), async (ctx) => {
   if (!factoryPools) {
-    factoryPools = await ctx.store.findBy(Pool, {}).then((q) => new Set(q.map((i) => i.id)))
+    factoryPools = await ctx.store.findBy(Pool, \{\}).then((q) => new Set(q.map((i) => i.id)))
   }
 
   let pools: PoolData[] = []
@@ -52,7 +53,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
     for (let log of block.logs) {
       if (log.address === FACTORY_ADDRESS) {
         pools.push(getPoolData(ctx, log))
-      } else if (factoryPools.has(log.address)) {
+      \} else if (factoryPools.has(log.address)) \{
         swaps.push(getSwap(ctx, log))
       }
     }
@@ -74,7 +75,7 @@ The technique has a couple of limitations:
 The idea is to retrieve the list of the contracts that the factory deploys up to a certain block _before the main sync starts_. Then all data of interest up to that block can be requested only for these contracts. Once that data is retrieved, the contract can switch back to retrieving the data chain-wide and filtering it in processor. The example above can be changed to:
 
 ```typescript title="src/processor.ts"
-const { preloadHeight, preloadedPools } = loadPools() // e.g. from a filesystem
+const \{ preloadHeight, preloadedPools \} = loadPools() // e.g. from a filesystem
 
 export const processor = new EvmBatchProcessor()
   .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')

@@ -1,48 +1,92 @@
 ---
-title: "Overview"
-description: "Deploy and scale your squids on SQD Cloud"
+title: "SQD Cloud Overview"
+description: "Deploy and scale your squids on SQD Cloud with enterprise-grade infrastructure"
 ---
 
-# Deployment workflow
+# SQD Cloud Overview
 
-Here we show how to deploy a production-ready indexer ("squid") to SQD Cloud. See [Development flow](/sdk/how-to-start/squid-development) and the rest of the [Indexing SDK](/sdk) section for more info on how to develop one of these.
+SQD Cloud provides enterprise-grade infrastructure for deploying, managing, and scaling your blockchain indexers. This guide shows you how to deploy a production-ready indexer ("squid") to SQD Cloud.
 
-**Pre-requisites:** Docker, [Squid CLI](/squid-cli/installation)
+<Info>
+  Before deploying to SQD Cloud, ensure you have a working squid locally. See
+  [Development flow](sdk/how-to-start/squid-development) and the [Indexing
+  SDK](sdk) section for development guidance.
+</Info>
 
-## 1. Prepare the squid for deployment
+## Prerequisites
 
-Make sure that the squid is ready for deployment. This includes:
+Before you begin, ensure you have:
 
-- Verifying that the squid is working as expected locally.
-- Ensuring that the squid is free of any major performance issues. See [Best practices](/cloud/resources/best-practices) for guidance.
-- Updating the `squid.yaml` file (a.k.a. "deployment manifest") with the correct values for your use case.
-- Setting up SQD Cloud secrets if necessary.
+- **Docker** - [Download here](https://www.docker.com/) (for local development)
+- **Squid CLI** - [Installation guide](squid-cli/installation)
+- **Working squid** - A locally tested indexer ready for deployment
 
-## 2. Register a SQD account
+<Steps>
+<Step title="Prepare the squid for deployment" icon="list-check">
 
-You can register a SQD account by visiting the [SQD cloud](https://app.subsquid.io). Click `Create an account` and fill in the required information, or sign in with your GitHub or Google account.
+Ensure your squid is ready for production deployment:
 
-## 3. Create a professional organization
+- **Test locally** - Verify the squid works as expected in your local environment
+- **Performance check** - Ensure no major performance issues. See [Best practices](cloud/resources/best-practices) for guidance
+- **Update configuration** - Update the `squid.yaml` file with correct values for your use case
+- **Set up secrets** - Configure SQD Cloud secrets if your squid requires sensitive data
 
-Once you're logged in, create a new [organization](/cloud/resources/organizations) and upgrade it to [professional](/cloud/resources/organizations/#professional-organizations) by attaching a valid credit card in the "Billing" tab.
+<Warning>
+  Production deployments should be thoroughly tested locally to avoid issues in
+  the cloud environment.
+</Warning>
 
-![Create an organization](/images/cloud/overview-create-org.png)
+<Check>Your squid is tested and ready for cloud deployment.</Check>
 
-You can skip this step, but then you will only be able to deploy to your account's [playground](/cloud/resources/organizations/#playgrounds). Playground squids are a trial / development solution with limited functionality; they are not suitable for use in production.
+</Step>
 
-## 4. Edit the `squid.yaml` file
+<Step title="Register a SQD account" icon="user-plus">
 
-### 4.1. Basic configuration
+Create your SQD Cloud account:
 
-First, set squid name, description, and other metadata in the [header section](/cloud/reference/manifest/#header) of the `squid.yaml` file.
+1. Visit the [SQD Cloud console](https://app.subsquid.io)
+2. Click **Create an account** and fill in the required information
+3. Or sign in with your GitHub or Google account
 
-If necessary, configure your [`build` options](/cloud/reference/manifest/#build) next. If the defaults - NodeJS v20 and `npm` for package manager - work for you, just create an empty `build` section.
+<Check>You'll receive a confirmation email to verify your account.</Check>
 
-Finally, edit the [`deploy` section](/cloud/reference/manifest/#deploy) to specify the deployment options.
+</Step>
 
-The resulting configuration file may look like this:
+<Step title="Create a professional organization" icon="building">
 
-```yaml
+Set up your organization for production use:
+
+1. Create a new [organization](cloud/resources/organizations) in SQD Cloud
+2. Upgrade to [professional](cloud/resources/organizations/#professional-organizations) by attaching a valid credit card in the "Billing" tab
+
+<Note>
+  You can skip this step, but you'll only be able to deploy to your account's
+  [playground](cloud/resources/organizations/#playgrounds). Playground squids
+  are trial/development solutions with limited functionality and are not
+  suitable for production use.
+</Note>
+
+<Check>
+  Your professional organization is ready for production deployments.
+</Check>
+
+</Step>
+
+<Step title="Edit the squid.yaml file" icon="file-code">
+
+Configure your deployment manifest for SQD Cloud:
+
+### Basic Configuration
+
+First, set squid name, description, and other metadata in the [header section](cloud/reference/manifest/#header) of the `squid.yaml` file.
+
+If necessary, configure your [`build` options](cloud/reference/manifest/#build) next. If the defaults (NodeJS v20 and `npm` for package manager) work for you, just create an empty `build` section.
+
+Finally, edit the [`deploy` section](cloud/reference/manifest/#deploy) to specify the deployment options.
+
+**Example configuration:**
+
+```yaml squid.yaml
 manifest_version: subsquid.io/v0.1
 name: sample-squid
 
@@ -55,61 +99,81 @@ deploy:
     cmd: ["sqd", "serve:prod"]
 ```
 
-Note that the `processor` and `api` commands are [commands.json](/squid-cli/commands-json)-based. This is optional.
+<Note>
+  The `processor` and `api` commands are
+  [commands.json](squid-cli/commands-json)-based. This is optional but
+  recommended for complex deployments.
+</Note>
 
-### 4.2. Using addons
+### Configure Addons
 
-SQD Cloud addons enable extra services for your squid. Enable them in the `deploy.addons` section.
+SQD Cloud addons enable extra services for your squid. Enable them in the `deploy.addons` section based on your requirements.
 
-#### `rpc` addon
+<AccordionGroup>
+<Accordion title="RPC Addon" icon="network-wired">
 
-For real time data you can use the [`rpc` addon](/cloud/resources/rpc-proxy). First, open the `RPC endpoints` tab in the SQD cloud sidebar and copy the URL of the chosen endpoint.
+Use the [`rpc` addon](cloud/resources/rpc-proxy) for real-time data access:
 
-![RPC addon tab](./overview-rpc-page.png)
+**Steps to configure:**
 
-Add it to the `.env` file:
+1. Open the **RPC endpoints** tab in the SQD Cloud sidebar
+2. Copy the URL of your chosen endpoint
+3. Add it to your `.env` file:
 
-```bash
+```bash .env
 RPC_ARBITRUM_ONE_HTTP=<endpoint-url>
 ```
 
-This allows using the Cloud RPC in local runs. To make the same endpoint available in Cloud, enable the addon in the `addons` section:
+4. Enable the addon in your `squid.yaml`:
 
-```yaml
+```yaml squid.yaml
 deploy:
   addons:
     rpc:
       - arbitrum-one.http
 ```
 
-To use this endpoint in your squid, set the RPC endpoint like so in `src/main.ts`:
+5. Configure your processor to use the RPC endpoint:
 
-```typescript
-import { assertNotNull } from '@subsquid/util-internal'
+```typescript src/main.ts
+import { assertNotNull } from "@subsquid/util-internal";
 
 export const processor = new EvmBatchProcessor().setRpcEndpoint(
   assertNotNull(
     process.env.RPC_ARBITRUM_ONE_HTTP,
-    'Required env variable RPC_ARBITRUM_ONE_HTTP is missing'
+    "Required env variable RPC_ARBITRUM_ONE_HTTP is missing"
   )
 );
 // ...the rest of the processor configuration
 ```
 
-This configuration will use the Arbitrum RPC endpoint provided by SQD.
+<Info>
+  The RPC addon provides reliable access to blockchain nodes for real-time data
+  queries and state access.
+</Info>
 
-#### `postgres` addon
+</Accordion>
 
-For squids that [write their data to PostgreSQL](/sdk/resources/persisting-data/typeorm) use the [`postgres` addon](/cloud/reference/pg):
+<Accordion title="PostgreSQL Addon" icon="database">
 
-```yaml
+For squids that [write their data to PostgreSQL](sdk/resources/persisting-data/typeorm), use the [`postgres` addon](cloud/reference/pg):
+
+**Basic configuration:**
+
+```yaml squid.yaml
 deploy:
   addons:
     postgres:
 ```
-You should also configure the [`scale` section for the addon](/cloud/reference/pg/#scaling) when deploying to production, e.g.:
 
-```yaml
+**Production scaling:**
+
+<Warning>
+  Always configure the [`scale` section for the
+  addon](cloud/reference/pg/#scaling) when deploying to production.
+</Warning>
+
+```yaml squid.yaml
 scale:
   addons:
     postgres:
@@ -117,53 +181,100 @@ scale:
       profile: medium
 ```
 
-#### `hasura` addon
+<Check>
+  PostgreSQL addon automatically provides database connection credentials
+  through environment variables.
+</Check>
 
-If your squid [uses a dedicated Hasura instance](/sdk/resources/serving-graphql/#hasura), configure the [`hasura` addon](/cloud/reference/hasura) to supply it.
+</Accordion>
 
-### 4.3. API scale
+<Accordion title="Hasura Addon" icon="server">
 
-Squids come with a GraphQL service out-of-the-box. You can enable or disable the service by adding or removing the `deploy.api` section of the `squid.yaml` file. In the [`scale.api` section](/cloud/reference/scale/#api) you can also set the scale and number of replicas.
+If your squid [uses a dedicated Hasura instance](sdk/resources/serving-graphql/#hasura), configure the [`hasura` addon](cloud/reference/hasura) to provision it.
 
-```yaml
+```yaml squid.yaml
+deploy:
+  addons:
+    hasura:
+```
+
+<Tip>
+  Use Hasura when you need advanced GraphQL features like subscriptions,
+  permissions, or complex query capabilities beyond the default OpenReader.
+</Tip>
+
+</Accordion>
+</AccordionGroup>
+
+### Scale Settings
+
+Configure resource allocation for your squid components to ensure optimal performance.
+
+#### API Service Configuration
+
+Squids include a GraphQL service by default. You can enable or disable it by adding or removing the `deploy.api` section. Use the [`scale.api` section](cloud/reference/scale/#api) to configure resources and replicas.
+
+```yaml squid.yaml
 deploy:
   api:
     cmd: ["sqd", "serve:prod"]
 scale:
   api:
     profile: large
-    # load-balance three replicas
+    # load-balance across three replicas
     replicas: 3
 ```
 
-This approach works if you use [OpenReader](/sdk/resources/serving-graphql/#openreader) (the default in most current examples) or [PostGraphile](/sdk/resources/serving-graphql/#postgraphile). If your squid uses a dedicated [Hasura instance](/sdk/resources/serving-graphql/#hasura) for its GraphQL needs, consult the [`hasura` addon page](/cloud/reference/hasura).
+<Note>
+  This configuration works with
+  [OpenReader](sdk/resources/serving-graphql/#openreader) (default) and
+  [PostGraphile](sdk/resources/serving-graphql/#postgraphile). For
+  [Hasura](sdk/resources/serving-graphql/#hasura), see the [`hasura` addon
+  documentation](cloud/reference/hasura).
+</Note>
 
-### 4.4. Processor scale
+#### Processor Configuration
 
-Next, set the scale of the indexer processor. See [this reference section](/cloud/reference/scale/#processor) to learn about your options.
+Configure the indexer processor resources based on your data processing requirements. See the [processor scale reference](cloud/reference/scale/#processor) for all available options.
 
-```yaml
+```yaml squid.yaml
 scale:
   processor:
     profile: medium
 ```
 
-### 4.5. Dedicated deployment
+<Tip>
+  Choose a processor profile based on your indexing workload. Start with `small`
+  for testing and scale up to `medium` or `large` for production workloads.
+</Tip>
 
-[Dedicated deployment profile](/cloud/reference/scale/#dedicated) is now the default, so if it isn't explicitly disabled in your manifest you don't need to do anything.
+#### Dedicated Deployment
 
-However, if you have a `dedicated: false` in your `scale:` section (e.g. because you previously deployed your squid to a [playground](/cloud/resources/organizations/#playgrounds)) you must either erase that or replace it with an explicit
-```yaml
+[Dedicated deployment](cloud/reference/scale/#dedicated) ensures your squid runs on dedicated resources for optimal performance and reliability. This is the default for professional organizations.
+
+<Warning>
+  If your `squid.yaml` contains `dedicated: false` (from previous playground
+  deployments), you must remove it or set it to `true` for production use.
+  **Collocated squids are not recommended for production environments.**
+</Warning>
+
+To explicitly enable dedicated deployment:
+
+```yaml squid.yaml
 scale:
   dedicated: true
 ```
-**We strongly discourage using collocated squids in production,** so be sure to check.
 
-### 4.6. The resulting `squid.yaml`
+<Check>
+  Dedicated deployment is enabled by default for all professional organization
+  deployments.
+</Check>
 
-Here is an example of a `squid.yaml` file with all the options set:
+### Complete Configuration Example
 
-```yaml
+Here's a complete `squid.yaml` file with all deployment options configured:
+
+```yaml squid.yaml
 manifest_version: subsquid.io/v0.1
 name: sample-squid
 
@@ -188,67 +299,145 @@ scale:
     profile: medium
   api:
     profile: large
-    # load-balance three replicas
+    # load-balance across three replicas
     replicas: 3
+  dedicated: true
 ```
 
-For all deployment options, check out the [deployment manifest](/cloud/reference/manifest) page.
-
-## 5. Set any required secrets
-
-If your squid uses any sensitive data such as a private URL or an access key, you need to store it in a [SQD Cloud secret](/cloud/resources/env-variables/#secrets). You can do this by going to the `Secrets` tab in the SQD cloud sidebar and adding the required values.
-
-![secrets tab](/images/cloud/overview-secret1.png)
-
-![secrets tab](/images/cloud/overview-secret2.png)
-
-Alternatively, use [`sqd secrets`](/squid-cli/secrets).
-
-## 6. Deploy the squid
-
-To deploy the squid to the cloud, open `Squids` in the sidebar and press the `Deploy a squid` button in the SQD cloud.
-
-![deploy tab](/images/cloud/overview-deploy2.png)
-
-You will be prompted to install the Squid CLI if you haven't already. Follow the instructions to install the CLI.
-Next, set up your auth key as shown in the SQD cloud.
-Type the squid name to be the same as in the `squid.yaml` file.
-
-Finally, deploy the squid:
-
-```bash
-sqd deploy <path_to_squid_project_root>
-```
-
-## 7. Monitor the squid
+<Check>
+  Your `squid.yaml` is now configured for production deployment on SQD Cloud.
+</Check>
 
 <Tip>
-Take a look at [logging page](/cloud/resources/logging) for tips on emitting and reading logs.
+  For detailed information on all available deployment options, see the
+  [deployment manifest reference](cloud/reference/manifest).
 </Tip>
 
-After deploying the squid, you can monitor its status in SQD Cloud. You can see the logs, metrics, and other information about the squid in the Cloud dashboard.
+</Step>
 
-Open the monitoring tab in the SQD cloud sidebar to see the status of your squid.
+<Step title="Set any required secrets" icon="key">
 
-Deployed quids are available in the `Squid` tab.
+If your squid uses any sensitive data such as a private URL or an access key, store it securely in a [SQD Cloud secret](cloud/resources/env-variables/#secrets).
 
-![deployed tab](/images/cloud/overview-deployed.png)
+You can add secrets using either method:
 
-You can see memory usage, CPU usage, and other metrics in the monitoring tab. Here is an example of the monitoring tab:
+- **Via SQD Cloud Console**: Navigate to the `Secrets` tab in the sidebar and add your values
+- **Via CLI**: Use the [`sqd secrets`](squid-cli/secrets) command
 
-![monitoring tab](/images/cloud/overview-monitor.png)
+<Warning>
+  Never commit secrets or API keys directly to your code repository. Always use
+  SQD Cloud secrets for sensitive data.
+</Warning>
 
-## 8. Use the squid
+</Step>
 
-If your squid uses a database, you'll have direct access. Take a look at the `DB access` tab of your squid's card in SQD Cloud console.
+<Step title="Deploy the squid" icon="rocket">
 
-Squid deployments are organized with [slots and tags](/cloud/resources/slots-and-tags). This structure enables a rich variety of workflows, notably including [zero downtime updates](/cloud/resources/slots-and-tags/#zero-downtime-updates) of squid GraphQL APIs. We recommend that you use this workflow for all production squids.
+Deploy your squid to SQD Cloud using the Squid CLI:
 
-## What's next?
+1. Open the **Squids** tab in the SQD Cloud sidebar
+2. Click the **Deploy a squid** button
+3. Follow the prompts to install the Squid CLI if needed
+4. Set up your authentication key as shown in the console
+5. Ensure your squid name matches the one in `squid.yaml`
 
-- Take a look at our [pricing](/cloud/pricing).
-- Learn more about [organizations](/cloud/resources/organizations) and the [slots and tags system](/cloud/resources/slots-and-tags).
-- Browse the [`sqd` CLI documentation](/squid-cli) to learn how to perform common squid maintenance tasks.
-  + [create or update a deployment](/squid-cli/deploy)
-  + [tag a deployment](/squid-cli/tags)
-  + [kill a deployment](/squid-cli/remove)
+Run the deployment command from your project root:
+
+```bash
+sqd deploy .
+```
+
+<Info>
+  The deployment process will build your squid, upload it to SQD Cloud, and
+  start the processor and API services according to your `squid.yaml`
+  configuration.
+</Info>
+
+<Check>
+  Once deployed, your squid will appear in the Squids list with status
+  information.
+</Check>
+
+</Step>
+
+<Step title="Monitor the squid" icon="chart-mixed">
+
+After deployment, monitor your squid's performance and health through the SQD Cloud dashboard:
+
+**What you can monitor:**
+
+- **Logs**: View real-time logs from your processor and API services
+- **Metrics**: Track memory usage, CPU usage, and processing speed
+- **Status**: Check the health status of your squid components
+- **Sync progress**: Monitor blockchain indexing progress
+
+**To access monitoring:**
+
+1. Navigate to the **Squids** tab in the SQD Cloud sidebar
+2. Select your deployed squid from the list
+3. View the monitoring dashboard with metrics and logs
+
+<Tip>
+  Visit the [logging documentation](cloud/resources/logging) for tips on
+  emitting structured logs and using log filters effectively.
+</Tip>
+
+<Check>
+  Your squid is now running and processing blockchain data on SQD Cloud.
+</Check>
+
+</Step>
+
+<Step title="Use the squid" icon="plug">
+
+Your deployed squid is now accessible and ready to use:
+
+**Access your data:**
+
+- **Database access**: If your squid uses PostgreSQL, access credentials are available in the **DB access** tab of your squid's card
+- **GraphQL API**: Access your squid's GraphQL endpoint from the deployment details
+- **Direct queries**: Connect to your database using the provided credentials
+
+**Production workflows:**
+
+Squid deployments use [slots and tags](cloud/resources/slots-and-tags) for flexible deployment management. This enables:
+
+- **Zero downtime updates**: Deploy new versions without interrupting service
+- **Version management**: Maintain multiple versions simultaneously
+- **Traffic routing**: Control which deployment serves production traffic
+
+<Tip>
+  We strongly recommend using the [zero downtime update
+  workflow](cloud/resources/slots-and-tags/#zero-downtime-updates) for all
+  production squids.
+</Tip>
+
+</Step>
+</Steps>
+
+## What's Next?
+
+Continue optimizing and managing your deployment:
+
+<CardGroup cols={2}>
+  <Card title="Pricing" icon="dollar-sign" href="/en/cloud/pricing">
+    Understand SQD Cloud costs and resource allocation
+  </Card>
+  <Card
+    title="Organizations"
+    icon="users"
+    href="/en/cloud/resources/organizations"
+  >
+    Manage teams and billing settings
+  </Card>
+  <Card
+    title="Slots and Tags"
+    icon="tags"
+    href="/en/cloud/resources/slots-and-tags"
+  >
+    Master zero downtime deployments
+  </Card>
+  <Card title="Squid CLI" icon="terminal" href="/en/squid-cli">
+    Learn CLI commands for deployment management
+  </Card>
+</CardGroup>

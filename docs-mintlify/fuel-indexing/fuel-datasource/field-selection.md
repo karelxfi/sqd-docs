@@ -1,12 +1,11 @@
 ---
-sidebar_position: 100
 description: >-
   Fine-tuning data requests with setFields()
 ---
 
 # Field selection
 
-#### `setFields(options)` {#set-fields}
+#### `setFields(options)` \{#set-fields\}
 
 Set the fields to be retrieved for data items of each supported type. The `options` object has the following structure:
 
@@ -91,9 +90,9 @@ Disabling unused fields will improve sync performance, as the fields' data will 
 
 ## Data item types and field selectors
 
-:::tip
+<Tip>
 Most IDEs support smart suggestions to show the possible field selectors. For VS Code, press `Ctrl+Space`.
-:::
+</Tip>
 
 Here we describe the data item types as functions of the field selectors. Unless otherwise mentioned, each data item type field maps to the eponymous field of its corresponding field selector. Item fields are divided into three categories:
 
@@ -501,11 +500,11 @@ Request the fields with eponymous field request flags.
 ## A complete example
 
 ```ts
-import { run } from "@subsquid/batch-processor";
-import { augmentBlock } from "@subsquid/fuel-objects";
-import { DataSourceBuilder } from "@subsquid/fuel-stream";
-import { TypeormDatabase } from "@subsquid/typeorm-store";
-import { Contract } from "./model";
+import \{ run \} from "@subsquid/batch-processor";
+import \{ augmentBlock \} from "@subsquid/fuel-objects";
+import \{ DataSourceBuilder \} from "@subsquid/fuel-stream";
+import \{ TypeormDatabase \} from "@subsquid/typeorm-store";
+import \{ Contract \} from "./model";
 
 const dataSource = new DataSourceBuilder()
   .setGateway("https://v2.archive.subsquid.io/network/fuel-mainnet")
@@ -536,7 +535,7 @@ const dataSource = new DataSourceBuilder()
   .addTransaction({
     type: ['Mint', 'Script'],
     inputs: true,
-    range: { from: 1_000_000 }
+    range: \{ from: 1_000_000 \}
   })
   .addReceipt({
     type: ['LOG_DATA']

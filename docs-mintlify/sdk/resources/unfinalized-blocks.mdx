@@ -1,5 +1,4 @@
 ---
-sidebar_position: 12
 title: RPC ingestion and reorgs
 description: Data from chains and network consensus
 ---
@@ -19,7 +18,7 @@ To take advantage of this feature, a squid processor must
 
 1. have a [node RPC endpoint](/sdk/reference/processors/evm-batch/general/#set-rpc-endpoint) as one of its data sources and
 2. use a [`Database`](/sdk/resources/persisting-data/overview) with unfinalized blocks support (e.g. [`TypeormDatabase`](/sdk/resources/persisting-data/typeorm)) in its [`processor.run()`](/sdk/reference/processors/architecture/#processorrun) call, and
-3. not disable RPC ingestion explicitly with [`setRpcDataIngestionSettings({ disabled: true })`](/sdk/reference/processors/evm-batch/general/#set-rpc-data-ingestion-settings).
+3. not disable RPC ingestion explicitly with [`setRpcDataIngestionSettings(\{ disabled: true \})`](/sdk/reference/processors/evm-batch/general/#set-rpc-data-ingestion-settings).
 
 With this, the processor will consider some blocks to be "hot":
 

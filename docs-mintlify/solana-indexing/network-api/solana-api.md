@@ -1,14 +1,13 @@
 ---
-sidebar_position: 30
 title: Solana API
 description: Access the data of Solana blockchain
 ---
 
 # Solana SQD Network API
 
-:::warning
+<Warning>
 The Solana API of SQD Network is currently in beta. Breaking changes may be introduced in the future releases.
-:::
+</Warning>
 
 SQD Network API distributes the requests over a ([potentially decentralized](/subsquid-network/faq)) network of _workers_. The main gateway URL points at a _router_ that provides URLs of workers that do the heavy lifting. Each worker has its own range of blocks on each dataset it serves.
 
@@ -18,9 +17,9 @@ Suppose you want to retrieve an output of some [query](#worker-api) on a block r
 
 2. Save the value of `firstBlock` to some variable, say `currentBlock`.
 
-3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /${currentBlock}/worker`.
+3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /$\{currentBlock\}/worker`.
 
-4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `${currentBlock}`.
+4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `$\{currentBlock\}`.
 
 5. Parse the retrieved data to get a batch of query data **plus** the height of the last block available from the current worker. Take the `header.number` field of the last element of the retrieved JSON array - it is the height you want. Even if your query returns no data, you'll still get the block data for the last block in the range, so this procedure is safe.
 
@@ -80,8 +79,8 @@ Suppose we want data on all successful Solana instructions starting block 241974
        "type": "solana",
        "fromBlock":241974500,
        "toBlock": 243004249,
-       "fields":{"instruction":{"programId":true, "data": true}},
-       "instructions":[ {"isCommitted": true} ]
+       "fields":\{"instruction":\{"programId":true, "data": true\}\},
+       "instructions":[ \{"isCommitted": true\} ]
    }' | jq
    ```
 
@@ -157,12 +156,12 @@ def dump(
     assert 0 <= first_block <= last_block
     query = dict(query)  # copy query to mess with it later
 
-    dataset_height = int(get_text(f'{gateway_url}/height'))
+    dataset_height = int(get_text(f'\{gateway_url\}/height'))
     next_block = first_block
     last_block = min(last_block, dataset_height)
 
     while next_block <= last_block:
-        worker_url = get_text(f'{gateway_url}/{next_block}/worker')
+        worker_url = get_text(f'\{gateway_url\}/\{next_block\}/worker')
 
         query['fromBlock'] = next_block
         query['toBlock'] = last_block
@@ -194,7 +193,7 @@ Full code [here](https://gist.github.com/eldargab/2e007a293ac9f82031d023f1af581a
 
 <summary><code>GET</code> <code><b>$&#123;firstBlock&#125;/worker</b></code> <code>(get a suitable worker URL)</code></summary>
 
-The returned worker is capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `${firstBlock}`.
+The returned worker is capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `$\{firstBlock\}`.
 
 **Example response:** `https://v2.archive.subsquid.io/worker/1/query/czM6Ly9ldGhlcmV1bS1tYWlubmV0`.
 
@@ -240,9 +239,9 @@ In most cases the returned range will not contain all the range requested by the
   "fromBlock":241974500,
   "toBlock": 243004249,
   "fields": {
-    "instruction": { "programId":true, "data": true }
+    "instruction": \{ "programId":true, "data": true \}
   },
-  "instructions":[ {"isCommitted": true} ]
+  "instructions":[ \{"isCommitted": true\} ]
 }
 ```
 
@@ -333,7 +332,7 @@ Note: the first and the last block in the range are included even if they have n
 }
 ```
 
-An instruction will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ a4: [] }`) matches no instructions; omit all requests/pass an empty object to match all instructions.
+An instruction will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ a4: [] \}`) matches no instructions; omit all requests/pass an empty object to match all instructions.
 
 See [`addInstruction()` SDK function reference](/solana-indexing/sdk/solana-batch/instructions) for a detailed description of the fields of this data request; also see [Field selection](/solana-indexing/sdk/solana-batch/field-selection).
 
@@ -348,7 +347,7 @@ See [`addInstruction()` SDK function reference](/solana-indexing/sdk/solana-batc
 }
 ```
 
-A transaction will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ feePayer: [] }`) matches no transactions; omit all requests/pass an empty object to match all transactions.
+A transaction will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ feePayer: [] \}`) matches no transactions; omit all requests/pass an empty object to match all transactions.
 
 See [`addTransaction()` SDK function reference](/solana-indexing/sdk/solana-batch/transactions) for a detailed description of the fields of this data request; also see [Field selection](/solana-indexing/sdk/solana-batch/field-selection).
 
@@ -364,7 +363,7 @@ See [`addTransaction()` SDK function reference](/solana-indexing/sdk/solana-batc
 }
 ```
 
-A log message will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ kind: [] }`) matches no log messages; omit all requests/pass an empty object to match all log messages.
+A log message will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ kind: [] \}`) matches no log messages; omit all requests/pass an empty object to match all log messages.
 
 See [`addLog()` SDK function reference](/solana-indexing/sdk/solana-batch/logs) for a detailed description of the fields of this data request; also see [Field selection](/solana-indexing/sdk/solana-batch/field-selection).
 
@@ -379,7 +378,7 @@ See [`addLog()` SDK function reference](/solana-indexing/sdk/solana-batch/logs) 
 }
 ```
 
-A balance update message will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ account: [] }`) matches no balance update messages; omit all requests/pass an empty object to match all balance update messages.
+A balance update message will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ account: [] \}`) matches no balance update messages; omit all requests/pass an empty object to match all balance update messages.
 
 See [`addBalance()` SDK function reference](/solana-indexing/sdk/solana-batch/balances) for a detailed description of the fields of this data request; also see [Field selection](/solana-indexing/sdk/solana-batch/field-selection).
 
@@ -399,7 +398,7 @@ See [`addBalance()` SDK function reference](/solana-indexing/sdk/solana-batch/ba
   transactionInstructions?: boolean
 }
 ```
-A token balance update message will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ preProgramId: [] }`) matches no token balance update messages; omit all requests/pass an empty object to match all token balance update messages.
+A token balance update message will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ preProgramId: [] \}`) matches no token balance update messages; omit all requests/pass an empty object to match all token balance update messages.
 
 See [`addTokenBalance()` SDK function reference](/solana-indexing/sdk/solana-batch/token-balances) for a detailed description of the fields of this data request; also see [Field selection](/solana-indexing/sdk/solana-batch/field-selection).
 
@@ -411,7 +410,7 @@ See [`addTokenBalance()` SDK function reference](/solana-indexing/sdk/solana-bat
 }
 ```
 
-A reward message will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ pubkey: [] }`) matches no reward messages; omit all requests/pass an empty object to match all reward messages.
+A reward message will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ pubkey: [] \}`) matches no reward messages; omit all requests/pass an empty object to match all reward messages.
 
 See [`addReward()` SDK function reference](/solana-indexing/sdk/solana-batch/rewards) for a detailed description of the fields of this data request; also see [Field selection](/solana-indexing/sdk/solana-batch/field-selection).
 

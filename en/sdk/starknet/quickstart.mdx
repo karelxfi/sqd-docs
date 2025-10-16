@@ -1,0 +1,234 @@
+---
+title: "Starknet Quickstart"
+description: "Build a Starknet blockchain indexer in 5 minutes with Squid SDK"
+---
+
+# Starknet Quickstart
+
+This 5-minute tutorial shows you how to build a Starknet indexer using Squid SDK. You'll create a complete blockchain indexer that fetches, decodes, and serves Starknet transaction and event data.
+
+## What you'll build
+
+Your Starknet indexer (squid) will:
+
+- Fetch historical Starknet transactions and events from the SQD Network
+- Decode Cairo contract events and function calls
+- Save the data to a local PostgreSQL database
+- Start a GraphQL server with a rich API to query the indexed data
+
+<Note>
+  This tutorial focuses on Starknet. For other chains, see the [EVM
+  Quickstart](/sdk/evm/quickstart) or [Substrate
+  Quickstart](/sdk/substrate/quickstart).
+</Note>
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- **Node.js v18+** - [Download here](https://nodejs.org/)
+- **Git** - [Download here](https://git-scm.com/)
+- **Docker** - [Download here](https://www.docker.com/) (for running PostgreSQL)
+- **WSL** (Windows only) - [Install WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+
+<Steps>
+<Step title="Install Squid CLI">
+
+Install the Squid CLI globally:
+
+```bash
+npm i -g @subsquid/cli
+```
+
+<Check>Verify installation by running `sqd --version`</Check>
+
+<Tip>
+  Squid CLI is a multi-purpose utility tool for scaffolding and managing
+  indexers, both locally and in SQD Cloud.
+</Tip>
+
+</Step>
+
+<Step title="Scaffold the indexer project">
+
+Create a new Starknet squid project:
+
+```bash
+sqd init hello-starknet-squid -t starknet
+cd hello-starknet-squid
+```
+
+<Note>
+  The template provides a pre-configured project structure for indexing Starknet
+  transactions and Cairo contract events.
+</Note>
+
+</Step>
+
+<Step title="Inspect the project structure">
+
+Explore the `./src` folder:
+
+```bash
+src/
+├── main.ts
+├── processor.ts
+└── model
+    ├── generated
+    │   ├── index.ts
+    │   └── event.model.ts
+    └── index.ts
+```
+
+<Info>
+  **Key files explained:** - `src/model/` - TypeORM model classes auto-generated
+  from `schema.graphql` for database operations - `processor.ts` - Processor
+  configuration for data retrieval - `main.ts` - Main executable containing
+  processing logic
+</Info>
+
+The processor configuration for Starknet:
+
+```typescript processor.ts
+export const processor = new StarknetBatchProcessor()
+  // SQD Network gateway for Starknet
+  .setGateway("https://v2.archive.subsquid.io/network/starknet-mainnet")
+  // Optional RPC endpoint for real-time data
+  .setRpcEndpoint("<starknet-rpc-endpoint>")
+  // Configure block range
+  .setBlockRange({ from: 100000 })
+  // Add events to index
+  .addEvent({
+    address: ["<contract-address>"],
+    keys: ["<event-key>"],
+  })
+  // Select fields to retrieve
+  .setFields({
+    event: {
+      keys: true,
+      data: true,
+    },
+    transaction: {
+      hash: true,
+    },
+  });
+```
+
+The data processing and storage logic:
+
+```typescript main.ts
+processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
+  const events = [];
+
+  for (let block of ctx.blocks) {
+    for (let event of block.events) {
+      // Decode Cairo contract event
+      const decodedEvent = decodeEvent(event);
+
+      events.push(
+        new Event({
+          id: event.id,
+          blockNumber: block.header.height,
+          timestamp: new Date(block.header.timestamp),
+          transactionHash: event.transactionHash,
+          contractAddress: event.address,
+          keys: event.keys,
+          data: decodedEvent.data,
+        })
+      );
+    }
+  }
+
+  // Batch insert all events
+  await ctx.store.save(events);
+});
+```
+
+</Step>
+
+<Step title="Install dependencies and build">
+
+Install dependencies and build the project:
+
+```bash
+npm i
+npm run build
+```
+
+<Check>
+  Verify the build completed successfully by checking for the `lib/` directory.
+</Check>
+
+</Step>
+
+<Step title="Start the database and processor">
+
+The processor continuously fetches data, decodes it, and stores it in PostgreSQL. All logic is defined in `main.ts` and is fully customizable.
+
+First, start a local PostgreSQL database (the template includes a Docker Compose file):
+
+```bash
+docker compose up -d
+```
+
+<Warning>
+  The processor connects to PostgreSQL using connection parameters from `.env`.
+  Ensure the database is running before proceeding.
+</Warning>
+
+Apply database migrations:
+
+```bash
+npx squid-typeorm-migration apply
+```
+
+Then start the processor:
+
+```bash
+node -r dotenv/config lib/main.js
+```
+
+<Check>
+  The indexer is now running and will begin processing Starknet blocks.
+</Check>
+
+</Step>
+
+<Step title="Start the GraphQL API">
+
+Start the GraphQL API to serve the indexed data:
+
+```bash
+npx squid-graphql-server
+```
+
+<Check>
+  The GraphQL playground is available at
+  [localhost:4350/graphql](http://localhost:4350/graphql)
+</Check>
+
+</Step>
+
+<Step title="Query the data">
+
+You can now query your indexed Starknet data! Try this example query in the GraphQL playground:
+
+```graphql
+{
+  events(limit: 10) {
+    id
+    blockNumber
+    timestamp
+    contractAddress
+    transactionHash
+  }
+}
+```
+
+<Check>
+  Congratulations! You've successfully built and deployed your first Starknet
+  blockchain indexer.
+</Check>
+
+</Step>
+</Steps>

@@ -1,0 +1,113 @@
+---
+title: "Tron Network API"
+description: "Access Tron blockchain data through SQD Network API"
+---
+
+# Tron Network API
+
+The SQD Network provides high-performance access to Tron blockchain data through optimized gateways. This eliminates the need for running your own Tron node while providing faster sync times than direct RPC access.
+
+<Warning>
+  The Tron API of SQD Network is currently in beta. Breaking changes may be
+  introduced in future releases.
+</Warning>
+
+## Gateway Endpoint
+
+### Mainnet
+
+```typescript
+processor.setGateway("https://v2.archive.subsquid.io/network/tron-mainnet");
+```
+
+<Card
+  title="Full API Documentation"
+  icon="book"
+  href="/en/sdk/tron/network-api/tron-api"
+>
+  Complete reference for the Tron SQD Network API
+</Card>
+
+## How It Works
+
+SQD Network distributes requests over a network of workers that specialize in serving specific block ranges:
+
+1. **Router**: The main gateway URL points to a router that coordinates access
+2. **Workers**: Multiple workers handle the actual data retrieval for different block ranges
+3. **Efficient sync**: Parallel data retrieval from multiple workers for faster indexing
+
+## Basic Usage
+
+```typescript main.ts
+import { TronBatchProcessor } from "@subsquid/tron-processor";
+import { TypeormDatabase } from "@subsquid/typeorm-store";
+
+const processor = new TronBatchProcessor()
+  .setGateway("https://v2.archive.subsquid.io/network/tron-mainnet")
+  .setRpcEndpoint("https://api.trongrid.io")
+  .setBlockRange({ from: 50000000 })
+  .addLog({
+    address: ["TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"], // USDT
+  });
+
+processor.run(new TypeormDatabase(), async (ctx) => {
+  for (let block of ctx.blocks) {
+    for (let log of block.logs) {
+      // Process USDT transfer events
+    }
+  }
+});
+```
+
+## Benefits
+
+<CardGroup cols={2}>
+  <Card title="Fast Sync" icon="bolt">
+    Retrieve historical data 10-100x faster than RPC
+  </Card>
+  <Card title="Cost Effective" icon="dollar-sign">
+    No need to run your own archive node
+  </Card>
+  <Card title="Reliable" icon="shield-check">
+    High availability with automatic failover
+  </Card>
+  <Card title="Optimized" icon="gauge-high">
+    Batch processing and parallel data retrieval
+  </Card>
+</CardGroup>
+
+## Supported Data
+
+The Tron SQD Network API provides access to:
+
+- **Transactions**: All transaction data including smart contract calls
+- **Logs**: Event logs from smart contracts
+- **Internal Transactions**: Traces of internal contract-to-contract calls
+- **Blocks**: Block headers and metadata
+- **Account State**: Balance and state changes
+
+<Info>
+  For real-time data, the processor automatically falls back to RPC endpoints
+  after syncing historical data from SQD Network.
+</Info>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="API Reference"
+    icon="code"
+    href="/en/sdk/tron/network-api/tron-api"
+  >
+    Complete API documentation
+  </Card>
+  <Card title="Tron Quickstart" icon="rocket" href="/en/sdk/tron/quickstart">
+    Build your first Tron indexer
+  </Card>
+</CardGroup>
+
+<Tip>
+  The SQD Network is particularly beneficial for indexing large amounts of
+  historical data, such as all TRC-20 token transfers or complex DeFi protocol
+  interactions.
+</Tip>

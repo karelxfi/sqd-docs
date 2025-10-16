@@ -1,7 +1,6 @@
 ---
 description: >-
   Build a starter squid for Substrate
-sidebar_position: 40
 ---
 
 # Simple Substrate squid
@@ -117,9 +116,9 @@ We generate these using the [squid-substrate-typegen](/sdk/tutorials/batch-proce
    ```
 2. List all Substrate pallets we will need the data from. For each pallet we list all events, calls, storage items and constants needed.
 
-:::info
+<Info>
 Refer to [this note](/sdk/resources/substrate/data-sourcing-miniguide) if you are unsure what Substrate data to use in your project.
-:::
+</Info>
 
 Our final `typegen.json` looks like this:
 
@@ -160,7 +159,7 @@ import {
   SubstrateBatchProcessorFields,
   DataHandlerContext
 } from '@subsquid/substrate-processor'
-import {events} from './types' // the wrappers generated in previous section
+import \{events\} from './types' // the wrappers generated in previous section
 
 const processor = new SubstrateBatchProcessor()
   .setGateway('https://v2.archive.subsquid.io/network/crust')
@@ -168,7 +167,7 @@ const processor = new SubstrateBatchProcessor()
     url: 'https://crust.api.onfinality.io/public',
     rateLimit: 10
   })
-  .setBlockRange({ from: 583000 })
+  .setBlockRange(\{ from: 583000 \})
   .addEvent({
     name: [
       events.market.fileSuccess.name,
@@ -205,8 +204,8 @@ Squids [batch process](/sdk/resources/batch-processing) chain data from multiple
 We begin defining our batch handler by importing the entity model classes and Crust event types that we generated in previous sections. We also import the processor and its types:
 
 ```ts title="src/main.ts"
-import {Account, WorkReport, JoinGroup, StorageOrder} from './model'
-import {processor, ProcessorContext} from './processor'
+import \{Account, WorkReport, JoinGroup, StorageOrder\} from './model'
+import \{processor, ProcessorContext\} from './processor'
 ```
 
 Let's skip for now the `process.run()` call - we are going to come back to it in a second - and scroll down to the `getTransferEvents` function. In the template repository this function loops through the items contained in the context, extracts the events data and stores it in a list of objects.
@@ -230,7 +229,7 @@ Now, let's replace the `getTransferEvents` function with the below snippet that
 * store all `accountId`s in a set.
 
 ```typescript
-import {toHex} from '@subsquid/substrate-processor'
+import \{toHex\} from '@subsquid/substrate-processor'
 import * as ss58 from '@subsquid/ss58'
 
 function getEventsInfo(ctx: ProcessorContext<Store>): EventInfo {
@@ -314,11 +313,11 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   const eventsInfo = getEventsInfo(ctx)
 
   let accounts = await ctx.store
-    .findBy(Account, { id: In([...eventsInfo.accountIds]) })
+    .findBy(Account, \{ id: In([...eventsInfo.accountIds]) \})
     .then(accounts => new Map(accounts.map(a => [a.id, a]))
   for (let aid of eventsInfo.accountIds) {
     if (!accounts.has(aid)) {
-      accounts.set(aid, new Account({ id: aid }))
+      accounts.set(aid, new Account(\{ id: aid \}))
     }
   }
 

@@ -1,5 +1,4 @@
 ---
-sidebar_position: 50
 title: Organizations
 description: |- 
   Grouping squids
@@ -11,7 +10,7 @@ All squids within SQD Cloud are grouped into *organizations*. This additional la
 
 To create an organization, click on the organizations dropdown menu in the upper left corner of the [Cloud homepage](https://app.subsquid.io/) and select "Create new organization".
 
-![Creation of an organization](./create-an-organization.png)
+\{/* [\1](\2) */\}
 
 ## Playgrounds
 
@@ -32,7 +31,7 @@ Freshly created organizations are marked as drafts until upgraded to Professiona
 
 Adding a valid payment method promotes an organization to Professional status. Visit [the billing page](https://app.subsquid.io/billing), select your organization in the dropdown menu in the top left corner and follow the upgrade instructions:
 
-![Upgrading an organization](./billing-setup.png)
+\{/* [\1](\2) */\}
 
 Once an organization is upgraded you can deploy as many squids as you requre. [`scale:` section](/cloud/reference/scale) is now unlocked: use it to request any resources suitable for your use case. Your organization will be billed according to our [pricing schedule](/cloud/pricing).
 

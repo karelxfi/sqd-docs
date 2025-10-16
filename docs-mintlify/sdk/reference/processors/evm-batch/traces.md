@@ -1,16 +1,15 @@
 ---
-sidebar_position: 50
 description: >-
   Retrieve execution traces with addTrace()
 ---
 
 # Traces
 
-:::tip
+<Tip>
 Traces for historical blocks are [currently available](/subsquid-network/reference/networks/#evm--ethereum-compatible) from [SQD Network](/subsquid-network) on the same basis as all other data stored there: for free. If you deploy a squid that indexes traces [in real-time](/sdk/resources/unfinalized-blocks) to SQD Cloud and use our [RPC addon](/cloud/resources/rpc-proxy), the necessary `trace_` or `debug_` RPC calls made will be counted alongside all other calls and [the price](/cloud/pricing/#rpc-requests) will be computed for the total count. There are no surcharges for traces or state diffs.
-:::
+</Tip>
 
-#### `addTrace(options)` {#add-trace}
+#### `addTrace(options)` \{#add-trace\}
 
 Subscribe to [execution traces](https://geth.ethereum.org/docs/interacting-with-geth/rpc/ns-debug#debugtraceblockbyhash). This allows for tracking internal calls. The `options` object has the following structure:
 ```typescript
@@ -23,7 +22,7 @@ Subscribe to [execution traces](https://geth.ethereum.org/docs/interacting-with-
   rewardAuthor?: string[]
   suicideRefundAddress?: string[]
   type?: string[]
-  range?: {from: number, to?: number}
+  range?: \{from: number, to?: number\}
 
   // related data retrieval
   transaction?: boolean
@@ -61,8 +60,8 @@ Selection of the exact data to be retrieved for each trace item is done with the
 For a [`mint` call to Uniswap V3 Positions NFT](https://etherscan.io/tx/0xf178718219151463aa773deaf7d9367b8408e35a624550af975e089ca6e015ca).
 
 ```ts
-import {EvmBatchProcessor} from '@subsquid/evm-processor'
-import {TypeormDatabase} from '@subsquid/typeorm-store'
+import \{EvmBatchProcessor\} from '@subsquid/evm-processor'
+import \{TypeormDatabase\} from '@subsquid/typeorm-store'
 
 const TARGET_TRANSACTION = '0xf178718219151463aa773deaf7d9367b8408e35a624550af975e089ca6e015ca'
 const TO_CONTRACT = '0xc36442b4a4522e871399cd717abdd847ab11fe88' // Uniswap v3 Positions NFT
@@ -72,13 +71,13 @@ const processor = new EvmBatchProcessor()
   .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')
   .setRpcEndpoint('<my_eth_rpc_url>')
   .setFinalityConfirmation(75)
-  .setBlockRange({ from: 16962349, to: 16962349 })
+  .setBlockRange(\{ from: 16962349, to: 16962349 \})
   .addTransaction({
     to: [TO_CONTRACT],
     sighash: [METHOD_SIGHASH],
     traces: true
   })
-  .setFields({ trace: { callTo: true } })
+  .setFields(\{ trace: \{ callTo: true \} \})
 
 processor.run(new TypeormDatabase(), async ctx => {
   let involvedContracts = new Set<string>()
@@ -93,9 +92,9 @@ processor.run(new TypeormDatabase(), async ctx => {
     }
   }
 
-  console.log(`txn ${TARGET_TRANSACTION} had ${traceCount-1} internal transactions`)
-  console.log(`${involvedContracts.size} contracts were involved in txn ${TARGET_TRANSACTION}:`)
-  involvedContracts.forEach(c => { console.log(c) })
+  console.log(`txn $\{TARGET_TRANSACTION\} had $\{traceCount-1\} internal transactions`)
+  console.log(`$\{involvedContracts.size\} contracts were involved in txn $\{TARGET_TRANSACTION\}:`)
+  involvedContracts.forEach(c => \{ console.log(c) \})
 })
 ```
 
@@ -104,9 +103,9 @@ processor.run(new TypeormDatabase(), async ctx => {
 Full code is available in [this branch](https://github.com/subsquid-labs/grab-all-contracts/tree/ascetic). WARNING: will contain addresses of some contracts that failed to deploy.
 
 ```ts
-import {EvmBatchProcessor} from '@subsquid/evm-processor'
-import {TypeormDatabase} from '@subsquid/typeorm-store'
-import {CreatedContract} from './model'
+import \{EvmBatchProcessor\} from '@subsquid/evm-processor'
+import \{TypeormDatabase\} from '@subsquid/typeorm-store'
+import \{CreatedContract\} from './model'
 
 const processor = new EvmBatchProcessor()
   .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')
@@ -120,7 +119,7 @@ const processor = new EvmBatchProcessor()
     transaction: true,
   })
 
-processor.run(new TypeormDatabase({supportHotBlocks: false}), async (ctx) => {
+processor.run(new TypeormDatabase(\{supportHotBlocks: false\}), async (ctx) => \{
   const contracts: Map<string, CreatedContract> = new Map()
   const addresses: Set<string> = new Set()
   for (let c of ctx.blocks) {
@@ -128,7 +127,7 @@ processor.run(new TypeormDatabase({supportHotBlocks: false}), async (ctx) => {
       if (trc.type === 'create' &&
           trc.result?.address != null &&
           trc.transaction?.hash !== undefined) {
-        contracts.set(trc.result.address, new CreatedContract({id: trc.result.address}))
+        contracts.set(trc.result.address, new CreatedContract(\{id: trc.result.address\}))
       }
     }
   }

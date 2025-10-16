@@ -6,9 +6,9 @@ description: >-
 
 # Indexing USDT on Tron
 
-:::info
+<Info>
 Tron support in SQD is now in public beta. Please report any bugs or suggestions to [Squid Devs](https://t.me/HydraDevs).
-:::
+</Info>
 
 In this tutorial we will look into a squid that indexes USDT transfers on the [Tron Network](https://tron.network).
 
@@ -25,13 +25,13 @@ npm i
 
 ## TronBatchProcessor configuration
 
-[Squid processor](/sdk/reference/processors/architecture) is a term with two meanings:
+[Squid processor](sdk/reference/processors/architecture) is a term with two meanings:
 
 1. The process responsible for retrieving and transforming the data.
 
 2. The main object implementing that process.
 
-On Tron, [`TronBatchProcessor`](/tron-indexing/tron-batch-processor) is the class that should be used for processor objects. Our first step is to create the processor and configure it to fetch USDT transfers data:
+On Tron, [`TronBatchProcessor`](tron-indexing/tron-batch-processor) is the class that should be used for processor objects. Our first step is to create the processor and configure it to fetch USDT transfers data:
 
 ```typescript title="src/main.ts"
 // Note that the address is in lowercase hex and has no leading `0x`.
@@ -85,13 +85,13 @@ const processor = new TronBatchProcessor()
   })
 ```
 
-See also [`TronBatchProcessor` reference](/tron-indexing/tron-batch-processor).
+See also [`TronBatchProcessor` reference](tron-indexing/tron-batch-processor).
 
 The next step is to configure data decoding and transformation.
 
 ## Processing the data
 
-The other part of the squid processor configuration is the callback function used to process batches of filtered data, the [batch handler](/sdk/reference/processors/architecture/#processorrun). It is typically defined within a `processor.run()` call, like this:
+The other part of the squid processor configuration is the callback function used to process batches of filtered data, the [batch handler](sdk/reference/processors/architecture/#processorrun). It is typically defined within a `processor.run()` call, like this:
 ```typescript
 processor.run(database, async ctx => {
   ...
@@ -99,8 +99,8 @@ processor.run(database, async ctx => {
 ```
 Here,
 * `processor` is the object described in the previous section
-* `database` is a [`Database` implementation](/sdk/resources/persisting-data/overview) specific to the target data sink. We want to store the data in a PostgreSQL database and present with a GraphQL API, so we provide a [`TypeormDatabase`](/sdk/resources/persisting-data/typeorm/) object here.
-* `ctx` is the [batch context](/sdk/reference/processors/architecture/#batch-context) object that exposes a batch of data (at `ctx.blocks`) and any data persistence facilities derived from `db` (at `ctx.store`). See [Block data for Tron](/tron-indexing/tron-batch-processor/context-interfaces) for details on how the data batches are presented.
+* `database` is a [`Database` implementation](sdk/resources/persisting-data/overview) specific to the target data sink. We want to store the data in a PostgreSQL database and present with a GraphQL API, so we provide a [`TypeormDatabase`](sdk/resources/persisting-data/typeorm/) object here.
+* `ctx` is the [batch context](sdk/reference/processors/architecture/#batch-context) object that exposes a batch of data (at `ctx.blocks`) and any data persistence facilities derived from `db` (at `ctx.store`). See [Block data for Tron](tron-indexing/tron-batch-processor/context-interfaces) for details on how the data batches are presented.
 
 Batch handler is where the raw on-chain data is decoded, transformed and persisted. Here is our definition:
 ```typescript title="src/main.ts"
@@ -118,7 +118,7 @@ processor.run(new TypeormDatabase(), async ctx => {
           topics: log.topics.map(t => '0x' + t),
           data: '0x' + log.data
         }
-        let {from, to, value} = erc20.events.Transfer.decode(event)
+        let \{from, to, value\} = erc20.events.Transfer.decode(event)
 
         transfers.push(new Transfer({
           id: log.id,
@@ -136,13 +136,13 @@ processor.run(new TypeormDatabase(), async ctx => {
   await ctx.store.insert(transfers)
 })
 ```
-This goes through all the logs in the block, verifies that they originate from `USDT_ADDRESS` and have a `TRANSFER_TOPIC` as the first topic, decodes the log and saves a `Transfer` record with the obtained data to the database. See [Prepare the store](/sdk/how-to-start/squid-development/#store) for more details on how the database interface works.
+This goes through all the logs in the block, verifies that they originate from `USDT_ADDRESS` and have a `TRANSFER_TOPIC` as the first topic, decodes the log and saves a `Transfer` record with the obtained data to the database. See [Prepare the store](sdk/how-to-start/squid-development/#store) for more details on how the database interface works.
 
-:::info
-Notice that we used the SQD EVM codec and [`squid-evm-typegen`](/sdk/resources/tools/typegen/generation/?typegen=evm)-generated module to decode events. Since Tron events are fully EVM-compatible, this is the recommended way.
+<Info>
+Notice that we used the SQD EVM codec and [`squid-evm-typegen`](sdk/resources/tools/typegen/generation/?typegen=evm)-generated module to decode events. Since Tron events are fully EVM-compatible, this is the recommended way.
 
 This tooling requires that the hex values are prefixed with `0x`, as shown above.
-:::
+</Info>
 
 At this point the squid is ready for its first test run. Execute
 ```bash

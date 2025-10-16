@@ -1,6 +1,7 @@
 ---
 title: "Tron Development"
 description: "Build Tron indexers with Squid SDK"
+
 ---
 
 # Tron Development
@@ -18,7 +19,7 @@ Index Tron blockchain data including transactions, smart contract events, and TR
   
   <Step title="Configure Processor">
     ```typescript
-    import { TronBatchProcessor } from '@subsquid/tron-processor'
+    import \{ TronBatchProcessor \} from '@subsquid/tron-processor'
     
     const processor = new TronBatchProcessor()
       .setGateway('https://v2.archive.subsquid.io/network/tron-mainnet')
@@ -51,8 +52,8 @@ Index Tron blockchain data including transactions, smart contract events, and TR
 ## Basic Processor Setup
 
 ```typescript
-import { TronBatchProcessor } from '@subsquid/tron-processor'
-import { TypeormDatabase } from '@subsquid/typeorm-store'
+import \{ TronBatchProcessor \} from '@subsquid/tron-processor'
+import \{ TypeormDatabase \} from '@subsquid/typeorm-store'
 
 const processor = new TronBatchProcessor()
   .setGateway('https://v2.archive.subsquid.io/network/tron-mainnet')
@@ -79,7 +80,7 @@ processor.run(db, async (ctx) => {
   for (let block of ctx.blocks) {
     for (let transaction of block.transactions) {
       // Process Tron transactions
-      console.log(`TX: ${transaction.hash}`)
+console.log(`TX: "$\{transaction.hash\}`)"
     }
   }
 })

@@ -1,5 +1,4 @@
 ---
-sidebar_position: 30
 title: FAQ
 ---
 
@@ -105,10 +104,10 @@ Note that the fact that we have a paid hosting service does not mean that you ca
 
 SQD Network will employ validators who listen to the logs of the executed queries and resubmit them to validate the response. There's also an arbitration process to handle any discrepancies.
 
-### What is "an epoch" in the context of SQD Network? {#epoch}
+### What is "an epoch" in the context of SQD Network? \{#epoch\}
 
 "Epoch" is a unit of time that SQD Network uses for internal settlement. It is [defined on-chain](https://arbiscan.io/address/0x4cf58097d790b193d22ed633bf8b15c9bc4f0da7#readContract#F3) and is currently set to be 100 L1 (Ethereum) blocks, or roughly 20 minutes.
 
-### What is Tethys? {#tethys}
+### What is Tethys? \{#tethys\}
 
 Tethys is the long-running testnet of SQD Network. Its contracts run on Arbitrum Sepolia. More details are available [here](https://github.com/subsquid/subsquid-network-contracts/wiki/Tethys-testnet-announcement).

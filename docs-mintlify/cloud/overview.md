@@ -1,5 +1,4 @@
 ---
-sidebar_position: 10
 title: Deployment workflow
 description: >-
   Run a production-ready squid in Cloud
@@ -28,7 +27,7 @@ You can register a SQD account by visiting the [SQD cloud](https://app.subsquid.
 
 Once you're logged in, create a new [organization](/cloud/resources/organizations) and upgrade it to [professional](/cloud/resources/organizations/#professional-organizations) by attaching a valid credit card in the "Billing" tab.
 
-![Create an organization](./overview-create-org.png)
+\{/* [\1](\2) */\}
 
 You can skip this step, but then you will only be able to deploy to your account's [playground](/cloud/resources/organizations/#playgrounds). Playground squids are a trial / development solution with limited functionality; they are not suitable for use in production.
 
@@ -67,7 +66,7 @@ SQD Cloud addons enable extra services for your squid. Enable them in the `deplo
 
 For real time data you can use the [`rpc` addon](/cloud/resources/rpc-proxy). First, open the `RPC endpoints` tab in the SQD cloud sidebar and copy the URL of the chosen endpoint.
 
-![RPC addon tab](./overview-rpc-page.png)
+\{/* [\1](\2) */\}
 
 Add it to the `.env` file:
 
@@ -87,7 +86,7 @@ deploy:
 To use this endpoint in your squid, set the RPC endpoint like so in `src/main.ts`:
 
 ```typescript
-import { assertNotNull } from '@subsquid/util-internal'
+import \{ assertNotNull \} from '@subsquid/util-internal'
 
 export const processor = new EvmBatchProcessor().setRpcEndpoint(
   assertNotNull(
@@ -200,9 +199,9 @@ For all deployment options, check out the [deployment manifest](/cloud/reference
 
 If your squid uses any sensitive data such as a private URL or an access key, you need to store it in a [SQD Cloud secret](/cloud/resources/env-variables/#secrets). You can do this by going to the `Secrets` tab in the SQD cloud sidebar and adding the required values.
 
-![secrets tab](./overview-secret1.png)
+\{/* [\1](\2) */\}
 
-![secrets tab](./overview-secret2.png)
+\{/* [\1](\2) */\}
 
 Alternatively, use [`sqd secrets`](/squid-cli/secrets).
 
@@ -210,7 +209,7 @@ Alternatively, use [`sqd secrets`](/squid-cli/secrets).
 
 To deploy the squid to the cloud, open `Squids` in the sidebar and press the `Deploy a squid` button in the SQD cloud.
 
-![deploy tab](./overview-deploy2.png)
+\{/* [\1](\2) */\}
 
 You will be prompted to install the Squid CLI if you haven't already. Follow the instructions to install the CLI.
 Next, set up your auth key as shown in the SQD cloud.
@@ -224,9 +223,9 @@ sqd deploy <path_to_squid_project_root>
 
 ## 7. Monitor the squid
 
-:::tip
+<Tip>
 Take a look at [logging page](/cloud/resources/logging) for tips on emitting and reading logs.
-:::
+</Tip>
 
 After deploying the squid, you can monitor its status in SQD Cloud. You can see the logs, metrics, and other information about the squid in the Cloud dashboard.
 
@@ -234,11 +233,11 @@ Open the monitoring tab in the SQD cloud sidebar to see the status of your squid
 
 Deployed quids are available in the `Squid` tab.
 
-![deployed tab](./overview-deployed.png)
+\{/* [\1](\2) */\}
 
 You can see memory usage, CPU usage, and other metrics in the monitoring tab. Here is an example of the monitoring tab:
 
-![monitoring tab](./overview-monitor.png)
+\{/* [\1](\2) */\}
 
 ## 8. Use the squid
 

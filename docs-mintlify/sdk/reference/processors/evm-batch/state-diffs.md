@@ -1,16 +1,15 @@
 ---
-sidebar_position: 40
 description: >-
   Track storage changes with addStateDiff()
 ---
 
 # Storage state diffs
 
-:::tip
+<Tip>
 State diffs for historical blocks are [currently available](/subsquid-network/reference/networks/#evm--ethereum-compatible) from [SQD Network](/subsquid-network) on the same basis as all other data stored there: for free. If you deploy a squid that indexes traces [in real-time](/sdk/resources/unfinalized-blocks) to SQD Cloud and use our [RPC addon](/cloud/resources/rpc-proxy), the necessary `trace_` or `debug_` RPC calls made will be counted alongside all other calls and [the price](/cloud/pricing/#rpc-requests) will be computed for the total count. There are no surcharges for traces or state diffs.
-:::
+</Tip>
 
-#### `addStateDiff(options)` {#add-state-diff}
+#### `addStateDiff(options)` \{#add-state-diff\}
 
 Subscribe to changes in the [contract storage](https://coinsbench.com/solidity-layout-and-access-of-storage-variables-simply-explained-1ce964d7c738). This allows for tracking the contract state changes that are difficult to infer from events or transactions, such as the changes that take into account the output of internal calls. `options` has the following structure:
 ```typescript
@@ -19,7 +18,7 @@ Subscribe to changes in the [contract storage](https://coinsbench.com/solidity-l
   address?: string[]
   key?: string[]
   kind?: ('=' | '+' | '*' | '-')[]
-  range?: {from: number, to?: number}
+  range?: \{from: number, to?: number\}
 
   // related data retrieval
   transaction?: boolean

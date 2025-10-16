@@ -1,14 +1,13 @@
 ---
-sidebar_position: 30
 title: EVM API
 description: Access the data of EVM blockchains
 ---
 
 # EVM SQD Network API
 
-:::warning
+<Warning>
 The EVM API of SQD Network is currently in beta. Breaking changes may be introduced in the future releases.
-:::
+</Warning>
 
 SQD Network API distributes the requests over a ([potentially decentralized](/subsquid-network/faq)) network of _workers_. The main gateway URL points at a _router_ that provides URLs of workers that do the heavy lifting. Each worker has its own range of blocks on each dataset it serves.
 
@@ -18,9 +17,9 @@ Suppose you want to retrieve an output of some [query](#worker-api) on a block r
 
 2. Save the value of `firstBlock` to some variable, say `currentBlock`.
 
-3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /${currentBlock}/worker`.
+3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /$\{currentBlock\}/worker`.
 
-4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `${currentBlock}`.
+4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `$\{currentBlock\}`.
 
 5. Parse the retrieved data to get a batch of query data **plus** the height of the last block available from the current worker. Take the `header.number` field of the last element of the retrieved JSON array - it is the height you want. Even if your query returns no data, you'll still get the block data for the last block in the range, so this procedure is safe.
 
@@ -71,8 +70,8 @@ Suppose we want data on Ethereum txs to `vitalik.eth`/`0xd8dA6BF26964aF9D7eEd9e0
    -X 'POST' -H 'content-type: application/json' -H 'accept: application/json' \
    -d '{
        "fromBlock":16000000,
-       "fields":{"transaction":{"hash":true}},
-       "transactions":[{"to":["0xd8da6bf26964af9d7eed9e03e53415d37aa96045"]}]
+       "fields":\{"transaction":\{"hash":true\}\},
+       "transactions":[\{"to":["0xd8da6bf26964af9d7eed9e03e53415d37aa96045"]\}]
    }' | jq
    ```
 
@@ -146,12 +145,12 @@ def dump(
     assert 0 <= first_block <= last_block
     query = dict(query)  # copy query to mess with it later
 
-    dataset_height = int(get_text(f'{gateway_url}/height'))
+    dataset_height = int(get_text(f'\{gateway_url\}/height'))
     next_block = first_block
     last_block = min(last_block, dataset_height)
 
     while next_block <= last_block:
-        worker_url = get_text(f'{gateway_url}/{next_block}/worker')
+        worker_url = get_text(f'\{gateway_url\}/\{next_block\}/worker')
 
         query['fromBlock'] = next_block
         query['toBlock'] = last_block
@@ -186,7 +185,7 @@ Full code [here](https://gist.github.com/eldargab/2e007a293ac9f82031d023f1af581a
 
 <summary><code>GET</code> <code><b>$&#123;firstBlock&#125;/worker</b></code> <code>(get a suitable worker URL)</code></summary>
 
-The returned worker is capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `${firstBlock}`.
+The returned worker is capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `$\{firstBlock\}`.
 
 **Example response:**
 ```
@@ -469,9 +468,9 @@ The query matches no data, so the data field `"logs"` is an empty array for all 
 
 ## Data requests
 
-:::warning
+<Warning>
 Addresses in all data requests must be in lowercase. All addresses in the responses will be in lowercase, too.
-:::
+</Warning>
 
 ### Logs
 
@@ -488,7 +487,7 @@ Addresses in all data requests must be in lowercase. All addresses in the respon
 }
 ```
 
-A log will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ address: [] }`) matches no logs; omit all requests/pass an empty object to match all logs.
+A log will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ address: [] \}`) matches no logs; omit all requests/pass an empty object to match all logs.
 
 See [`addLog()` SDK function reference](/sdk/reference/processors/evm-batch/logs) for a detailed description of the fields of this data request; also see [Field selection](/sdk/reference/processors/evm-batch/field-selection).
 
@@ -536,7 +535,7 @@ Get all event logs network-wide on blocks starting from block 0. Get topics for 
 
 ```json
 {
-  "logs": [{}],
+  "logs": [\{\}],
   "fields": {
     "log": {
       "topics": true
@@ -561,7 +560,7 @@ Get all event logs network-wide on blocks starting from block 0. Get topics for 
 }
 ```
 
-A transaction will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ from: [] }`) matches no transactions; omit all requests/pass an empty object to match all transactions.
+A transaction will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ from: [] \}`) matches no transactions; omit all requests/pass an empty object to match all transactions.
 
 See [`addTransaction()` SDK function reference](/sdk/reference/processors/evm-batch/transactions) for a detailed description of the fields of this data request; also see [Field selection](/sdk/reference/processors/evm-batch/field-selection).
 
@@ -607,7 +606,7 @@ Get all transactions on the network starting from 0. Get hash for each transacti
 
 ```json
 {
-  "transactions": [{}],
+  "transactions": [\{\}],
   "fields": {
     "transaction": {
       "hash": true
@@ -637,7 +636,7 @@ Get all transactions on the network starting from 0. Get hash for each transacti
 }
 ```
 
-A trace will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ callTo: [] }`) matches no traces; omit all requests/pass an empty object to match all traces.
+A trace will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ callTo: [] \}`) matches no traces; omit all requests/pass an empty object to match all traces.
 
 See [`addTrace()` SDK function reference](/sdk/reference/processors/evm-batch/traces) for a detailed description of the fields of this data request; also see [Field selection](/sdk/reference/processors/evm-batch/field-selection).
 
@@ -652,7 +651,7 @@ See [`addTrace()` SDK function reference](/sdk/reference/processors/evm-batch/tr
 }
 ```
 
-A state diff will be included in the response if it matches all the requests. A request with an empty array (e.g. `{ address: [] }`) matches no state diffs; omit all requests/pass an empty object to match all state diffs.
+A state diff will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ address: [] \}`) matches no state diffs; omit all requests/pass an empty object to match all state diffs.
 
 See [`addStateDiff()` SDK function reference](/sdk/reference/processors/evm-batch/traces) for a detailed description of the fields of this data request; also see [Field selection](/sdk/reference/processors/evm-batch/field-selection).
 

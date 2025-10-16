@@ -34,3 +34,79 @@
     background: rgba(255, 255, 255, 0.12);
   }
 }
+
+/* Dropdown styling - balanced vibrancy for LIGHT mode */
+html:not(.dark) button.nav-dropdown-trigger,
+button.nav-dropdown-trigger {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.14) 0%,
+    rgba(96, 165, 250, 0.18) 50%,
+    rgba(147, 197, 253, 0.14) 100%
+  ) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.08) !important;
+  transition: all 0.2s ease !important;
+}
+
+html:not(.dark) button.nav-dropdown-trigger:hover,
+button.nav-dropdown-trigger:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.2) 0%,
+    rgba(96, 165, 250, 0.25) 50%,
+    rgba(147, 197, 253, 0.2) 100%
+  ) !important;
+  border-color: rgba(59, 130, 246, 0.45) !important;
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.15) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Dark mode - balanced blue glow */
+@media (prefers-color-scheme: dark) {
+  button.nav-dropdown-trigger {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.15) 0%,
+      rgba(96, 165, 250, 0.2) 50%,
+      rgba(147, 197, 253, 0.16) 100%
+    ) !important;
+    border: 1px solid rgba(96, 165, 250, 0.3) !important;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  button.nav-dropdown-trigger:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.22) 0%,
+      rgba(96, 165, 250, 0.28) 50%,
+      rgba(147, 197, 253, 0.24) 100%
+    ) !important;
+    border-color: rgba(96, 165, 250, 0.45) !important;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25) !important;
+    transform: translateY(-1px) !important;
+  }
+}
+
+html.dark button.nav-dropdown-trigger {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.15) 0%,
+    rgba(96, 165, 250, 0.2) 50%,
+    rgba(147, 197, 253, 0.16) 100%
+  ) !important;
+  border: 1px solid rgba(96, 165, 250, 0.3) !important;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2) !important;
+}
+
+html.dark button.nav-dropdown-trigger:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.22) 0%,
+    rgba(96, 165, 250, 0.28) 50%,
+    rgba(147, 197, 253, 0.24) 100%
+  ) !important;
+  border-color: rgba(96, 165, 250, 0.45) !important;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25) !important;
+  transform: translateY(-1px) !important;
+}

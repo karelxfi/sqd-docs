@@ -1,5 +1,4 @@
 ---
-sidebar_position: 20
 title: AND/OR filters
 description: >-
   Basic logic operators for use in filters
@@ -13,7 +12,7 @@ Our GraphQL implementation offers a vast selection of tools to filter and sectio
 
 In our GraphQL server implementation, we included logical operators to be used in the `where` clause, allowing to group multiple parameters in the same `where` argument using the `AND` and `OR` operators to filter results based on more than one criteria.
 
-Note that the [newer](/sdk/reference/openreader-server/overview/#supported-queries) and [more advanced](/sdk/reference/openreader-server/api/paginate-query-results) `{entityName}sConnection` queries support exactly the same format of the `where` argument as the older `{entityName}s` queries used in the examples provided here.
+Note that the [newer](/sdk/reference/openreader-server/overview/#supported-queries) and [more advanced](/sdk/reference/openreader-server/api/paginate-query-results) `\{entityName\}sConnection` queries support exactly the same format of the `where` argument as the older `\{entityName\}s` queries used in the examples provided here.
 
 ### Example of an `OR` clause:
 
@@ -25,8 +24,8 @@ query {
     orderBy: balance_DESC, 
     where: {
       OR: [
-        {balance_gte: "240000000000000000"}
-        {id_eq: "CksmaBx9rKUG9a7eXwc5c965cJ3QiiC8ELFsLtJMYZYuRWs"}
+        \{balance_gte: "240000000000000000"\}
+        \{id_eq: "CksmaBx9rKUG9a7eXwc5c965cJ3QiiC8ELFsLtJMYZYuRWs"\}
       ]
     }
   ) {
@@ -47,8 +46,8 @@ query {
     orderBy: balance_DESC, 
     where: {
       AND: [
-        {balance_lte: "240000000000000000"}
-        {balance_gte: "100000000000000"}
+        \{balance_lte: "240000000000000000"\}
+        \{balance_gte: "100000000000000"\}
       ]
     }
   ) {

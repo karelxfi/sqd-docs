@@ -1,5 +1,4 @@
 ---
-sidebar_position: 11
 title: Batch processing
 description: Batch-based data transformation model 
 ---
@@ -20,16 +19,16 @@ In practice, batching is a more flexible (compared to handler parallelization) w
 To illustrate, assume the processor must infer the current state of an on-chain record. It is configured to listen to the two on-chain events, `Create` and `Update`, that are emitted once the record is created or updated. The [data batch](/sdk/reference/processors/architecture/#ctxblocks) received by the processor is then an array of event items, i.e.
 ```ts
 [
-    Create({id: 1, name: 'Alice'}), 
-    Update({id: 1, name: 'Bob'}),
-    Create({id: 2, name: 'Mikee'}), 
-    Update({id: 1, name: 'Carol'}), 
-    Update({id: 2, name: 'Mike'})
+    Create(\{id: 1, name: 'Alice'\}), 
+    Update(\{id: 1, name: 'Bob'\}),
+    Create(\{id: 2, name: 'Mikee'\}), 
+    Update(\{id: 1, name: 'Carol'\}), 
+    Update(\{id: 2, name: 'Mike'\})
 ]
 ``` 
 Following the principles above, a processor would update the intermediary entity states in memory, persisting only the final state:
 ```ts
-[{id: 1, name: 'Carol'}, {id: 2, name: 'Mike'}]
+[\{id: 1, name: 'Carol'\}, \{id: 2, name: 'Mike'\}]
 ```
 in a single transaction. 
 
@@ -66,7 +65,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
     // put into an ID map
     const myEntities: Map<string, MyEntity> = new Map(
        // batch-load using IN operator
-      (await ctx.store.findBy(MyEntity, { id: In([...myEntityIds]) }))
+      (await ctx.store.findBy(MyEntity, \{ id: In([...myEntityIds]) \}))
         // put the result into the ID map
         .map((entity) => [entity.id, entity])
     );
@@ -77,7 +76,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
         if (myEntity == null) {
             // create a new instance with d and
             // add to myEntities map
-        } else {
+        \} else \{
             // update myEntity using d
         }
     }
@@ -101,7 +100,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
       if (log.address !== GRAVATAR_CONTRACT ||
           (log.topics[0] !== events.NewGravatar.topic &&
            log.topics[0] !== events.UpdatedGravatar.topic)) continue
-      const { id, owner, displayName, imageUrl } = extractData(log)
+      const \{ id, owner, displayName, imageUrl \} = extractData(log)
       // ANTIPATTERN!!!
       // Doing an upsert per event drastically decreases the indexing speed
       await ctx.store.save(Gravatar, new Gravatar({
@@ -124,7 +123,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
       if (log.address !== GRAVATAR_CONTRACT ||
           (log.topics[0] !== events.NewGravatar.topic &&
            log.topics[0] !== events.UpdatedGravatar.topic)) continue
-      const { id, owner, displayName, imageUrl } = extractData(log)
+      const \{ id, owner, displayName, imageUrl \} = extractData(log)
       gravatars.set(id.toHexString(), new Gravatar({
         id: id.toHexString(),
         owner: decodeHex(owner),

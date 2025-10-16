@@ -1,12 +1,19 @@
 ---
 title: "SDK Overview"
-description: "Architecture of squid indexers and core components"
+description: "Architecture of squid indexers and core components for blockchain data indexing"
 ---
 
-# Overview
+# SDK Overview
 
-A _squid_ is an indexing project built with [Squid SDK](https://github.com/subsquid/squid-sdk) to retrieve and process blockchain data from the [SQD Network](/subsquid-network/overview)
-(either permissioned or decentralized instance). The Squid SDK is a set of open source Typescript libraries that retrieve, decode, transform and persist the data. It can also make the transformed data available via an API. All stages of the indexing pipeline, from the data extraction to transformation to persistence are performed on [batches of blocks](/sdk/resources/batch-processing) to maximize the indexing speed. Modular architecture of the SDK makes it possible to extend indexing projects (squids) with custom plugins and data targets.
+A _squid_ is an indexing project built with [Squid SDK](https://github.com/subsquid/squid-sdk) to retrieve and process blockchain data from the [SQD Network](subsquid-network/overview). The Squid SDK is a set of open-source TypeScript libraries that retrieve, decode, transform, and persist blockchain data.
+
+<Info>
+  All stages of the indexing pipeline—from data extraction to transformation to
+  persistence—are performed on [batches of
+  blocks](sdk/resources/batch-processing) to maximize indexing speed.
+</Info>
+
+The modular architecture of the SDK makes it possible to extend indexing projects (squids) with custom plugins and data targets.
 
 ## Required squid components
 
@@ -19,21 +26,23 @@ _Processor_ is the word used for
 
 `processor` objects handle data retrieval and transformation; data persistence is handled by a separate object called [Store](#store). Squid SDK offers two processor classes:
 
-* [`EvmBatchProcessor`](/sdk/reference/processors/evm-batch) via the [`@subsquid/evm-processor`](https://www.npmjs.com/package/@subsquid/evm-processor) NPM package - for Ethereum-compatible [networks](/subsquid-network/reference/networks/#evm--ethereum-compatible)
-* [`SubstrateBatchProcessor`](/sdk/reference/processors/substrate-batch) via [`@subsquid/substrate-processor`](https://www.npmjs.com/package/@subsquid/substrate-processor) - for [networks](/subsquid-network/reference/networks/#substrate-based) based on [Substrate](https://substrate.io) such as [Polkadot](https://polkadot.network)
+- [`EvmBatchProcessor`](sdk/reference/processors/evm-batch) via the [`@subsquid/evm-processor`](https://www.npmjs.com/package/@subsquid/evm-processor) NPM package - for Ethereum-compatible [networks](subsquid-network/reference/networks/#evm--ethereum-compatible)
+- [`SubstrateBatchProcessor`](sdk/reference/processors/substrate-batch) via [`@subsquid/substrate-processor`](https://www.npmjs.com/package/@subsquid/substrate-processor) - for [networks](subsquid-network/reference/networks/#substrate-based) based on [Substrate](https://substrate.io) such as [Polkadot](https://polkadot.network)
 
 ### Store
 
 A _store_ is an object that processors use to persist their data. SQD offers three store classes:
 
-* [`TypeormStore`](/sdk/resources/persisting-data/typeorm) for saving data to PostgreSQL, via
+- [`TypeormStore`](sdk/resources/persisting-data/typeorm) for saving data to PostgreSQL, via
+
   - [`@subsquid/typeorm-store`](https://www.npmjs.com/package/@subsquid/typeorm-store)
   - [`@subsquid/typeorm-codegen`](https://www.npmjs.com/package/@subsquid/typeorm-codegen) (a code generator, install with `--save-dev`)
   - [`@subsquid/typeorm-migration`](https://www.npmjs.com/package/@subsquid/typeorm-migration)
 
   Install all three packages to use this store.
-* [`file-store`](/sdk/resources/persisting-data/file) via [`@subsquid/file-store`](https://www.npmjs.com/package/@subsquid/file-store) - for saving data to filesystems. It is a modular system with a variety of [extensions](/sdk/reference/store/file) for various formats and destinations.
-* [`bigquery-store`](/sdk/resources/persisting-data/bigquery) via [`@subsquid/bigquery-store`](https://www.npmjs.com/package/@subsquid/bigquery-store) - for saving data to [Google BigQuery](https://cloud.google.com/bigquery).
+
+- [`file-store`](sdk/resources/persisting-data/file) via [`@subsquid/file-store`](https://www.npmjs.com/package/@subsquid/file-store) - for saving data to filesystems. It is a modular system with a variety of [extensions](sdk/reference/store/file) for various formats and destinations.
+- [`bigquery-store`](sdk/resources/persisting-data/bigquery) via [`@subsquid/bigquery-store`](https://www.npmjs.com/package/@subsquid/bigquery-store) - for saving data to [Google BigQuery](https://cloud.google.com/bigquery).
 
 You can mix and match any store class with any processor class.
 
@@ -44,38 +53,61 @@ You can mix and match any store class with any processor class.
 A _typegen_ is a tool for generating utility code for technology-specific operations such as decoding. Here are the typegens available:
 
 <Tabs>
-<Tab title="EVM">
-* [`squid-evm-typegen`](/sdk/resources/tools/typegen/generation/?typegen=evm) via [`@subsquid/evm-typegen`](https://www.npmjs.com/package/@subsquid/evm-typegen):
-  - decodes smart contract data
-  - handles direct calls to contract methods
-  - exposes useful constants such as event topics and function signature hashes
-  The generated code depends on [`@subsquid/evm-abi`](https://www.npmjs.com/package/@subsquid/evm-abi), SQD's own high performance, open source EVM codec.
-</Tab>
-<Tab title="Substrate">
-* [`squid-substrate-typegen`](/sdk/resources/tools/typegen/generation/?typegen=substrate) via [`@subsquid/substrate-typegen`](https://www.npmjs.com/package/@subsquid/substrate-typegen):
-  - general purpose pallet data decoding (aware of runtime versions)
-  - handles direct storage queries
-* [`squid-ink-typegen`](/sdk/resources/tools/typegen/generation/?typegen=ink) via [`@subsquid/ink-typegen`](https://www.npmjs.com/package/@subsquid/ink-typegen) for decoding the data of [ink!](https://use.ink) contracts
-</Tab>
+  <Tab title="EVM">
+    * [`squid-evm-typegen`](sdk/resources/tools/typegen/generation/?typegen=evm)
+    via
+    [`@subsquid/evm-typegen`](https://www.npmjs.com/package/@subsquid/evm-typegen):
+    - decodes smart contract data - handles direct calls to contract methods -
+    exposes useful constants such as event topics and function signature hashes
+    The generated code depends on
+    [`@subsquid/evm-abi`](https://www.npmjs.com/package/@subsquid/evm-abi),
+    SQD's own high performance, open source EVM codec.
+  </Tab>
+  <Tab title="Substrate">
+    *
+    [`squid-substrate-typegen`](sdk/resources/tools/typegen/generation/?typegen=substrate)
+    via
+    [`@subsquid/substrate-typegen`](https://www.npmjs.com/package/@subsquid/substrate-typegen):
+    - general purpose pallet data decoding (aware of runtime versions) - handles
+    direct storage queries *
+    [`squid-ink-typegen`](sdk/resources/tools/typegen/generation/?typegen=ink)
+    via
+    [`@subsquid/ink-typegen`](https://www.npmjs.com/package/@subsquid/ink-typegen)
+    for decoding the data of [ink!](https://use.ink) contracts
+  </Tab>
 </Tabs>
 
 Install these with `--save-dev`.
 
 ### GraphQL server
 
-Squids that store their data in PostgreSQL can subsequently make it available as a GraphQL API via a variety of supported servers. See [Serving GraphQL](/sdk/resources/serving-graphql).
+Squids that store their data in PostgreSQL can subsequently make it available as a GraphQL API via a variety of supported servers. See [Serving GraphQL](sdk/resources/serving-graphql).
 
-Among other alternatives, SQD provides its own server called [OpenReader](/sdk/reference/openreader-server) via the [`@subsquid/graphql-server`](https://www.npmjs.com/package/@subsquid/graphql-server) package. The server runs as a separate process. [Core API](/sdk/reference/openreader-server/api) is automatically derived from the schema file; it is possible to extend it with [custom queries](/sdk/reference/openreader-server/configuration/custom-resolvers) and [basic access control](/sdk/reference/openreader-server/configuration/authorization).
+Among other alternatives, SQD provides its own server called [OpenReader](sdk/reference/openreader-server) via the [`@subsquid/graphql-server`](https://www.npmjs.com/package/@subsquid/graphql-server) package. The server runs as a separate process. [Core API](sdk/reference/openreader-server/api) is automatically derived from the schema file; it is possible to extend it with [custom queries](sdk/reference/openreader-server/configuration/custom-resolvers) and [basic access control](sdk/reference/openreader-server/configuration/authorization).
 
 ### Misc utilities
 
 <Tabs>
-<Tab title="EVM">
-* [Squid CLI](/en/sdk/cli) is a utility for [retrieving squid templates](/en/sdk/cli), managing [chains of commands](https://github.com/subsquid/squid-sdk/tree/master/util/commands) commonly used in development and running [all squid processes at once](/en/sdk/cli). It can also be used for deploying to [SQD Cloud](/en/cloud/overview).
-</Tab>
-<Tab title="Substrate">
-* [Squid CLI](/en/sdk/cli) is a utility for [retrieving squid templates](/en/sdk/cli), managing [chains of commands](https://github.com/subsquid/squid-sdk/tree/master/util/commands) commonly used in development and running [all squid processes at once](/en/sdk/cli). It can also be used for deploying to [SQD Cloud](/en/cloud/overview).
-* [`@subsquid/ss58`](https://www.npmjs.com/package/@subsquid/ss58) handles encoding and decoding of SS58 addresses
-* [`@subsquid/frontier`](https://www.npmjs.com/package/@subsquid/frontier) decodes events and calls of the [Frontier EVM pallet](https://paritytech.github.io/frontier/frame/evm.html) to make them decodable with [`squid-evm-typegen`](/sdk/resources/tools/typegen/generation)
-</Tab>
+  <Tab title="EVM">
+    * [Squid CLI](en/sdk/cli) is a utility for [retrieving squid
+    templates](en/sdk/cli), managing [chains of
+    commands](https://github.com/subsquid/squid-sdk/tree/master/util/commands)
+    commonly used in development and running [all squid processes at
+    once](en/sdk/cli). It can also be used for deploying to [SQD
+    Cloud](en/cloud/overview).
+  </Tab>
+  <Tab title="Substrate">
+    * [Squid CLI](en/sdk/cli) is a utility for [retrieving squid
+    templates](en/sdk/cli), managing [chains of
+    commands](https://github.com/subsquid/squid-sdk/tree/master/util/commands)
+    commonly used in development and running [all squid processes at
+    once](en/sdk/cli). It can also be used for deploying to [SQD
+    Cloud](en/cloud/overview). *
+    [`@subsquid/ss58`](https://www.npmjs.com/package/@subsquid/ss58) handles
+    encoding and decoding of SS58 addresses *
+    [`@subsquid/frontier`](https://www.npmjs.com/package/@subsquid/frontier)
+    decodes events and calls of the [Frontier EVM
+    pallet](https://paritytech.github.io/frontier/frame/evm.html) to make them
+    decodable with [`squid-evm-typegen`](sdk/resources/tools/typegen/generation)
+  </Tab>
 </Tabs>

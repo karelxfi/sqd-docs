@@ -1,0 +1,498 @@
+---
+title: "API Reference"
+description: "Complete API reference for Pipes SDK"
+---
+
+# API Reference
+
+Complete reference documentation for Pipes SDK APIs.
+
+## Core Functions
+
+### createEvmSource
+
+Creates a data source for EVM-compatible blockchains.
+
+```typescript
+function createEvmSource(config: EvmSourceConfig): Source;
+```
+
+<ParamField path="config" type="EvmSourceConfig" required>
+  Configuration object for the EVM source
+
+  <Expandable title="EvmSourceConfig properties">
+    <ParamField path="gateway" type="string" required>
+      SQD Network gateway URL (e.g., `https://v2.archive.subsquid.io/network/ethereum-mainnet`)
+    </ParamField>
+
+    <ParamField path="chain" type="string" required>
+      Chain identifier (e.g., `ethereum-mainnet`)
+    </ParamField>
+
+    <ParamField path="query" type="Query" required>
+      Query specification
+
+      <Expandable title="Query properties">
+        <ParamField path="range" type="BlockRange" required>
+          Block range to process
+
+          <Expandable title="BlockRange properties">
+            <ParamField path="from" type="number" required>
+              Starting block number
+            </ParamField>
+
+            <ParamField path="to" type="number">
+              Ending block number (optional, omit for open-ended)
+            </ParamField>
+          </Expandable>
+        </ParamField>
+
+        <ParamField path="logs" type="LogFilter[]">
+          Event log filters
+        </ParamField>
+
+        <ParamField path="transactions" type="TransactionFilter[]">
+          Transaction filters
+        </ParamField>
+
+        <ParamField path="traces" type="TraceFilter[]">
+          Trace filters
+        </ParamField>
+
+        <ParamField path="stateDiffs" type="StateDiffFilter[]">
+          State diff filters
+        </ParamField>
+
+        <ParamField path="fields" type="FieldSelection">
+          Field selection configuration
+        </ParamField>
+      </Expandable>
+    </ParamField>
+
+  </Expandable>
+</ParamField>
+
+**Example:**
+
+```typescript
+const source = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: { from: 20_000_000, to: 20_100_000 },
+    logs: [
+      {
+        address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+        topic0: [
+          "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+        ],
+      },
+    ],
+  },
+});
+```
+
+### createTarget
+
+Creates a target for writing processed data.
+
+```typescript
+function createTarget<T>(config: TargetConfig<T>): Target<T>;
+```
+
+<ParamField path="config" type="TargetConfig<T>" required>
+  Target configuration
+
+  <Expandable title="TargetConfig properties">
+    <ParamField path="write" type="(data: T) => Promise<void>" required>
+      Function to write data
+    </ParamField>
+
+    <ParamField path="fork" type="(cursor: Cursor) => Promise<void>">
+      Optional function to handle blockchain forks
+    </ParamField>
+
+  </Expandable>
+</ParamField>
+
+**Example:**
+
+```typescript
+const target = createTarget({
+  write: async (data) => {
+    await database.insert(data);
+  },
+  fork: async (cursor) => {
+    await database.deleteBlocksAfter(cursor.number);
+  },
+});
+```
+
+### createEvmDecoder
+
+Creates a transformer that decodes smart contract events.
+
+```typescript
+function createEvmDecoder<T>(config: DecoderConfig): Transformer<T>;
+```
+
+<ParamField path="config" type="DecoderConfig" required>
+  Decoder configuration
+
+  <Expandable title="DecoderConfig properties">
+    <ParamField path="address" type="string" required>
+      Contract address to decode events from
+    </ParamField>
+
+    <ParamField path="events" type="Record<string, EventAbi>" required>
+      Map of event names to event ABI objects
+    </ParamField>
+
+    <ParamField path="functions" type="Record<string, FunctionAbi>">
+      Optional map of function names to function ABI objects
+    </ParamField>
+
+  </Expandable>
+</ParamField>
+
+**Example:**
+
+```typescript
+import * as usdcAbi from "./abi/usdc";
+
+const decoder = createEvmDecoder({
+  address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  events: {
+    transfer: usdcAbi.events.Transfer,
+    approval: usdcAbi.events.Approval,
+  },
+});
+```
+
+### createClickhouseTarget
+
+Creates a Clickhouse target with automatic progress tracking.
+
+```typescript
+function createClickhouseTarget<T>(
+  config: ClickhouseTargetConfig<T>
+): Target<T>;
+```
+
+<ParamField path="config" type="ClickhouseTargetConfig<T>" required>
+  Clickhouse target configuration
+
+  <Expandable title="ClickhouseTargetConfig properties">
+    <ParamField path="client" type="ClickHouseClient" required>
+      Clickhouse client instance
+    </ParamField>
+
+    <ParamField path="table" type="string" required>
+      Table name to write to
+    </ParamField>
+
+    <ParamField path="write" type="(data: T, insert: InsertFn) => Promise<void>" required>
+      Function to write data using the provided insert function
+    </ParamField>
+
+    <ParamField path="fork" type="(cursor: Cursor, deleteFrom: DeleteFn) => Promise<void>">
+      Optional function to handle forks using the provided delete function
+    </ParamField>
+
+  </Expandable>
+</ParamField>
+
+**Example:**
+
+```typescript
+import { createClient } from "@clickhouse/client";
+
+const client = createClient({
+  host: "http://localhost:8123",
+});
+
+const target = createClickhouseTarget({
+  client,
+  table: "transfers",
+  write: async (data, insert) => {
+    const rows = data.transfer.map((t) => ({
+      block_number: t.block.header.number,
+      from_address: t.event.from,
+      to_address: t.event.to,
+      value: t.event.value.toString(),
+    }));
+    await insert(rows);
+  },
+  fork: async (cursor, deleteFrom) => {
+    await deleteFrom(cursor.number);
+  },
+});
+```
+
+## Interfaces and Types
+
+### Source
+
+```typescript
+interface Source {
+  read(cursor?: Cursor): AsyncIterableIterator<Batch>;
+  pipe<T>(transformer: Transformer<T>): Pipeline<T>;
+  pipeComposite<T>(transformers: Record<string, Transformer<any>>): Pipeline<T>;
+}
+```
+
+### Transformer
+
+```typescript
+interface Transformer<T> {
+  transform(data: any): Promise<T>;
+  query?(builder: QueryBuilder): void;
+}
+```
+
+### Target
+
+```typescript
+interface Target<T> {
+  write(data: T): Promise<void>;
+}
+```
+
+### Cursor
+
+```typescript
+interface Cursor {
+  number: number; // Block number
+}
+```
+
+### Batch
+
+```typescript
+interface Batch {
+  blocks: Block[];
+}
+```
+
+### Block
+
+```typescript
+interface Block {
+  header: BlockHeader;
+  logs: Log[];
+  transactions: Transaction[];
+  traces: Trace[];
+  stateDiffs: StateDiff[];
+}
+```
+
+### BlockHeader
+
+```typescript
+interface BlockHeader {
+  number: number;
+  hash: string;
+  parentHash: string;
+  timestamp: number;
+  gasUsed: bigint;
+  gasLimit: bigint;
+  // ... other fields
+}
+```
+
+### Log
+
+```typescript
+interface Log {
+  address: string;
+  data: string;
+  topics: string[];
+  transactionHash: string;
+  transactionIndex: number;
+  logIndex: number;
+  // ... other fields
+}
+```
+
+### DecodedEvent
+
+```typescript
+interface DecodedEvent<T> {
+  block: Block;
+  transactionHash: string;
+  logIndex: number;
+  rawEvent: Log;
+  event: T; // Decoded event parameters
+}
+```
+
+## Query Builder
+
+### addLog
+
+Add event log filter.
+
+```typescript
+builder.addLog(filter: LogFilter): void
+```
+
+<ParamField path="filter" type="LogFilter" required>
+  Log filter configuration
+
+  <Expandable title="LogFilter properties">
+    <ParamField path="address" type="string[]">
+      Contract addresses to filter
+    </ParamField>
+
+    <ParamField path="topic0" type="string[]">
+      Event signature hashes
+    </ParamField>
+
+    <ParamField path="topic1" type="string[]">
+      First indexed parameter
+    </ParamField>
+
+    <ParamField path="topic2" type="string[]">
+      Second indexed parameter
+    </ParamField>
+
+    <ParamField path="topic3" type="string[]">
+      Third indexed parameter
+    </ParamField>
+
+  </Expandable>
+</ParamField>
+
+### addTransaction
+
+Add transaction filter.
+
+```typescript
+builder.addTransaction(filter: TransactionFilter): void
+```
+
+<ParamField path="filter" type="TransactionFilter" required>
+  Transaction filter configuration
+
+  <Expandable title="TransactionFilter properties">
+    <ParamField path="from" type="string[]">
+      Transaction sender addresses
+    </ParamField>
+
+    <ParamField path="to" type="string[]">
+      Transaction recipient addresses
+    </ParamField>
+
+    <ParamField path="sighash" type="string[]">
+      Function selectors
+    </ParamField>
+
+  </Expandable>
+</ParamField>
+
+### addTrace
+
+Add trace filter.
+
+```typescript
+builder.addTrace(filter: TraceFilter): void
+```
+
+### addStateDiff
+
+Add state diff filter.
+
+```typescript
+builder.addStateDiff(filter: StateDiffFilter): void
+```
+
+## Common ABIs
+
+Pre-generated ABI objects for popular standards.
+
+```typescript
+import { commonAbis } from "@sqd-pipes/evm-processor";
+```
+
+### ERC-20
+
+```typescript
+commonAbis.erc20.events.Transfer;
+commonAbis.erc20.events.Approval;
+commonAbis.erc20.functions.transfer;
+commonAbis.erc20.functions.approve;
+```
+
+### ERC-721
+
+```typescript
+commonAbis.erc721.events.Transfer;
+commonAbis.erc721.events.Approval;
+commonAbis.erc721.events.ApprovalForAll;
+```
+
+### ERC-1155
+
+```typescript
+commonAbis.erc1155.events.TransferSingle;
+commonAbis.erc1155.events.TransferBatch;
+commonAbis.erc1155.events.ApprovalForAll;
+```
+
+## Utilities
+
+### Event ABI Generation
+
+Generate TypeScript types from contract ABIs:
+
+```bash
+npx squid-evm-typegen <output-dir> <abi-file> [<abi-file> ...]
+```
+
+<ParamField path="output-dir" type="string" required>
+  Directory to output generated types (e.g., `src/abi`)
+</ParamField>
+
+<ParamField path="abi-file" type="string" required>
+  Path to contract ABI JSON file (can specify multiple)
+</ParamField>
+
+**Example:**
+
+```bash
+npx squid-evm-typegen src/abi abi/usdc.json abi/uniswapV3Pool.json
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Examples" icon="code" href="/en/sdk/evm/pipes/examples">
+    See complete code examples
+  </Card>
+
+{" "}
+<Card
+  title="Advanced Patterns"
+  icon="rocket"
+  href="/en/sdk/evm/pipes/advanced-patterns"
+>
+  Learn advanced indexing techniques
+</Card>
+
+{" "}
+<Card
+  title="Data Persistence"
+  icon="database"
+  href="/en/sdk/evm/pipes/data-persistence"
+>
+  Set up Clickhouse integration
+</Card>
+
+  <Card
+    title="GitHub Repository"
+    icon="github"
+    href="https://github.com/subsquid-labs/pipes-sdk-docs"
+  >
+    Browse examples and source code
+  </Card>
+</CardGroup>

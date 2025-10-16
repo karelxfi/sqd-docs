@@ -2,7 +2,6 @@
 title: ink! contract indexing
 description: >-
   Build a squid indexing an ink! smart contract
-sidebar_position: 50
 ---
 
 # ink! contract indexing
@@ -17,13 +16,13 @@ sqd init <your squid name here> --template ink
 
 Here we will use a simple test ERC20-type token contract deployed to [Shibuya](https://shibuya.subscan.io/) at `XnrLUQucQvzp5kaaWLG9Q3LbZw5DPwpGn69B5YcywSWVr5w`. Our squid will track all the token holders and account balances, together with the historical token transfers.
 
-:::info
+<Info>
 Squid SDK only supports WASM contracts executed by the [Contracts pallet](https://crates.parity.io/pallet_contracts/index.html) natively. The pallet is enabled by the following network runtimes:
 - `Astar` (a `Polkadot` parachain)
 - `Shibuya` (`Astar` testnet)
 - `Shiden` (`Kusama`-cousin of `Astar`)
 - `AlephZero` (a standalone Substrate-based chain)
-:::
+</Info>
 
 ## Pre-requisites
 
@@ -138,8 +137,8 @@ The processor is instantiated and configured at the `src/processor.ts`. Here are
 Here is the end result:
 
 ```ts title="src/processor.ts"
-import {assertNotNull} from '@subsquid/util-internal'
-import {toHex} from '@subsquid/util-internal-hex'
+import \{assertNotNull\} from '@subsquid/util-internal'
+import \{toHex\} from '@subsquid/util-internal-hex'
 import * as ss58 from '@subsquid/ss58'
 import {
     BlockHeader,
@@ -197,14 +196,14 @@ Every time a batch is returned by the Network, it will trigger the callback func
 Batch handler is typically defined at the squid processor entry point, `src/main.ts`. Here is one that works for our task:
 
 ```ts title="src/main.ts"
-import {In} from 'typeorm'
+import \{In\} from 'typeorm'
 import assert from 'assert'
 
 import * as ss58 from '@subsquid/ss58'
-import {Store, TypeormDatabase} from '@subsquid/typeorm-store'
+import \{Store, TypeormDatabase\} from '@subsquid/typeorm-store'
 
 import * as erc20 from './abi/erc20'
-import {Owner, Transfer} from "./model"
+import \{Owner, Transfer\} from "./model"
 import {
     processor,
     SS58_NETWORK,
@@ -212,7 +211,7 @@ import {
     ProcessorContext
 } from './processor'
 
-processor.run(new TypeormDatabase({supportHotBlocks: true}), async ctx => {
+processor.run(new TypeormDatabase(\{supportHotBlocks: true\}), async ctx => \{
     const txs: TransferRecord[] = getTransferRecords(ctx)
 
     const owners: Map<string, Owner> = await createOwners(ctx, txs)
@@ -235,10 +234,10 @@ interface TransferRecord {
 function getTransferRecords(ctx: ProcessorContext<Store>): TransferRecord[] {
     const records: TransferRecord[] = []
     for (const block of ctx.blocks) {
-        assert(block.header.timestamp, `Block ${block.header.height} had no timestamp`)
+        assert(block.header.timestamp, `Block $\{block.header.height\} had no timestamp`)
         for (const event of block.events) {
             if (event.name === 'Contracts.ContractEmitted' && event.args.contract === CONTRACT_ADDRESS) {
-                assert(event.extrinsic, `Event ${event} arrived without a parent extrinsic`)
+                assert(event.extrinsic, `Event $\{event\} arrived without a parent extrinsic`)
                 const decodedEvent = erc20.decodeEvent(event.args.data)
                 if (decodedEvent.__kind === 'Transfer') {
                     records.push({
@@ -270,7 +269,7 @@ async function createOwners(ctx: ProcessorContext<Store>, txs: TransferRecord[])
 
     const ownersMap = await ctx.store.findBy(Owner, {
         id: In([...ownerIds])
-    }).then(owners => {
+    \}).then(owners => \{
         return new Map(owners.map(owner => [owner.id, owner]))
     })
 
@@ -291,7 +290,7 @@ function createTransfers(txs: TransferRecord[], owners: Map<string, Owner>): Tra
         if (tx.from) {
             transfer.from = owners.get(tx.from)
             if (transfer.from == null) {
-                transfer.from = new Owner({id: tx.from, balance: 0n})
+                transfer.from = new Owner(\{id: tx.from, balance: 0n\})
                 owners.set(tx.from, transfer.from)
             }
             transfer.from.balance -= tx.amount
@@ -300,7 +299,7 @@ function createTransfers(txs: TransferRecord[], owners: Map<string, Owner>): Tra
         if (tx.to) {
             transfer.to = owners.get(tx.to)
             if (transfer.to == null) {
-                transfer.to = new Owner({id: tx.to, balance: 0n})
+                transfer.to = new Owner(\{id: tx.to, balance: 0n\})
                 owners.set(tx.to, transfer.to)
             }
             transfer.to.balance += tx.amount
@@ -315,9 +314,9 @@ The `getTransferRecords` function generates a list of `TransferRecord` objects t
 
 Finally, these [TypeORM entity](/sdk/reference/schema-file/entities) instances are saved to the database, all in one go. This is done to reduce the number of database queries.
 
-:::info
+<Info>
 In the `getTransferRecords` function we loop over the blocks and over the events contained in them, then filter the events with an `if`. The filtering is redundant when there's only one event type to process but will be needed when the processor is subscribed to multiple ones.
-:::
+</Info>
 
 ## Launch the Project
 
@@ -338,7 +337,7 @@ Visit [`localhost:4350/graphql`](http://localhost:4350/graphql) to access the [G
 
 ```graphql
 query MyQuery {
-  owners(limit: 10, where: {}, orderBy: balance_DESC) {
+  owners(limit: 10, where: \{\}, orderBy: balance_DESC) \{
     balance
     id
   }

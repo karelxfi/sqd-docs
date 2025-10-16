@@ -1,6 +1,7 @@
 ---
 title: "Portal for Solana"
 description: "Solana data from the permissionless SQD Network"
+
 ---
 
 
@@ -12,7 +13,7 @@ description: "Solana data from the permissionless SQD Network"
 SQD Network portals are currently in beta. Please report any bugs or suggestions to the [SQD Portal Beta chat](https://t.me/+JHrJZPz34kRjYmFk) or to [Squid Devs](https://t.me/HydraDevs).
 </Info>
 
-The newest version of SQD Network portal serves real time data. It can replace both gateways of the open private version of SQD Network and RPC endpoints. Currently it only supports Solana ([more on Solana indexing in SQD](/solana-indexing)).
+The newest version of SQD Network portal serves real time data. It can replace both gateways of the open private version of SQD Network and RPC endpoints. Currently it only supports Solana ([more on Solana indexing in SQD](solana-indexing)).
 
 <Info>
 We're currently experimenting with tightening the data request complexity limits. If you see an HTTP 400 error with a message like this:
@@ -84,7 +85,7 @@ Here's an example edit:
 +    "@subsquid/batch-processor": "1.0.0-portal-api.18ef40",
      "@subsquid/borsh": "^0.2.0",
 -    "@subsquid/solana-objects": ">=0.0.3-portal-api.18ef40",
--    "@subsquid/solana-stream": "<1.0.0-portal-api.18ef40",
+-    "@subsquid/solana-stream": "&lt;1.0.0-portal-api.18ef40",
 +    "@subsquid/solana-objects": "0.0.3-portal-api.18ef40",
 +    "@subsquid/solana-stream": "1.0.0-portal-api.18ef40",
      "@subsquid/typeorm-migration": "^1.3.0",
@@ -147,15 +148,15 @@ pnpm install
 ```
 Also, please remove any mentions of `SolanaRpcClient`, for example:
 ```diff
--import {DataSourceBuilder, SolanaRpcClient} from '@subsquid/solana-stream'
-+import {DataSourceBuilder} from '@subsquid/solana-stream'
+-import \{DataSourceBuilder, SolanaRpcClient\} from '@subsquid/solana-stream'
++import \{DataSourceBuilder\} from '@subsquid/solana-stream'
 ```
 
 **B.** Replace any block height literals with **slot number** literals.
 
 ```diff
-+  .setBlockRange({from: 325000000})
--  .setBlockRange({from: 303262650})
++  .setBlockRange(\{from: 325000000\})
+-  .setBlockRange(\{from: 303262650\})
 ```
 TBA add a convenient converter
 
@@ -193,13 +194,13 @@ Assuming your squid is version-controlled and has one processor:
 
    1. Reset your repo to the state before the updates.
 
-   2. Add the `to` field to the argument of the [`.setBlockRange`](/solana-indexing/sdk/solana-batch/general/#set-block-range) `DataSourceBuilder` call (likely in `./src/main.ts`). Set it to the current slot number.
+   2. Add the `to` field to the argument of the [`.setBlockRange`](solana-indexing/sdk/solana-batch/general/#set-block-range) `DataSourceBuilder` call (likely in `./src/main.ts`). Set it to the current slot number.
 
-   3. [Update your deployment](/squid-cli/deploy)
+   3. [Update your deployment](squid-cli/deploy)
 
    4. Take a look at your squid's logs. It should be repeatedly terminating (due to having nothing to do) and restarting.
 
-3. Connect to the squid's database and update the `height` field of the [status schema](/sdk/faq/#how-do-squids-keep-track-of-their-sync-progress) to contain **slot** instead of the block height of the block mentioned there.
+3. Connect to the squid's database and update the `height` field of the [status schema](sdk/faq/#how-do-squids-keep-track-of-their-sync-progress) to contain **slot** instead of the block height of the block mentioned there.
 
 4. Verify that the `height` field updated successfully by re-reading the status schema.
 
@@ -215,7 +216,7 @@ To resync your squid, follow the zero-downtime update procedure:
 
 3. Assign your production tag to the new deployment to redirect the GraphQL requests there.
 
-See [this section](/cloud/resources/slots-and-tags/#zero-downtime-updates) for details.
+See [this section](cloud/resources/slots-and-tags/#zero-downtime-updates) for details.
 
 ## What's next?
 

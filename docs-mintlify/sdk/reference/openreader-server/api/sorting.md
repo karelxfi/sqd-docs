@@ -1,5 +1,4 @@
 ---
-sidebar_position: 60
 title: Sorting
 description: >-
   The orderBy argument

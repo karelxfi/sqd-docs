@@ -2,7 +2,6 @@
 title: "Step 1: Transfer events"
 description: >-
   Indexing events emitted by the BAYC contract
-sidebar_position: 10
 ---
 
 # Step 1: Indexing Transfer events
@@ -97,16 +96,16 @@ Batch handler is where the raw on-chain data is decoded, transformed and persist
 
 We begin by defining a batch handler decoding the `Transfer` event:
 ```typescript title="src/main.ts"
-import {TypeormDatabase} from '@subsquid/typeorm-store'
-import {processor, CONTRACT_ADDRESS} from './processor'
+import \{TypeormDatabase\} from '@subsquid/typeorm-store'
+import \{processor, CONTRACT_ADDRESS\} from './processor'
 import * as bayc from './abi/bayc'
 
 processor.run(new TypeormDatabase(), async (ctx) => {
     for (let block of ctx.blocks) {
         for (let log of block.logs) {
             if (log.address === CONTRACT_ADDRESS && log.topics[0] === bayc.events.Transfer.topic) {
-                let {from, to, tokenId} = bayc.events.Transfer.decode(log)
-                ctx.log.info(`Parsed a Transfer of token ${tokenId} from ${from} to ${to}`)
+                let \{from, to, tokenId\} = bayc.events.Transfer.decode(log)
+                ctx.log.info(`Parsed a Transfer of token $\{tokenId\} from $\{from\} to $\{to\}`)
             }
         }
     }
@@ -163,10 +162,10 @@ npx squid-typeorm-migration generate
 ```
 The generated code is in `src/model`. We can now import a `Transfer` entity class from there and use it to perform [various operations](/sdk/resources/persisting-data/typeorm/) on the corresponding database table. Let us rewrite our batch handler to save the parsed `Transfer` events data to the database:
 ```typescript title="src/main.ts"
-import {TypeormDatabase} from '@subsquid/typeorm-store'
-import {processor, CONTRACT_ADDRESS} from './processor'
+import \{TypeormDatabase\} from '@subsquid/typeorm-store'
+import \{processor, CONTRACT_ADDRESS\} from './processor'
 import * as bayc from './abi/bayc'
-import {Transfer} from './model'
+import \{Transfer\} from './model'
 
 processor.run(new TypeormDatabase(), async (ctx) => {
     let transfers: Transfer[] = []
@@ -174,7 +173,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
     for (let block of ctx.blocks) {
         for (let log of block.logs) {
             if (log.address === CONTRACT_ADDRESS && log.topics[0] === bayc.events.Transfer.topic) {
-                let {from, to, tokenId} = bayc.events.Transfer.decode(log)
+                let \{from, to, tokenId\} = bayc.events.Transfer.decode(log)
                 transfers.push(new Transfer({
                     id: log.id,
                     tokenId,
@@ -209,4 +208,4 @@ npx squid-graphql-server
 ```
 in a separate terminal. If all is well, a GraphiQL playground should become available at [localhost:4350/graphql](http://localhost:4350/graphql):
 
-![BAYC GraphiQL at step one](./bayc-playground-step-one.png)
+\{/* [\1](\2) */\}

@@ -1,12 +1,11 @@
 ---
-sidebar_position: 20
 title: Whitepaper
 description: A fairly detailed design overview
 ---
 
-:::warning
+<Warning>
 The SQD whitepaper and any other documents attached or linked to this statement are intended only to provide a broad overview of the general direction of SQD and the SQD Network. The whitepaper and these documents are intended for information purposes only and may not be incorporated into any contract. These materials are not and should not be considered to offer a commitment to deliver any material, code, functionality, token, and should not be relied upon in making token purchase decisions or any kind of investment. All details related to the development, timing, or issue of any SQD feature or token remain at the sole discretion of Subsquid Labs GmbH.
-:::
+</Warning>
 
 ## Intro 
 
@@ -26,7 +25,7 @@ One of the key fundamentals that has allowed countless dApps to thrive is the em
 - Permanent and long-term storage for large data (Arweave, Filecoin)
 - Application-specific databases and APIs (TheGraph, POKT, Kwil, WeaveDB)
 
-![image](https://user-images.githubusercontent.com/8627422/279713390-8667b401-5213-4126-a0c2-55d39ba611e8.png)
+\{/* [\1](\2) */\}
 
 However, there is still one part missing. One of the biggest challenges dApp developers face is accessing data at scale. It's currently highly complex to query and aggregate 
 the exponentially growing amount of data produced by blockchains (transactions and state data), applications 
@@ -66,7 +65,7 @@ The below actors all participate in the SQD Network:
 - Rewards manager
 - Data Consumers
 
-![image](https://github.com/subsquid/subsquid-network-contracts/assets/8627422/beb1439d-aa15-42fa-8bc2-4fa89c7fc96d)
+\{/* [\1](\2) */\}
 
 
 ### Data Providers
@@ -75,7 +74,7 @@ Data Providers produce data to be served by SQD Network. Currently, the focus is
 
 Data providers are responsible for ensuring the quality and timely provision of data. During the bootstrapping phase, Subsquid Labs GmbH acts as the sole data provider for the SQD Network, serving as a proxy for chains from which the data is ingested block-by-block. The ingested data is validated by comparing hashes. It's then split into small compressed chunks and saved into persistent storage, from which the chunks are randomly distributed between the workers.
 
-![image](https://user-images.githubusercontent.com/8627422/255241118-9ba68865-c088-42ac-a01b-f961d1ed564b.png)
+\{/* [\1](\2) */\}
 
 The metadata is saved on-chain and is updated by the data provider each time a new piece of the data is uploaded. The metadata describes the schema, the data layout, the reserved storage, and the desired replication factor to be accommodated by the network. You can find the metadata structure in the Appendix.
 
@@ -87,7 +86,7 @@ Data providers pay on-chain subscription fees to the network to make data availa
 
 The scheduler is responsible for distributing the data chunks submitted by the data providers among the workers. The scheduler listens to updates of the data sets, as well as updates of the worker sets, and sends requests to the workers to download new chunks and/or redistribute the existing data chunks based on the capacity and the target redundancy for each dataset. Once a worker receives an update request , it downloads the missing data chunks from the corresponding persistent storage.
 
-![image](https://user-images.githubusercontent.com/8627422/255990260-ee4eca18-faa0-4e14-a495-9aad99ef14cb.png)
+\{/* [\1](\2) */\}
 
 
 ### Workers
@@ -133,7 +132,7 @@ The query cap is calculated by:
 
 The locking mechanism has an additional booster design to incentivize gateway operators to lock their tokens for longer periods of time for an increase in CU. The longer the lock period, the more CUs are allocated per SQD/yr. The APY is calculated as `BASE_VIRTUAL_APY * BOOSTER`. 
 
-![image](https://github.com/subsquid/subsquid-network-contracts/assets/8627422/a1ab5ce1-da58-4cdc-aac5-90728be23b9e)
+\{/* [\1](\2) */\}
 
 At the launch of the network, the parameters are set to be `BASE_VIRTUAL_APY = 12%` and `1SQD = 4000 CU`. 
 
@@ -150,7 +149,7 @@ The SQD Network provides economic guarantees for the validity of the queried dat
 
 Since submitting each query for on-chain validation on-chain is costly and not feasible, clients opt-in to submit query responses in an off-chain queue, together with the metadata such as response latency. Then, independent searchers scan the queue and submit suspicious queries for on-chain validation. If the query is deemed invalid, the submitter gets a portion of the slashed bond as a reward, thus incentivizing searchers to efficiently scan the queue for malicious responses. 
 
-![image](https://github.com/subsquid/subsquid-network-contracts/assets/8627422/8ae1eef9-95f3-4cc4-9b53-2dd8c02d9559)
+\{/* [\1](\2) */\}
 
 
 ## SQD Token
@@ -259,7 +258,7 @@ rAPR = MIN(base_apr(u_rate), APR_CAP(total_staked))
 ```
 The `base_apr` is projected to be around `20%` in the equilibrium state, when the actual worker capacity matches the desired network capacity, set externally. It is increased up to `70%` to incentivize more workers to join the network until the target capcity is reached:
 
-![image](https://gist.github.com/assets/8627422/39614ca9-332c-4825-8ef0-5dfb32ece1a2)
+\{/* [\1](\2) */\}
 
 The `APR_CAP` cut-off is added to cap the total rewards per epoch.
 One defines first
@@ -336,7 +335,7 @@ It has the following properties:
 - Sharply increases to near `1` in the "intermediary" regime `0.8-0.9`
 - The penalty around `1` is diminishing
 
-![image](https://user-images.githubusercontent.com/8627422/257277215-5c902bb4-2a90-4847-8a1f-1cd88e46fb54.png)
+\{/* [\1](\2) */\}
 
 
 Finally, `D_tenure` is a long-range liveness factor incentivizing consistent liveness across the epochs. The rationale is that
@@ -344,7 +343,7 @@ Finally, `D_tenure` is a long-range liveness factor incentivizing consistent liv
 - The probability of a worker failure decreases with the time the worker is live thus freshly spawned workers are rewarded less
 - The discount for freshly spawned workers discourages the churn among workers and incentivizes longer-term commitments
 
-![image](https://user-images.githubusercontent.com/8627422/257228987-7863df56-8ad3-447d-a095-dae18c1027b3.png)
+\{/* [\1](\2) */\}
 
 ### Distribution between the worker and delegators
 

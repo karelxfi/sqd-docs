@@ -1,43 +1,44 @@
 ---
 title: "Deployment manifest"
 description: "A reference for the squid deployment manifest"
+
 ---
 
 # Deployment manifest
 
-The deployment manifest is named `squid.yaml` by convention. The manifest defines how the squid should be built, customized and scaled during the deployment to SQD Cloud. It is used together with [`sqd deploy`](/squid-cli/deploy) to deploy or update an existing squid version.
+The deployment manifest is named `squid.yaml` by convention. The manifest defines how the squid should be built, customized and scaled during the deployment to SQD Cloud. It is used together with [`sqd deploy`](squid-cli/deploy) to deploy or update an existing squid version.
 
 With the introduction of the deployment manifest the add-ons (`postgres`) and the API services (`api`) become optional. This allows flexible deployment configuration for analytic use-cases (e.g. transform and write to s3 or BigQuery).
 
 <Tip>
-Cloud [secrets](/cloud/resources/env-variables/#secrets) of the squid's [organization](/cloud/resources/organizations) are exposed as the `secrets` context. You can set any variable defined in any of the `env:` sections mentioned below:
+Cloud [secrets](cloud/resources/env-variables/#secrets) of the squid's [organization](cloud/resources/organizations) are exposed as the `secrets` context. You can set any variable defined in any of the `env:` sections mentioned below:
 ```yaml
 env:
-  RPC_ENDPOINT: ${{ secrets.FAST_RPC_ENDPOINT_URL }}
+  RPC_ENDPOINT: "${{ secrets.FAST_RPC_ENDPOINT_URL }}"
 ```
-See the [Environment variables](/cloud/resources/env-variables) page for more info.
+See the [Environment variables](cloud/resources/env-variables) page for more info.
 </Tip>
 
 ## Header
 
 The manifest header defines the squid metadata
 
-| Field                    |      Description                         |
-|:-----------------------:|:---------------------------------------------:|
-| `manifest_version`        | Only `subsquid.io/v0.1` is currently supported     |
-| `name` | A globally unique squid name. Can only contain lowercase Latin letters (`a-z`) and a dash (`-`). Must be under 20 symbols. |
-| `version`                 | Squid version. **Must be an integer**. A squid deployment is canonically identified as `${name}@${version}`.  |
-| `description`  | (Optional) A short description of the squid  |
+|       Field        |                                                        Description                                                         |
+| :----------------: | :------------------------------------------------------------------------------------------------------------------------: |
+| `manifest_version` |                                       Only `subsquid.io/v0.1` is currently supported                                       |
+|       `name`       | A globally unique squid name. Can only contain lowercase Latin letters (`a-z`) and a dash (`-`). Must be under 20 symbols. |
+|     `version`      |      Squid version. **Must be an integer**. A squid deployment is canonically identified as `$\{name\}@$\{version\}`.      |
+|   `description`    |                                        (Optional) A short description of the squid                                         |
 
 ## `build:`
 
 Specifies the way the squid is built into a docker image.
 
-| Name              | Type                          | Default value         |
-|:-----------------:|:-----------------------------:|----------------------:|
-| `node_version`    | `18 \| 20 \| 21`              | `20`                  |
-| `package_manager` | `auto \| npm \| pnpm \| yarn` | `auto`                |
-| [`cmd`](#cmd)     | list                          |                       |
+|       Name        |             Type              | Default value |
+| :---------------: | :---------------------------: | ------------: |
+|  `node_version`   |       `18 \| 20 \| 21`        |          `20` |
+| `package_manager` | `auto \| npm \| pnpm \| yarn` |        `auto` |
+|   [`cmd`](#cmd)   |             list              |               |
 
 For a successful build the following files and folders **must** be present in the root folder of the squid:
 
@@ -46,16 +47,17 @@ For a successful build the following files and folders **must** be present in th
 - `package.json`
 - `commands.json`
 
-The `db` and `assets` folders are added to the build context if present in the squid folder. See [Project structure](/sdk/how-to-start/layout) for more info.
+The `db` and `assets` folders are added to the build context if present in the squid folder. See [Project structure](sdk/how-to-start/layout) for more info.
 
 Under the hood, Cloud builds a Docker image and runs a docker container for each service (`api`, `processor`, `migrate`) using the same image.
-See [Self-hosting](/sdk/resources/self-hosting) for instructions on how to build and run the Docker image locally.
+See [Self-hosting](sdk/resources/self-hosting) for instructions on how to build and run the Docker image locally.
 Even though the squid services (`api`, `processor`, `migrate`) use the same single container image, the exec command is different and can is defined by the `deploy:` section as explained below.
 
 ### `cmd:`
 
 Enables overriding the dependencies installation command, e.g.
-```yaml
+
+````yaml
 build:
   cmd:
     - npm
@@ -73,11 +75,11 @@ A list of add-on services to be deployed along the squid services.
 
 - **`postgres:`**
 
-See [Postgres add-on](/cloud/reference/pg).
+See [Postgres add-on](cloud/reference/pg).
 
 - **`rpc`**
 
-See [RPC add-on](/cloud/resources/rpc-proxy).
+See [RPC add-on](cloud/resources/rpc-proxy).
 
 ### `migrate:`
 
@@ -86,7 +88,7 @@ See [RPC add-on](/cloud/resources/rpc-proxy).
 | Name        | Description                                           | Type          | Default value         |         Optional   |
 |:-----------:|:-----------------------------------------------------:|:-------------:|----------------------:|:------------------:|
 | `cmd`       | Exec command passed to the squid container. By default runs TypeORM migrations in the `db` folder  |  `string[]`   | `['npx', 'squid-typeorm-migration', 'apply']` |   Optional   |
-| `env`       | A key-value list of env variables to be set           |  `{k:v}[]`    |       []               | Optional                |
+| `env`       | A key-value list of env variables to be set           |  `\{k:v\}[]`    |       []               | Optional                |
 
 
 ### `processor:`
@@ -97,7 +99,7 @@ A processor service or a list of processor services of the squid.
 |:-----------:|:-----------------------------------------------------:|:-------------:|----------------------:|:-------------------------------------------:|
 | `cmd`       | Processor exec command passed to the squid container  |  `string[]`   |                       |   **Required**                              |
 | `name`      | Processor name                                        |  `string`     |                       |   **Required** with more than one processor |
-| `env`       | A key-value list of env variables to be set           |  `{k:v}[]`    |   []                  |   Optional                                  |
+| `env`       | A key-value list of env variables to be set           |  `\{k:v\}[]`    |   []                  |   Optional                                  |
 
 With a single processor this section may look like this:
 ```yaml
@@ -112,7 +114,7 @@ For the multiprocessor case:
     - name: bsc-processor
       cmd: [ "sqd", "process:prod:bsc" ]
 ```
-where `process:prod:bsc` and `process:prod:eth` are extra `sqd` commands defined at [`commands.json`](/squid-cli/commands-json):
+where `process:prod:bsc` and `process:prod:eth` are extra `sqd` commands defined at [`commands.json`](squid-cli/commands-json):
 ```json title="commands.json"
 ...
   "process:prod:eth": {
@@ -127,12 +129,12 @@ where `process:prod:bsc` and `process:prod:eth` are extra `sqd` commands defined
 
 ### `api:`
 
-**Optional** The GraphQL API service of the squid. Automatically provisions a publicly available endpoint `https://{org}.subsquid.io/{name}/v/v{version}/graphql` and binds it to the server.
+**Optional** The GraphQL API service of the squid. Automatically provisions a publicly available endpoint `https: "//\{org\}.subsquid.io/\{name\}/v/v\{version\}/graphql` and binds it to the server."
 
 | Name        | Description                                                             | Type          | Default value         | Optional           |
 |:-----------:|:-----------------------------------------------------------------------:|:-------------:|----------------------:|:------------------:|
 | `cmd`       | GraphQL API server exec command passed to the squid container. The server must be listening at port `GRAPHQL_SERVER_PORT`. |  `string[]` |    |   **Required**     |
-| `env`       | A key-value list of env variables to be set                             |  `{k:v}[]`    |  []                   |   Optional         |
+| `env`       | A key-value list of env variables to be set                             |  `\{k:v\}[]`    |  []                   |   Optional         |
 
 ### `env:`
 
@@ -140,7 +142,7 @@ where `process:prod:bsc` and `process:prod:eth` are extra `sqd` commands defined
 
 ## `scale:`
 
-See the [Scale the deployment](/cloud/reference/scale) section.
+See the [Scale the deployment](cloud/reference/scale) section.
 
 ## Examples
 
@@ -153,11 +155,11 @@ version: 1
 description: |-
   My sample squid
 
-build: 
+build:
 
 deploy:
   addons:
-    postgres: 
+    postgres:
   processor:
     cmd: [ "sqd", "process:prod" ]
   api:
@@ -173,11 +175,11 @@ version: 1
 description: |-
   My advanced squid
 
-build: 
+build:
 
 deploy:
   addons:
-    postgres: 
+    postgres:
   migrate:
     env:
       FOO: bar
@@ -186,8 +188,8 @@ deploy:
     # static and secret-valued env variables
     env:
       SQD_DEBUG: sqd:mapping
-      RPC_ENDPOINT: ${{ secrets.ACALA_RPC_ENDPOINT }}
-      COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
+RPC_ENDPOINT: "$\{\{ secrets.ACALA_RPC_ENDPOINT \}\}"
+COINGECKO_API_KEY: "$\{\{ secrets.COINGECKO_API_KEY \}\}"
     cmd: [ "sqd", "process:prod" ]
   api:
     env:
@@ -206,4 +208,4 @@ scale:
     profile: large
     # load-balance three replicas
     replicas: 3
-```
+````

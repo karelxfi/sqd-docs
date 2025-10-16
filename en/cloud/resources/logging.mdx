@@ -1,13 +1,14 @@
 ---
 title: "Inspect logs"
 description: "Inspect the deployment logs"
+
 ---
 
 # Logging
 
-SQD Cloud automatically collects the logs emitted by the squid processor, its API server and its database. Please use the [built-in SDK logger](/sdk/reference/logger) throughout your code when developing for SQD Cloud. You can set the severity flags for squids running in the Cloud via `SQD_DEBUG`, `SQD_TRACE` or `SQD_INFO` - see [Environment Variables](/cloud/resources/env-variables).
+SQD Cloud automatically collects the logs emitted by the squid processor, its API server and its database. Please use the [built-in SDK logger](sdk/reference/logger) throughout your code when developing for SQD Cloud. You can set the severity flags for squids running in the Cloud via `SQD_DEBUG`, `SQD_TRACE` or `SQD_INFO` - see [Environment Variables](cloud/resources/env-variables).
 
-To inspect and follow the squid logs from all the squid services, use [`sqd logs`](/squid-cli/logs):
+To inspect and follow the squid logs from all the squid services, use [`sqd logs`](squid-cli/logs):
 ```bash
 sqd logs -n <name> -s <slot> -f
 ```
@@ -16,14 +17,13 @@ or
 sqd logs -n <name> -t <tag> -f
 ```
 <details>
-
 <summary>For older version-based deployments...</summary>
 
-...the slot string is `v${version}`, so use
+...the slot string is `v$\{version\}`, so use
 ```bash
 sqd logs -n <name> -s v<version> -f
 ```
-Check out the [Slots and tags guide](/cloud/resources/slots-and-tags) to learn more.
+Check out the [Slots and tags guide](cloud/resources/slots-and-tags) to learn more.
 
 </details>
 

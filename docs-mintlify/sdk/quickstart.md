@@ -1,5 +1,4 @@
 ---
-sidebar_position: 5
 title: Quickstart
 description: A practical intro into squids
 ---
@@ -94,7 +93,7 @@ const processor = new EvmBatchProcessor()
   // Other .addXXX() methods (.addTransaction(), .addTrace(), .addStateDiff()
   // on EVM) are similarly feature-rich.
   .addLog({
-    range: { from: 6_082_465 },
+    range: \{ from: 6_082_465 \},
     address: [USDC_CONTRACT_ADDRESS],
     topic0: [usdcAbi.events.Transfer.topic],
   })
@@ -115,7 +114,7 @@ The rest of the file is about data processing and storage:
 //
 // There are also Database classes for storing data to files and BigQuery
 // datasets.
-const db = new TypeormDatabase({supportHotBlocks: true})
+const db = new TypeormDatabase(\{supportHotBlocks: true\})
 
 // The processor.run() call executes the data processing. Its second argument is
 // the handler function that is executed once on each batch of data. Processor
@@ -137,7 +136,7 @@ processor.run(db, async (ctx) => {
       if (log.address === USDC_CONTRACT_ADDRESS &&
           log.topics[0] === usdcAbi.events.Transfer.topic) {
         // SQD's very own EVM codec at work - about 20 times faster than ethers
-        let {from, to, value} = usdcAbi.events.Transfer.decode(log)
+        let \{from, to, value\} = usdcAbi.events.Transfer.decode(log)
         transfers.push(new UsdcTransfer({
           id: log.id,
           block: block.header.height,
@@ -192,7 +191,7 @@ npx squid-graphql-server
 ```
 The server comes with a GraphQL playground available at [`localhost:4350/graphql`](http://localhost:4350/graphql).
 
-![The working API](./quickstart-working-api.png)
+\{/* [\1](\2) */\}
 
 ## Step 7
 

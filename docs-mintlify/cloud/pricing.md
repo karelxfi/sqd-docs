@@ -1,14 +1,13 @@
 ---
-sidebar_position: 20
 title: Pricing
 description: Subscription types and pay-as-you-go prices
 ---
 
 # SQD Cloud Pricing
 
-:::tip
+<Tip>
 Use our [cost calculator](https://www.sqd.dev/cloud#calculator) if you need a quick estimate
-:::
+</Tip>
 
 ## Free squids
 

@@ -1,4 +1,5 @@
 ---
+title: "Transactions"
 description: >-
   Methods to subscribe to txn data
 ---
@@ -14,7 +15,7 @@ For other transaction types you can use the general method [`addTransaction()`](
 
 If your application would benefit from fine-grained request methods for other transaction types, please let us know in the [SquidDevs Telegram channel](https://t.me/HydraDevs).
 
-### `addTransferTransaction(options)` {#add-transfer-transaction}
+### `addTransferTransaction(options)` \{#add-transfer-transaction\}
 
 Get some _or all_ [`TransferContract`](https://github.com/tronprotocol/java-tron/blob/c136a26f8140b17f2c05df06fb5efb1bb47d3baa/protocol/src/main/protos/core/Tron.proto#L340) transactions on the network. `options` has the following structure:
 
@@ -47,7 +48,7 @@ Omit the `where` field to subscribe to all `TransferContract` txs network-wide.
 - `logs = true`: will retrieve event logs emitted by the selected transactions.
 - `internalTransactions = true`: will retrieve internal txs that occurred due to the selected transactions.
 
-The data will be added to the appropriate iterables within [block data](/tron-indexing/tron-batch-processor/context-interfaces) and made available via the `.logs` and `.internalTransactions` fields of each transaction item.
+The data will be added to the appropriate iterables within [block data](tron-indexing/tron-batch-processor/context-interfaces) and made available via the `.logs` and `.internalTransactions` fields of each transaction item.
 
 Note that transactions can also be requested by the other `TronBatchProcessor` methods as related data.
 
@@ -57,7 +58,7 @@ Selection of the exact fields to be retrieved for each transaction and the optio
 
 This requests `TransferContract` txs where owner is `41da9964294c8689bfee2778606e485221625496bf`, plus their logs, on block 64000675.
 
-```ts
+```typescript
 processor.addTransferTransaction({
   where: {
     owner: [ '41da9964294c8689bfee2778606e485221625496bf' ]
@@ -72,7 +73,7 @@ processor.addTransferTransaction({
 })
 ```
 
-### `addTransferAssetTransaction(options)` {#add-transfer-asset-transaction}
+### `addTransferAssetTransaction(options)` \{#add-transfer-asset-transaction\}
 
 Get some _or all_ [`TransferAssetContract`](https://github.com/tronprotocol/java-tron/blob/c136a26f8140b17f2c05df06fb5efb1bb47d3baa/protocol/src/main/protos/core/Tron.proto#L341) transactions on the network. `options` has the following structure:
 
@@ -107,7 +108,7 @@ Omit the `where` field to subscribe to all `TransferAssetContract` txs network-w
 - `logs = true`: will retrieve event logs emitted by the selected transactions.
 - `internalTransactions = true`: will retrieve internal txs that occurred due to the selected transactions.
 
-The data will be added to the appropriate iterables within [block data](/tron-indexing/tron-batch-processor/context-interfaces) and made available via the `.logs` and `.internalTransactions` fields of each transaction item.
+The data will be added to the appropriate iterables within [block data](tron-indexing/tron-batch-processor/context-interfaces) and made available via the `.logs` and `.internalTransactions` fields of each transaction item.
 
 Note that transactions can also be requested by the other `TronBatchProcessor` methods as related data.
 
@@ -117,7 +118,7 @@ Selection of the exact fields to be retrieved for each transaction and the optio
 
 This requests `TransferAssetContract` txs where owner is `4170d66a855afef04753f06c4d6210d6b77708cdb0`, plus their internal txs, on block 64000000.
 
-```ts
+```typescript
 processor.addTransferTransaction({
   where: {
     owner: [ '4170d66a855afef04753f06c4d6210d6b77708cdb0' ]
@@ -132,7 +133,7 @@ processor.addTransferTransaction({
 })
 ```
 
-### `addTriggerSmartContractTransaction(options)` {#add-trigger-smart-contract-transaction}
+### `addTriggerSmartContractTransaction(options)` \{#add-trigger-smart-contract-transaction\}
 
 Get some _or all_ [`TriggerSmartContract`](https://github.com/tronprotocol/java-tron/blob/c136a26f8140b17f2c05df06fb5efb1bb47d3baa/protocol/src/main/protos/core/Tron.proto#L360) transactions on the network. `options` has the following structure:
 
@@ -167,7 +168,7 @@ Omit the `where` field to subscribe to all `TriggerSmartContract` txs network-wi
 - `logs = true`: will retrieve event logs emitted by the selected transactions.
 - `internalTransactions = true`: will retrieve internal txs that occurred due to the selected transactions.
 
-The data will be added to the appropriate iterables within [block data](/tron-indexing/tron-batch-processor/context-interfaces) and made available via the `.logs` and `.internalTransactions` fields of each transaction item.
+The data will be added to the appropriate iterables within [block data](tron-indexing/tron-batch-processor/context-interfaces) and made available via the `.logs` and `.internalTransactions` fields of each transaction item.
 
 Note that transactions can also be requested by the other `TronBatchProcessor` methods as related data.
 
@@ -177,7 +178,7 @@ Selection of the exact fields to be retrieved for each transaction and the optio
 
 This requests `TriggerSmartContract` txs made directly to the USDT contract (`41a614f803b6fd780986a42c78ec9c7f77e6ded13c`).
 
-```ts
+```typescript
 processor.addTriggerSmartContractTransaction({
   where: {
     contract: [ '41a614f803b6fd780986a42c78ec9c7f77e6ded13c' ]
@@ -185,7 +186,7 @@ processor.addTriggerSmartContractTransaction({
 })
 ```
 
-### `addTransaction(options)` {#add-transaction}
+### `addTransaction(options)` \{#add-transaction\}
 
 Get some _or all_ transactions on the network. `options` has the following structure:
 
@@ -216,7 +217,7 @@ Omit the `where` field to subscribe to all txs network-wide.
 - `logs = true`: will retrieve event logs emitted by the selected transactions.
 - `internalTransactions = true`: will retrieve internal txs that occurred due to the selected transactions.
 
-The data will be added to the appropriate iterables within [block data](/tron-indexing/tron-batch-processor/context-interfaces) and made available via the `.logs` and `.internalTransactions` fields of each transaction item.
+The data will be added to the appropriate iterables within [block data](tron-indexing/tron-batch-processor/context-interfaces) and made available via the `.logs` and `.internalTransactions` fields of each transaction item.
 
 Note that transactions can also be requested by the other `TronBatchProcessor` methods as related data.
 
@@ -225,7 +226,7 @@ Selection of the exact fields to be retrieved for each transaction and the optio
 #### Example
 
 This requests all `FreezeBalanceV2Contract` txs network-wide, along with all the logs they emitted:
-```ts
+```typescript
 processor.addTransaction({
   where: {
     type: [ 'FreezeBalanceV2Contract' ]

@@ -13,7 +13,7 @@ Here we show how it is possible to index an Ethereum development node running lo
 ## Pre-requisites
 
 - Either one of [Ganache](https://trufflesuite.com/ganache/) or [Hardhat](https://hardhat.org/)
-- [Squid CLI](/squid-cli/installation)
+- [Squid CLI](squid-cli/installation)
 - Docker
 
 ## Setup
@@ -34,7 +34,7 @@ npm i @subsquid/evm-processor@next @subsquid/typeorm-store@next
 
 Next, we set up a local EVM development environment. We consider two common options: [Hardhat](#hardhat) and [Ganache](#ganache).
 
-## If you chose Hardhat {#hardhat}
+## If you chose Hardhat \{#hardhat\}
 
 [Install the package](https://hardhat.org/hardhat-runner/docs/getting-started#installation).
 
@@ -110,7 +110,7 @@ Lock with 1 ETH and unlock timestamp 1704810454 deployed to 0x5FbDB2315678afecb3
 ```
 Take note of the contract address, **you'll need it later**.
 
-## If you chose Ganache {#ganache}
+## If you chose Ganache \{#ganache\}
 
 Install [Truffle](https://trufflesuite.com/docs/truffle/how-to/install/) and [Ganache](https://trufflesuite.com/docs/ganache/quickstart/#1-install-ganache) packages.
 
@@ -133,15 +133,15 @@ You should find the contract's ABI at `build/contracts/MetaCoin.json`. **It will
 
 Launch the Ganache tool and select the *New Workspace (Ethereum)* option.
 
-![Create workspace](</img/ganache-create-workspace.png>)
+)
 
 Next, provide a name for the workspace and link the Truffle project we just created to it. To do that, click **Add project** and select the `truffle-config.js` file in the project root folder. Finally, select the `Server` tab at the top.
 
-![Provide name](</img/ganache-create-workspace-1.png>)
+)
 
 In this window, change the server configuration to the exact values reported in this image.
 
-![Server configuration](</img/ganache-create-workspace-2.png>)
+)
 
 The [`AUTOMINE` option](https://trufflesuite.com/docs/ganache/reference/cli-options/#miner) is disabled to ease the debugging.
 
@@ -193,14 +193,14 @@ Take note of the contract address, **you'll need it later**.
 
 The indexing setup is ready to use. To test it, replace the contents of `src/processor.ts` with the following.
 
-```ts
-import {TypeormDatabase} from '@subsquid/typeorm-store'
-import {EvmBatchProcessor} from '@subsquid/evm-processor'
+```typescript
+import \{TypeormDatabase\} from '@subsquid/typeorm-store'
+import \{EvmBatchProcessor\} from '@subsquid/evm-processor'
 
 const processor = new EvmBatchProcessor()
   .setRpcEndpoint('http://localhost:8545')
   .setFinalityConfirmation(5)
-  .addTransaction({})
+  .addTransaction(\{\})
   .setFields({
     transaction: {
       contractAddress: true
@@ -225,7 +225,7 @@ node -r dotenv/config lib/main.js
 ```
 You should see the data of one (for Hardhat) or two (for Truffle+Ganache) contract deployment transactions printed to your terminal.
 
-Now you can develop a SQD-based indexer alongside your contracts. Head over to the [dedicated tutorial](/sdk/tutorials/bayc) for guidance on squid development. Use the **contract's ABI** ([here](#3-sample-contract) or [here](#1-truffle-project-sample-contract)) and contract **address** ([here](#5-deploy-the-contract) and [here](#3-deploy-a-smart-contract)) from previous steps and be mindful that the data source of the processor class needs to be set to the local node RPC endpoint, as in the example above:
+Now you can develop a SQD-based indexer alongside your contracts. Head over to the [dedicated tutorial](sdk/tutorials/bayc) for guidance on squid development. Use the **contract's ABI** ([here](#3-sample-contract) or [here](#1-truffle-project-sample-contract)) and contract **address** ([here](#5-deploy-the-contract) and [here](#3-deploy-a-smart-contract)) from previous steps and be mindful that the data source of the processor class needs to be set to the local node RPC endpoint, as in the example above:
 
 ```typescript
 // ...

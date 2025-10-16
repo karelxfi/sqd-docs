@@ -1,5 +1,4 @@
 ---
-sidebar_position: 5
 description: >-
   Block data for Substrate
 ---
@@ -32,13 +31,13 @@ The exact fields available in each data item type are inferred from the `setFiel
 The handler below simply outputs all the `Balances.transfer_all` calls on Kusama in [real time](/sdk/resources/unfinalized-blocks):
 
 ```ts
-import {SubstrateBatchProcessor} from '@subsquid/substrate-processor'
-import {TypeormDatabase} from '@subsquid/typeorm-store'
+import \{SubstrateBatchProcessor\} from '@subsquid/substrate-processor'
+import \{TypeormDatabase\} from '@subsquid/typeorm-store'
 
 const processor = new SubstrateBatchProcessor()
   .setGateway('https://v2.archive.subsquid.io/network/kusama')
   .setRpcEndpoint('https://kusama-rpc.polkadot.io')
-  .setBlockRange({from: 19_600_000})
+  .setBlockRange(\{from: 19_600_000\})
   .addCall({
     name: ['Balances.transfer_all'],
   })

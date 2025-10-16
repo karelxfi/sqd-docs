@@ -2,18 +2,17 @@
 title: SQD Firehose
 description: >-
   Leverage the power of SQD Network data sync subgraphs
-sidebar_position: 30
 ---
 
 # Run subgraphs without full nodes
 
-:::warning
+<Warning>
 This tutorial uses alpha-quality software. If you encouter any issues while using it please let us know at the [SquidDevs Telegram chat](https://t.me/HydraDevs).
-:::
+</Warning>
 
 **Dependencies**: Docker, Git, NodeJS, Yarn.
 
-Developing and running [subgraphs](https://thegraph.com/docs/en/glossary/) is hard, as one has to run a full archival node, and for many networks it is not feasible to run a full archival node to at all. 
+Developing and running [subgraphs](https://thegraph.com/docs/en/glossary/) is hard, as one has to run a full archival node, and for many networks it is not feasible to run a full archival node to at all.
 
 **SQD Firehose** is an open-source lightweight adapter run as a side-car to a graph indexer node, ingesting and filtering the data directly from SQD Network instead of an RPC endpoint. However, since the network does not provide the real-time blocks, the most recent and unfinalized blocks are (optionally) ingested from a complementary RPC endpoint in a seamless way.
 
@@ -22,6 +21,7 @@ Currently it is only possible to run subgraphs against a production-ready [permi
 The easiest way to run a subgraph with SQD Firehose to use our [graph-node-setup](https://github.com/subsquid-labs/graph-node-setup) repo. Here's how:
 
 1. Clone the repo and install the dependencies:
+
    ```bash
    git clone https://github.com/subsquid-labs/graph-node-setup
    cd graph-node-setup
@@ -29,11 +29,12 @@ The easiest way to run a subgraph with SQD Firehose to use our [graph-node-setup
    ```
 
 2. Interactively configure the environment with
+
    ```bash
    npm run configure
    ```
 
-   ![Configuring the environment](subgraphs-support-configuration.gif)
+\{/* [\1](\2) */\}
 
    You will be asked to select a network. You can pick any network from our [supported EVM networks](/subsquid-network/reference/networks/#evm--ethereum-compatible); networks that are not currently [supported by TheGraph](https://thegraph.com/docs/en/developing/supported-networks/) will be available their under SQD names.
 
@@ -46,6 +47,7 @@ The easiest way to run a subgraph with SQD Firehose to use our [graph-node-setup
    :::
 
 3. Download and deploy your subgraph of choice! For example, if you configured the environment to use Ethereum mainnet (`eth-mainnet`), you can deploy the well known Gravatar subgraph:
+
    ```bash
    git clone https://github.com/graphprotocol/example-subgraph
    cd example-subgraph
@@ -63,13 +65,14 @@ The easiest way to run a subgraph with SQD Firehose to use our [graph-node-setup
    npm run create-local
    npm run deploy-local
    ```
+
    GraphiQL playground will be available at [http://127.0.0.1:8000/subgraphs/name/example/graphql](http://127.0.0.1:8000/subgraphs/name/example/graphql).
 
 ## Troubleshooting
 
 Do not hesitate to let us know about any issues (whether listed here or not) at the [SquidDevs Telegram chat](https://t.me/HydraDevs).
 
-* If your subgraph is not syncing and you're getting
+- If your subgraph is not syncing and you're getting
   ```
   thread 'tokio-runtime-worker' panicked at 'called `Option::unwrap()` on a `None` value', src/ds_rpc.rs:556:80
   ```

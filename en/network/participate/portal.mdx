@@ -1,19 +1,22 @@
 ---
 title: Self-host a portal
 description: Operate a client node
+
 ---
 
 # Self-host a portal
 
 <Info>
-SQD Network portals are currently in closed beta. Please report any bugs or suggestions to the SQD Portal chat or to [Squid Devs](https://t.me/HydraDevs).
+  SQD Network portals are currently in closed beta. Please report any bugs or
+  suggestions to the SQD Portal chat or to [Squid Devs](https://t.me/HydraDevs).
 </Info>
 
 <Warning>
-If you want to use your private portal to index Solana, please read the [Using your Portal - On Solana](#on-solana) section before committing.
+  If you want to use your private portal to index Solana, please read the [Using
+  your Portal - On Solana](#on-solana) section before committing.
 </Warning>
 
-Running a portal enables you to access the [permissionless SQD Network](/subsquid-network/overview) data without relying on any centralized services. You can run a private portal for your own needs, or make a high-throughput public portal.
+Running a portal enables you to access the [permissionless SQD Network](subsquid-network/overview) data without relying on any centralized services. You can run a private portal for your own needs, or make a high-throughput public portal.
 
 In either scenario you will need
 
@@ -36,21 +39,15 @@ The rest of the hardware requirements depend on how the portal will be used. A p
 
 - Go to [network.subsquid.io](https://network.subsquid.io) and connect your wallet (we recommend Metamask). Use the wallet that holds the tokens or is the beneficiary of your vesting contract.
 - Go to the [portals page](https://network.subsquid.io/portals) and press the "Lock" button.
-  ![Lock button](/images/network/participate/portal_lock_button.png)
 - Specify the amount of `SQD` you want to lock and the duration of the lockup.
-  ![Lockup form](/images/network/participate/portal_lock_form.png)
 - Press "Confirm" then confirm the transaction in your wallet.
 
 The page should update to display the amount of `SQD` you locked and the duration of the lockup:
-
-![Lockup success](/images/network/participate/portal_lock_success.png)
 
 Now you have some locked tokens associated with your wallet and are ready to set up the portal itself.
 
 <Tip>
 By default, your portal will go down at the end of the lock period. To prevent that, click the "Auto Extension" switch and confirm the transaction after locking. This will cause your `SQD` to be immediately relocked once the locking period ends. In this setup you have to unlock then wait for the end of the current locking period to withdraw your tokens.
-
-![Auto extension switch](/images/network/participate/portal_auto_extension.png)
 
 </Tip>
 
@@ -58,15 +55,17 @@ By default, your portal will go down at the end of the lock period. To prevent t
 
 SQD Network is a decentralized peer-to-peer system. Portals are a type of peers participating in it. Like all peers, your portal requires a private key and a public unique identifier: the _peer ID_. Generate one of these with
 
-```bash
+````bash
 docker run --rm subsquid/rpc-node:0.2.5 keygen > <KEY_FILE_PATH>
 ```
 
 The key will be written to the binary file at `<KEY_FILE_PATH>`. You will see your peer ID in the output:
 
-```
-Your peer ID: <THIS IS WHAT YOU NEED TO COPY>
-```
+````
+
+Your peer ID: THIS IS WHAT YOU NEED TO COPY
+
+````
 
 Please copy your peer ID.
 
@@ -75,12 +74,10 @@ Please copy your peer ID.
 #### Step 3: Register your portal
 
 - Go to the [portals page](https://network.subsquid.io/portals) and click the "Add portal" button.
-  ![Add portal button](/images/network/participate/portal_registration_button.png)
+
 - Fill the portal registration form.
-  ![Portal registration form](/images/network/participate/portal_registration_form.png)
 
   If you plan to make your portal public, click the "Publicly available" switch and populate the additional fields.
-  ![Portal registration form - public](/images/network/participate/portal_registration_form_public.png)
 
   Once done, click "Confirm" and confirm the transaction in your wallet.
 
@@ -90,7 +87,8 @@ Please copy your peer ID.
   ```bash
   git clone https://github.com/subsquid/sqd-portal
   cd sqd-portal
-  ```
+````
+
 - Prepare the environment. Begin with
 
   ```bash
@@ -132,15 +130,13 @@ Please copy your peer ID.
 
 #### Step 5: Wait for your stake to become active
 
-This will happen at the beginning of the next [epoch](/subsquid-network/faq/#epoch), that is, at some point during the next 20 minutes. The page will change to show that your lockup is now active:
-
-![Lockup active](/images/network/participate/portal_lock_active.png)
+This will happen at the beginning of the next [epoch](subsquid-network/faq/#epoch), that is, at some point during the next 20 minutes. The page will change to show that your lockup is now active:
 
 ## Using your portal
 
 Portal serves a new version of API that's not compatible with `@latest` SDK and the old gateways. Update your packages with
 
-```bash
+````bash
 npx --yes npm-check-updates --filter "@subsquid/*" --target "@portal-api" --upgrade
 ```
 
@@ -159,15 +155,19 @@ npm i
 
 A working portal exposes its dataset-specific APIs via URLs such as this one:
 
-```
-http://<host>:8000/datasets/<dataset-slug>
-```
+````
 
-Here, `<dataset-slug>` is the last path segment of the network-specific gateway URL found on [this page](/subsquid-network/reference/networks). For example, a local portal will expose its Ethereum dataset API at
+http://&lt;host&gt;:8000/datasets/&lt;dataset-slug&gt;
 
 ```
+
+Here, `<dataset-slug>` is the last path segment of the network-specific gateway URL found on [this page](subsquid-network/reference/networks). For example, a local portal will expose its Ethereum dataset API at
+
+```
+
 http://127.0.0.1:8000/datasets/ethereum-mainnet
-```
+
+````
 
 ### On EVM
 
@@ -178,7 +178,7 @@ You should be able to simply replace the `setGateway` call with `setPortal` and 
 -  .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')
 ```
 
-If your squid [uses RPC to ingest unfinalized blocks](/sdk/resources/unfinalized-blocks), `@subsquid/evm-processor@portal-api` will smoothly transition to that regime as it catches up to the network.
+If your squid [uses RPC to ingest unfinalized blocks](sdk/resources/unfinalized-blocks), `@subsquid/evm-processor@portal-api` will smoothly transition to that regime as it catches up to the network.
 
 ### On Solana
 
@@ -217,21 +217,21 @@ If the last command fails due to an HTTP 400 response, try raising the lowest bl
 Also, please remove any mentions of `SolanaRpcClient`, for example:
 
 ```diff
--import {DataSourceBuilder, SolanaRpcClient} from '@subsquid/solana-stream'
-+import {DataSourceBuilder} from '@subsquid/solana-stream'
+-import \{DataSourceBuilder, SolanaRpcClient\} from '@subsquid/solana-stream'
++import \{DataSourceBuilder\} from '@subsquid/solana-stream'
 ```
 
 **B.** Replace any block height literals with **slot number** literals.
 
 ```diff
-+  .setBlockRange({from: 325000000})
--  .setBlockRange({from: 303262650})
++  .setBlockRange(\{from: 325000000\})
+-  .setBlockRange(\{from: 303262650\})
 ```
 
 A convenient converter from block heights to slot numbers is TBA; for now bisecting the block range is your best bet. To get block height by slot number use this script:
 
 ```bash
-SLOT_NUMBER=320276063 curl --request POST --url https://api.mainnet-beta.solana.com --header 'accept: application/json' --header 'content-type: application/json' --data "{\"id\": 1, \"jsonrpc\": \"2.0\", \"method\": \"getBlock\", \"params\": [${SLOT_NUMBER}, {\"encoding\": \"jsonParsed\", \"maxSupportedTransactionVersion\": 0}]}" | jq | grep blockHeight
+SLOT_NUMBER=320276063 curl --request POST --url https: "//api.mainnet-beta.solana.com --header 'accept: application/json' --header 'content-type: application/json' --data "\{\"id\": 1, \"jsonrpc\": \"2.0\", \"method\": \"getBlock\", \"params\": [$\{SLOT_NUMBER\}, \{\"encoding\": \"jsonParsed\", \"maxSupportedTransactionVersion\": 0\}]\}" | jq | grep blockHeight"
 ```
 
 **C.** If you used the `slot` field of block headers anywhere in your code, replace it with `.number`:
@@ -251,7 +251,6 @@ SLOT_NUMBER=320276063 curl --request POST --url https://api.mainnet-beta.solana.
      },
 ```
 
-</details>
 
 ## Token requirements and compute units
 
@@ -262,7 +261,7 @@ The rate limiting mechanism of SQD Network relies on the concept of a _compute u
 <details>
 <summary>The definition of CU</summary>
 
-SQD Network datasets are partitioned by the block number. Dataset chunks are randomly distributed among [worker nodes](/subsquid-network/participate/worker).
+SQD Network datasets are partitioned by the block number. Dataset chunks are randomly distributed among [worker nodes](subsquid-network/participate/worker).
 
 When an SQD portal receives a data request, the following happens:
 
@@ -278,16 +277,16 @@ Each response made by any of the workers in step 3 spends exactly 1 CU.
 
 </details>
 
-The more `SQD` you lock and the greater the lockup period is, the more CUs you get. Currently, each locked `SQD` generates 1-3 CU at the beginning of each [epoch](/subsquid-network/faq/#epoch). Here's how the number of CUs per `SQD` changes with the lockup period:
-
-![image](https://github.com/subsquid/subsquid-network-contracts/assets/8627422/a1ab5ce1-da58-4cdc-aac5-90728be23b9e)
+The more `SQD` you lock and the greater the lockup period is, the more CUs you get. Currently, each locked `SQD` generates 1-3 CU at the beginning of each [epoch](subsquid-network/faq/#epoch). Here's how the number of CUs per `SQD` changes with the lockup period:
 
 In principle, any valid amount of locked `SQD`s generates an infinite amount of CUs. However, if the rate at which your queries consume CUs exceeds the rate at which they are produced, your app will be throttled. To avoid that, you may want to understand how much CUs your queries spend.
 
 Currently there is no tool available for estimating the number of CUs that a query needs before actually running it. However, on EVM you can use the following formula to get an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) estimate:
 
-```
-10^-5 * range_length_blocks * transactions_per_block
+````
+
+10^-5 _ range_length_blocks _ transactions_per_block
+
 ```
 
 Notes:
@@ -304,7 +303,9 @@ For a lightweight query, the amount of CU spent on it is determined by how many 
 Extrapolating from the Ethereum dataset, we get
 
 ```
-num_chunks_in_range = range_length * (eth_chunks / eth_height) * (chain_txs_per_block / eth_txs_per_block)
+
+num*chunks_in_range = range_length * (eth*chunks / eth_height) * (chain_txs_per_block / eth_txs_per_block)
+
 ```
 
 Here,
@@ -324,7 +325,9 @@ Heavyweight queries scale in the same way, but may spend more than one CU per ch
 Now, if your queries consume `X` CUs each and you run them once per `Y` epochs, you need to lock up at least this much `SQD`:
 
 ```
-X / (Y * boost_factor)
+
+X / (Y \* boost_factor)
+
 ```
 
 Here, `boost_factor` is a multiplier ranging from 1 to 3 depending on the lockup length (see the graph above).
@@ -368,7 +371,10 @@ If any of that happens, unregister your portal (on the ["Portals" tab of network
 The stats are exposed at `/metrics`. For a local portal, take a look at the output of
 
 ```
+
 curl http://127.0.0.1:8000/metrics | grep throttled
+
 ```
 
 The lower the value of `portal_stream_throttled_ratio_sum`, the better.
+```

@@ -1,13 +1,12 @@
 ---
-sidebar_position: 10
 title: Intro
 description: >-
   GraphQL and its support in SQD
 ---
 
-:::info
+<Info>
 At the moment, [Squid SDK GraphQL server](/sdk/reference/openreader-server) can only be used with squids that use Postgres as their target database.
-:::
+</Info>
 
 GraphQL is an API query language, and a server-side runtime for executing queries using a custom type system. Head over to the [official documentation website](https://graphql.org/learn/) for more info.
 

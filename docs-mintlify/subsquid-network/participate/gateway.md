@@ -1,14 +1,13 @@
 ---
-sidebar_position: 30
 title: Run a gateway
 description: Operate a node that routes data requests
 ---
 
 # Run a gateway
 
-:::warning
+<Warning>
 Public SQD Network gateways are now deprecated. The new (also decentralized) way to access the data will be announced soon.
-:::
+</Warning>
 
 Running a gateway enables you to access SQD Network data without relying on any centralized services. You can run a private gateway for your own needs, or make a high-throughput public gateway.
 
@@ -36,15 +35,15 @@ per epoch. Here,
  * `NUM_WORKERS` is the [number of workers active on the network](https://arbiscan.io/address/0x36e2b147db67e76ab67a4d07c293670ebefcae4e#readContract#F6).
  * `NUM_GATEWAYS` is the number of gateways associated with the wallet that made the stake.
 
-:::info
+<Info>
 It is possible to allocate CUs to workers selectively, e.g. to get more bandwidth on some datasets that are served by a subset workers. Currently there's only a low-level interface for this feature. If you're interested, please let us know in [SquidDevs Telegram chat](https://t.me/HydraDevs).
-:::
+</Info>
 
 For example, if you expect your gateway to make up to 36k requests to any worker at any epoch, and the network currently has 1000 workers, you will need to stake 30000 SQD if you choose the shortest staking duration and 10000 SQD if you stake for two years or more.
 
-:::tip
+<Tip>
 By default, your gateway will go down at the end of the staking period. To prevent that, enable the "Auto-extension" option when staking. This will cause your `SQD` to be immediately restaked once the staking period ends. In this setup you have to unstake then wait for the end of the current staking period to withdraw your tokens.
-:::
+</Tip>
 
 ## Running a gateway
 
@@ -64,13 +63,13 @@ By default, your gateway will go down at the end of the staking period. To preve
 3. Connect your EVM wallet (we recommend using Metamask). Use the wallet that holds the tokens or is the beneficiary of your vesting contract.
 
 4. Go to the "Gateways" tab and click the "Add gateway" button.
-   ![Add gateway button](./gateway_registration_button.png)
+\{/* [\1](\2) */\}
 
 5. Fill the gateway registration form.
-   ![Gateway registration form](./gateway_registration_form.png)
+\{/* [\1](\2) */\}
 
    If you plan to make your gateway public, click the "Publicly available" switch and populate the additional fields.
-   ![Gateway registration form - public](./gateway_registration_form_public.png)
+\{/* [\1](\2) */\}
 
    Once done, click "Register" and confirm the transaction.
 
@@ -124,7 +123,7 @@ If you plan to automate running your gateway instances, you may find [this helm 
 
 ## Troubleshooting
 
-#### What are the consequences of losing my key file / getting it stolen? {#key-loss}
+#### What are the consequences of losing my key file / getting it stolen? \{#key-loss\}
 
 If you lose your key file you won't be able to run your gateway until you get a new one and register it.
 

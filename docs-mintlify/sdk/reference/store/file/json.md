@@ -1,5 +1,4 @@
 ---
-sidebar_position: 40
 title: JSON support
 description: >-
   Table class for writing JSON and JSONL files
@@ -16,15 +15,15 @@ Table<S extends Record<string, any>>(fileName: string, options?: {lines?: boolea
 Here,
 * **`S`** is a Typescript type describing the schema of the table data.
 * **`fileName: string`** is the name of the output file in every dataset partition folder.
-* **`options?: {lines?: boolean}`** are table options. At the moment the only available setting is whether to use JSONL instead of a plain JSON array (default: false).
+* **`options?: \{lines?: boolean\}`** are table options. At the moment the only available setting is whether to use JSONL instead of a plain JSON array (default: false).
 
 ## Example
 
-This saves ERC20 `Transfer` events captured by the processor to a JSONL file where each line is a JSON serialization of a `{from: string, to: string, value: number}` object. Full squid code is available in [this repo](https://github.com/subsquid-labs/file-store-json-example).
+This saves ERC20 `Transfer` events captured by the processor to a JSONL file where each line is a JSON serialization of a `\{from: string, to: string, value: number\}` object. Full squid code is available in [this repo](https://github.com/subsquid-labs/file-store-json-example).
 
 ```typescript
-import {Database} from '@subsquid/file-store'
-import {Table} from '@subsquid/file-store-json'
+import \{Database\} from '@subsquid/file-store'
+import \{Table\} from '@subsquid/file-store-json'
 
 ...
 
@@ -34,7 +33,7 @@ const dbOptions = {
       from: string,
       to: string,
       value: bigint
-    }>('transfers.jsonl', { lines: true })
+    \}>('transfers.jsonl', \{ lines: true \})
   },
   dest: new LocalDest('./data'),
   chunkSizeMb: 10
@@ -45,7 +44,7 @@ processor.run(new Database(dbOptions), async (ctx) => {
   let from: string = ...
   let to: string = ...
   let value: bigint = ...
-  ctx.store.TransfersTable.write({ from, to, value })
+  ctx.store.TransfersTable.write(\{ from, to, value \})
   ...
 })
 ```

@@ -1,5 +1,4 @@
 ---
-sidebar_position: 5
 title: ArrowSquid for Substrate
 description: A step-by-step migration guide for Substrate
 sidebar_class_name: hidden
@@ -71,11 +70,11 @@ Begin migrating to the new interface by finding all calls to these methods and c
 
 The new field selector format is fully documented on the [Field selection](/sdk/reference/processors/substrate-batch/field-selection) page.
 
-:::info
-Blanket field selections like `{data: {event: {extrinsic: true}}}` are not supported in ArrowSquid. If you used one of these, please find out which exact fields you use in the batch handler and specifically request them.
-:::
+<Info>
+Blanket field selections like `\{data: \{event: \{extrinsic: true\}\}\}` are not supported in ArrowSquid. If you used one of these, please find out which exact fields you use in the batch handler and specifically request them.
+</Info>
 
-:::warning
+<Warning>
 Do not include related data requests into the field selection. E.g.
 ```ts
   .setFields({
@@ -85,7 +84,7 @@ Do not include related data requests into the field selection. E.g.
   })
 ```
 will at best fail to compile and at worst make your squid fail due to HTTP 400s from the network gateway.
-:::
+</Warning>
 
 For example, suppose the processor was initialized with the following three calls:
 
@@ -133,7 +132,7 @@ then the new global selectors should be added like this:
 const processor = new SubstrateBatchProcessor()
   // ... addXXX() calls ...
   .setFields({
-    event: {},
+    event: \{\},
     call: {
       origin: true,
       success: true,
@@ -168,13 +167,13 @@ Processor no longer makes EVM transaction hashes explicitly available. Currently
 
 Replace the old calls to the data requesting processor methods with calls using the new signatures.
 
-:::warning
+<Warning>
 The meaning of passing `[]` as a set of parameter values has been changed in the ArrowSquid release: now it _selects no data_. Pass `undefined` for a wildcard selection:
 ```typescript
-.addEvent({name: []}) // selects no events
-.addEvent({}) // selects all events
+.addEvent(\{name: []\}) // selects no events
+.addEvent(\{\}) // selects all events
 ```
-:::
+</Warning>
 
 Old data request calls will be erased during the process. Make sure to request the appropriate related data with the boolean flags (`call` for event-requesting methods, `events` for call-requesting methods and `extrinsic`, `stack` for both).
 
@@ -205,7 +204,7 @@ const processor = new SubstrateBatchProcessor()
     extrinsic: true
   })
   .setFields({
-    event: {},
+    event: \{\},
     call: {
       origin: true,
       success: true,
@@ -279,10 +278,10 @@ npx squid-substrate-typegen typegen.json
 Iteratively reconcile any type errors arising when building your squid (e.g. with `npm run build`). If you need to specify the field selection generic type argument explicitly, get it as a `typeof` of the `setFields` argument value:
 
 ```ts
-import {Block} from '@subsquid/substrate-processor'
+import \{Block\} from '@subsquid/substrate-processor'
 
 const fieldSelection = {
-  event: {},
+  event: \{\},
   call: {
     origin: true,
     success: true,

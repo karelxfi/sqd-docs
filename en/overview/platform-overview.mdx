@@ -1,25 +1,26 @@
 ---
 title: "Overview"
 description: "The SQD ecosystem is built around  - a decentralized query engine and a horizontally-scalable data lake for batch queries. Currently, SQD Network serves raw historical on-chain data from  using . In the future, it will additionally support general-purpose SQL queries and an ever-growing collection of structured data sets derived from on- and off- chain data."
+
 ---
 
 ## SQD Network[​](#sqd-network "Direct link to SQD Network")
 
-[SQD Network](/en/subsquid-network/) API currently provides:
+[SQD Network](en/subsquid-network/) API currently provides:
 
 - raw event logs
 - transaction data (with receipts)
 - execution traces (for selected networks)
 - state diffs (for selected networks)
 
-It supports all major [EVM](/en/subsquid-network/reference/networks/#evm--ethereum-compatible) and [Substrate](/en/subsquid-network/reference/networks/#substrate-based) networks, with more in the works. [Let us know](https://t.me/HydraDevs) if you'd like us to support some other network.
+It supports all major [EVM](en/subsquid-network/reference/networks/#evm--ethereum-compatible) and [Substrate](en/subsquid-network/reference/networks/#substrate-based) networks, with more in the works. [Let us know](https://t.me/HydraDevs) if you'd like us to support some other network.
 
 Currently there are two deployments of SQD Network:
 
-1. Production-ready [private cluster](/en/subsquid-network/overview/#open-private-network) running on SQD infrastructure (formerly known as Subsquid Archives). Access to the cluster is free and public.
-2. A [decentralized permissionless network](/en/subsquid-network/overview/#permissionless-public-network), currently a testnet.
+1. Production-ready [private cluster](en/subsquid-network/overview/#open-private-network) running on SQD infrastructure (formerly known as Subsquid Archives). Access to the cluster is free and public.
+2. A [decentralized permissionless network](en/subsquid-network/overview/#permissionless-public-network), currently a testnet.
 
-User-facing [API](/en/subsquid-network/reference/) between these two is identical. Use it directly whenever you need historical blockchain data older than about 6-24 hours in either **(1)** high volume or **(2)** filtered form.
+User-facing [API](en/subsquid-network/reference/) between these two is identical. Use it directly whenever you need historical blockchain data older than about 6-24 hours in either **(1)** high volume or **(2)** filtered form.
 
 <Accordion title="Example use cases for the SQD Network direct API">
   * boost the performance of existing pipelines by replacing per-block RPC requests with batch-requests to SQD Network
@@ -35,37 +36,37 @@ User-facing [API](/en/subsquid-network/reference/) between these two is identica
       * "all transactions from a given address in a range of blocks"
       * "all events with a given topic in a range of blocks"
 
-  </Accordion>
+</Accordion>
 
-For real-time use cases such as app-specific APIs use [Squid SDK](/en/sdk/): it'll use SQD Network to sync quickly, then seamlessly switch to real-time data. If you already have a subgraph indexer, you also have an option to [run it against the network](/en/subgraphs-support/).
+For real-time use cases such as app-specific APIs use [Squid SDK](en/sdk/): it'll use SQD Network to sync quickly, then seamlessly switch to real-time data. If you already have a subgraph indexer, you also have an option to [run it against the network](en/subgraphs-support/).
 
 ## Squid SDK[​](#squid-sdk "Direct link to Squid SDK")
 
-[Squid SDK](/en/sdk/) is a powerful Typescript toolkit for building indexers on top of SQD Network, featuring
+[Squid SDK](en/sdk/) is a powerful Typescript toolkit for building indexers on top of SQD Network, featuring
 
-- [High-level libraries](/en/sdk/reference/processors/) for extracting and filtering the SQD Network data in what can be though of as Extract-Transform-Load (ETL) pipelines
-- [Ergonomic tools](/en/sdk/resources/tools/typegen/) for decoding and normalizing raw data and efficiently accessing [network state](/en/sdk/resources/tools/typegen/state-queries/)
-- Pluggable [data sinks](/en/sdk/reference/store/) to save data into Postgres, files (local or s3) or BigQuery
-- An expressive [GraphQL server](/en/sdk/resources/serving-graphql/#openreader) with a schema-based [config](/en/sdk/reference/schema-file/)
-- Seamless handling of [unfinalized blocks and chain reorganizations](/en/sdk/resources/unfinalized-blocks/) for real-time data ingestion
-- rapid data extraction and decoding [for local analytics](/en/sdk/tutorials/file-csv/)
+- [High-level libraries](en/sdk/reference/processors/) for extracting and filtering the SQD Network data in what can be though of as Extract-Transform-Load (ETL) pipelines
+- [Ergonomic tools](en/sdk/resources/tools/typegen/) for decoding and normalizing raw data and efficiently accessing [network state](en/sdk/resources/tools/typegen/state-queries/)
+- Pluggable [data sinks](en/sdk/reference/store/) to save data into Postgres, files (local or s3) or BigQuery
+- An expressive [GraphQL server](en/sdk/resources/serving-graphql/#openreader) with a schema-based [config](en/sdk/reference/schema-file/)
+- Seamless handling of [unfinalized blocks and chain reorganizations](en/sdk/resources/unfinalized-blocks/) for real-time data ingestion
+- rapid data extraction and decoding [for local analytics](en/sdk/tutorials/file-csv/)
 
 The SDK is a go-to choice for production solutions and prototypes of
 
 1. custom APIs based on data from sets of smart contracts, and
 2. low-cost, highly performant in-house data pipelines
 
-that can work in real time setting (\<1s chain latency). Take a look at the list of [concrete, real-world applications](/en/sdk/faq/#real-world-applications) for which Squid SDK was a good fit.
+that can work in real time setting (\&lt;1s chain latency). Take a look at the list of [concrete, real-world applications](en/sdk/faq/#real-world-applications) for which Squid SDK was a good fit.
 
 ## SQD Cloud[​](#sqd-cloud "Direct link to SQD Cloud")
 
 A Platform-as-a-Service for deploying Squid SDK indexers, featuring
 
-- provisioning of [Postgres](/en/cloud/reference/pg/) and other [compute resources](/en/cloud/reference/manifest/) for indexers
-- [zero downtime migrations](/en/cloud/resources/slots-and-tags/#zero-downtime-updates) between indexer versions
-- provisioning of [high-performance RPC endpoints](/en/cloud/reference/rpc-proxy-networks/) for real-time applications
-- intuitive deployment management through a [Web application](https://app.subsquid.io) or [CLI](/en/squid-cli/)
-- Google Cloud-level [SLA](/en/cloud/pricing/#slas)
+- provisioning of [Postgres](en/cloud/reference/pg/) and other [compute resources](en/cloud/reference/manifest/) for indexers
+- [zero downtime migrations](en/cloud/resources/slots-and-tags/#zero-downtime-updates) between indexer versions
+- provisioning of [high-performance RPC endpoints](en/cloud/reference/rpc-proxy-networks/) for real-time applications
+- intuitive deployment management through a [Web application](https://app.subsquid.io) or [CLI](en/squid-cli/)
+- Google Cloud-level [SLA](en/cloud/pricing/#slas)
 
 ## What's next?[​](#whats-next "Direct link to What's next?")
 
@@ -74,21 +75,21 @@ A Platform-as-a-Service for deploying Squid SDK indexers, featuring
 - SQD Cloud
 - Other
 
-- Learn about [squid components](/en/sdk/overview/), [combining them](/en/sdk/how-to-start/squid-from-scratch/) or follow the [end-to-end development guide](/en/sdk/how-to-start/squid-development/)
-- Explore [tutorials](/en/sdk/tutorials/) or [examples](/en/sdk/examples/)
-- Learn how to [migrate from The Graph](/en/sdk/resources/migrate/migrate-subgraph/)
-- Explore the [GraphQL server options](/en/sdk/resources/serving-graphql/)
+- Learn about [squid components](en/sdk/overview/), [combining them](en/sdk/how-to-start/squid-from-scratch/) or follow the [end-to-end development guide](en/sdk/how-to-start/squid-development/)
+- Explore [tutorials](en/sdk/tutorials/) or [examples](en/sdk/examples/)
+- Learn how to [migrate from The Graph](en/sdk/resources/migrate/migrate-subgraph/)
+- Explore the [GraphQL server options](en/sdk/resources/serving-graphql/)
 
-- See the [list of supported networks](/en/subsquid-network/reference/networks/)
-- Learn how to use [APIs](/en/subsquid-network/reference/) of the [open private network](/en/subsquid-network/overview/#open-private-network)
-- Check out the [public network FAQ](/en/subsquid-network/faq/)
+- See the [list of supported networks](en/subsquid-network/reference/networks/)
+- Learn how to use [APIs](en/subsquid-network/reference/) of the [open private network](en/subsquid-network/overview/#open-private-network)
+- Check out the [public network FAQ](en/subsquid-network/faq/)
 
-- Learn how to [deploy your squid](/en/cloud/overview/)
-- Learn about [organizations](/en/cloud/resources/organizations/) and how they are billed
-- Use your free [playground](/en/cloud/resources/organizations/#playgrounds) to develop a prototype of your indexer
-- View our [pricing schedule](/en/cloud/pricing/)
+- Learn how to [deploy your squid](en/cloud/overview/)
+- Learn about [organizations](en/cloud/resources/organizations/) and how they are billed
+- Use your free [playground](en/cloud/resources/organizations/#playgrounds) to develop a prototype of your indexer
+- View our [pricing schedule](en/cloud/pricing/)
 
-- [Run subgraphs](/en/subgraphs-support/) using SQD Network data
-- Learn about [third party tools](/en/external-tools/) for using with SDK or for building standalone indexers
+- [Run subgraphs](en/subgraphs-support/) using SQD Network data
+- Learn about [third party tools](en/external-tools/) for using with SDK or for building standalone indexers
 
 [Edit this page](https://github.com/subsquid/docs/edit/master/docs/overview.mdx)

@@ -1,12 +1,11 @@
 ---
-sidebar_position: 30
 description: >-
   Subscribe to txn data with addTransaction()
 ---
 
 # Receipts
 
-#### `addReceipt(options)` {#add-receipt}
+#### `addReceipt(options)` \{#add-receipt\}
 
 Get some _or all_ transactions on the network. `options` has the following structure:
 

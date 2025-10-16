@@ -11,19 +11,19 @@ import TabItem from '@theme/TabItem';
 
 ## For users on Solana
 
-:::info
+<Info>
 SQD Network portals are currently in beta. Please report any bugs or suggestions to the [SQD Portal Beta chat](https://t.me/+JHrJZPz34kRjYmFk) or to [Squid Devs](https://t.me/HydraDevs).
-:::
+</Info>
 
 The newest version of SQD Network portal serves real time data. It can replace both gateways of the open private version of SQD Network and RPC endpoints. Currently it only supports Solana ([more on Solana indexing in SQD](/solana-indexing)).
 
-:::info
+<Info>
 We're currently experimenting with tightening the data request complexity limits. If you see an HTTP 400 error with a message like this:
 ```
 Couldn't parse query: query contains X item requests, but only 50 is allowed
 ```
 where `X` is some number above 50, or any other HTTP 400 response, please let us know.
-:::
+</Info>
 
 Here are the steps to migrate:
 
@@ -87,7 +87,7 @@ Here's an example edit:
 +    "@subsquid/batch-processor": "1.0.0-portal-api.18ef40",
      "@subsquid/borsh": "^0.2.0",
 -    "@subsquid/solana-objects": ">=0.0.3-portal-api.18ef40",
--    "@subsquid/solana-stream": "<1.0.0-portal-api.18ef40",
+-    "@subsquid/solana-stream": "&lt;1.0.0-portal-api.18ef40",
 +    "@subsquid/solana-objects": "0.0.3-portal-api.18ef40",
 +    "@subsquid/solana-stream": "1.0.0-portal-api.18ef40",
      "@subsquid/typeorm-migration": "^1.3.0",
@@ -150,15 +150,15 @@ pnpm install
 ```
 Also, please remove any mentions of `SolanaRpcClient`, for example:
 ```diff
--import {DataSourceBuilder, SolanaRpcClient} from '@subsquid/solana-stream'
-+import {DataSourceBuilder} from '@subsquid/solana-stream'
+-import \{DataSourceBuilder, SolanaRpcClient\} from '@subsquid/solana-stream'
++import \{DataSourceBuilder\} from '@subsquid/solana-stream'
 ```
 
 **B.** Replace any block height literals with **slot number** literals.
 
 ```diff
-+  .setBlockRange({from: 325000000})
--  .setBlockRange({from: 303262650})
++  .setBlockRange(\{from: 325000000\})
+-  .setBlockRange(\{from: 303262650\})
 ```
 TBA add a convenient converter
 

@@ -12,7 +12,7 @@
     "background": "/logos/thumbnail.jpg"
   },
   "banner": {
-    "content": "Try our new Pipes SDK",
+    "content": "[Try our new Pipes SDK - Get started in 5 minutes](/en/sdk/evm/pipes/quickstart)",
     "dismissible": true
   },
   "colors": {
@@ -64,48 +64,250 @@
                 "icon":"ethereum",
                 "groups": [
                   {
-                    "group": "Getting Started",
+                    "group": "Overview",
                     "pages": [
-                      "en/sdk/getting-started/quickstart",
-                      "en/sdk/getting-started/overview",
-                      "en/sdk/getting-started/layout"
+                      "en/sdk/evm/choose-your-approach"
                     ]
                   },
                   {
-                    "group": "EVM Development",
+                    "group": "Pipes SDK",
+                    "icon": "pipe",
                     "pages": [
-                      "en/sdk/evm/quickstart",
-                      "en/sdk/evm/tutorials",
-                      "en/sdk/evm/examples",
-                      "en/sdk/evm/reference"
+                      "en/sdk/evm/pipes/overview",
+                      "en/sdk/evm/pipes/quickstart",
+                      {
+                        "group": "Core Concepts",
+                        "pages": [
+                          "en/sdk/evm/pipes/installation",
+                          "en/sdk/evm/pipes/core-concepts",
+                          "en/sdk/evm/pipes/data-sources",
+                          "en/sdk/evm/pipes/transformers",
+                          "en/sdk/evm/pipes/targets",
+                          "en/sdk/evm/pipes/evm-event-decoding",
+                          "en/sdk/evm/pipes/data-persistence"
+                        ]
+                      },
+                      "en/sdk/evm/pipes/examples",
+                      {
+                        "group": "Advanced",
+                        "pages": [
+                          "en/sdk/evm/pipes/advanced-patterns",
+                          "en/sdk/evm/pipes/api-reference",
+                          "en/sdk/evm/pipes/migration-from-squid-sdk"
+                        ]
+                      }
                     ]
                   },
                   {
-                    "group": "Advanced Features",
+                    "group": "Squid SDK",
+                    "icon": "server",
                     "pages": [
-                      "en/sdk/features/batch-processing",
-                      "en/sdk/features/multichain",
-                      "en/sdk/features/external-api",
-                      "en/sdk/features/serving-graphql",
-                      "en/sdk/features/unfinalized-blocks"
-                    ]
-                  },
-                  {
-                    "group": "Setup & Tools",
-                    "pages": [
-                      "en/sdk/getting-started/development-environment-set-up",
-                      "en/sdk/getting-started/squid-development",
-                      "en/sdk/getting-started/squid-from-scratch",
-                      "en/sdk/tools/cli",
-                      "en/sdk/tools/external-tools"
-                    ]
-                  },
-                  {
-                    "group": "Migration & Help",
-                    "pages": [
-                      "en/sdk/migration/migrate-to-arrowsquid",
-                      "en/sdk/migration/migrate-from-thegraph",
-                      "en/sdk/tools/troubleshooting"
+                      {
+                        "group": "Getting Started",
+                        "pages": [
+                          "en/sdk/getting-started/quickstart",
+                          "en/sdk/getting-started/overview",
+                          "en/sdk/getting-started/layout"
+                        ]
+                      },
+                      {
+                        "group": "EVM Development",
+                        "pages": [
+                          "en/sdk/evm/quickstart",
+                          "en/sdk/evm/examples"
+                        ]
+                      },
+                      {
+                        "group": "EVM Reference",
+                        "pages": [
+                          "en/sdk/evm/reference",
+                          {
+                            "group": "Batch Processor",
+                            "pages": [
+                              "en/sdk/evm/reference/general",
+                              "en/sdk/evm/reference/logs",
+                              "en/sdk/evm/reference/transactions",
+                              "en/sdk/evm/reference/traces",
+                              "en/sdk/evm/reference/state-diffs",
+                              "en/sdk/evm/reference/field-selection",
+                              "en/sdk/evm/reference/context-interfaces",
+                              "en/sdk/evm/reference/logger"
+                            ]
+                          },
+                          {
+                            "group": "Advanced Patterns",
+                            "pages": [
+                              "en/sdk/evm/reference/proxy-contracts",
+                              "en/sdk/evm/reference/factory-contracts"
+                            ]
+                          },
+                          {
+                            "group": "Data Storage",
+                            "pages": [
+                              "en/sdk/evm/reference/store/typeorm",
+                              "en/sdk/evm/reference/store/bigquery",
+                              {
+                                "group": "File Storage",
+                                "pages": [
+                                  "en/sdk/evm/reference/store/file/csv",
+                                  "en/sdk/evm/reference/store/file/json",
+                                  "en/sdk/evm/reference/store/file/parquet",
+                                  "en/sdk/evm/reference/store/file/s3-dest"
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "group": "Schema Files",
+                            "pages": [
+                              "en/sdk/evm/reference/schema-file/intro",
+                              "en/sdk/evm/reference/schema-file/entities",
+                              "en/sdk/evm/reference/schema-file/entity-relations",
+                              "en/sdk/evm/reference/schema-file/indexes-and-constraints",
+                              "en/sdk/evm/reference/schema-file/interfaces",
+                              "en/sdk/evm/reference/schema-file/unions-and-typed-json"
+                            ]
+                          },
+                          {
+                            "group": "GraphQL Server",
+                            "pages": [
+                              "en/sdk/evm/reference/openreader-server/overview",
+                              {
+                                "group": "API",
+                                "pages": [
+                                  "en/sdk/evm/reference/openreader-server/api/intro",
+                                  "en/sdk/evm/reference/openreader-server/api/queries",
+                                  "en/sdk/evm/reference/openreader-server/api/and-or-filters",
+                                  "en/sdk/evm/reference/openreader-server/api/sorting",
+                                  "en/sdk/evm/reference/openreader-server/api/paginate-query-results",
+                                  "en/sdk/evm/reference/openreader-server/api/nested-field-queries",
+                                  "en/sdk/evm/reference/openreader-server/api/cross-relation-field-queries",
+                                  "en/sdk/evm/reference/openreader-server/api/json-queries",
+                                  "en/sdk/evm/reference/openreader-server/api/resolve-union-types-interfaces"
+                                ]
+                              },
+                              {
+                                "group": "Configuration",
+                                "pages": [
+                                  "en/sdk/evm/reference/openreader-server/configuration/custom-resolvers",
+                                  "en/sdk/evm/reference/openreader-server/configuration/authorization",
+                                  "en/sdk/evm/reference/openreader-server/configuration/caching",
+                                  "en/sdk/evm/reference/openreader-server/configuration/subscriptions",
+                                  "en/sdk/evm/reference/openreader-server/configuration/dos-protection"
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "group": "Tutorials",
+                        "pages": [
+                          "en/sdk/evm/tutorials",
+                          "en/sdk/evm/tutorials/batch-processor-in-action",
+                          "en/sdk/evm/tutorials/evm-local",
+                          "en/sdk/evm/tutorials/case-studies",
+                          {
+                            "group": "BAYC Tutorial Series",
+                            "pages": [
+                              "en/sdk/evm/tutorials/bayc/step-one-indexing-transfers",
+                              "en/sdk/evm/tutorials/bayc/step-two-deriving-owners-and-tokens",
+                              "en/sdk/evm/tutorials/bayc/step-three-adding-external-data",
+                              "en/sdk/evm/tutorials/bayc/step-four-optimizations"
+                            ]
+                          },
+                          {
+                            "group": "File-Based Storage",
+                            "pages": [
+                              "en/sdk/evm/tutorials/file-csv",
+                              "en/sdk/evm/tutorials/file-parquet"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "group": "Advanced Features",
+                        "pages": [
+                          "en/sdk/features/batch-processing",
+                          "en/sdk/features/multichain",
+                          "en/sdk/features/external-api",
+                          "en/sdk/features/serving-graphql",
+                          "en/sdk/features/unfinalized-blocks"
+                        ]
+                      },
+                      {
+                        "group": "Data Persistence",
+                        "pages": [
+                          "en/sdk/features/persisting-data/overview",
+                          "en/sdk/features/persisting-data/typeorm",
+                          "en/sdk/features/persisting-data/file",
+                          "en/sdk/features/persisting-data/bigquery"
+                        ]
+                      },
+                      {
+                        "group": "Resources",
+                        "pages": [
+                          "en/sdk/features/sdk-resources"
+                        ]
+                      },
+                      {
+                        "group": "Setup & Tools",
+                        "pages": [
+                          "en/sdk/getting-started/development-environment-set-up",
+                          "en/sdk/getting-started/squid-development",
+                          "en/sdk/getting-started/squid-from-scratch",
+                          "en/sdk/tools/cli",
+                          {
+                            "group": "CLI Commands",
+                            "pages": [
+                              "en/sdk/tools/cli/installation",
+                              "en/sdk/tools/cli/init",
+                              "en/sdk/tools/cli/run",
+                              "en/sdk/tools/cli/deploy",
+                              "en/sdk/tools/cli/logs",
+                              "en/sdk/tools/cli/explorer",
+                              "en/sdk/tools/cli/list",
+                              "en/sdk/tools/cli/prod",
+                              "en/sdk/tools/cli/restart",
+                              "en/sdk/tools/cli/remove",
+                              "en/sdk/tools/cli/secrets",
+                              "en/sdk/tools/cli/tags",
+                              "en/sdk/tools/cli/gateways",
+                              "en/sdk/tools/cli/auth",
+                              "en/sdk/tools/cli/whoami",
+                              "en/sdk/tools/cli/autocomplete",
+                              "en/sdk/tools/cli/commands-json"
+                            ]
+                          },
+                          {
+                            "group": "Code Generation",
+                            "pages": [
+                              "en/sdk/tools/typegen/generation",
+                              "en/sdk/tools/typegen/decoding",
+                              "en/sdk/tools/typegen/state-queries",
+                              "en/sdk/tools/model-gen",
+                              "en/sdk/tools/squid-gen",
+                              "en/sdk/tools/migrations-gen"
+                            ]
+                          },
+                          "en/sdk/tools/hasura-configuration",
+                          "en/sdk/tools/external-tools/external-tools-overview",
+                          "en/sdk/tools/faq",
+                          "en/sdk/tools/troubleshooting"
+                        ]
+                      },
+                      {
+                        "group": "Migration & Help",
+                        "pages": [
+                          "en/sdk/migration/migrate-to-arrowsquid",
+                          "en/sdk/migration/migrate-to-arrowsquid-on-substrate",
+                          "en/sdk/migration/migrate-subgraph",
+                          "en/sdk/migration/subsquid-vs-thegraph",
+                          "en/sdk/migration/subgraphs-support/subgraphs-support",
+                          "en/sdk/migration/migrate-to-hasura-configuration-tool-v2",
+                          "en/sdk/migration/firesquid/firesquid-migration"
+                        ]
+                      }
                     ]
                   }
                 ]
@@ -119,13 +321,30 @@
                     "group": "Getting Started",
                     "pages": [
                       "en/sdk/solana/quickstart",
-                      "en/sdk/solana/how-to-start"
+                      "en/sdk/solana/how-to-start",
+                      "en/sdk/solana/how-to-start/indexing-orca",
+                      "en/sdk/solana/how-to-start/cli-cheatsheet"
                     ]
                   },
                   {
-                    "group": "Development",
+                    "group": "Solana Reference",
                     "pages": [
                       "en/sdk/solana/sdk",
+                      {
+                        "group": "Batch Processor",
+                        "pages": [
+                          "en/sdk/solana/sdk/solana-batch/general",
+                          "en/sdk/solana/sdk/solana-batch/field-selection",
+                          "en/sdk/solana/sdk/solana-batch/context-interfaces",
+                          "en/sdk/solana/sdk/solana-batch/transactions",
+                          "en/sdk/solana/sdk/solana-batch/instructions",
+                          "en/sdk/solana/sdk/solana-batch/logs",
+                          "en/sdk/solana/sdk/solana-batch/balances",
+                          "en/sdk/solana/sdk/solana-batch/token-balances",
+                          "en/sdk/solana/sdk/solana-batch/rewards"
+                        ]
+                      },
+                      "en/sdk/solana/sdk/typegen",
                       "en/sdk/solana/network-api"
                     ]
                   }
@@ -136,6 +355,12 @@
                 "icon": "link",
                 "groups": [
                   {
+                    "group": "Getting Started",
+                    "pages": [
+                      "en/sdk/substrate/quickstart"
+                    ]
+                  },
+                  {
                     "group": "Tutorials",
                     "pages": [
                       "en/sdk/substrate/tutorials/substrate",
@@ -144,9 +369,56 @@
                     ]
                   },
                   {
-                    "group": "Reference",
+                    "group": "Substrate Reference",
                     "pages": [
-                      "en/sdk/substrate/reference/substrate-batch"
+                      {
+                        "group": "Batch Processor",
+                        "pages": [
+                          "en/sdk/substrate/reference/general",
+                          "en/sdk/substrate/reference/data-requests",
+                          "en/sdk/substrate/reference/field-selection",
+                          "en/sdk/substrate/reference/context-interfaces",
+                          "en/sdk/substrate/reference/logger"
+                        ]
+                      },
+                      {
+                        "group": "Advanced Topics",
+                        "pages": [
+                          "en/sdk/substrate/reference/data-sourcing-miniguide",
+                          "en/sdk/substrate/reference/types-bundle-miniguide",
+                          "en/sdk/substrate/reference/frontier",
+                          "en/sdk/substrate/reference/frontier-evm",
+                          "en/sdk/substrate/reference/gear",
+                          "en/sdk/substrate/reference/ink"
+                        ]
+                      },
+                      {
+                        "group": "Data Storage",
+                        "pages": [
+                          "en/sdk/substrate/reference/store/typeorm",
+                          "en/sdk/substrate/reference/store/bigquery",
+                          {
+                            "group": "File Storage",
+                            "pages": [
+                              "en/sdk/substrate/reference/store/file/csv",
+                              "en/sdk/substrate/reference/store/file/json",
+                              "en/sdk/substrate/reference/store/file/parquet",
+                              "en/sdk/substrate/reference/store/file/s3-dest"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "group": "Schema Files",
+                        "pages": [
+                          "en/sdk/substrate/reference/schema-file/intro",
+                          "en/sdk/substrate/reference/schema-file/entities",
+                          "en/sdk/substrate/reference/schema-file/entity-relations",
+                          "en/sdk/substrate/reference/schema-file/indexes-and-constraints",
+                          "en/sdk/substrate/reference/schema-file/interfaces",
+                          "en/sdk/substrate/reference/schema-file/unions-and-typed-json"
+                        ]
+                      }
                     ]
                   }
                 ]
@@ -159,15 +431,44 @@
                   {
                     "group": "Fuel Network",
                     "pages": [
+                      "en/sdk/fuel/quickstart",
                       "en/sdk/fuel/fuel-datasource",
                       "en/sdk/fuel/indexing-receipts",
-                      "en/sdk/fuel/network-api"
+                      "en/sdk/fuel/network-api",
+                      "en/sdk/fuel/cli-cheatsheet",
+                      {
+                        "group": "Fuel Reference",
+                        "pages": [
+                          "en/sdk/fuel/fuel-datasource/general",
+                          "en/sdk/fuel/fuel-datasource/field-selection",
+                          "en/sdk/fuel/fuel-datasource/context-interfaces",
+                          "en/sdk/fuel/fuel-datasource/receipts",
+                          "en/sdk/fuel/fuel-datasource/transactions",
+                          "en/sdk/fuel/fuel-datasource/inputs",
+                          "en/sdk/fuel/fuel-datasource/outputs"
+                        ]
+                      }
                     ]
                   },
                   {
                     "group": "Tron",
                     "pages": [
-                      "en/sdk/tron/quickstart"
+                      "en/sdk/tron/quickstart",
+                      "en/sdk/tron/indexing-usdt-transfers",
+                      "en/sdk/tron/network-api",
+                      "en/sdk/tron/cli-cheatsheet",
+                      "en/sdk/tron/tron",
+                      {
+                        "group": "Tron Reference",
+                        "pages": [
+                          "en/sdk/tron/tron-batch-processor/general",
+                          "en/sdk/tron/tron-batch-processor/field-selection",
+                          "en/sdk/tron/tron-batch-processor/context-interfaces",
+                          "en/sdk/tron/tron-batch-processor/logs",
+                          "en/sdk/tron/tron-batch-processor/transactions",
+                          "en/sdk/tron/tron-batch-processor/internal-transactions"
+                        ]
+                      }
                     ]
                   },
                   {
@@ -185,45 +486,72 @@
             "icon": "cloud",
             "groups": [
               {
-                "group": "SQD Cloud",
+                "group": "Cloud",
                 "pages": [
-                  "en/cloud/overview",
-                  "en/cloud/pricing",
-                  "en/cloud/troubleshooting"
-                ]
-              },
-              {
-                "group": "Resources",
-                "pages": [
-                  "en/cloud/resources/best-practices",
-                  "en/cloud/resources/env-variables",
-                  "en/cloud/resources/logging",
-                  "en/cloud/resources/monitoring",
-                  "en/cloud/resources/organizations",
-                  "en/cloud/resources/slots-and-tags",
-                  "en/cloud/resources/query-optimization",
-                  "en/cloud/resources/rpc-proxy",
-                  "en/cloud/resources/migrate-to-portal-on-evm-or-substrate",
-                  "en/cloud/resources/migrate-to-portal-on-solana",
-                  "en/cloud/resources/production-alias"
-                ]
-              },
-              {
-                "group": "Reference",
-                "pages": [
-                  "en/cloud/reference/manifest",
-                  "en/cloud/reference/scale",
-                  "en/cloud/reference/pg",
-                  "en/cloud/reference/hasura",
-                  "en/cloud/reference/rpc-proxy-networks",
-                  "en/cloud/reference/squidignore",
-                  "en/cloud/reference/deployments-two-changelog"
+                  {
+                    "group": "Getting Started",
+                    "icon": "rocket",
+                    "pages": [
+                      "en/cloud/overview",
+                      "en/cloud/pricing"
+                    ]
+                  },
+                  {
+                    "group": "Configuration",
+                    "icon": "gear",
+                    "pages": [
+                      "en/cloud/reference/manifest",
+                      "en/cloud/reference/scale",
+                      "en/cloud/reference/pg",
+                      "en/cloud/reference/hasura",
+                      "en/cloud/reference/rpc-proxy-networks",
+                      "en/cloud/reference/squidignore"
+                    ]
+                  },
+                  {
+                    "group": "Operations",
+                    "icon": "server",
+                    "pages": [
+                      "en/cloud/resources/organizations",
+                      "en/cloud/resources/slots-and-tags",
+                      "en/cloud/resources/env-variables",
+                      "en/cloud/resources/logging",
+                      "en/cloud/resources/monitoring",
+                      "en/cloud/resources/rpc-proxy",
+                      "en/cloud/resources/production-alias"
+                    ]
+                  },
+                  {
+                    "group": "Optimization",
+                    "icon": "gauge-high",
+                    "pages": [
+                      "en/cloud/resources/best-practices",
+                      "en/cloud/resources/query-optimization"
+                    ]
+                  },
+                  {
+                    "group": "Migration",
+                    "icon": "arrow-right-arrow-left",
+                    "pages": [
+                      "en/cloud/resources/migrate-to-portal-on-evm-or-substrate",
+                      "en/cloud/resources/migrate-to-portal-on-solana"
+                    ]
+                  },
+                  {
+                    "group": "Troubleshooting",
+                    "icon": "triangle-exclamation",
+                    "pages": [
+                      "en/cloud/troubleshooting",
+                      "en/cloud/reference/deployments-two-changelog"
+                    ]
+                  }
                 ]
               },
               {
                 "group": "Self-Hosting",
+                "icon": "hard-drive",
                 "pages": [
-                  "en/network/self-hosting"
+                  "en/sdk/features/self-hosting"
                 ]
               }
             ]
@@ -258,7 +586,8 @@
             "icon": "database",
             "dropdowns": [
               {
-                "dropdown": "EVM",
+                "dropdown": "EVM Data",
+                "description": "Ethereum and EVM-compatible chains",
                 "icon": "ethereum",
                 "groups": [
                   {
@@ -313,7 +642,8 @@
                 ]
               },
               {
-                "dropdown": "Substrate",
+                "dropdown": "Substrate Data",
+                "description": "Polkadot and Substrate-based chains",
                 "icon": "link",
                 "groups": [
                   {
@@ -335,7 +665,8 @@
                 ]
               },
               {
-                "dropdown": "Solana",
+                "dropdown": "Solana Data",
+                "description": "Solana and SVM-compatible chains",
                 "icon": "globe",
                 "groups": [
                   {
@@ -355,7 +686,8 @@
                 ]
               },
               {
-                "dropdown": "Other",
+                "dropdown": "Other Chains",
+                "description": "Fuel, Tron, and Starknet",
                 "icon": "fire",
                 "groups": [
                   {

@@ -1,5 +1,4 @@
 ---
-sidebar_position: 10
 title: Schema file and codegen
 description: >-
   Intro to the schema file and the codegen tool
@@ -37,7 +36,7 @@ type Foo @entity {
 ```
 The generated `Foo` entity with TypeORM decorators:
 ```ts title="src/model/generated/foo.ts"
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_} from "typeorm"
+import \{Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_\} from "typeorm"
 import * as marshal from "./marshal"
 
 @Entity_()
@@ -49,10 +48,10 @@ export class Foo {
     @PrimaryColumn_()
     id!: string
 
-    @Column_("text", {nullable: true})
+    @Column_("text", \{nullable: true\})
     bar!: string | undefined | null
 
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+    @Column_("numeric", \{transformer: marshal.bigintTransformer, nullable: false\})
     baz!: bigint
 }
 ```

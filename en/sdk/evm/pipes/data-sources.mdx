@@ -1,0 +1,500 @@
+---
+title: "Data Sources"
+description: "Configure and use EVM data sources to fetch blockchain data from the SQD Network"
+---
+
+# Data Sources
+
+Data sources in Pipes SDK are responsible for fetching blockchain data from the SQD Network. This guide covers how to create and configure EVM data sources.
+
+## Creating an EVM Source
+
+The `createEvmSource` function creates a source for EVM-compatible blockchains:
+
+```typescript
+import { createEvmSource } from "@sqd-pipes/evm-processor";
+
+const source = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: { from: 20_000_000, to: 20_100_000 },
+    logs: [
+      /* ... */
+    ],
+  },
+});
+```
+
+## Configuration Options
+
+### Gateway
+
+The SQD Network gateway URL for the blockchain you want to index:
+
+```typescript
+{
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet";
+}
+```
+
+<Tip>
+  Find available gateways for different networks in the [SQD Network
+  documentation](/en/data/networks/evm).
+</Tip>
+
+### Chain
+
+The chain identifier:
+
+```typescript
+{
+  chain: "ethereum-mainnet";
+}
+```
+
+### Query
+
+The query object specifies what data to fetch. You can start with an empty query and add to it later using transformers:
+
+```typescript
+{
+  query: {
+    range: { from: 20_000_000, to: 20_100_000 }
+  }
+}
+```
+
+## Block Ranges
+
+Specify which blocks to process using the `range` option.
+
+### Fixed Range
+
+Process a specific block range:
+
+```typescript
+query: {
+  range: {
+    from: 20_000_000,
+    to: 20_100_000
+  }
+}
+```
+
+### Open-Ended Range
+
+Omit the `to` field to process from a starting block indefinitely:
+
+```typescript
+query: {
+  range: {
+    from: 20_000_000;
+    // No 'to' - will process all future blocks
+  }
+}
+```
+
+<Warning>
+  Open-ended ranges will continue processing new blocks as they're produced.
+  Ensure your pipeline can handle continuous operation.
+</Warning>
+
+## Data Selection
+
+Sources can fetch four types of blockchain data:
+
+### Event Logs
+
+Fetch smart contract event logs:
+
+```typescript
+query: {
+  logs: [
+    {
+      address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+      topic0: [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+      ],
+    },
+  ];
+}
+```
+
+**Log filters:**
+
+- `address` - Contract addresses (array)
+- `topic0` - Event signature hash (first topic)
+- `topic1`, `topic2`, `topic3` - Additional indexed parameters
+
+### Transactions
+
+Fetch transaction data:
+
+```typescript
+query: {
+  transactions: [
+    {
+      from: ["0x..."],
+      to: ["0x..."],
+      sighash: ["0xa9059cbb"], // Function selector
+    },
+  ];
+}
+```
+
+**Transaction filters:**
+
+- `from` - Transaction sender addresses
+- `to` - Transaction recipient addresses
+- `sighash` - Function selector (first 4 bytes of calldata)
+
+### Traces
+
+Fetch internal transaction traces:
+
+```typescript
+query: {
+  traces: [
+    {
+      type: ["call"],
+      callFrom: ["0x..."],
+      callTo: ["0x..."],
+    },
+  ];
+}
+```
+
+**Trace filters:**
+
+- `type` - Trace type (`call`, `create`, `suicide`, `reward`)
+- `callFrom` - Internal call sender
+- `callTo` - Internal call recipient
+- `callSighash` - Function selector for internal calls
+
+### State Diffs
+
+Fetch state changes:
+
+```typescript
+query: {
+  stateDiffs: [
+    {
+      address: ["0x..."],
+      key: ["0x..."],
+    },
+  ];
+}
+```
+
+**State diff filters:**
+
+- `address` - Contract addresses
+- `key` - Storage slot keys
+
+## Field Selection
+
+Control which fields are included in the response to optimize performance.
+
+### Log Fields
+
+```typescript
+query: {
+  logs: [{ /* filters */ }],
+  fields: {
+    log: {
+      transactionHash: true,
+      logIndex: true,
+      data: true,
+      topics: true
+    }
+  }
+}
+```
+
+### Transaction Fields
+
+```typescript
+query: {
+  transactions: [{ /* filters */ }],
+  fields: {
+    transaction: {
+      hash: true,
+      from: true,
+      to: true,
+      value: true,
+      input: true,
+      gas: true,
+      gasPrice: true
+    }
+  }
+}
+```
+
+### Block Fields
+
+```typescript
+query: {
+  fields: {
+    block: {
+      number: true,
+      hash: true,
+      timestamp: true,
+      parentHash: true
+    }
+  }
+}
+```
+
+<Tip>
+  Only request fields you actually need. This reduces bandwidth and improves
+  performance.
+</Tip>
+
+## Multiple Filters
+
+Combine multiple filters to fetch different types of data:
+
+```typescript
+query: {
+  range: { from: 20_000_000 },
+  logs: [
+    {
+      // USDC Transfer events
+      address: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+      topic0: ['0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef']
+    },
+    {
+      // Uniswap Swap events
+      address: ['0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640'],
+      topic0: ['0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67']
+    }
+  ],
+  transactions: [
+    {
+      to: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48']
+    }
+  ]
+}
+```
+
+## Dynamic Queries
+
+Transformers can add queries dynamically. Start with an empty or minimal query:
+
+```typescript
+const source = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: { from: 20_000_000 },
+    // No data selection - transformers will add it
+  },
+});
+
+const transformer = {
+  query: (builder) => {
+    builder.addLog({
+      address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+      topic0: [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+      ],
+    });
+  },
+  transform: async (data) => {
+    return processData(data);
+  },
+};
+
+const pipeline = source.pipe(transformer);
+```
+
+<Info>
+  This pattern makes transformers self-contained and reusable across different
+  pipelines.
+</Info>
+
+## Reading from Sources
+
+Sources implement an async iterator interface:
+
+### Basic Reading
+
+```typescript
+for await (const batch of source.read()) {
+  console.log(`Processing ${batch.blocks.length} blocks`);
+}
+```
+
+### Reading with Cursor
+
+Resume from a specific block:
+
+```typescript
+const cursor = { number: 20_000_500 };
+
+for await (const batch of source.read(cursor)) {
+  // Starts from block 20_000_501
+  console.log(`Processing blocks from ${batch.blocks[0].header.number}`);
+}
+```
+
+## Batch Structure
+
+Sources yield data in batches with this structure:
+
+```typescript
+{
+  blocks: [
+    {
+      header: {
+        number: 20000000,
+        hash: "0x...",
+        parentHash: "0x...",
+        timestamp: 1234567890,
+        // ... other block fields
+      },
+      logs: [
+        {
+          address: "0x...",
+          data: "0x...",
+          topics: ["0x...", "0x..."],
+          transactionHash: "0x...",
+          logIndex: 0,
+          // ... other log fields
+        },
+      ],
+      transactions: [
+        /* ... */
+      ],
+      traces: [
+        /* ... */
+      ],
+      stateDiffs: [
+        /* ... */
+      ],
+    },
+  ];
+}
+```
+
+## Performance Considerations
+
+<AccordionGroup>
+<Accordion title="Limit field selection">
+  Only request fields you need. Each additional field increases bandwidth and processing time.
+</Accordion>
+
+<Accordion title="Use specific filters">
+  Narrow filters (specific addresses, topics) reduce the amount of data fetched
+  and processed.
+</Accordion>
+
+<Accordion title="Batch processing">
+  Process data in batches rather than block-by-block for better throughput.
+</Accordion>
+
+<Accordion title="Gateway selection">
+  Use the gateway closest to your infrastructure for lower latency.
+</Accordion>
+</AccordionGroup>
+
+## Common Patterns
+
+### Indexing a Single Contract
+
+```typescript
+const source = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: { from: 6_082_465 }, // Contract deployment block
+    logs: [
+      {
+        address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+      },
+    ],
+  },
+});
+```
+
+### Indexing Multiple Contracts
+
+```typescript
+const CONTRACTS = [
+  "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", // USDC
+  "0xdac17f958d2ee523a2206206994597c13d831ec7", // USDT
+  "0x6b175474e89094c44da98b954eedeac495271d0f", // DAI
+];
+
+const source = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: { from: 20_000_000 },
+    logs: [
+      {
+        address: CONTRACTS,
+        topic0: [
+          "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+        ],
+      },
+    ],
+  },
+});
+```
+
+### Indexing Specific Events
+
+```typescript
+const TRANSFER_TOPIC =
+  "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+const APPROVAL_TOPIC =
+  "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925";
+
+const source = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: { from: 20_000_000 },
+    logs: [
+      {
+        address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+        topic0: [TRANSFER_TOPIC, APPROVAL_TOPIC],
+      },
+    ],
+  },
+});
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Transformers"
+    icon="wand-magic-sparkles"
+    href="/en/sdk/evm/pipes/transformers"
+  >
+    Process and transform blockchain data
+  </Card>
+
+  <Card
+    title="EVM Event Decoding"
+    icon="code"
+    href="/en/sdk/evm/pipes/evm-event-decoding"
+  >
+    Decode smart contract events
+  </Card>
+
+  <Card title="Examples" icon="code" href="/en/sdk/evm/pipes/examples">
+    See complete source examples
+  </Card>
+
+  <Card
+    title="API Reference"
+    icon="file-code"
+    href="/en/sdk/evm/pipes/api-reference"
+  >
+    Complete API documentation
+  </Card>
+</CardGroup>

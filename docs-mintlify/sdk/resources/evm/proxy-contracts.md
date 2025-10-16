@@ -1,5 +1,4 @@
 ---
-sidebar_position: 20
 title: Proxy contracts
 description: >-
   Indexing proxy contracts
@@ -11,7 +10,7 @@ _Proxy contracts_ are smart contracts that use the [DELEGATECALL](https://www.et
 
 The easiest way to know if the contract is a proxy or not is to visit the "Contract" tab of its Etherscan page. Proxy contracts will typically have the "Read as Proxy" and "Write as Proxy" buttons available. Here is how it looks for the [USDC contract](https://etherscan.io/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48):
 
-![Etherscan for proxies](</img/etherscan-proxy.png>)
+\{/* [\1](\2)) */\}
 
 Clicking on the "Read as Proxy" button reveals the address of the implementation contract, [FiatTokenV2_1](https://etherscan.io/address/0xa2327a938febf5fec13bacfb16ae10ecbc4cbdcf) in this case.
 
@@ -34,7 +33,7 @@ A few scenarios are possible when indexing a proxy contract:
    ```
    ```ts title="./src/main.ts"
      // ...
-     let {minter, to, amount} = fiatToken.events.Mint.decode(log)
+     let \{minter, to, amount\} = fiatToken.events.Mint.decode(log)
      // ...
    ```
    Complete example is available [here](https://github.com/subsquid-labs/evm-logs-example) (uses `Transfer`s instead of `Mint`s).
@@ -53,7 +52,7 @@ A few scenarios are possible when indexing a proxy contract:
    ```
    ```ts title="./src/main.ts"
      // ...
-     let {implementation} = usdcProxy.events.Upgraded.decode(log)
+     let \{implementation\} = usdcProxy.events.Upgraded.decode(log)
      // ...
    ```
 

@@ -1,5 +1,4 @@
 ---
-sidebar_position: 30
 title: Parquet support
 description: >-
   Table class for writing Apache Parquet files
@@ -7,9 +6,9 @@ description: >-
 
 # Parquet format support
 
-:::info
+<Info>
 Support for the Parquet format is currently experimental. Contact us at the [SquidDevs Telegram channel](https://t.me/HydraDevs) for support.
-:::
+</Info>
 
 ## `Table` Implementation
 
@@ -17,7 +16,7 @@ Support for the Parquet format is currently experimental. Contact us at the [Squ
 
 The `@subsquid/file-store-parquet` package provides a `Table` implementation for writing to Parquet files. Use it by [supplying one or more of its instances via the `tables` field of the `Database` constructor argument](/sdk/resources/persisting-data/file/#database-options). Constructor of the `Table` implementation accepts the following arguments:
 * **`fileName: string`**: the name of the output file in every dataset partition folder.
-* **`schema: {[column: string]: ColumnData}`**: a mapping from Parquet column names to [`ColumnData` objects](#columns). A mapping of the same keys to data values is the row type used by the [table writer](/sdk/resources/persisting-data/file/#table-writer-interface).
+* **`schema: \{[column: string]: ColumnData\}`**: a mapping from Parquet column names to [`ColumnData` objects](#columns). A mapping of the same keys to data values is the row type used by the [table writer](/sdk/resources/persisting-data/file/#table-writer-interface).
 * **`options?: TableOptions`**: see [`Table` Options](#table-options).
 
 ## Columns
@@ -43,13 +42,13 @@ Column types can be obtained by making the function calls listed below from the 
 | `Types.Boolean()`                       | boolean value                  | `BOOLEAN`      | `boolean`                                                 |
 | `Types.Timestamp()`                     | UNIX timestamp in milliseconds | `INT64`        | `Date`                                                    |
 | `Types.Decimal` `(precision, scale=0)`  | decimal with `precision` digits and `scale` digits to the right of the decimal point | `INT32` or `INT64` or `FIXED_LEN_` `BYTE_ARRAY` | `number` or `bigint` or [`BigDecimal`](https://github.com/subsquid/squid-sdk/tree/master/util/big-decimal) |
-| `Types.List` `(itemType, {nullable=false})`  | a list filled with optionally nullable items of `itemType` column type | - | `Array` of items satisfying `itemType` |
+| `Types.List` `(itemType, \{nullable=false\})`  | a list filled with optionally nullable items of `itemType` column type | - | `Array` of items satisfying `itemType` |
 | `Types.JSON<T extends {[k: string]: any}>()` | JSON object of type `T`   | `BYTE_ARRAY`   | `Object` of type `T`                                      |
 | `Types.BSON<T extends {[k: string]: any}>()` | BSON object of type `T`   | `BYTE_ARRAY`   | `Object` of type `T`                                      |
 
-:::tip
+<Tip>
 The widest decimals that [PyArrow](https://arrow.apache.org/docs/python/index.html) can read are `Types.Decimal(76)`.
-:::
+</Tip>
 
 The following column options are available:
 ```typescript
@@ -94,7 +93,7 @@ When `pageSize` is less than `rowGroupSize` times the number of columns, the lat
 This saves ERC20 `Transfer` events captured by the processor to a Parquet file. All columns except for `from` are `GZIP`ped. Row groups are set to be roughly 30000 bytes in size each. Each row group contains roughly ten ~1000 bytes-long pages per column. Full squid code is available in [this repo](https://github.com/subsquid-labs/file-store-parquet-example).
 
 ```typescript
-import {Database, LocalDest} from '@subsquid/file-store'
+import \{Database, LocalDest\} from '@subsquid/file-store'
 import {
   Column,
   Table,
@@ -133,7 +132,7 @@ processor.run(new Database(dbOptions), async (ctx) => {
   let from: string = ...
   let to: string = ...
   let value: bigint = ...
-  ctx.store.TransfersTable.write({ from, to, value })
+  ctx.store.TransfersTable.write(\{ from, to, value \})
   ...
 })
 ```

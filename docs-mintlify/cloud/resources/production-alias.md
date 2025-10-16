@@ -2,9 +2,9 @@
 sidebar_class_name: hidden
 ---
 
-:::danger
+<Warning>
 Production aliasing feature is deprecated in `@subsquid/cli>=3.0.0`. Use [Slots and tags](/cloud/resources/slots-and-tags) instead.
-:::
+</Warning>
 
 # Alias to the production endpoint
 

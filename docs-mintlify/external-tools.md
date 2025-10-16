@@ -2,7 +2,6 @@
 title: External tools
 description: >-
   Third party tools and extensions
-sidebar_position: 90
 ---
 
 # External tools

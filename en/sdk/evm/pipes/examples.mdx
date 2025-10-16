@@ -1,0 +1,503 @@
+---
+title: "Examples"
+description: "Complete code examples demonstrating Pipes SDK features and patterns"
+---
+
+# Examples
+
+This page provides a curated collection of examples demonstrating Pipes SDK features. Each example is runnable and demonstrates a specific pattern or concept.
+
+<Note>
+  All examples are available in the [pipes-sdk-docs
+  repository](https://github.com/subsquid-labs/pipes-sdk-docs).
+</Note>
+
+## Basic Examples
+
+### 1. Trivial Pipeline
+
+The simplest possible pipeline: fetch USDC transfers from a single block and print them.
+
+```typescript
+import { createEvmSource } from "@sqd-pipes/evm-processor";
+import { createTarget } from "@sqd-pipes/pipes";
+
+const USDC = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
+const TRANSFER_TOPIC =
+  "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+
+const source = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: { from: 20_000_000, to: 20_000_000 },
+    logs: [
+      {
+        address: [USDC],
+        topic0: [TRANSFER_TOPIC],
+      },
+    ],
+  },
+});
+
+const target = createTarget({
+  write: async (data) => {
+    console.log("Received data:");
+    console.log(JSON.stringify(data, null, 2));
+  },
+});
+
+async function main() {
+  for await (const batch of source.read()) {
+    await target.write(batch);
+  }
+}
+
+main().catch(console.error);
+```
+
+<Card
+  title="View Full Example"
+  icon="github"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/blob/master/src/basics/01-trivial-pipe.ts"
+>
+  See the complete code in the repository
+</Card>
+
+### 2. Adding a Transformer
+
+Add a transformer that extracts transaction hashes:
+
+```typescript
+const transformer = {
+  transform: async (data) => {
+    const transactions = new Set();
+
+    for (const block of data.blocks) {
+      for (const log of block.logs) {
+        transactions.add(log.transactionHash);
+      }
+    }
+
+    return {
+      blockNumber: data.blocks[0].header.number,
+      uniqueTransactions: Array.from(transactions),
+    };
+  },
+};
+
+const pipeline = source.pipe(transformer);
+
+for await (const data of pipeline.read()) {
+  console.log(
+    `Block ${data.blockNumber}: ${data.uniqueTransactions.length} transactions`
+  );
+}
+```
+
+<Card
+  title="View Full Example"
+  icon="github"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/blob/master/src/basics/02-transformer.ts"
+>
+  See the complete code in the repository
+</Card>
+
+### 3. Query from Transformer
+
+Transformer dynamically adds queries to the source:
+
+```typescript
+const usdcTransformer = {
+  query: (builder) => {
+    // Transformer requests its own data
+    builder.addLog({
+      address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+      topic0: [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+      ],
+    });
+  },
+  transform: async (data) => {
+    return {
+      transferCount: data.blocks.reduce((sum, b) => sum + b.logs.length, 0),
+    };
+  },
+};
+
+// Source starts with empty query
+const source = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: { from: 20_000_000, to: 20_000_100 },
+    // No data selection - transformer adds it
+  },
+});
+
+const pipeline = source.pipe(usdcTransformer);
+```
+
+<Card
+  title="View Full Example"
+  icon="github"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/blob/master/src/basics/03-query-from-transformer.ts"
+>
+  See the complete code in the repository
+</Card>
+
+### 4. Event Decoder Transformer
+
+Use `createEvmDecoder` to decode USDC Transfer events:
+
+```typescript
+import { createEvmDecoder } from "@sqd-pipes/evm-processor";
+import * as usdcAbi from "./abi/usdc";
+
+const decoder = createEvmDecoder({
+  address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  events: {
+    transfer: usdcAbi.events.Transfer,
+  },
+});
+
+const pipeline = source.pipe(decoder);
+
+for await (const data of pipeline.read()) {
+  for (const transfer of data.transfer) {
+    console.log({
+      from: transfer.event.from,
+      to: transfer.event.to,
+      value: transfer.event.value,
+      block: transfer.block.header.number,
+    });
+  }
+}
+```
+
+<Card
+  title="View Full Example"
+  icon="github"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/blob/master/src/basics/04-evm-events-decoder-transformer.ts"
+>
+  See the complete code in the repository
+</Card>
+
+### 5. Composite Transformer
+
+Combine multiple transformers to process different data streams:
+
+```typescript
+import * as usdcAbi from "./abi/usdc";
+import * as uniswapV3PoolAbi from "./abi/uniswapV3Pool";
+
+const pipeline = source.pipeComposite({
+  usdcTransfers: createEvmDecoder({
+    address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    events: { transfer: usdcAbi.events.Transfer },
+  }),
+  swaps: createEvmDecoder({
+    address: "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640", // WETH-USDC pool
+    events: { swap: uniswapV3PoolAbi.events.Swap },
+  }),
+});
+
+for await (const data of pipeline.read()) {
+  console.log(`USDC transfers: ${data.usdcTransfers.transfer.length}`);
+  console.log(`Swaps: ${data.swaps.swap.length}`);
+}
+```
+
+<Card
+  title="View Full Example"
+  icon="github"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/blob/master/src/basics/05-composite-transformer.ts"
+>
+  See the complete code in the repository
+</Card>
+
+### 6. Cursor Management
+
+Resume indexing from a saved position:
+
+```typescript
+let lastProcessedBlock = 0;
+
+const target = createTarget({
+  write: async (data) => {
+    console.log(`Processing ${data.transfer.length} transfers`);
+
+    // Update cursor
+    if (data.blocks && data.blocks.length > 0) {
+      lastProcessedBlock = data.blocks[data.blocks.length - 1].header.number;
+    }
+  },
+});
+
+// First run: process all data
+console.log("First run: processing all blocks");
+for await (const batch of source.read()) {
+  await target.write(batch);
+}
+
+// Second run: resume from cursor
+console.log(`\nSecond run: resuming from block ${lastProcessedBlock}`);
+for await (const batch of source.read({ number: lastProcessedBlock })) {
+  await target.write(batch);
+}
+```
+
+<Card
+  title="View Full Example"
+  icon="github"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/blob/master/src/basics/06-cursor-from-target.ts"
+>
+  See the complete code in the repository
+</Card>
+
+### 7. Fork Handling
+
+Handle blockchain reorganizations:
+
+```typescript
+const target = createTarget({
+  write: async (data) => {
+    await database.insert(data);
+  },
+  fork: async (cursor) => {
+    console.log(`Fork detected at block ${cursor.number}!`);
+    console.log("Rolling back data from orphaned blocks...");
+
+    // Remove data from blocks after the fork point
+    await database.deleteBlocksAfter(cursor.number);
+  },
+});
+```
+
+<Card
+  title="View Full Example"
+  icon="github"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/blob/master/src/basics/07-forks.ts"
+>
+  See the complete code in the repository
+</Card>
+
+### 8. Clickhouse Persistence
+
+Save data to Clickhouse with automatic progress tracking:
+
+```typescript
+import { createClickhouseTarget } from "@sqd-pipes/pipes";
+import { createClient } from "@clickhouse/client";
+
+const client = createClient({
+  host: "http://localhost:8123",
+  database: "default",
+});
+
+// Create table
+await client.exec(`
+  CREATE TABLE IF NOT EXISTS usdc_transfers (
+    block_number UInt64,
+    transaction_hash String,
+    from_address String,
+    to_address String,
+    value UInt256
+  )
+  ENGINE = MergeTree()
+  ORDER BY (block_number, transaction_hash)
+`);
+
+const target = createClickhouseTarget({
+  client,
+  table: "usdc_transfers",
+  write: async (data, insert) => {
+    const rows = data.transfer.map((t) => ({
+      block_number: t.block.header.number,
+      transaction_hash: t.transactionHash,
+      from_address: t.event.from,
+      to_address: t.event.to,
+      value: t.event.value.toString(),
+    }));
+
+    if (rows.length > 0) {
+      await insert(rows);
+    }
+  },
+});
+```
+
+<Card
+  title="View Full Example"
+  icon="github"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/blob/master/src/basics/08-clickhouse.ts"
+>
+  See the complete code in the repository
+</Card>
+
+## Advanced Examples
+
+### Factory Contract Indexing
+
+Index events from contracts created by a factory:
+
+<Card
+  title="Factory Contracts"
+  icon="factory"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/tree/master/src/advanced/evm"
+>
+  See factory contract indexing examples
+</Card>
+
+### Raw Data Caching
+
+Cache raw blockchain data for faster development:
+
+<Card
+  title="Data Caching"
+  icon="database"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/tree/master/src/advanced/evm"
+>
+  See data caching examples
+</Card>
+
+### Performance Profiling
+
+Track and optimize pipeline performance:
+
+<Card
+  title="Profiling"
+  icon="chart-line"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/tree/master/src/advanced/evm"
+>
+  See profiling examples
+</Card>
+
+### Custom Metrics
+
+Implement custom metrics and monitoring:
+
+<Card
+  title="Custom Metrics"
+  icon="gauge"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/tree/master/src/advanced/evm"
+>
+  See custom metrics examples
+</Card>
+
+## Solana Examples
+
+Pipes SDK also supports Solana. Check out Solana-specific examples:
+
+<Card
+  title="Solana Examples"
+  icon="globe"
+  href="https://github.com/subsquid-labs/pipes-sdk-docs/tree/master/src/advanced/solana"
+>
+  See Solana indexing examples
+</Card>
+
+## Running the Examples
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/subsquid-labs/pipes-sdk-docs
+cd pipes-sdk-docs
+```
+
+### Install Dependencies
+
+<CodeGroup>
+```bash npm
+npm ci
+```
+
+```bash bun
+bun install --frozen-lockfile
+```
+
+</CodeGroup>
+
+### Run an Example
+
+<CodeGroup>
+```bash npm
+npx ts-node src/basics/01-trivial-pipe.ts
+```
+
+```bash bun
+bun src/basics/01-trivial-pipe.ts
+```
+
+</CodeGroup>
+
+### Start Clickhouse (for example 8)
+
+```bash
+docker compose up -d
+```
+
+## Example Categories
+
+<AccordionGroup>
+<Accordion title="Basics (src/basics/)">
+  - **01-trivial-pipe**: Simplest possible pipeline
+  - **02-transformer**: Adding a transformer
+  - **03-query-from-transformer**: Dynamic query building
+  - **04-evm-events-decoder-transformer**: Event decoding
+  - **05-composite-transformer**: Multiple data streams
+  - **06-cursor-from-target**: Progress tracking
+  - **07-forks**: Blockchain reorganizations
+  - **08-clickhouse**: Database persistence
+</Accordion>
+
+<Accordion title="Advanced EVM (src/advanced/evm/)">
+  - Factory contract patterns - Raw data caching - Performance profiling -
+  Custom metrics - Multi-chain indexing - Error handling
+</Accordion>
+
+<Accordion title="Advanced Solana (src/advanced/solana/)">
+  - Solana-specific patterns
+  - Program indexing
+  - Account tracking
+</Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Try Building Your Own"
+    icon="rocket"
+    href="/en/sdk/evm/pipes/quickstart"
+  >
+    Use these examples to build your pipeline
+  </Card>
+
+{" "}
+<Card
+  title="Advanced Patterns"
+  icon="lightbulb"
+  href="/en/sdk/evm/pipes/advanced-patterns"
+>
+  Learn advanced indexing techniques
+</Card>
+
+{" "}
+<Card
+  title="API Reference"
+  icon="file-code"
+  href="/en/sdk/evm/pipes/api-reference"
+>
+  Complete API documentation
+</Card>
+
+  <Card
+    title="GitHub Repository"
+    icon="github"
+    href="https://github.com/subsquid-labs/pipes-sdk-docs"
+  >
+    Browse all examples on GitHub
+  </Card>
+</CardGroup>

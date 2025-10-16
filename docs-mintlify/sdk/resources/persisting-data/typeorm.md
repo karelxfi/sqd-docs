@@ -1,5 +1,4 @@
 ---
-sidebar_position: 20
 title: Saving to PostgreSQL
 description: >-
   Working with TypeORM-compatible DBs
@@ -14,14 +13,14 @@ Check out [this section of the reference page](/sdk/reference/store/typeorm/#dat
 ## Usage
  
 ```ts
-import { Store, TypeormDatabase } from '@subsquid/typeorm-store'
-import { FooEntity } from './model'
+import \{ Store, TypeormDatabase \} from '@subsquid/typeorm-store'
+import \{ FooEntity \} from './model'
 
-const dbOptions = {/* ... constructor options ... */}
+const dbOptions = \{/* ... constructor options ... */\}
 
 processor.run(new TypeormDatabase(dbOptions), async ctx => {
   // ...  
-  await ctx.store.upsert([new FooEntity({ id: '1'}), new FooEntity({ id: '2'})])
+  await ctx.store.upsert([new FooEntity(\{ id: '1'\}), new FooEntity(\{ id: '2'\})])
 })
 ```
 Here,
@@ -140,6 +139,6 @@ npx squid-typeorm-migration apply
 
 By default, the TypeORM migrations are automatically applied by Cloud with the command `npx squid-typeorm-migration apply` before the squid services are started. For custom behavior, one can override the migration script using the optional `migrate:` section of [squid.yaml](/cloud/reference/manifest#deploy).
 
-:::info
+<Info>
 To force Cloud to reset the database and start with a blank state after a schema change, use the `--hard-reset` flag of [sqd deploy](/squid-cli/deploy).
-:::
+</Info>

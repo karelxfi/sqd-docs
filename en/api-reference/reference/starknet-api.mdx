@@ -1,15 +1,17 @@
 ---
 title: Starknet API
 description: Access the data of Starknet
+
 ---
 
 # Starknet SQD Network API
 
-:::warning
-The Starknet API of SQD Network is currently in beta. Breaking changes may be introduced in the future releases.
-:::
+<Warning>
+  The Starknet API of SQD Network is currently in beta. Breaking changes may be
+  introduced in the future releases.
+</Warning>
 
-SQD Network API distributes the requests over a ([potentially decentralized](/subsquid-network/faq)) network of _workers_. The main gateway URL points at a _router_ that provides URLs of workers that do the heavy lifting. Each worker has its own range of blocks on each dataset it serves.
+SQD Network API distributes the requests over a ([potentially decentralized](subsquid-network/faq)) network of _workers_. The main gateway URL points at a _router_ that provides URLs of workers that do the heavy lifting. Each worker has its own range of blocks on each dataset it serves.
 
 Suppose you want to retrieve an output of some [query](#worker-api) on a block range starting at `firstBlock` (can be the genesis block) and ending at the highest available block. Proceed as follows:
 
@@ -17,9 +19,9 @@ Suppose you want to retrieve an output of some [query](#worker-api) on a block r
 
 2. Save the value of `firstBlock` to some variable, say `currentBlock`.
 
-3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /${currentBlock}/worker`.
+3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /$\{currentBlock\}/worker`.
 
-4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `${currentBlock}`.
+4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `$\{currentBlock\}`.
 
 5. Parse the retrieved data to get a batch of query data **plus** the height of the last block available from the current worker. Take the `header.number` field of the last element of the retrieved JSON array - it is the height you want. Even if your query returns no data, you'll still get the block data for the last block in the range, so this procedure is safe.
 
@@ -28,43 +30,55 @@ Suppose you want to retrieve an output of some [query](#worker-api) on a block r
 7. Repeat steps 3-6 until all the required data is retrieved.
 
 The main URL of the Starknet gateway is
+
 ```
 https://v2.archive.subsquid.io/network/starknet-mainnet
 ```
 
-:::warning
-Unlike in [the explorer](https://starkscan.co), addresses in this API do not have leading zeros (both in valid requests and in the returned data). For example, explorer's `0x00ce6c...0552` becomes `0xce6c...0552`. This is the format that Starknet RPC nodes use.
-:::
+<Warning>
+  Unlike in [the explorer](https://starkscan.co), addresses in this API do not
+  have leading zeros (both in valid requests and in the returned data). For
+  example, explorer's `0x00ce6c...0552` becomes `0xce6c...0552`. This is the
+  format that Starknet RPC nodes use.
+</Warning>
 
 Implementation examples:
 
 <details>
-
 <summary>Manually with cURL</summary>
 
 Suppose we want data on all txs sent by `Layerswap`/`0x19252b1deef483477c4d30cfcc3e5ed9c82fafea44669c182a45a01b4fdb97a` starting from block 600_000. The steps are:
 
 1. Verify that the dataset has reached the required height:
-   ```bash
+
+   ````bash
    curl https://v2.archive.subsquid.io/network/starknet-mainnet/height
    ```
    Output
-   ```
+   ````
+
    632494
+
+   ```
+
    ```
 
 2. Remember that your current height is 600000.
 
 3. Get a worker URL for the current height:
+
    ```bash
    curl https://v2.archive.subsquid.io/network/starknet-mainnet/600000/worker
    ```
+
    Output
+
    ```
    https://rb03.sqd-archive.net/worker/query/czM6Ly9zdGFya25ldC1tYWlubmV0
    ```
 
 4. Retrieve the data from the current worker
+
    ```bash
    curl https://rb03.sqd-archive.net/worker/query/czM6Ly9zdGFya25ldC1tYWlubmV0 \
    -X 'POST' -H 'content-type: application/json' -H 'accept: application/json' \
@@ -72,12 +86,13 @@ Suppose we want data on all txs sent by `Layerswap`/`0x19252b1deef483477c4d30cfc
        "type": "starknet",
        "fromBlock":600000,
        "toBlock":632494,
-       "fields":{"transaction":{"transactionHash":true}},
-       "transactions":[{"senderAddress":["0x19252b1deef483477c4d30cfcc3e5ed9c82fafea44669c182a45a01b4fdb97a"]}]
+   "fields": "\{"transaction":\{"transactionHash":true\}\},"
+   "transactions": "[\{"senderAddress":["0x19252b1deef483477c4d30cfcc3e5ed9c82fafea44669c182a45a01b4fdb97a"]\}]"
    }' | jq
    ```
 
    Output:
+
    ```json
    [
      {
@@ -111,21 +126,21 @@ Suppose we want data on all txs sent by `Layerswap`/`0x19252b1deef483477c4d30cfc
    ```
 
 5. Parse the retrieved data:
+
    - Grab the network data you requested from the list items with non-empty data fields (`transactions`, `events`). For the example above, this data will include the txn `0x6a88...`.
    - Observe that we received the data up to and including block 617979.
 
 6. To get the rest of the data, update the current height to 617980 and go to step 3.
+
    - Note how the worker URL you're getting while repeating step 3 points to a different host than before. This is how data storage and reads are distributed across the SQD Network.
 
 7. Repeat steps 3 through 6 until the dataset height of 632494 is reached.
 
-</details>
 
 <details>
-
 <summary>In Python</summary>
 
-```python
+````python
 def get_text(url: str) -> str:
     res = requests.get(url)
     res.raise_for_status()
@@ -140,12 +155,12 @@ def dump(
     assert 0 <= first_block <= last_block
     query = dict(query)  # copy query to mess with it later
 
-    dataset_height = int(get_text(f'{gateway_url}/height'))
+    dataset_height = int(get_text(f'\{gateway_url\}/height'))
     next_block = first_block
     last_block = min(last_block, dataset_height)
 
     while next_block <= last_block:
-        worker_url = get_text(f'{gateway_url}/{next_block}/worker')
+        worker_url = get_text(f'\{gateway_url\}/\{next_block\}/worker')
 
         query['fromBlock'] = next_block
         query['toBlock'] = last_block
@@ -165,7 +180,6 @@ Full code [here](https://gist.github.com/eldargab/2e007a293ac9f82031d023f1af581a
 ## Router API
 
 <details>
-
 <summary><code>GET</code> <code><b>/height</b></code> <code>(get height of the dataset)</code></summary>
 
 **Example response:** `632494`.
@@ -173,10 +187,9 @@ Full code [here](https://gist.github.com/eldargab/2e007a293ac9f82031d023f1af581a
 </details>
 
 <details>
-
 <summary><code>GET</code> <code><b>$&#123;firstBlock&#125;/worker</b></code> <code>(get a suitable worker URL)</code></summary>
 
-The returned worker is capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `${firstBlock}`.
+The returned worker is capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `$\{firstBlock\}`.
 
 **Example response:** `https://rb06.sqd-archive.net/worker/query/czM6Ly9zdGFya25ldC1tYWlubmV0`.
 
@@ -185,7 +198,6 @@ The returned worker is capable of processing `POST /` requests in which the `"fr
 ## Worker API
 
 <details>
-
 <summary><code>POST</code> <code><b>/</b></code> <code>(query transactions and events)</code></summary>
 
 ##### Query Fields
@@ -205,7 +217,6 @@ The first and the last block in the range are returned even if all data requests
 In most cases the returned range will not contain all the range requested by the user (i.e. the last block of the range will not be `toBlock`). To continue, [retrieve a new worker URL](#router-api) for blocks starting at the end of the current range *plus one block* and repeat the query with an updated value of `fromBlock`.
 
 <details>
-
 <summary>
 
 ##### Example Request
@@ -242,7 +253,6 @@ In most cases the returned range will not contain all the range requested by the
 </details>
 
 <details>
-
 <summary>
 
 ##### Example Response
@@ -335,15 +345,13 @@ In most cases the returned range will not contain all the range requested by the
   }
 ]
 ```
-</details>
 
-</details>
 
 ## Data requests
 
 ### Transactions
 
-```ts
+```typescript
 {
   contractAddress: string[],
   senderAddress: string[],
@@ -361,7 +369,7 @@ See [Data fields selector](#data-fields-selector) for info on field selection.
 
 ### Events
 
-```ts
+```typescript
 {
   fromAddress: string[],
   key0: string[],
@@ -381,56 +389,65 @@ See [Data fields selector](#data-fields-selector) for info on field selection.
 
 A selector of fields for the returned data items. Its structure is as follows:
 
-```
+```json
 {
-  block:               // field selector for blocks
-  transaction:         // field selector for transactions
-  event:               // field selector for events
+  "block": "field selector for blocks",
+  "transaction": "field selector for transactions",
+  "event": "field selector for events"
 }
 ```
 
 ### Block fields
 
-```
+```json
 {
-  parentHash
-  status
-  newRoot
-  timestamp
-  sequencerAddress
+  "parentHash": "string",
+  "status": "string",
+  "newRoot": "string",
+  "timestamp": "string",
+  "sequencerAddress": "string"
 }
 ```
 A valid field selector for blocks is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"status": true, "timestamp": true}`.
 
 ### Transaction fields
 
-```
+```json
 {
-  transactionHash
-  contractAddress
-  entryPointSelector
-  calldata
-  maxFee
-  type
-  senderAddress
-  version
-  signature
-  nonce
-  classHash
-  compiledClassHash
-  contractAddressSalt
-  constructorCalldata
+  "transactionHash": "string",
+  "contractAddress": "string",
+  "entryPointSelector": "string",
+  "calldata": "string",
+  "maxFee": "string",
+  "type": "string",
+  "senderAddress": "string",
+  "version": "string",
+  "signature": "string",
+  "nonce": "string",
+  "classHash": "string",
+  "compiledClassHash": "string",
+  "contractAddressSalt": "string",
+  "constructorCalldata": "string"
 }
 ```
 A valid field selector for transactions is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"transactionHash": true, "type": true, "calldata": true}`.
 
 ### Event fields
 
-```ts
+```typescript
 {
   fromAddress
   keys
   data
 }
-```
-A valid field selector for logs is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"fromAddress": true, "data": true}`.
+````
+
+A valid field selector for logs is a JSON that has a subset of these fields as keys and `true` as values, e.g. `\{"fromAddress": true, "data": true\}`.
+</details>
+</details>
+</details>
+
+
+
+
+

@@ -1,14 +1,13 @@
 ---
-sidebar_position: 60
 title: 'Changelog: slots and tags'
 description: Update details for existing users
 ---
 
 # Сhangelog: slots and tags update
 
-:::tip
+<Tip>
 Take a look at the [slots and tags guide page](/cloud/resources/slots-and-tags) for practical instructions on using the system.
-:::
+</Tip>
 
 ## Motivation
 

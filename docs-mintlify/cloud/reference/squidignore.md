@@ -1,5 +1,4 @@
 ---
-sidebar_position: 50
 title: .squidignore file(s)
 description: Exclude files from squid images
 ---

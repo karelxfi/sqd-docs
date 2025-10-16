@@ -1,5 +1,4 @@
 ---
-sidebar_position: 30
 description: >-
   Methods to subscribe to txn data
 ---
@@ -15,7 +14,7 @@ For other transaction types you can use the general method [`addTransaction()`](
 
 If your application would benefit from fine-grained request methods for other transaction types, please let us know in the [SquidDevs Telegram channel](https://t.me/HydraDevs).
 
-### `addTransferTransaction(options)` {#add-transfer-transaction}
+### `addTransferTransaction(options)` \{#add-transfer-transaction\}
 
 Get some _or all_ [`TransferContract`](https://github.com/tronprotocol/java-tron/blob/c136a26f8140b17f2c05df06fb5efb1bb47d3baa/protocol/src/main/protos/core/Tron.proto#L340) transactions on the network. `options` has the following structure:
 
@@ -73,7 +72,7 @@ processor.addTransferTransaction({
 })
 ```
 
-### `addTransferAssetTransaction(options)` {#add-transfer-asset-transaction}
+### `addTransferAssetTransaction(options)` \{#add-transfer-asset-transaction\}
 
 Get some _or all_ [`TransferAssetContract`](https://github.com/tronprotocol/java-tron/blob/c136a26f8140b17f2c05df06fb5efb1bb47d3baa/protocol/src/main/protos/core/Tron.proto#L341) transactions on the network. `options` has the following structure:
 
@@ -133,7 +132,7 @@ processor.addTransferTransaction({
 })
 ```
 
-### `addTriggerSmartContractTransaction(options)` {#add-trigger-smart-contract-transaction}
+### `addTriggerSmartContractTransaction(options)` \{#add-trigger-smart-contract-transaction\}
 
 Get some _or all_ [`TriggerSmartContract`](https://github.com/tronprotocol/java-tron/blob/c136a26f8140b17f2c05df06fb5efb1bb47d3baa/protocol/src/main/protos/core/Tron.proto#L360) transactions on the network. `options` has the following structure:
 
@@ -186,7 +185,7 @@ processor.addTriggerSmartContractTransaction({
 })
 ```
 
-### `addTransaction(options)` {#add-transaction}
+### `addTransaction(options)` \{#add-transaction\}
 
 Get some _or all_ transactions on the network. `options` has the following structure:
 

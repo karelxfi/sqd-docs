@@ -1,5 +1,4 @@
 ---
-sidebar_position: 10
 description: >-
   ink! WASM smart contracts support
 title: ink! contracts support
@@ -17,7 +16,7 @@ Request events by the contract address as described on the [`SubstrateBatchProce
 
 ```ts
 import * as ss58 from '@subsquid/ss58'
-import {toHex} from '@subsquid/util-internal-hex'
+import \{toHex\} from '@subsquid/util-internal-hex'
 
 const ADDRESS = toHex(ss58.decode('XnrLUQucQvzp5kaaWLG9Q3LbZw5DPwpGn69B5YcywSWVr5w').bytes)
 

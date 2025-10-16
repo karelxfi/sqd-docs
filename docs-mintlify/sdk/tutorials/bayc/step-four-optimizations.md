@@ -2,7 +2,6 @@
 title: "Step 4: Optimization"
 description: >-
   Syncing faster while tracking changing data
-sidebar_position: 40
 ---
 
 # Step 4: Optimization
@@ -21,7 +20,7 @@ npx squid-evm-typegen --multicall src/abi 0xbc4ca0eda7647a8ab7c2061c2e118a18a936
 ```
 This adds a Typescript ABI interface at `src/abi/multicall.ts`. Let us use it in a rewrite of `completeTokens()`:
 ```typescript title="src/main.ts"
-import {Multicall} from './abi/multicall'
+import \{Multicall\} from './abi/multicall'
 
 const MULTICALL_ADDRESS = '0xeefba1e63905ef1d7acba5a8513c70307c1ce441'
 const MULTICALL_BATCH_SIZE = 100
@@ -77,7 +76,7 @@ Many metadata URIs point to the same HTTPS server or to IPFS that we are accessi
 
 We implement HTTPS batching at `src/metadata.ts`:
 ```typescript
-import { asyncSleep, splitIntoBatches } from './util'
+import \{ asyncSleep, splitIntoBatches \} from './util'
 
 const MAX_REQ_SEC = 10
 
@@ -108,8 +107,8 @@ Another glaring inefficiency in our current code is the fact that we often retri
 
 To avoid these repeated retrievals we find the already known tokens in the database. If a token metadata URI is an immutable IPFS link (that is, does not [point to MFS](https://gateway.ipfs.io/ipfs/QmTkzDwWqPbnAh5YiV5VwcTLnGdwSNsNTn2aDxdXBFca7D/example#/ipfs/QmThrNbvLj7afQZhxH72m5Nn1qiVn3eMKWFYV49Zp2mv9B/ipns/readme.md)) and metadata is already available, we skip the retrieval. The implementation is at `src/metadata.ts`:
 ```typescript
-import { Token } from './model'
-import { In } from 'typeorm'
+import \{ Token \} from './model'
+import \{ In \} from 'typeorm'
 
 export async function selectivelyUpdateMetadata(
     ctx: Context,
@@ -118,7 +117,7 @@ export async function selectivelyUpdateMetadata(
 
     let knownTokens: Map<string, Token> = await ctx.store.findBy(
             Token,
-            {id: In([...tokens.keys()])}
+            \{id: In([...tokens.keys()])\}
         )
         .then(ts => new Map(ts.map(t => [t.id, t])))
 
@@ -130,11 +129,11 @@ export async function selectivelyUpdateMetadata(
             ktoken.image != null && ktoken.attributes != null &&
             ktoken.uri === t.uri && uriPointsToImmutable(t.uri)) {
 
-            ctx.log.info(`Repeated retrieval from ${t.uri} skipped`)
+            ctx.log.info(`Repeated retrieval from $\{t.uri\} skipped`)
             updatedTokens.set(id, ktoken)
         }
         else {
-            ctx.log.info(`Re-retrieving from ${t.uri}`)
+            ctx.log.info(`Re-retrieving from $\{t.uri\}`)
             tokensToBeUpdated.push(t)
         }
     }
@@ -186,7 +185,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
 +    if (ctx.isHead) {
 +        let updatedTokens = await updateTokensWithOutdatedMetadata(ctx)
 +        await ctx.store.upsert(updatedTokens)
-+        ctx.log.info(`Updated metadata for ${updatedTokens.length} tokens`)
++        ctx.log.info(`Updated metadata for $\{updatedTokens.length\} tokens`)
 +    }
  })
 ```
@@ -201,7 +200,7 @@ npx squid-evm-typegen --multicall src/abi 0xbc4ca0eda7647a8ab7c2061c2e118a18a936
 ```
 then add the code for batch URI retrieval to the batch handler:
 ```diff title="src/main.ts"
-+import {Multicall} from './abi/multicall'
++import \{Multicall\} from './abi/multicall'
 
 +const MULTICALL_ADDRESS = '0xeefba1e63905ef1d7acba5a8513c70307c1ce441'
 +const MUTLTICALL_BATCH_SIZE = 100
@@ -219,7 +218,7 @@ then add the code for batch URI retrieval to the batch handler:
 +        MUTLTICALL_BATCH_SIZE
 +    )
 +    for (let uri of tokenURIs) {
-+        ctx.log.info(`Retrieved a metadata URI: ${uri}`)
++        ctx.log.info(`Retrieved a metadata URI: $\{uri\}`)
 +    }
 +
      await ctx.store.upsert([...owners.values()])

@@ -1,17 +1,16 @@
 ---
 title: "SQD Cloud deployments, now upgraded!"
+
 ---
 
 ## What's new?[​](#whats-new "Direct link to What's new?")
 
-Over the last 6 months we've seen hundreds of teams deploy thousands of squids to [SQD Cloud](/cloud/). Many of you have given us feedback that you'd like to see a more flexible and collaborative set of tools for your deployment flow. We hear you. We agree. So today we're introducing two new features:
+Over the last 6 months we've seen hundreds of teams deploy thousands of squids to [SQD Cloud](cloud/). Many of you have given us feedback that you'd like to see a more flexible and collaborative set of tools for your deployment flow. We hear you. We agree. So today we're introducing two new features:
 
-* **Slots:** Forget incrementing a single version number! Versions will be retired and replaced by slots, a customisable identifier for each deployment.
-* **Tags:** Remembering which squid is which just got a lot easier! Now you can create and assign multiple custom tags to any deployment. As a result we'll be retiring the [Production alias](/cloud/resources/production-alias/) feature. Now tags act as aliases, making it possible to create, identify and consume endpoints.
+- **Slots:** Forget incrementing a single version number! Versions will be retired and replaced by slots, a customisable identifier for each deployment.
+- **Tags:** Remembering which squid is which just got a lot easier! Now you can create and assign multiple custom tags to any deployment. As a result we'll be retiring the [Production alias](cloud/resources/production-alias/) feature. Now tags act as aliases, making it possible to create, identify and consume endpoints.
 
-[I’ll read the story later, let me see what I can do with it!](/cloud/resources/slots-and-tags/)
-
-![](/images/deployments-two-release-notes/user-attachments/assets/c32acb2f-51be-4047-b817-277eb8fe7eda)
+[I’ll read the story later, let me see what I can do with it!](cloud/resources/slots-and-tags/)
 
 ## Why the change?[​](#why-the-change "Direct link to Why the change?")
 
@@ -55,8 +54,6 @@ sqd deploy . -s 6x5efr --add-tag staging
 
 If the team then took a look at SQD cloud they'd see:
 
-![image](/images/deployments-two-release-notes/user-attachments/assets/35fbee5a-b6fb-49f8-805a-4d91a7820fab)
-
 At a glance they can see what each deployment contains and the stage of development is at.
 
 The tagging system can be used for any custom workflow that your team needs. We can't wait to see how you use it!
@@ -73,7 +70,7 @@ npm install -g @subsquid/cli@latest
 
 #### Do I need to redeploy anything?[​](#do-i-need-to-redeploy-anything "Direct link to Do I need to redeploy anything?")
 
-No. But we suggest you take a look at the [Backwards compatibility](/cloud/reference/deployments-two-changelog/#backwards-compatibility) section in our changelog.
+No. But we suggest you take a look at the [Backwards compatibility](cloud/reference/deployments-two-changelog/#backwards-compatibility) section in our changelog.
 
 #### We really like versions, they work well for us, do we need to change our workflow?[​](#we-really-like-versions-they-work-well-for-us-do-we-need-to-change-our-workflow "Direct link to We really like versions, they work well for us, do we need to change our workflow?")
 
@@ -93,9 +90,9 @@ No. Every endpoint remains unchanged.
 
 #### Where can I learn more about these updates?[​](#where-can-i-learn-more-about-these-updates "Direct link to Where can I learn more about these updates?")
 
-Learn how to use these new features [here](/cloud/resources/slots-and-tags/).
+Learn how to use these new features [here](cloud/resources/slots-and-tags/).
 
-To read about the indepth details of the changes please head [here](/cloud/reference/deployments-two-changelog/).
+To read about the indepth details of the changes please head [here](cloud/reference/deployments-two-changelog/).
 
 We'd love to hear your feedback on these changes. Tag us on twitter [@helloSQD](https://x.com/helloSQD) or come talk to us in [Telegram](https://t.me/HydraDevs).
 

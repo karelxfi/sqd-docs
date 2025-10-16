@@ -2,14 +2,13 @@
 title: Indexing USDT on Tron
 description: >-
   Indexing Tron data with Squid SDK
-sidebar_position: 10
 ---
 
 # Indexing USDT on Tron
 
-:::info
+<Info>
 Tron support in SQD is now in public beta. Please report any bugs or suggestions to [Squid Devs](https://t.me/HydraDevs).
-:::
+</Info>
 
 In this tutorial we will look into a squid that indexes USDT transfers on the [Tron Network](https://tron.network).
 
@@ -119,7 +118,7 @@ processor.run(new TypeormDatabase(), async ctx => {
           topics: log.topics.map(t => '0x' + t),
           data: '0x' + log.data
         }
-        let {from, to, value} = erc20.events.Transfer.decode(event)
+        let \{from, to, value\} = erc20.events.Transfer.decode(event)
 
         transfers.push(new Transfer({
           id: log.id,
@@ -139,11 +138,11 @@ processor.run(new TypeormDatabase(), async ctx => {
 ```
 This goes through all the logs in the block, verifies that they originate from `USDT_ADDRESS` and have a `TRANSFER_TOPIC` as the first topic, decodes the log and saves a `Transfer` record with the obtained data to the database. See [Prepare the store](/sdk/how-to-start/squid-development/#store) for more details on how the database interface works.
 
-:::info
+<Info>
 Notice that we used the SQD EVM codec and [`squid-evm-typegen`](/sdk/resources/tools/typegen/generation/?typegen=evm)-generated module to decode events. Since Tron events are fully EVM-compatible, this is the recommended way.
 
 This tooling requires that the hex values are prefixed with `0x`, as shown above.
-:::
+</Info>
 
 At this point the squid is ready for its first test run. Execute
 ```bash

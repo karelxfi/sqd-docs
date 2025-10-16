@@ -1,5 +1,4 @@
 ---
-sidebar_position: 30
 title: Inspect logs
 description: Inspect the deployment logs
 ---
@@ -20,7 +19,7 @@ sqd logs -n <name> -t <tag> -f
 
 <summary>For older version-based deployments...</summary>
 
-...the slot string is `v${version}`, so use
+...the slot string is `v$\{version\}`, so use
 ```bash
 sqd logs -n <name> -s v<version> -f
 ```

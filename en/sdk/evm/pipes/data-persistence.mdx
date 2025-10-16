@@ -1,0 +1,507 @@
+---
+title: "Data Persistence"
+description: "Persist blockchain data to Clickhouse and other databases with Pipes SDK"
+---
+
+# Data Persistence
+
+Pipes SDK provides built-in support for persisting blockchain data to Clickhouse, with automatic progress tracking and fork handling. This guide covers how to set up and use database targets.
+
+## Clickhouse Integration
+
+Clickhouse is a high-performance column-oriented database ideal for blockchain data. Pipes SDK provides first-class Clickhouse support with automatic cursor management and fork recovery.
+
+### Prerequisites
+
+Install the Clickhouse client:
+
+<CodeGroup>
+```bash npm
+npm install @clickhouse/client
+```
+
+```bash yarn
+yarn add @clickhouse/client
+```
+
+```bash bun
+bun add @clickhouse/client
+```
+
+</CodeGroup>
+
+### Running Clickhouse Locally
+
+Use Docker Compose to run Clickhouse locally:
+
+```yaml docker-compose.yml
+version: "3.8"
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    ports:
+      - "8123:8123" # HTTP interface
+      - "9000:9000" # Native interface
+      - "10123:8123" # Play UI
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ""
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+
+volumes:
+  clickhouse-data:
+```
+
+Start Clickhouse:
+
+```bash
+docker compose up -d
+```
+
+<Check>
+  Access the Clickhouse Play UI at
+  [localhost:10123/play](http://localhost:10123/play)
+</Check>
+
+## Basic Clickhouse Target
+
+Create a Clickhouse target with automatic progress tracking:
+
+```typescript
+import { createClickhouseTarget } from "@sqd-pipes/pipes";
+import { createClient } from "@clickhouse/client";
+import { createEvmSource, createEvmDecoder } from "@sqd-pipes/evm-processor";
+import * as usdcAbi from "./abi/usdc";
+
+// Create Clickhouse client
+const client = createClient({
+  host: "http://localhost:8123",
+  database: "default",
+});
+
+// Create table
+await client.exec(`
+  CREATE TABLE IF NOT EXISTS usdc_transfers (
+    block_number UInt64,
+    block_timestamp DateTime,
+    transaction_hash String,
+    log_index UInt32,
+    from_address String,
+    to_address String,
+    value UInt256
+  )
+  ENGINE = MergeTree()
+  ORDER BY (block_number, transaction_hash, log_index)
+`);
+
+// Create source and decoder
+const source = createEvmSource({
+  gateway: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  chain: "ethereum-mainnet",
+  query: {
+    range: { from: 20_000_000, to: 20_000_500 },
+  },
+});
+
+const decoder = source.pipe(
+  createEvmDecoder({
+    address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    events: {
+      transfer: usdcAbi.events.Transfer,
+    },
+  })
+);
+
+// Create Clickhouse target
+const target = createClickhouseTarget({
+  client,
+  table: "usdc_transfers",
+  write: async (data, insert) => {
+    const rows = [];
+
+    for (const transfer of data.transfer) {
+      rows.push({
+        block_number: transfer.block.header.number,
+        block_timestamp: new Date(transfer.block.header.timestamp * 1000),
+        transaction_hash: transfer.transactionHash,
+        log_index: transfer.logIndex,
+        from_address: transfer.event.from,
+        to_address: transfer.event.to,
+        value: transfer.event.value.toString(),
+      });
+    }
+
+    if (rows.length > 0) {
+      await insert(rows);
+    }
+  },
+});
+
+// Run pipeline
+async function main() {
+  for await (const batch of decoder.read()) {
+    await target.write(batch);
+  }
+}
+
+main().catch(console.error);
+```
+
+<Info>
+  The Clickhouse target automatically tracks progress and resumes from the last
+  processed block on restart.
+</Info>
+
+## Automatic Progress Tracking
+
+Clickhouse targets create a progress tracking table automatically:
+
+```sql
+CREATE TABLE IF NOT EXISTS {table}_progress (
+  id UInt8,
+  block_number UInt64
+)
+ENGINE = ReplacingMergeTree()
+ORDER BY id
+```
+
+Progress is saved after each batch, allowing pipelines to resume seamlessly.
+
+### Verifying Progress
+
+Query the progress table:
+
+```sql
+SELECT block_number FROM usdc_transfers_progress WHERE id = 1
+```
+
+## Fork Handling
+
+Clickhouse targets automatically handle blockchain reorganizations:
+
+```typescript
+const target = createClickhouseTarget({
+  client,
+  table: "usdc_transfers",
+  write: async (data, insert) => {
+    // Insert data
+    const rows = data.transfer.map((t) => ({
+      block_number: t.block.header.number,
+      // ... other fields
+    }));
+    await insert(rows);
+  },
+  fork: async (cursor, deleteFrom) => {
+    console.log(`Fork detected! Rolling back from block ${cursor.number}`);
+    await deleteFrom(cursor.number);
+  },
+});
+```
+
+The `deleteFrom` function removes all data with `block_number > cursor.number`.
+
+<Warning>
+  Ensure your table's `ORDER BY` clause includes `block_number` for efficient
+  fork handling.
+</Warning>
+
+## Table Design
+
+### Best Practices
+
+**Ordering Key**
+
+Always include `block_number` in the `ORDER BY` clause:
+
+```sql
+ORDER BY (block_number, transaction_hash, log_index)
+```
+
+This enables:
+
+- Efficient fork recovery (deleting blocks by number)
+- Fast time-range queries
+- Optimal compression
+
+**Data Types**
+
+Use appropriate Clickhouse types:
+
+```sql
+CREATE TABLE transfers (
+  block_number UInt64,              -- Block number
+  block_timestamp DateTime,          -- Block timestamp
+  transaction_hash String,           -- Transaction hash (0x...)
+  from_address String,               -- Ethereum address
+  to_address String,                 -- Ethereum address
+  value UInt256,                     -- Token amount (use String for JS)
+  value_decimal Decimal128(18)       -- Decimal value
+)
+```
+
+<Tip>
+  Use `String` type for very large numbers (like `uint256`) since JavaScript's
+  `bigint` needs string conversion.
+</Tip>
+
+**Indexes**
+
+Add indexes for common query patterns:
+
+```sql
+CREATE TABLE transfers (
+  -- ... columns
+  INDEX from_idx from_address TYPE bloom_filter GRANULARITY 1,
+  INDEX to_idx to_address TYPE bloom_filter GRANULARITY 1
+)
+```
+
+## Querying Data
+
+Once data is persisted, query it with SQL:
+
+### Basic Queries
+
+```sql
+-- Get recent transfers
+SELECT * FROM usdc_transfers
+ORDER BY block_number DESC
+LIMIT 100;
+
+-- Count transfers per address
+SELECT
+  from_address,
+  count() as transfer_count,
+  sum(value) as total_value
+FROM usdc_transfers
+GROUP BY from_address
+ORDER BY total_value DESC
+LIMIT 10;
+
+-- Transfers in time range
+SELECT * FROM usdc_transfers
+WHERE block_timestamp BETWEEN '2024-01-01' AND '2024-01-31'
+ORDER BY block_timestamp;
+```
+
+### Aggregations
+
+```sql
+-- Daily transfer volume
+SELECT
+  toDate(block_timestamp) as date,
+  count() as transfer_count,
+  sum(value) / 1e6 as total_usdc
+FROM usdc_transfers
+GROUP BY date
+ORDER BY date;
+
+-- Top recipients
+SELECT
+  to_address,
+  count() as received_count,
+  sum(value) / 1e6 as total_received
+FROM usdc_transfers
+GROUP BY to_address
+ORDER BY total_received DESC
+LIMIT 100;
+```
+
+## Multiple Tables
+
+Index multiple event types to different tables:
+
+```typescript
+// Create tables
+await client.exec(`
+  CREATE TABLE IF NOT EXISTS transfers (
+    block_number UInt64,
+    from_address String,
+    to_address String,
+    value UInt256
+  )
+  ENGINE = MergeTree()
+  ORDER BY (block_number)
+`);
+
+await client.exec(`
+  CREATE TABLE IF NOT EXISTS approvals (
+    block_number UInt64,
+    owner String,
+    spender String,
+    value UInt256
+  )
+  ENGINE = MergeTree()
+  ORDER BY (block_number)
+`);
+
+// Decode multiple events
+const decoder = source.pipe(
+  createEvmDecoder({
+    address: USDC_ADDRESS,
+    events: {
+      transfer: usdcAbi.events.Transfer,
+      approval: usdcAbi.events.Approval,
+    },
+  })
+);
+
+// Create separate targets
+const transferTarget = createClickhouseTarget({
+  client,
+  table: "transfers",
+  write: async (data, insert) => {
+    const rows = data.transfer.map((t) => ({
+      block_number: t.block.header.number,
+      from_address: t.event.from,
+      to_address: t.event.to,
+      value: t.event.value.toString(),
+    }));
+    if (rows.length > 0) await insert(rows);
+  },
+});
+
+const approvalTarget = createClickhouseTarget({
+  client,
+  table: "approvals",
+  write: async (data, insert) => {
+    const rows = data.approval.map((a) => ({
+      block_number: a.block.header.number,
+      owner: a.event.owner,
+      spender: a.event.spender,
+      value: a.event.value.toString(),
+    }));
+    if (rows.length > 0) await insert(rows);
+  },
+});
+
+// Write to both targets
+for await (const batch of decoder.read()) {
+  await Promise.all([transferTarget.write(batch), approvalTarget.write(batch)]);
+}
+```
+
+## Production Considerations
+
+<AccordionGroup>
+<Accordion title="Use batched inserts">
+  Clickhouse targets automatically batch inserts. Don't insert row-by-row; collect rows and insert them together.
+</Accordion>
+
+<Accordion title="Monitor table size">
+  Clickhouse compresses data well, but monitor table sizes and add partitioning
+  for very large datasets.
+</Accordion>
+
+<Accordion title="Optimize queries">
+  Use the `ORDER BY` columns in your `WHERE` clauses for optimal query
+  performance.
+</Accordion>
+
+<Accordion title="Handle restarts gracefully">
+  The automatic progress tracking handles restarts. No manual cursor management
+  needed.
+</Accordion>
+
+<Accordion title="Test fork handling">
+  Simulate forks in development to ensure your fork handler works correctly.
+</Accordion>
+
+<Accordion title="Use materialized views">
+  Create materialized views for common aggregations to speed up queries.
+</Accordion>
+</AccordionGroup>
+
+## Other Databases
+
+While Pipes SDK has built-in Clickhouse support, you can use custom targets for other databases.
+
+### PostgreSQL Example
+
+```typescript
+import { Pool } from "pg";
+import { createTarget } from "@sqd-pipes/pipes";
+
+const pool = new Pool({
+  host: "localhost",
+  database: "indexer",
+  user: "postgres",
+  password: "postgres",
+});
+
+const postgresTarget = createTarget({
+  write: async (data) => {
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+
+      for (const transfer of data.transfer) {
+        await client.query(
+          `INSERT INTO transfers (block_number, from_addr, to_addr, value)
+           VALUES ($1, $2, $3, $4)
+           ON CONFLICT (block_number, transaction_hash, log_index) DO NOTHING`,
+          [
+            transfer.block.header.number,
+            transfer.event.from,
+            transfer.event.to,
+            transfer.event.value.toString(),
+          ]
+        );
+      }
+
+      // Save cursor
+      await client.query(
+        `INSERT INTO progress (id, block_number) VALUES (1, $1)
+         ON CONFLICT (id) DO UPDATE SET block_number = $1`,
+        [data.blocks[data.blocks.length - 1].header.number]
+      );
+
+      await client.query("COMMIT");
+    } catch (e) {
+      await client.query("ROLLBACK");
+      throw e;
+    } finally {
+      client.release();
+    }
+  },
+  fork: async (cursor) => {
+    await pool.query("DELETE FROM transfers WHERE block_number > $1", [
+      cursor.number,
+    ]);
+    await pool.query("UPDATE progress SET block_number = $1 WHERE id = 1", [
+      cursor.number,
+    ]);
+  },
+});
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Advanced Patterns"
+    icon="rocket"
+    href="/en/sdk/evm/pipes/advanced-patterns"
+  >
+    Learn advanced indexing patterns
+  </Card>
+
+  <Card title="Examples" icon="code" href="/en/sdk/evm/pipes/examples">
+    See complete persistence examples
+  </Card>
+
+  <Card title="Targets" icon="bullseye" href="/en/sdk/evm/pipes/targets">
+    Learn more about targets
+  </Card>
+
+  <Card
+    title="API Reference"
+    icon="file-code"
+    href="/en/sdk/evm/pipes/api-reference"
+  >
+    Complete API documentation
+  </Card>
+</CardGroup>

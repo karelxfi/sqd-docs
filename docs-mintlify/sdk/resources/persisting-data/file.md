@@ -1,5 +1,4 @@
 ---
-sidebar_position: 30
 title: Saving to filesystems
 description: >-
   Save data to filesystem-based datasets
@@ -7,9 +6,9 @@ description: >-
 
 # Filesystem store
 
-:::warning
+<Warning>
 Make sure you understand and use the [`chunkSizeMb` setting](#overview) and the [`setForceFlush()`](#setforceflush) store method. Failure to do so may cause the processor to output an empty dataset.
-:::
+</Warning>
 
 ## Overview
 
@@ -28,10 +27,10 @@ Same failover guarantees as with the [Postgres-based store](/sdk/resources/persi
 Save ERC20 `Transfer` events retrieved by [EVM processor](/sdk) in `transfers.csv` files:
 
 ```typescript
-import {EvmBatchProcessor} from '@subsquid/evm-processor'
+import \{EvmBatchProcessor\} from '@subsquid/evm-processor'
 import * as erc20abi from './abi/erc20'
-import {Database, LocalDest} from '@subsquid/file-store'
-import {Column, Table, Types} from '@subsquid/file-store-csv'
+import \{Database, LocalDest\} from '@subsquid/file-store'
+import \{Column, Table, Types\} from '@subsquid/file-store-csv'
 
 const processor = /* processor definition */
 
@@ -51,9 +50,9 @@ processor.run(new Database(dbOptions), async (ctx) => {
   for (let c of ctx.blocks) {
     for (let log of c.logs) {
       if (/* the log item is a Transfer we're interested in */) {
-        let { from, to, value } =
+        let \{ from, to, value \} =
           erc20abi.events.Transfer.decode(log)
-        ctx.store.TransfersTable.write({ from, to, value })
+        ctx.store.TransfersTable.write(\{ from, to, value \})
       }
     }
   }
@@ -175,7 +174,7 @@ DatabaseHooks<Dest> {
 ```
 Parameters:
 * **dest**: the `Dest` object used by `Database`. Use it to access the filesystem.
-* **info**: a `{height: number, hash: string}` object.
+* **info**: a `\{height: number, hash: string\}` object.
 
 Overriding these functions can be useful for transferring some processor state between batches reliably. A basic example of using **`hooks`** can be found [here](https://github.com/subsquid/squid-file-store/blob/fcc8a63dc2deb8c3f843aa525f806ff9cdf778fb/test/src/main.ts#L36).
 

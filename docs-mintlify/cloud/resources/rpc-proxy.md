@@ -1,5 +1,4 @@
 ---
-sidebar_position: 70
 title: RPC addon
 description: Built-in RPC endpoints
 ---
@@ -22,9 +21,9 @@ deploy:
 
 ## Processor configuration
 
-With the add-on successfully enabled, your squid will get a unique proxied endpoint to the requested network. SQD Cloud will make its URL available to the deployed squid at the `RPC_${Upper(network)}_${Upper(protocol)}` environment variable. Assert it to avoid compilation errors. We also recommend rate limiting RPC addon requests on the processor side to the same rate as was used in the manifest:
+With the add-on successfully enabled, your squid will get a unique proxied endpoint to the requested network. SQD Cloud will make its URL available to the deployed squid at the `RPC_$\{Upper(network)\}_$\{Upper(protocol)\}` environment variable. Assert it to avoid compilation errors. We also recommend rate limiting RPC addon requests on the processor side to the same rate as was used in the manifest:
 ```ts
-import {assertNotNull} from '@subsquid/util-internal'
+import \{assertNotNull\} from '@subsquid/util-internal'
 
 processor.setRpcEndpoint({
   // dash in "eth-goerli" becomes an underscore
@@ -61,8 +60,8 @@ Among other things, this enables a development process that uses the service for
 
 3. Configure the processor to use the URL from from `RPC_ETH_HTTP`:
    ```ts
-   import {EvmBatchProcessor} from '@subsquid/evm-processor'
-   import {assertNotNull} from '@subsquid/util-internal'
+   import \{EvmBatchProcessor\} from '@subsquid/evm-processor'
+   import \{assertNotNull\} from '@subsquid/util-internal'
 
    export const processor = new EvmBatchProcessor()
      .setRpcEndpoint(assertNotNull(process.env.RPC_ETH_HTTP))

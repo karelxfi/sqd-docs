@@ -1,22 +1,24 @@
 ---
 title: "Glossary"
+description: "Definitions of key terms used in SQD documentation"
+
 ---
 
 ### Archives[​](#archives "Direct link to Archives")
 
-Deprecated term used for [SQD Network](/subsquid-network/) and for the data sourcing service of the deprecated FireSquid SDK version. Occasionally refers to a chain-specific endpoint available from either source (e.g. "an Ethereum archive"). The new terminology is:
+Deprecated term used for [SQD Network](subsquid-network/) and for the data sourcing service of the deprecated FireSquid SDK version. Occasionally refers to a chain-specific endpoint available from either source (e.g. "an Ethereum archive"). The new terminology is:
 
-* "Archives" as an abstract collection of services for some networks is replaced by "[SQD Network](/subsquid-network/)" (when referring to data location) or "SQD Network gateway" (when referring to the service)
-* "public Archives" are replaced by the [open private version](/subsquid-network/overview/#open-private-network) of SQD Network
-* "an archive" for a particular network is replaced by "a SQD Network gateway"
+- "Archives" as an abstract collection of services for some networks is replaced by "[SQD Network](subsquid-network/)" (when referring to data location) or "SQD Network gateway" (when referring to the service)
+- "public Archives" are replaced by the [open private version](subsquid-network/overview/#open-private-network) of SQD Network
+- "an archive" for a particular network is replaced by "a SQD Network gateway"
 
-List of gateways for the open private SQD Network is available in [these docs](/subsquid-network/reference/networks/) and via [`sqd gateways`](/squid-cli/gateways/).
+List of gateways for the open private SQD Network is available in [these docs](subsquid-network/reference/networks/) and via [`sqd gateways`](squid-cli/gateways/).
 
 **Not to be confused with [archive blockchain nodes](https://ethereum.org/developers/docs/nodes-and-clients/archive-nodes)**.
 
 ### `archive-registry`[​](#archive-registry "Direct link to archive-registry")
 
-The deprecated NPM package `@subsquid/archive-registry` that was used to look up squid data sources by network aliases (with `lookupArchive()` and a small CLI). We now recommend using raw gateway URLs instead of `lookupArchive()` calls in processor configuration. The exploratory CLI is replaced by [`sqd gateways`](/squid-cli/gateways/); list of available network-specific gateways is also [available in these docs](/subsquid-network/reference/networks/).
+The deprecated NPM package `@subsquid/archive-registry` that was used to look up squid data sources by network aliases (with `lookupArchive()` and a small CLI). We now recommend using raw gateway URLs instead of `lookupArchive()` calls in processor configuration. The exploratory CLI is replaced by [`sqd gateways`](squid-cli/gateways/); list of available network-specific gateways is also [available in these docs](subsquid-network/reference/networks/).
 
 ### Block[​](#block "Direct link to Block")
 
@@ -28,7 +30,7 @@ On [Substrate](#substrate), a call is a sub-routine changing the runtime state. 
 
 ### Cloud (former Aquarium)[​](#cloud-former-aquarium "Direct link to Cloud (former Aquarium)")
 
-A [cloud service](/cloud/) for deploying [squids](#squid) in a serverless fashion maintained by Subsquid Labs GmbH.
+A [cloud service](cloud/) for deploying [squids](#squid) in a serverless fashion maintained by Subsquid Labs GmbH.
 
 ### Contracts pallet[​](#contracts-pallet "Direct link to Contracts pallet")
 
@@ -64,15 +66,15 @@ A declarative query language and an API specification language developed by Face
 
 ### Hot blocks[​](#hot-blocks "Direct link to Hot blocks")
 
-An alternative term for [unfinalized blocks](/sdk/resources/unfinalized-blocks/) that emphasizes the fact that the data extracted from these blocks is volatile. Sometimes used in Squid SDK code and comments.
+An alternative term for [unfinalized blocks](sdk/resources/unfinalized-blocks/) that emphasizes the fact that the data extracted from these blocks is volatile. Sometimes used in Squid SDK code and comments.
 
-### ink\![​](#ink "Direct link to ink!")
+### ink\
 
 An SDK (software development kit) and a smart-contract language for developing WASM-based smart contracts, maintained by Parity. The contracts developed with ink! are compiled into a WASM blob compatible with the API exposed by the [`Contracts` pallet](#contracts-pallet). More details [here](https://use.ink).
 
 ### OpenReader[​](#openreader "Direct link to OpenReader")
 
-1. SQD's own open source [GraphQL server](/sdk/reference/openreader-server/overview/), built in-house. No longer recommended for new projects running PostgreSQL due to its [limitations](/sdk/reference/openreader-server/overview/#limitations). See [Serving GraphQL](/sdk/resources/serving-graphql/) to learn more.
+1. SQD's own open source [GraphQL server](sdk/reference/openreader-server/overview/), built in-house. No longer recommended for new projects running PostgreSQL due to its [limitations](sdk/reference/openreader-server/overview/#limitations). See [Serving GraphQL](sdk/resources/serving-graphql/) to learn more.
 
 2. The GraphQL [schema generation library](https://github.com/subsquid/squid-sdk/tree/master/graphql/openreader) at the heart of 1. Implements [OpenCRUD](https://www.opencrud.org/).
 
@@ -82,7 +84,7 @@ A portable module that can be added to a [Substrate](#substrate) runtime. Typica
 
 ### Schema file[​](#schema-file "Direct link to Schema file")
 
-A file describing the target data schema for a squid, normally called `schema.graphql`. The file uses a GraphQL dialect to define entities, properties and relations. See [details here](/sdk/reference/schema-file/).
+A file describing the target data schema for a squid, normally called `schema.graphql`. The file uses a GraphQL dialect to define entities, properties and relations. See [details here](sdk/reference/schema-file/).
 
 ### State[​](#state "Direct link to State")
 
@@ -98,7 +100,7 @@ A project consisting of an [ETL](#etl) for extracting and transforming on-chain 
 
 ### Squid processor[​](#squid-processor "Direct link to Squid processor")
 
-The [ETL](#etl) part of the squid. Extracts on-chain data from an [SQD Network](/subsquid-network/) gateway and/or directly from chain RPC, then transforms and optionally enriches it with external data. Saves the result into a target [data sink](/sdk/reference/store/).
+The [ETL](#etl) part of the squid. Extracts on-chain data from an [SQD Network](subsquid-network/) gateway and/or directly from chain RPC, then transforms and optionally enriches it with external data. Saves the result into a target [data sink](sdk/reference/store/).
 
 ### Squid API[​](#squid-api "Direct link to Squid API")
 
@@ -114,17 +116,17 @@ The code that defines the state transition logic of a blockchain, and by extenti
 
 ### Squid SDK[​](#squid-sdk "Direct link to Squid SDK")
 
-[Squid SDK](/sdk/) is a collection of open-source libraries for building [squids](#squid).
+[Squid SDK](sdk/) is a collection of open-source libraries for building [squids](#squid).
 
 ### Typegen[​](#typegen "Direct link to Typegen")
 
 A tool generating strongly typed data access classes from a metadata in some format. Squid SDK includes typegen tools:
 
-* for accessing EVM smart contract data based on the contract ABI
-* for accessing event, extrinsics and storage data based on [Substrate](#substrate) metadata
-* for accessing [ink!](#ink) smart contract data based on the contract metadata
+- for accessing EVM smart contract data based on the contract ABI
+- for accessing event, extrinsics and storage data based on [Substrate](#substrate) metadata
+- for accessing [ink!](#ink) smart contract data based on the contract metadata
 
-See [this section](/sdk/resources/tools/typegen/) for documentation on these tools.
+See [this section](sdk/resources/tools/typegen/) for documentation on these tools.
 
 ### WASM[​](#wasm "Direct link to WASM")
 

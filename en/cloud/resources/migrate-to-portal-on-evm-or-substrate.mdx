@@ -1,36 +1,38 @@
 ---
-title: "Portal for EVM+Substrate"
-description: "EVM/Substrate data from the permissionless SQD Network"
----
+title: Portal for EVM+Substrate
+description: EVM/Substrate data from the permissionless SQD Network
 
+---
 
 # Migrate to the Cloud portal
 
 ## For users on EVM and Substrate networks
 
 <Info>
-SQD Network portals are currently in beta. Please report any bugs or suggestions to the [SQD Portal Beta chat](https://t.me/+JHrJZPz34kRjYmFk) or to [Squid Devs](https://t.me/HydraDevs).
+  SQD Network portals are currently in beta. Please report any bugs or
+  suggestions to the [SQD Portal Beta chat](https://t.me/+JHrJZPz34kRjYmFk) or
+  to [Squid Devs](https://t.me/HydraDevs).
 </Info>
 
-This guide walks you through replacing a gateway of the [open private version of SQD Network](/subsquid-network/overview/#open-private-network) with a *portal* of the [permissionless SQD Network](/subsquid-network/overview/#permissionless-public-network) as the primary source of data for your Cloud squids.
-<!--
+This guide walks you through replacing a gateway of the [open private version of SQD Network](subsquid-network/overview/#open-private-network) with a _portal_ of the [permissionless SQD Network](subsquid-network/overview/#permissionless-public-network) as the primary source of data for your Cloud squids.
 Benefits include:
 
- - **Reduced reliance on centralized services:** The permissionless SQD Network consists of [over 1400](https://arbiscan.io/address/0x36e2b147db67e76ab67a4d07c293670ebefcae4e#readContract#F6) nodes [ran by independent operators](/subsquid-network/participate/worker)
- - **Improved stability:** With a total capacity of roughly 1.1Pb, the permissionless SQD Network allows for a great deal of redundancy.
- - **Improved speed:** The permissionless version of SQD Network has a lot more bandwidth than the open private network; moreover, portals use the available bandwidth more effectively than gateways. Data fetching was 5-10 times faster in some of our tests. For squids that are not bottlenecked by write operations this will translate into better sync performance.
- - **Being future-proof:** All future development will be focused on portals and the permissionless SQD Network. Open private network will be sunset around May 2025.
--->
-SQD team operates two independent portals that serve the needs of Cloud users:
- * The dedicated **Cloud Portal** is only visible from within the Cloud, ensuring stable performance for squids deployed there.
- * The **Public Portal** can be accessed from anywhere for easy experimentation and local development.
+- **Reduced reliance on centralized services:** The permissionless SQD Network consists of [over 1400](https://arbiscan.io/address/0x36e2b147db67e76ab67a4d07c293670ebefcae4e#readContract#F6) nodes [ran by independent operators](subsquid-network/participate/worker)
+- **Improved stability:** With a total capacity of roughly 1.1Pb, the permissionless SQD Network allows for a great deal of redundancy.
+- **Improved speed:** The permissionless version of SQD Network has a lot more bandwidth than the open private network; moreover, portals use the available bandwidth more effectively than gateways. Data fetching was 5-10 times faster in some of our tests. For squids that are not bottlenecked by write operations this will translate into better sync performance.
+- **Being future-proof:** All future development will be focused on portals and the permissionless SQD Network. Open private network will be sunset around May 2025.
+  -->
+  SQD team operates two independent portals that serve the needs of Cloud users:
+
+* The dedicated **Cloud Portal** is only visible from within the Cloud, ensuring stable performance for squids deployed there.
+* The **Public Portal** can be accessed from anywhere for easy experimentation and local development.
 
 <Info>
-We're currently experimenting with tightening the data request complexity limits. If you see an HTTP 400 error with a message like this:
-```
-Couldn't parse query: query contains X item requests, but only 50 is allowed
-```
-where `X` is some number above 50, or any other HTTP 400 response, please let us know.
+  We're currently experimenting with tightening the data request complexity
+  limits. If you see an HTTP 400 error with a message like this: ```
+  Couldn't parse query: query contains X item requests, but only 50 is allowed
+  ``` where `X` is some number above 50, or any other HTTP 400 response, please
+  let us know.
 </Info>
 
 Here are the steps to migrate:
@@ -41,28 +43,31 @@ Here are the steps to migrate:
 
 **B.** Remove both your lock file and the `node_modules` folder:
 
-```mdx-code-block
+````mdx-code-block
 <Tabs queryString="package-manager">
 <TabItem value="npm" label="NPM">
 ```
 ```bash
 rm -r node_modules package-lock.json
-```
-```mdx-code-block
+````
+
+````mdx-code-block
 </TabItem>
 <TabItem value="yarn" label="Yarn">
 ```
 ```bash
 rm -r node_modules yarn.lock
-```
-```mdx-code-block
+````
+
+````mdx-code-block
 </TabItem>
 <TabItem value="pnpm" label="PNPM">
 ```
 ```bash
 rm -r node_modules pnpm-lock.yaml
-```
-```mdx-code-block
+````
+
+````mdx-code-block
 </TabItem>
 </Tabs>
 ```
@@ -80,21 +85,24 @@ npx --yes npm-check-updates --filter "@subsquid/*" --upgrade
 ```
 ```bash
 npm install
-```
-```mdx-code-block
+````
+
+````mdx-code-block
 </TabItem>
 <TabItem value="yarn" label="Yarn">
 ```
 ```bash
 yarn install
-```
-```mdx-code-block
+````
+
+````mdx-code-block
 </TabItem>
 <TabItem value="pnpm" label="PNPM">
 ```
 ```bash
 pnpm install
-```
+````
+
 ```mdx-code-block
 </TabItem>
 </Tabs>
@@ -104,8 +112,8 @@ pnpm install
 
 Follow the network-specific instructions from the Cloud:
 
- * navigate to [the Portal's page](https://app.subsquid.io/portal)
- * click on the tile of your network to see the instructions
+- navigate to [the Portal's page](https://app.subsquid.io/portal)
+- click on the tile of your network to see the instructions
 
 Once you're done, your squid will use the Cloud Portal when deployed and the public portal for local runs.
 
@@ -121,7 +129,7 @@ However, for the duration of this beta we strongly recommend that you re-sync yo
 
 3. Assign your production tag to the new deployment to redirect the GraphQL requests there.
 
-See [this section](/cloud/resources/slots-and-tags/#zero-downtime-updates) for details.
+See [this section](cloud/resources/slots-and-tags/#zero-downtime-updates) for details.
 
 ## What's next?
 

@@ -1,14 +1,13 @@
 ---
-sidebar_position: 90
 title: Self-hosting
 description: Deploy squid locally or on-premises
 ---
 
 # Self-hosting
 
-:::tip
+<Tip>
 Many tips from our [best practices guide](/cloud/resources/best-practices) apply to self-hosted squids, too. Check it out if you intend to use your squid in production.
-:::
+</Tip>
 
 To deploy a squid locally or on-premises, use the following Dockerfile template to build a single image for both `api` and `processor` services:
 

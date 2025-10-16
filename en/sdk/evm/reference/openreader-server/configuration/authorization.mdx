@@ -1,6 +1,7 @@
 ---
 title: Access control
 description: Authentication and authorization
+
 ---
 
 # Access control
@@ -19,8 +20,8 @@ export async function requestCheck(
 ```
 Once defined, this function will be called every time a request arrives. Then,
 * if the function returns `true`, the request is processed as usual;
-* if the function returns `false`, the server responds with `'{"errors":[{"message":"not allowed"}]}'`;
-* if the function returns an `errorString`, the server responds with `` `{{"errors":[{"message":"${errorString}"}]}` ``.
+* if the function returns `false`, the server responds with `'\{"errors": "[\{"message":"not allowed"\}]\}'`;"
+* if the function returns an `errorString`, the server responds with `` `\{\{"errors": "[\{"message":"$\{errorString\}"\}]\}` ``."
 
 The request information such as HTTP headers and GraphQL selections is available in the context. This makes it possible to authenticate the user that sent the query and either allow or deny access. The decision may take the query contents into account, allowing for some authorization granularity.
 
@@ -29,7 +30,7 @@ The request information such as HTTP headers and GraphQL selections is available
 The context type has the following interface:
 ```typescript
 RequestCheckContext {
-  http: {uri: string, method: string, headers: HttpHeaders}
+http: "\{uri: string, method: string, headers: HttpHeaders\}"
   operation: OperationDefinitionNode
   operationName: string | null
   schema: GraphQLSchema
@@ -47,7 +48,7 @@ Here,
 
 ## Sending user data to resolvers
 
-Authentication data such as user name can be passed from `requestCheck()` to a [custom resolver](/sdk/reference/openreader-server/configuration/custom-resolvers/) through Openreader context:
+Authentication data such as user name can be passed from `requestCheck()` to a [custom resolver](sdk/reference/openreader-server/configuration/custom-resolvers/) through Openreader context:
 ```typescript
 export async function requestCheck(req: RequestCheckContext): Promise<boolean | string> {
   ...
@@ -62,7 +63,7 @@ A custom resolver that retrieves it may look like this:
 ```typescript
 @Resolver()
 export class UserCommentResolver {
-  constructor(private tx: () => Promise<EntityManager>) {}
+constructor(private tx: "() => Promise<EntityManager>) {}"
 
   @Query(() => [UserCommentCountQueryResult])
   async countUserComments(
@@ -76,7 +77,7 @@ export class UserCommentResolver {
         .query(`
           SELECT COUNT(*) as total
           FROM user_comment
-          WHERE "user" = '${user}'
+          WHERE "user" = '$\{user\}'
         `)
     return result
   }
@@ -89,7 +90,7 @@ export class UserCommentResolver {
     let user = ctx.openreader.user
     let manager = await this.tx()
     await manager.save(new UserComment({
-      id: `${user}-${comment}`,
+id: "`$\{user\}-$\{comment\}`,"
       user,
       comment
     }))
@@ -99,7 +100,7 @@ export class UserCommentResolver {
 ```
 See full code in [this branch](https://github.com/subsquid-labs/access-control-example/tree/interacting-with-resolver).
 
-This approach does not work with [subscriptions](/sdk/reference/openreader-server/configuration/subscriptions/).
+This approach does not work with [subscriptions](sdk/reference/openreader-server/configuration/subscriptions/).
 
 ## Examples
 

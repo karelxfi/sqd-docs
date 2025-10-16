@@ -2,6 +2,7 @@
 title: "Solana Networks"
 description: "Complete list of supported Solana and SVM-compatible networks for data indexing"
 mode: "wide"
+
 ---
 
 <Info>
@@ -10,7 +11,7 @@ mode: "wide"
   available via the public network.
 </Info>
 
-This section lists public gateways of the [open private network](/en/subsquid-network/overview/#open-private-network) that serve data of Solana and compatible networks. Gateway URLs should be used with the [`setGateway()`](/en/solana-indexing/sdk/solana-batch/general/#set-gateway) `SolanaDataSource` configuration method, for example:
+This section lists public gateways of the [open private network](en/subsquid-network/overview/#open-private-network) that serve data of Solana and compatible networks. Gateway URLs should be used with the [`setGateway()`](en/solana-indexing/sdk/solana-batch/general/#set-gateway) `SolanaDataSource` configuration method, for example:
 
 ```typescript
 const dataSource = new SolanaDataSource().setGateway(
@@ -18,9 +19,9 @@ const dataSource = new SolanaDataSource().setGateway(
 );
 ```
 
-Read more about Solana indexing in the [dedicated section](/en/solana-indexing).
+Read more about Solana indexing in the [dedicated section](en/solana-indexing).
 
-See [Solana API](/en/solana-indexing/network-api/solana-api) if you're looking to interface with one of these gateways directly.
+See [Solana API](en/solana-indexing/network-api/solana-api) if you're looking to interface with one of these gateways directly.
 
 |        Network         |                      Gateway URL                       |
 | :--------------------: | :----------------------------------------------------: |

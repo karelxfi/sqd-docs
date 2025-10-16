@@ -1,5 +1,4 @@
 ---
-sidebar_position: 10
 title: Deployment manifest
 description: A reference for the squid deployment manifest
 ---
@@ -10,14 +9,14 @@ The deployment manifest is named `squid.yaml` by convention. The manifest define
 
 With the introduction of the deployment manifest the add-ons (`postgres`) and the API services (`api`) become optional. This allows flexible deployment configuration for analytic use-cases (e.g. transform and write to s3 or BigQuery).
 
-:::tip
+<Tip>
 Cloud [secrets](/cloud/resources/env-variables/#secrets) of the squid's [organization](/cloud/resources/organizations) are exposed as the `secrets` context. You can set any variable defined in any of the `env:` sections mentioned below:
 ```yaml
 env:
-  RPC_ENDPOINT: ${{ secrets.FAST_RPC_ENDPOINT_URL }}
+  RPC_ENDPOINT: $\{\{ secrets.FAST_RPC_ENDPOINT_URL \}\}
 ```
 See the [Environment variables](/cloud/resources/env-variables) page for more info.
-:::
+</Tip>
 
 ## Header
 
@@ -27,7 +26,7 @@ The manifest header defines the squid metadata
 |:-----------------------:|:---------------------------------------------:|
 | `manifest_version`        | Only `subsquid.io/v0.1` is currently supported     |
 | `name` | A globally unique squid name. Can only contain lowercase Latin letters (`a-z`) and a dash (`-`). Must be under 20 symbols. |
-| `version`                 | Squid version. **Must be an integer**. A squid deployment is canonically identified as `${name}@${version}`.  |
+| `version`                 | Squid version. **Must be an integer**. A squid deployment is canonically identified as `$\{name\}@$\{version\}`.  |
 | `description`  | (Optional) A short description of the squid  |
 
 ## `build:`
@@ -87,7 +86,7 @@ See [RPC add-on](/cloud/resources/rpc-proxy).
 | Name        | Description                                           | Type          | Default value         |         Optional   |
 |:-----------:|:-----------------------------------------------------:|:-------------:|----------------------:|:------------------:|
 | `cmd`       | Exec command passed to the squid container. By default runs TypeORM migrations in the `db` folder  |  `string[]`   | `['npx', 'squid-typeorm-migration', 'apply']` |   Optional   |
-| `env`       | A key-value list of env variables to be set           |  `{k:v}[]`    |       []               | Optional                |
+| `env`       | A key-value list of env variables to be set           |  `\{k:v\}[]`    |       []               | Optional                |
 
 
 ### `processor:`
@@ -98,7 +97,7 @@ A processor service or a list of processor services of the squid.
 |:-----------:|:-----------------------------------------------------:|:-------------:|----------------------:|:-------------------------------------------:|
 | `cmd`       | Processor exec command passed to the squid container  |  `string[]`   |                       |   **Required**                              |
 | `name`      | Processor name                                        |  `string`     |                       |   **Required** with more than one processor |
-| `env`       | A key-value list of env variables to be set           |  `{k:v}[]`    |   []                  |   Optional                                  |
+| `env`       | A key-value list of env variables to be set           |  `\{k:v\}[]`    |   []                  |   Optional                                  |
 
 With a single processor this section may look like this:
 ```yaml
@@ -128,12 +127,12 @@ where `process:prod:bsc` and `process:prod:eth` are extra `sqd` commands defined
 
 ### `api:`
 
-**Optional** The GraphQL API service of the squid. Automatically provisions a publicly available endpoint `https://{org}.subsquid.io/{name}/v/v{version}/graphql` and binds it to the server.
+**Optional** The GraphQL API service of the squid. Automatically provisions a publicly available endpoint `https://\{org\}.subsquid.io/\{name\}/v/v\{version\}/graphql` and binds it to the server.
 
 | Name        | Description                                                             | Type          | Default value         | Optional           |
 |:-----------:|:-----------------------------------------------------------------------:|:-------------:|----------------------:|:------------------:|
 | `cmd`       | GraphQL API server exec command passed to the squid container. The server must be listening at port `GRAPHQL_SERVER_PORT`. |  `string[]` |    |   **Required**     |
-| `env`       | A key-value list of env variables to be set                             |  `{k:v}[]`    |  []                   |   Optional         |
+| `env`       | A key-value list of env variables to be set                             |  `\{k:v\}[]`    |  []                   |   Optional         |
 
 ### `env:`
 
@@ -187,8 +186,8 @@ deploy:
     # static and secret-valued env variables
     env:
       SQD_DEBUG: sqd:mapping
-      RPC_ENDPOINT: ${{ secrets.ACALA_RPC_ENDPOINT }}
-      COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
+      RPC_ENDPOINT: $\{\{ secrets.ACALA_RPC_ENDPOINT \}\}
+      COINGECKO_API_KEY: $\{\{ secrets.COINGECKO_API_KEY \}\}
     cmd: [ "sqd", "process:prod" ]
   api:
     env:

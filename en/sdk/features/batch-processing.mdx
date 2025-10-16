@@ -1,195 +1,261 @@
 ---
-title: Batch processing
-description: Batch-based data transformation model 
+title: "Batch Processing"
+description: "Optimize your indexer performance with batch-based data transformation"
 ---
 
-# Batch processing
+# Batch Processing
 
-[//]: # (!!!! Some github URLs need updating)
+Batch processing is a core performance optimization technique in Squid SDK that dramatically improves indexing speed by minimizing database operations and maximizing data throughput.
 
-Batch data processing model employed by Squid SDK relies on the following principles:
+## Core Principles
 
-- Minimize the number of database hits by grouping multiple single-row transactions into multi-row batch transactions.
-- Transform the data in memory using vectorized operators.
-- Use the [MakerDAO `Multicall` contract](/sdk/resources/tools/typegen/state-queries/#batch-state-queries) to batch EVM state queries.
-- Use [`XXX.getMany()`](/sdk/resources/tools/typegen/state-queries) to batch Substrate state queries.
+The batch processing model relies on these key principles:
 
-In practice, batching is a more flexible (compared to handler parallelization) way to speed up the inherently sequential indexing of on-chain transactions and logs. 
+- **Minimize database hits** by grouping multiple single-row transactions into multi-row batch transactions
+- **Transform data in memory** using vectorized operators for maximum efficiency
+- **Batch EVM state queries** using the [MakerDAO `Multicall` contract](sdk/resources/tools/typegen/state-queries/#batch-state-queries)
+- **Batch Substrate queries** using [`XXX.getMany()`](sdk/resources/tools/typegen/state-queries) methods
 
-To illustrate, assume the processor must infer the current state of an on-chain record. It is configured to listen to the two on-chain events, `Create` and `Update`, that are emitted once the record is created or updated. The [data batch](/sdk/reference/processors/architecture/#ctxblocks) received by the processor is then an array of event items, i.e.
-```ts
+<Tip>
+  Batch processing is more flexible than handler parallelization and provides
+  better performance for the inherently sequential nature of blockchain
+  indexing.
+</Tip>{" "}
+
+## How Batch Processing Works
+
+To illustrate batch processing, consider a processor that tracks the current state of on-chain records. It listens to `Create` and `Update` events and receives a batch of events:
+
+```typescript
 [
-    Create({id: 1, name: 'Alice'}), 
-    Update({id: 1, name: 'Bob'}),
-    Create({id: 2, name: 'Mikee'}), 
-    Update({id: 1, name: 'Carol'}), 
-    Update({id: 2, name: 'Mike'})
-]
-``` 
-Following the principles above, a processor would update the intermediary entity states in memory, persisting only the final state:
-```ts
-[{id: 1, name: 'Carol'}, {id: 2, name: 'Mike'}]
+  Create({ id: 1, name: "Alice" }),
+  Update({ id: 1, name: "Bob" }),
+  Create({ id: 2, name: "Mikee" }),
+  Update({ id: 1, name: "Carol" }),
+  Update({ id: 2, name: "Mike" }),
+];
 ```
-in a single transaction. 
 
-Let's see the batch processing principles in action.
+Following batch processing principles, the processor updates entity states in memory and persists only the final state:
 
-## Patterns
+```typescript
+[
+  { id: 1, name: "Carol" },
+  { id: 2, name: "Mike" },
+];
+```
 
-An idiomatic use of [`processor.run()`](/sdk/reference/processors/architecture/#processorrun) is as follows:
+This results in a single database transaction instead of multiple individual updates.
 
-```ts
+<Note>
+  The [data batch](sdk/reference/processors/architecture/#ctxblocks) contains
+  all events from multiple blocks, allowing for efficient batch processing.
+</Note>
+
+## Implementation Patterns
+
+Here's the idiomatic pattern for implementing batch processing with [`processor.run()`](sdk/reference/processors/architecture/#processorrun):
+
+```typescript
 processor.run(new TypeormDatabase(), async (ctx) => {
-    // a decoded and normalized ctx.blocks data
-    // (just the logs in this example)
-    const logDataBatch = []
+  // Step 1: Collect and normalize all data from the batch
+  const logDataBatch = [];
 
-    for (const block of ctx.blocks) {
-      for (const log of c.logs) {
-        // transform and normalize the raw logs data
-        // based on the onchain data
-        logDataBatch.push(decodeAndTransformToMyData(log))
-      }
+  for (const block of ctx.blocks) {
+    for (const log of block.logs) {
+      // Transform and normalize raw log data
+      logDataBatch.push(decodeAndTransformToMyData(log));
     }
+  }
 
-    // the set of my target entity IDs to be updated/created
-    const myEntityIds = new Set()
-    for (const d of logDataBatch) {
-        // the business logic mapping 
-        // the on-chain data with the target
-        // entity ID
-        myEntityIds.add(extractEntityId(d))
+  // Step 2: Extract all entity IDs that need to be updated/created
+  const myEntityIds = new Set();
+  for (const d of logDataBatch) {
+    // Business logic mapping on-chain data to entity IDs
+    myEntityIds.add(extractEntityId(d));
+  }
+
+  // Step 3: Batch-load existing entities using IN operator
+  const myEntities: Map<string, MyEntity> = new Map(
+    (await ctx.store.findBy(MyEntity, { id: In([...myEntityIds]) })).map(
+      (entity) => [entity.id, entity]
+    )
+  );
+
+  // Step 4: Calculate updated state for all entities
+  for (const d of logDataBatch) {
+    const myEntity = myEntities.get(extractEntityId(d));
+    if (myEntity == null) {
+      // Create new entity instance
+      myEntities.set(extractEntityId(d), new MyEntity(d));
+    } else {
+      // Update existing entity
+      updateEntity(myEntity, d);
     }
+  }
 
-    // load the enities by the list of IDs and 
-    // put into an ID map
-    const myEntities: Map<string, MyEntity> = new Map(
-       // batch-load using IN operator
-      (await ctx.store.findBy(MyEntity, { id: In([...myEntityIds]) }))
-        // put the result into the ID map
-        .map((entity) => [entity.id, entity])
-    );
-
-    // calculate the updated state of the entities
-    for (const d of logDataBatch) {
-        const myEntity = myEntities.get(extractEntityId(d))
-        if (myEntity == null) {
-            // create a new instance with d and
-            // add to myEntities map
-        } else {
-            // update myEntity using d
-        }
-    }
-
-    // batch-update all entities in the map
-    await ctx.store.save([...myEntities.values()])
+  // Step 5: Batch-save all entities in a single transaction
+  await ctx.store.save([...myEntities.values()]);
 });
 ```
 
-For a full implementation of the above pattern, see [EVM squid example](https://github.com/subsquid-labs/evm-logs-example/tree/master/src) or [Substrate squid example](https://github.com/subsquid/squid-substrate-examples/tree/master/1-events).
+<Info>
+  For complete implementations of this pattern, see: - [EVM squid
+  example](https://github.com/subsquid-labs/evm-logs-example/tree/master/src) -
+  [Substrate squid
+  example](https://github.com/subsquid/squid-substrate-examples/tree/master/1-events)
+</Info>
 
-## Anti-patterns
+## Anti-patterns to Avoid
 
-Avoid loading or persisting single entities unless strictly necessary. For example, here is a possible antipattern for the [Gravatar example](https://github.com/subsquid/gravatar-squid):
+<Warning>
+  Avoid loading or persisting single entities unless absolutely necessary. This
+  dramatically reduces indexing performance.
+</Warning>
 
-```ts 
+### ❌ Anti-pattern: Individual Entity Saves
+
+Here's an example of what **not** to do from the [Gravatar example](https://github.com/subsquid/gravatar-squid):
+
+```typescript
+// ❌ ANTI-PATTERN: Individual saves per event
 processor.run(new TypeormDatabase(), async (ctx) => {
-  for (const c of ctx.blocks) {
-    for (const log of c.logs) {
-      // making sure that we process only the relevant logs
-      if (log.address !== GRAVATAR_CONTRACT ||
-          (log.topics[0] !== events.NewGravatar.topic &&
-           log.topics[0] !== events.UpdatedGravatar.topic)) continue
-      const { id, owner, displayName, imageUrl } = extractData(log)
-      // ANTIPATTERN!!!
-      // Doing an upsert per event drastically decreases the indexing speed
-      await ctx.store.save(Gravatar, new Gravatar({
-        id: id.toHexString(),
-        owner: decodeHex(owner),
-        displayName,
-        imageUrl
-      }))
+  for (const block of ctx.blocks) {
+    for (const log of block.logs) {
+      if (
+        log.address !== GRAVATAR_CONTRACT ||
+        (log.topics[0] !== events.NewGravatar.topic &&
+          log.topics[0] !== events.UpdatedGravatar.topic)
+      )
+        continue;
+
+      const { id, owner, displayName, imageUrl } = extractData(log);
+
+      // ❌ This creates a database transaction for each event!
+      await ctx.store.save(
+        Gravatar,
+        new Gravatar({
+          id: id.toHexString(),
+          owner: decodeHex(owner),
+          displayName,
+          imageUrl,
+        })
+      );
     }
   }
-})
+});
 ```
 
-Instead, use an in-memory cache, and batch upserts:
-```ts
+### ✅ Correct Pattern: Batch Processing
+
+Instead, use in-memory caching and batch operations:
+
+```typescript
+// ✅ CORRECT: Batch processing with in-memory cache
 processor.run(new TypeormDatabase(), async (ctx) => {
   const gravatars: Map<string, Gravatar> = new Map();
-  for (const c of ctx.blocks) {
-    for (const log of c.logs) {
-      if (log.address !== GRAVATAR_CONTRACT ||
-          (log.topics[0] !== events.NewGravatar.topic &&
-           log.topics[0] !== events.UpdatedGravatar.topic)) continue
-      const { id, owner, displayName, imageUrl } = extractData(log)
-      gravatars.set(id.toHexString(), new Gravatar({
-        id: id.toHexString(),
-        owner: decodeHex(owner),
-        displayName,
-        imageUrl
-      }))
+
+  for (const block of ctx.blocks) {
+    for (const log of block.logs) {
+      if (
+        log.address !== GRAVATAR_CONTRACT ||
+        (log.topics[0] !== events.NewGravatar.topic &&
+          log.topics[0] !== events.UpdatedGravatar.topic)
+      )
+        continue;
+
+      const { id, owner, displayName, imageUrl } = extractData(log);
+
+      // Store in memory for batch processing
+      gravatars.set(
+        id.toHexString(),
+        new Gravatar({
+          id: id.toHexString(),
+          owner: decodeHex(owner),
+          displayName,
+          imageUrl,
+        })
+      );
     }
   }
-  await ctx.store.save([...gravatars.values()])
-})
+
+  // Single database transaction for all entities
+  await ctx.store.save([...gravatars.values()]);
+});
 ```
 
-## Migrate from handlers
+## Migration from Handler-Based Processing
 
-Batch-based processing can be used as a drop-in replacement for the handler-based mappings employed by e.g. subgraphs. While the handler-based processing is significantly slower due to excessive database lookups and writes, it may be a good intermediary step while [migrating an existing subgraph to Squid SDK](/sdk/resources/migrate/migrate-subgraph/).
+Batch processing can serve as a drop-in replacement for handler-based mappings (like those used in subgraphs). While handler-based processing is significantly slower due to excessive database operations, it can be a useful intermediary step during [migration from subgraphs to Squid SDK](sdk/resources/migrate/migrate-subgraph/).
 
-One can simply re-use the existing handlers while looping over the `ctx` items:
+### Transitional Approach
 
-```ts
+You can reuse existing handlers while iterating over batch data:
+
+```typescript
 processor.run(new TypeormDatabase(), async (ctx) => {
-  for (const c of ctx.blocks) {
-    for (const log of c.logs) {
+  for (const block of ctx.blocks) {
+    // Process logs
+    for (const log of block.logs) {
       switch (log.topics[0]) {
         case abi.events.FooEvent.topic:
-          await handleFooEvent(ctx, log)
-          continue
+          await handleFooEvent(ctx, log);
+          continue;
         case abi.events.BarEvent.topic:
-          await handleFooEvent(ctx, log)
-          continue
+          await handleBarEvent(ctx, log);
+          continue;
         default:
-          continue
+          continue;
       }
     }
-    for (const txn of c.transactions) {
-      // 0x + 4 bytes
-      const sighash = txn.input.slice(0, 10)
+
+    // Process transactions
+    for (const txn of block.transactions) {
+      const sighash = txn.input.slice(0, 10); // 0x + 4 bytes
       switch (sighash) {
-        case '0xa9059cbb': // transfer(address,uint256) sighash
-          await handleTransferTx(ctx, txn)
-          continue
+        case "0xa9059cbb": // transfer(address,uint256) sighash
+          await handleTransferTx(ctx, txn);
+          continue;
         case abi.functions.approve.sighash:
-          await handleApproveTx(ctx, txn)
-          continue
+          await handleApproveTx(ctx, txn);
+          continue;
         default:
-          continue
+          continue;
       }
     }
   }
-})
+});
 ```
 
-## Block hooks
+<Tip>
+  This approach allows for gradual migration while maintaining existing logic.
+  However, for optimal performance, consider refactoring to true batch
+  processing patterns.
+</Tip>
 
-Similarly, one can implement pre- and post- block hooks:
+## Block Hooks
 
-```ts
+You can implement pre- and post-block hooks for additional processing logic:
+
+```typescript
 processor.run(new TypeormDatabase(), async (ctx) => {
-  for (const c of ctx.blocks) {
-    await preBlockHook(ctx, c)
-    for (const log of c.logs) {
-      // some logic
+  for (const block of ctx.blocks) {
+    await preBlockHook(ctx, block);
+
+    for (const log of block.logs) {
+      // Process logs
     }
-    for (const txn of c.transactions) {
-      // some more logic
+
+    for (const txn of block.transactions) {
+      // Process transactions
     }
-    await postBlockHook(ctx, c)
+
+    await postBlockHook(ctx, block);
   }
-})
+});
 ```
+
+<Note>
+  Block hooks are useful for implementing cross-block state management, caching,
+  or cleanup operations that need to run before or after processing each block.
+</Note>

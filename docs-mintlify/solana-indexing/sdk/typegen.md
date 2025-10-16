@@ -1,5 +1,4 @@
 ---
-sidebar_position: 80
 description: >-
   Typegen tool
 ---
@@ -20,9 +19,9 @@ Install it with
 npm install @subsquid/solana-typegen
 ```
 
-:::tip
+<Tip>
 Replace `npx squid-solana-typegen` with `npx @subsquid/solana-typegen` if you don't want to install the package.
-:::
+</Tip>
 
 The `squid-solana-typegen` tool generates TypeScript facades for Solana instructions and logs. It takes JSON IDLs as inputs. The IDLs  can be specified in three ways:
 
@@ -79,7 +78,7 @@ The generated utility modules have three intended uses:
            ins.d8 === whirlpool.instructions.swap.d8) {
 
          let decodedSwap = whirlpool.instructions.swap.decode(ins)
-         let { accounts, data } = decodedSwap
+         let \{ accounts, data \} = decodedSwap
        }
      }
    }

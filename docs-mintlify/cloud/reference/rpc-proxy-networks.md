@@ -1,5 +1,4 @@
 ---
-sidebar_position: 35
 title: RPC service networks
 description: Request a built-in RPC service
 ---

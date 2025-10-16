@@ -1,12 +1,11 @@
 ---
-sidebar_position: 40
 description: >-
   Subscribe to event data with addLog()
 ---
 
 # Logs
 
-#### `addLog(options)` {#add-log}
+#### `addLog(options)` \{#add-log\}
 
 Get event logs emitted by some _or all_ contracts in the network. `options` has the following structure:
 ```typescript

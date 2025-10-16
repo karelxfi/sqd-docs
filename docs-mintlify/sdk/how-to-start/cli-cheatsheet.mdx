@@ -1,5 +1,4 @@
 ---
-sidebar_position: 50
 title: sqd CLI cheatsheet
 description: Commonly used CLI commands
 ---
@@ -28,9 +27,9 @@ sqd clean             Delete all build artifacts
 
 ### Running the squid
 
-:::info
+<Info>
 Both `sqd up` and `sqd down` assume that the `docker compose` command is supported and the `docker` deamon is running. Modify the definitions in `commands.json` accordingly if `docker-compose` should be used instead.
-:::
+</Info>
 
 ```
 sqd up                  Start a local PG database
@@ -54,9 +53,9 @@ sqd migration:clean             clean the db/migrations folder
 
 Consult [TypeORM Model generation](/sdk/resources/tools/model-gen/) for TypeORM model generation details, and [Type-safe decoding](https://docs.subsquid.io/sdk/resources/tools/typegen/) for type generation.
 
-:::info
+<Info>
 Depending on the template, `sqd typegen` is aliased to a different typegen tool specific to the chain type and thus has different usage. Consult `sqd typegen --help` for details.
-:::
+</Info>
 
 ```
 sqd codegen        Generate TypeORM entities from schema.graphql

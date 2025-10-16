@@ -1,5 +1,4 @@
 ---
-sidebar_position: 23
 title: Unions and typed JSON
 description: Union and JSON types
 ---

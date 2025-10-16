@@ -5,9 +5,9 @@ sidebar_class_name: hidden
 `sqd explorer`
 ==========
 
-:::danger
+<Warning>
 `sqd explorer` is disabled in `@subsquid/cli>=3.0.0`. If you've been using it, please let us know in the [SquidDevs Telegram channel](https://t.me/HydraDevs).
-:::
+</Warning>
 
 Visual explorer of deployed squids
 
@@ -22,6 +22,6 @@ Right pane: details of the selected squid. Navigate by pressing the correspondin
 
 This command requires specifying an [organization](/cloud/resources/organizations) with the `-o/--org` flag when invoked by accounts with more than one organization. SQD Cloud users with just one organization can omit this flag.
 
-![Squid SDK](</img/sqd-explorer-snap.png>)
+\{/* [\1](\2)) */\}
 
 _See code: [src/commands/explorer.ts](https://github.com/subsquid/squid-cli/tree/master/src/commands/explorer.ts)_

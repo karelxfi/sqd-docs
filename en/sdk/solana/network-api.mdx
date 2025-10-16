@@ -1,6 +1,7 @@
 ---
 title: "Solana Network API"
 description: "Access Solana blockchain data through SQD Network API"
+
 ---
 
 # Solana Network API
@@ -107,11 +108,11 @@ const processor = new SolanaBatchProcessor()
 processor.run(db, async (ctx) => {
   try {
     // Process data
-  } catch (error) {
+  \} catch (error) \{
     if (error.code === 'RATE_LIMIT_EXCEEDED') {
       // Handle rate limiting
       await new Promise(resolve => setTimeout(resolve, 1000))
-    } else if (error.code === 'GATEWAY_TIMEOUT') {
+    \} else if (error.code === 'GATEWAY_TIMEOUT') \{
       // Handle gateway issues
       ctx.log.warn('Gateway timeout, retrying...')
     }
@@ -131,10 +132,10 @@ processor.run(db, async (ctx) => {
 ### Custom Logging
 ```typescript
 processor.run(db, async (ctx) => {
-  ctx.log.info(`Processing block ${ctx.blocks[0]?.header.slot}`)
+  ctx.log.info(`Processing block $\{ctx.blocks[0]?.header.slot\}`)
   
   for (let block of ctx.blocks) {
-    ctx.log.debug(`Block ${block.header.slot}: ${block.instructions.length} instructions`)
+ctx.log.debug(`Block $\{block.header.slot\}: "$\{block.instructions.length\} instructions`)"
   }
 })
 ```

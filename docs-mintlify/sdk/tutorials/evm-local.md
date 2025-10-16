@@ -2,7 +2,6 @@
 title: Use with Ganache or Hardhat
 description: >-
   Use SQD to index an Ethereum dev node
-sidebar_position: 30
 ---
 
 # Run squids with Ganache or Hardhat
@@ -35,7 +34,7 @@ npm i @subsquid/evm-processor@next @subsquid/typeorm-store@next
 
 Next, we set up a local EVM development environment. We consider two common options: [Hardhat](#hardhat) and [Ganache](#ganache).
 
-## If you chose Hardhat {#hardhat}
+## If you chose Hardhat \{#hardhat\}
 
 [Install the package](https://hardhat.org/hardhat-runner/docs/getting-started#installation).
 
@@ -111,7 +110,7 @@ Lock with 1 ETH and unlock timestamp 1704810454 deployed to 0x5FbDB2315678afecb3
 ```
 Take note of the contract address, **you'll need it later**.
 
-## If you chose Ganache {#ganache}
+## If you chose Ganache \{#ganache\}
 
 Install [Truffle](https://trufflesuite.com/docs/truffle/how-to/install/) and [Ganache](https://trufflesuite.com/docs/ganache/quickstart/#1-install-ganache) packages.
 
@@ -134,15 +133,15 @@ You should find the contract's ABI at `build/contracts/MetaCoin.json`. **It will
 
 Launch the Ganache tool and select the *New Workspace (Ethereum)* option.
 
-![Create workspace](</img/ganache-create-workspace.png>)
+\{/* [\1](\2)) */\}
 
 Next, provide a name for the workspace and link the Truffle project we just created to it. To do that, click **Add project** and select the `truffle-config.js` file in the project root folder. Finally, select the `Server` tab at the top.
 
-![Provide name](</img/ganache-create-workspace-1.png>)
+\{/* [\1](\2)) */\}
 
 In this window, change the server configuration to the exact values reported in this image.
 
-![Server configuration](</img/ganache-create-workspace-2.png>)
+\{/* [\1](\2)) */\}
 
 The [`AUTOMINE` option](https://trufflesuite.com/docs/ganache/reference/cli-options/#miner) is disabled to ease the debugging.
 
@@ -195,13 +194,13 @@ Take note of the contract address, **you'll need it later**.
 The indexing setup is ready to use. To test it, replace the contents of `src/processor.ts` with the following.
 
 ```ts
-import {TypeormDatabase} from '@subsquid/typeorm-store'
-import {EvmBatchProcessor} from '@subsquid/evm-processor'
+import \{TypeormDatabase\} from '@subsquid/typeorm-store'
+import \{EvmBatchProcessor\} from '@subsquid/evm-processor'
 
 const processor = new EvmBatchProcessor()
   .setRpcEndpoint('http://localhost:8545')
   .setFinalityConfirmation(5)
-  .addTransaction({})
+  .addTransaction(\{\})
   .setFields({
     transaction: {
       contractAddress: true

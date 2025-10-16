@@ -2,7 +2,6 @@
 title: "Step 3: External data"
 description: >-
   Retrieving data from state calls, IPFS and HTTP
-sidebar_position: 30
 ---
 
 # Step 3: Adding external data
@@ -31,7 +30,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
 +    let contract = new bayc.Contract(ctx, lastBatchBlockHeader, CONTRACT_ADDRESS)
 +    for (let t of tokens.values()) {
 +        const uri = await contract.tokenURI(t.tokenId)
-+        ctx.log.info(`Token ${t.id} has metadata at "${uri}"`)
++        ctx.log.info(`Token $\{t.id\} has metadata at "$\{uri\}"`)
 +    }
 
      await ctx.store.upsert([...owners.values()])
@@ -79,7 +78,7 @@ Note how it does not conform to the [ERC721 Metadata JSON Schema](https://eips.e
 
 Summary of our findings:
 - BAYC metadata URIs can point to HTTPS or IPFS -- we need to be able to retrieve both.
-- Metadata JSONs have two fields: `"image"`, a string, and `"attributes"`, an array of pairs `{"trait_type": string, "value": string}`.
+- Metadata JSONs have two fields: `"image"`, a string, and `"attributes"`, an array of pairs `\{"trait_type": string, "value": string\}`.
 
 Once finished, roll back the exploratory code:
 ```diff
@@ -91,7 +90,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
 -    let contract = new bayc.Contract(ctx, lastBatchBlockHeader, CONTRACT_ADDRESS)
 -    for (let t of tokens.values()) {
 -        const uri = await contract.tokenURI(t.tokenId)
--        ctx.log.info(`Token ${t.id} has metadata at "${uri}"`)
+-        ctx.log.info(`Token $\{t.id\} has metadata at "$\{uri\}"`)
 -    }
 ```
 
@@ -133,7 +132,7 @@ async function createTokens(
 
     let tokens: Map<string, PartialToken> = new Map()
     for (let t of rawTransfers) {
-        let tokenIdString = `${t.tokenId}`
+        let tokenIdString = `$\{t.tokenId\}`
         let ptoken: PartialToken = {
             id: tokenIdString,
             tokenId: t.tokenId,
@@ -177,7 +176,7 @@ async function completeTokens(
 
     for (let [id, ptoken] of partialTokens) {
         let uri = await contract.tokenURI(ptoken.tokenId)
-        ctx.log.info(`Retrieved metadata URI ${uri}`)
+        ctx.log.info(`Retrieved metadata URI $\{uri\}`)
         let metadata: TokenMetadata | undefined = await fetchTokenMetadata(ctx, uri)
         tokens.set(id, new Token({
             ...ptoken,
@@ -205,18 +204,18 @@ export async function fetchTokenMetadata(
         if (uri.startsWith('ipfs://')) {
             const gatewayURL = path.posix.join(IPFS_GATEWAY, ipfsRegExp.exec(uri)![1])
             let res = await client.get(gatewayURL)
-            ctx.log.info(`Successfully fetched metadata from ${gatewayURL}`)
+            ctx.log.info(`Successfully fetched metadata from $\{gatewayURL\}`)
             return res.data
-        } else if (uri.startsWith('http://') || uri.startsWith('https://')) {
+        \} else if (uri.startsWith('http://') || uri.startsWith('https://')) \{
             let res = await client.get(uri)
-            ctx.log.info(`Successfully fetched metadata from ${uri}`)
+            ctx.log.info(`Successfully fetched metadata from $\{uri\}`)
             return res.data
-        } else {
-            ctx.log.warn(`Unexpected metadata URL protocol: ${uri}`)
+        \} else \{
+            ctx.log.warn(`Unexpected metadata URL protocol: $\{uri\}`)
             return undefined
         }
-    } catch (e) {
-        throw new Error(`Failed to fetch metadata at ${uri}. Error: ${e}`)
+    \} catch (e) \{
+        throw new Error(`Failed to fetch metadata at $\{uri\}. Error: $\{e\}`)
     }
 }
 
@@ -229,13 +228,13 @@ npm i axios
 To avoid reinitializing the HTTPS client every time we call the function we bind it to a module-scope constant:
 ```typescript
 const client = axios.create({
-    headers: {'Content-Type': 'application/json'},
-    httpsAgent: new https.Agent({keepAlive: true}),
+    headers: \{'Content-Type': 'application/json'\},
+    httpsAgent: new https.Agent(\{keepAlive: true\}),
     transformResponse(res: string): TokenMetadata {
-        let data: {image: string; attributes: {trait_type: string; value: string}[]} = JSON.parse(res)
+        let data: \{image: string; attributes: \{trait_type: string; value: string\}[]\} = JSON.parse(res)
         return {
             image: data.image,
-            attributes: data.attributes.map((a) => new Attribute({traitType: a.trait_type, value: a.value})),
+            attributes: data.attributes.map((a) => new Attribute(\{traitType: a.trait_type, value: a.value\})),
         }
     },
 })
@@ -244,7 +243,7 @@ We move all the code related to metadata retrieval to a separate module `src/met
 
 Then all that is left is to import the relevant parts in `src/main.ts`:
 ```diff title="src/main.ts"
-+import {TokenMetadata, fetchTokenMetadata} from './metadata'
++import \{TokenMetadata, fetchTokenMetadata\} from './metadata'
 ```
 and we are done with the processor code for this part of the tutorial. Full squid code at this point is available at [this commit](https://github.com/subsquid-labs/bayc-squid-1/tree/ab5f094ae34e8822dfb912f6e6116df2cfa800b5).
 
@@ -265,4 +264,4 @@ It runs much slower than before, requiring about three hours to get through the 
 
 Nevertheless, the squid is already fully capable of scraping token metadata and serving it over GraphQL. Verify that by running `npx squid-graphql-server` and visiting the [local GraphiQL playground](http://localhost:4350/graphql). It is now possible to retrieve image URLs and attributes for each token:
 
-![BAYC GraphiQL at step three](./bayc-playground-step-three.png)
+\{/* [\1](\2) */\}

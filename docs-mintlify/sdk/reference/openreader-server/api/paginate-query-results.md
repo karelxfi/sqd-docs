@@ -1,5 +1,4 @@
 ---
-sidebar_position: 50
 title: Pagination
 description: >-
   Dealing with large query outputs
@@ -15,13 +14,13 @@ Cursors are used to traverse across entities of an entity set. They work by retu
 
 Currently, only forward pagination is supported. If your use case requires bidirectional pagination please let us know at our [Telegram channel](https://t.me/HydraDevs).
 
-In SQD GraphQL server, cursor based pagination is implemented with `{entityName}sConnection` queries available for every entity in the input schema. These queries require an explicitly supplied [`orderBy` argument](/sdk/reference/openreader-server/api/sorting), and *the field that is used for ordering must also be requested by the query itself*. Check out [this section](/sdk/reference/openreader-server/api/paginate-query-results/#important-note-on-orderby) for a valid query template.
+In SQD GraphQL server, cursor based pagination is implemented with `\{entityName\}sConnection` queries available for every entity in the input schema. These queries require an explicitly supplied [`orderBy` argument](/sdk/reference/openreader-server/api/sorting), and *the field that is used for ordering must also be requested by the query itself*. Check out [this section](/sdk/reference/openreader-server/api/paginate-query-results/#important-note-on-orderby) for a valid query template.
 
 Example: this query fetches a list of videos where `isExplicit` is true and gets their count.
 
 ```graphql
 query {
-  videosConnection(orderBy: id_ASC, where: { isExplicit_eq: true }) {
+  videosConnection(orderBy: id_ASC, where: \{ isExplicit_eq: true \}) \{
     totalCount
     edges {
       node {
@@ -54,7 +53,7 @@ query Query1 {
 
 ### **PageInfo object**
 
-`PageInfo` is a "virtual" entity that can be requested from any `{entityName}sConnection` query (see below). It returns the relevant cursors and some page information:
+`PageInfo` is a "virtual" entity that can be requested from any `\{entityName\}sConnection` query (see below). It returns the relevant cursors and some page information:
 
 ```graphql
 pageInfo {
@@ -130,7 +129,7 @@ Otherwise, the returned result wouldn't be ordered correctly.
 
 An interactive example of using cursor-based pagination can be found in [this repo](https://github.com/subsquid-labs/cursor-pagination-client-example).
 
-## Paginating with `{entityName}s` queries
+## Paginating with `\{entityName\}s` queries
 
 ### Arguments `limit` and `offset`
 

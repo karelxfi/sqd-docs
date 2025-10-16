@@ -2,14 +2,13 @@
 title: ApeWorx plugin
 description: >-
   Use SQD Network as a data source for ApeWorx
-sidebar_position: 40
 ---
 
 # ApeWorx SQD plugin
 
-:::info
+<Info>
 The `subsquid` ApeWorx plugin is currently in beta. Please report any bugs or suggestions to [Squid Devs](https://t.me/HydraDevs) or open an issue at the [GitHub repo](https://github.com/subsquid/ape-subsquid/) of the plugin.
-:::
+</Info>
 
 [ApeWorx](https://apeworx.io) is a modular Web3 development framework for Python programmers. Among other things, it is capable of [retrieving blockchain data in bulk](https://docs.apeworx.io/ape/stable/userguides/data.html). The data can come from various sources, including SQD Network.
 
@@ -54,7 +53,7 @@ to your data query methods. You can speed up the following calls:
    ```
    This query retrieves 1.6M events emitted over 100k block in about 17 minutes.
 
-:::warning
+<Warning>
 At the moment, all SQD Network datasets are updated only once every several thousands of blocks. The current dataset height can be retrieved with `get_network_height()`:
 ```python
 from ape_subsquid import get_network_height
@@ -77,11 +76,11 @@ To get the latest data, retrieve the tail with the default engine and append it 
 taildf = chain.blocks.query('*', start_block=subsquid_height+1)
 df = pd.concat([df, taildf], ignore_index=True, copy=False)
 ```
-:::
+</Warning>
 
-:::info
+<Info>
 When working with block ranges much longer than 1M blocks, the plugin may occasionally fail due to HTTP 503 errors rarely returned by the network. If you encounter this issue, split your block range into sub-1M blocks intervals and retrieve the data for each interval separately, retrying when the queries throw exceptions.
-:::
+</Info>
 
 ## Networks support
 

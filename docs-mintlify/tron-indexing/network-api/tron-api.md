@@ -1,14 +1,13 @@
 ---
-sidebar_position: 60
 title: Tron API
 description: Access Tron data
 ---
 
 # Tron SQD Network API
 
-:::warning
+<Warning>
 The Tron API of SQD Network is currently in beta. Breaking changes may be introduced in the future releases.
-:::
+</Warning>
 
 [Open private SQD Network](/subsquid-network/overview/#open-private-network) offers access to Tron data. The gateway is at
 ```
@@ -22,9 +21,9 @@ Suppose you want to retrieve an output of some [query](#worker-api) on a block r
 
 2. Save the value of `firstBlock` to some variable, say `currentBlock`.
 
-3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /${currentBlock}/worker`.
+3. Query the router for an URL of a worker that has the data for `currentBlock` with `GET /$\{currentBlock\}/worker`.
 
-4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `${currentBlock}`.
+4. Retrieve the data from the worker by [posting the query](#worker-api) (`POST /`), setting the `"fromBlock"` query field to `$\{currentBlock\}`.
 
 5. Parse the retrieved data to get a batch of query data **plus** the height of the last block available from the current worker. Take the `header.number` field of the last element of the retrieved JSON array - it is the height you want. Even if your query returns no data, you'll still get the block data for the last block in the range, so this procedure is safe.
 
@@ -67,7 +66,7 @@ Suppose we want data on [token burns](https://developers.tron.network/docs/faq#3
    -d '{
        "fromBlock":58000000,
        "toBlock":59286799,
-       "fields":{"transaction":{"hash":true}},
+       "fields":\{"transaction":\{"hash":true\}\},
        "transactions":[{
          "to":[
            "0x0000000000000000000000000000000000000000"
@@ -129,8 +128,8 @@ Suppose we want data on [token burns](https://developers.tron.network/docs/faq#3
    -d '{
        "fromBlock":16031420,
        "toBlock":18593441,
-       "fields":{"transaction":{"hash":true}},
-       "transactions":[{"to":["0xd8da6bf26964af9d7eed9e03e53415d37aa96045"]}]
+       "fields":\{"transaction":\{"hash":true\}\},
+       "transactions":[\{"to":["0xd8da6bf26964af9d7eed9e03e53415d37aa96045"]\}]
    }' | jq
    ```
    Output is similar to that of step 3.
@@ -158,12 +157,12 @@ def dump(
     assert 0 <= first_block <= last_block
     query = dict(query)  # copy query to mess with it later
 
-    dataset_height = int(get_text(f'{dataset_url}/height'))
+    dataset_height = int(get_text(f'\{dataset_url\}/height'))
     next_block = first_block
     last_block = min(last_block, dataset_height)
 
     while next_block <= last_block:
-        worker_url = get_text(f'{dataset_url}/{next_block}/worker')
+        worker_url = get_text(f'\{dataset_url\}/\{next_block\}/worker')
 
         query['fromBlock'] = next_block
         query['toBlock'] = last_block
@@ -194,7 +193,7 @@ Full code [here](https://gist.github.com/eldargab/2e007a293ac9f82031d023f1af581a
 
 <summary><code>GET</code> <code><b>$&#123;firstBlock&#125;/worker</b></code> <code>(get a suitable worker URL)</code></summary>
 
-The returned worker will be capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `${firstBlock}`.
+The returned worker will be capable of processing `POST /` requests in which the `"fromBlock"` field is equal to `$\{firstBlock\}`.
 
 **Example response:** `https://rb06.sqd-archive.net/worker/query/czM6Ly90cm9uLW1haW5uZXQ`.
 
@@ -392,13 +391,13 @@ The returned worker will be capable of processing `POST /` requests in which the
 
 ## Data requests
 
-:::warning
+<Warning>
 Addresses in all data requests must be in hex without `0x` and in lowercase. Example:
 ```
 a614f803b6fd780986a42c78ec9c7f77e6ded13c
 ```
 All addresses in the responses will be in this format, too.
-:::
+</Warning>
 
 ### Logs
 
@@ -424,7 +423,7 @@ With `transaction: true` all parent transactions will be included into the respo
 
 ### Transactions
 
-#### General {#general-transactions}
+#### General \{#general-transactions\}
 
 ```ts
 {
@@ -442,7 +441,7 @@ A transaction will be included in the response if it matches all the requests (j
 
 With `logs: true` all logs emitted by the transactions will be included into the response. With `internalTransactions: true` all the internal transactions induced by the selected transactions will be included into the response.
 
-#### "transfer" {#transfer-transactions}
+#### "transfer" \{#transfer-transactions\}
 
 ```ts
 {
@@ -462,7 +461,7 @@ A transaction will be included in the response if it matches all the requests. A
 
 With `logs: true` all logs emitted by the transactions will be included into the response. With `internalTransactions: true` all the internal transactions induced by the selected transactions will be included into the response.
 
-#### "transfer asset" {#transfer-asset-transactions}
+#### "transfer asset" \{#transfer-asset-transactions\}
 
 ```ts
 {
@@ -484,7 +483,7 @@ A transaction will be included in the response if it matches all the requests. A
 
 With `logs: true` all logs emitted by the transactions will be included into the response. With `internalTransactions: true` all the internal transactions induced by the selected transactions will be included into the response.
 
-#### "trigger smart contract" {#trigger-smart-contract-transactions}
+#### "trigger smart contract" \{#trigger-smart-contract-transactions\}
 
 ```ts
 {
@@ -504,7 +503,7 @@ A transaction will be included in the response if it matches all the requests. A
 
 With `logs: true` all logs emitted by the transactions will be included into the response. With `internalTransactions: true` all the internal transactions induced by the selected transactions will be included into the response.
 
-### Internal transactions {#internal-transactions}
+### Internal transactions \{#internal-transactions\}
 
 ```ts
 {
@@ -552,7 +551,7 @@ The `transaction` field selector is common for [all transaction types](#transact
   witness_signature
 }
 ```
-A valid field selector for blocks is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"hash": true, "timestamp": true}`.
+A valid field selector for blocks is a JSON that has a subset of these fields as keys and `true` as values, e.g. `\{"hash": true, "timestamp": true\}`.
 
 ### Log fields
 
@@ -565,7 +564,7 @@ A valid field selector for blocks is a JSON that has a subset of these fields as
   topics
 }
 ```
-A valid field selector for logs is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"address": true, "transactionHash": true}`.
+A valid field selector for logs is a JSON that has a subset of these fields as keys and `true` as values, e.g. `\{"address": true, "transactionHash": true\}`.
 
 ### Transaction fields
 
@@ -601,7 +600,7 @@ A valid field selector for logs is a JSON that has a subset of these fields as k
   energyPenaltyTotal
 }
 ```
-A valid field selector for transactions is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"hash": true, "type": true, "contractResult": true}`.
+A valid field selector for transactions is a JSON that has a subset of these fields as keys and `true` as values, e.g. `\{"hash": true, "type": true, "contractResult": true\}`.
 
 ## Internal transaction fields
 
@@ -617,4 +616,4 @@ A valid field selector for transactions is a JSON that has a subset of these fie
   extra
 }
 ```
-A valid field selector for internal transactions is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"hash": true, "callerAddress": true, "callValueInfo": true}`.
+A valid field selector for internal transactions is a JSON that has a subset of these fields as keys and `true` as values, e.g. `\{"hash": true, "callerAddress": true, "callValueInfo": true\}`.

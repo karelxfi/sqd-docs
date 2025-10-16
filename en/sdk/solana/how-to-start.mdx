@@ -1,120 +1,60 @@
 ---
 title: "Solana Getting Started"
-description: "Build your first Solana indexer with Squid SDK"
+description: "Learn how to build Solana blockchain indexers with Squid SDK"
 ---
 
 # Solana Getting Started
 
-Learn how to build Solana indexers using Squid SDK. Index transactions, instructions, and account changes on the Solana blockchain.
+Get started building Solana blockchain indexers with Squid SDK. This section provides tutorials and guides to help you index Solana programs, transactions, and accounts.
 
-## Prerequisites
-
-- Node.js v18+
-- Basic understanding of Solana blockchain
-- Familiarity with TypeScript
-
-## Quick Start
-
-<Steps>
-  <Step title="Install Squid CLI">
-    ```bash
-    npm i -g @subsquid/cli
-    ```
-  </Step>
-  
-  <Step title="Create Solana Project">
-    ```bash
-    sqd init solana-indexer -t solana
-    cd solana-indexer
-    ```
-  </Step>
-  
-  <Step title="Install Dependencies">
-    ```bash
-    npm install
-    ```
-  </Step>
-  
-  <Step title="Configure Processor">
-    Edit `src/main.ts` to configure your Solana data sources and processing logic.
-  </Step>
-</Steps>
-
-## Basic Solana Processor
-
-```typescript
-import { SolanaBatchProcessor } from '@subsquid/solana-processor'
-import { TypeormDatabase } from '@subsquid/typeorm-store'
-
-const processor = new SolanaBatchProcessor()
-  .setGateway('https://v2.archive.subsquid.io/network/solana-mainnet')
-  .setRpcEndpoint('https://api.mainnet-beta.solana.com')
-  .addInstruction({
-    programId: ['11111111111111111111111111111112'], // System Program
-    isCommitted: true,
-  })
-  .setFields({
-    instruction: {
-      programId: true,
-      accounts: true,
-      data: true,
-    },
-    transaction: {
-      signatures: true,
-    },
-    block: {
-      timestamp: true,
-    },
-  })
-
-const db = new TypeormDatabase()
-
-processor.run(db, async (ctx) => {
-  for (let block of ctx.blocks) {
-    for (let instruction of block.instructions) {
-      // Process Solana instructions
-      console.log(`Instruction: ${instruction.programId}`)
-    }
-  }
-})
-```
-
-## Key Concepts
-
-### **Instructions vs Transactions**
-- **Instructions**: Individual operations within a transaction
-- **Transactions**: Atomic units containing one or more instructions
-- **Programs**: Smart contracts on Solana
-
-### **Account Model**
-- Everything is an account on Solana
-- Accounts can store data or executable code
-- Track account changes and ownership transfers
-
-### **Data Sources**
-- **SQD Network**: Pre-filtered Solana data for fast sync
-- **RPC Endpoints**: Direct access to Solana nodes
-- **Real-time Data**: Process latest transactions as they happen
-
-## Common Use Cases
+## What you'll learn
 
 <CardGroup cols={2}>
-  <Card title="Token Transfers" href="/en/sdk/solana/examples/token-transfers">
-    Index SPL token transfers and balances
+  <Card title="Quickstart" icon="rocket" href="/en/sdk/solana/quickstart">
+    Build your first Solana indexer in 5 minutes
   </Card>
-  <Card title="NFT Activity" href="/en/sdk/solana/examples/nft-activity">
-    Track NFT mints, transfers, and sales
-  </Card>
-  <Card title="DeFi Protocols" href="/en/sdk/solana/examples/defi">
-    Index DEX swaps and liquidity changes
-  </Card>
-  <Card title="Program Interactions" href="/en/sdk/solana/examples/programs">
-    Monitor specific program interactions
+  <Card
+    title="Indexing Orca"
+    icon="book"
+    href="/en/sdk/solana/how-to-start/indexing-orca"
+  >
+    Learn how to index Orca DEX data
   </Card>
 </CardGroup>
 
+## Key Resources
+
+<CardGroup cols={2}>
+  <Card
+    title="CLI Cheatsheet"
+    icon="terminal"
+    href="/en/sdk/solana/how-to-start/cli-cheatsheet"
+  >
+    Quick reference for common commands
+  </Card>
+  <Card title="Solana API Reference" icon="code" href="/en/sdk/solana/sdk">
+    Complete Solana batch processor API
+  </Card>
+</CardGroup>
+
+## Overview
+
+Squid SDK provides powerful tools for indexing Solana blockchain data:
+
+- **SolanaBatchProcessor**: High-performance batch processing of Solana data
+- **Instruction decoding**: Decode program instructions with generated TypeScript code
+- **Transaction indexing**: Index transactions, logs, and account state changes
+- **Real-time sync**: Near real-time data ingestion with sub-second latency
+
 ## Next Steps
 
-- Explore [Solana SDK Reference](/en/sdk/solana/sdk)
-- Learn about [Solana Network API](/en/sdk/solana/network-api)
-- Check out [Solana Examples](https://github.com/subsquid-labs/solana-examples)
+1. **Start with the quickstart** - Build a simple Solana indexer to understand the basics
+2. **Explore tutorials** - Learn how to index specific Solana programs
+3. **Reference documentation** - Deep dive into the Solana batch processor API
+4. **Deploy to cloud** - Scale your indexer with SQD Cloud
+
+<Tip>
+  Already familiar with Solana development? Jump straight to the [Solana
+  Reference](/en/sdk/solana/sdk/solana-batch/general) to see all available
+  methods and data types.
+</Tip>
