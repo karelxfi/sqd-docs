@@ -1,76 +1,93 @@
 ---
-title: Overview
-description: Flavors of SQD Network
-
+title: "Network Overview"
+description: "Access blockchain data through decentralized infrastructure and private data lake"
 ---
 
-# Overview
+SQD Network is a distributed query engine and data lake that powers the SQD ecosystem. It serves historical blockchain data for 2000+ networks, enabling you to access data at near-zero cost with granular filtering and efficient batch processing.
 
-SQD Network is a distributed query engine and data lake that the SQD ecosystem is built around.
+<Info>
+  SQD Network provides superior data access compared to conventional chain node
+  RPCs through its rich streaming and filtering capabilities, allowing you to
+  query multiple blocks simultaneously.
+</Info>
 
-Currently it serves historical blockchain data for 190+ networks. Compared to data access using a conventional chain node RPC, SQD Network allows one to access data at near zero cost, in a more granular fashion and from multiple blocks at once, thanks to its rich streaming and filtering capabilities.
+## Network Variants
 
-There are currently two independent instances of SQD Network:
+SQD Network operates in two independent configurations:
 
-1. A decentralized permissionless network.
+1. **Decentralized permissionless network** - A fully decentralized network where anyone can participate
+2. **Private network** - A permissioned network operated by Subsquid Labs GmbH, trusted by 400+ production indexers. See the [list of supported networks](subsquid-network/reference/networks)
 
-2. A permissioned network ran by Subsquid Labs GmbH. It's been used by 400+ indexers in production. [List of supported networks](subsquid-network/reference/networks).
+Both variants are freely accessible and use the same [API](subsquid-network/reference).
 
-Both variants are freely accessible to public using the same [API](subsquid-network/reference).
+<Tip>
+  Network developers: Want to see your chain supported by SQD? Fill out our
+  [integration form](https://forms.gle/ioVNFiPjZgvUNunY9) or contact us in the
+  [SquidDevs Telegram chat](https://t.me/HydraDevs).
+</Tip>
 
-If you are a network developer and would like to see your chain supported by SQD, please fill a [form](https://forms.gle/ioVNFiPjZgvUNunY9) or contact us in [SquidDevs Telegram chat](https://t.me/HydraDevs).
+## Permissionless Public Network
 
-## Permissionless public network
+The decentralized version of SQD Network is now in mainnet. It serves data for almost [all networks](subsquid-network/reference/networks) supported by the [private cluster](#open-private-network), with the temporary exception of Solana.
 
-The decentralized version of SQD Network is now in the mainnet phase. It serves data for almost [all networks](subsquid-network/reference/networks) supported by the [private cluster](#open-private-network), with the (temporary) exception of Solana.
+The latest data access node—SQD Portal—fetches data chunks from multiple worker nodes in parallel and exposes a streaming API. It is currently in closed beta.
 
-The most recent version of the data access node, SQD portal, fetches data chunks from multiple worker nodes in parallel and exposes a streaming API. It is now in a closed beta.
+### How to Participate
 
-You can participate in the public network by [running a worker](subsquid-network/participate/worker) or reward good workers by [delegating SQD tokens](subsquid-network/participate/delegate) and sharing in profits.
+You can participate in the public network in two ways:
 
-## Open private network
+- **[Run a worker node](subsquid-network/participate/worker)** - Contribute storage and compute resources to the network and earn SQD tokens
+- **[Delegate SQD tokens](subsquid-network/participate/delegate)** - Reward high-performing workers and share in their profits
 
-SQD's private data lake (formerly known as Archives) is a production-ready fork of early SQD Network that runs on SQD infrastructure. It provides a stand-in for the permissionless SQD Network until it matures; its [API](subsquid-network/reference) shares many similarities with the SQD portal API.
+## Open Private Network
 
-The gateway of this private network is public and free to query. URLs of gateways of supported networks are available via [`sqd gateways list`](squid-cli/gateways) and from the exhaustive [public gateways list](subsquid-network/reference/networks).
+SQD's private data lake (formerly known as Archives) is a production-ready fork of early SQD Network running on SQD infrastructure. It provides reliable data access while the permissionless network matures. Its [API](subsquid-network/reference) shares many similarities with the SQD Portal API.
+
+<Info>
+  The gateway of this private network is public and free to query. Access
+  gateway URLs via [`sqd gateways list`](squid-cli/gateways) or browse the
+  [complete gateways list](subsquid-network/reference/networks).
+</Info>
+
+### Using Gateways in Your Indexer
 
 <Tabs>
 <Tab title="EVM">
 
-List all supported networks:
+List all supported EVM networks:
 
 ```bash
 sqd gateways list -t evm
 ```
 
-Usage in [squids'](sdk) [`EvmBatchProcessor` configuration](sdk/reference/processors/evm-batch/general/#set-gateway):
+Configure your [squid's](sdk) [`EvmBatchProcessor`](sdk/reference/processors/evm-batch/general/#set-gateway):
 
-```typescript
+```typescript processor.ts
 const processor = new EvmBatchProcessor().setGateway(
   "https://v2.archive.subsquid.io/network/ethereum-mainnet"
 );
 ```
 
-See [EVM gateways](subsquid-network/reference/networks/#evm--ethereum-compatible).
+Browse [EVM gateways](subsquid-network/reference/networks/#evm--ethereum-compatible).
 
 </Tab>
 <Tab title="Substrate">
 
-List all supported networks:
+List all supported Substrate networks:
 
 ```bash
 sqd gateways list -t substrate
 ```
 
-Usage in [squids'](sdk) [`SubstrateBatchProcessor` configuration](sdk/reference/processors/substrate-batch/general):
+Configure your [squid's](sdk) [`SubstrateBatchProcessor`](sdk/reference/processors/substrate-batch/general):
 
-```typescript
+```typescript processor.ts
 const processor = new SubstrateBatchProcessor().setGateway(
   "https://v2.archive.subsquid.io/network/phala"
 );
 ```
 
-See [Substrate gateways](subsquid-network/reference/networks/#substrate-based).
+Browse [Substrate gateways](subsquid-network/reference/networks/#substrate-based).
 
 </Tab>
 </Tabs>

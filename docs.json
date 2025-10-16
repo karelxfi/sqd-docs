@@ -532,19 +532,17 @@
                 "group": "SQD Network",
                 "pages": [
                   "en/network/overview",
-                  "en/network/whitepaper",
                   "en/network/faq",
-                  "en/network/tokenomics"
+                  "en/network/tokenomics",
+                  "en/network/whitepaper"
                 ]
               },
               {
                 "group": "Participate",
                 "pages": [
-                  "en/network/participate/portal",
                   "en/network/participate/procuring-sqd",
                   "en/network/participate/delegate",
-                  "en/network/participate/worker",
-                  "en/network/participate/gateway"
+                  "en/network/participate/worker"
                 ]
               }
             ]

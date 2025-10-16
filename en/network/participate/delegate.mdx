@@ -1,50 +1,131 @@
 ---
-title: Delegate
-description: Delegate your tokens to workers
-
+title: "Delegate"
+description: "Delegate your SQD tokens to worker nodes and earn rewards"
 ---
 
-# Delegate
-
 <Info>
-  By delegating you're committing your tokens for a period of 50000 Ethereum
-  blocks (a bit less than seven days) + the time until the end of the current
-  [epoch](subsquid-network/faq/#epoch) (20 minutes or less). Withdrawal will not
-  be possible during that time.
+  By delegating, you commit your tokens for approximately 7 days (50,000
+  Ethereum blocks) plus the time until the end of the current
+  [epoch](subsquid-network/faq/#epoch) (20 minutes or less). Withdrawal is not
+  possible during this period.
 </Info>
 
-The easiest way to participate in SQD Network is to delegate your `SQD` tokens to one of the workers. Here's how to do it.
+The easiest way to participate in SQD Network is to delegate your `SQD` tokens to worker nodes. This guide shows you how to delegate and maximize your rewards.
 
-1. Go to [network.subsquid.io](https://network.subsquid.io).
+## How to Delegate
 
-2. Go to the "Dashboard" tab if you aren't there already. You should see something like this:
+<Steps>
+<Step title="Connect to the SQD Network app" icon="link">
 
-3. Pick a worker and press the "Delegate" button. You should see a form like this:
+Go to [network.subsquid.io](https://network.subsquid.io) and connect your wallet.
 
-   Enter the amount of `SQD`s you'd like to delegate and press the button.
+<Check>
+  You're connected when your wallet address appears in the interface.
+</Check>
 
-4. Confirm the transaction in your wallet and wait for it to go through.
+</Step>
 
-5. Go to the "Delegate" tab to view your delegations. Note that the "Undelegate" button is inactive - you cannot undelegate until the current [epoch](subsquid-network/faq/#epoch) ends.
+<Step title="Choose a worker" icon="magnifying-glass">
 
-## Undelegating
+Navigate to the "Dashboard" tab to view all available workers.
 
-1. Wait for your delegation lockup period to expire if you haven't already. The period is 50000 Ethereum block, starting at the first block following the end of the [epoch](subsquid-network/faq/#epoch) when you delegated the tokens. So, roughly **7 days**.
+Review worker performance metrics:
 
-2. Go to [network.subsquid.io](https://network.subsquid.io).
+- **Uptime percentage** - Higher is better
+- **Delegation capacity** - More capacity means more room for your delegation
+- **APR** - Expected annual percentage return
 
-3. Go to the "Delegate" tab. You should see your delegation there.
+<Tip>
+  Look for workers with high uptime and available delegation capacity for
+  optimal rewards.
+</Tip>
 
-4. Click the "Undelegate" button. You should see a form like this one:
+</Step>
 
-   <Info>
-     An inactive "Undelegate" button likely indicates the delegation lockup
-     period still haven't passed.
-   </Info>
+<Step title="Delegate your tokens" icon="coins">
 
-5. Enter the `SQD` amount you want to withdraw, click the large new "Undelegate" button and confirm the transaction.
+1. Click the "Delegate" button next to your chosen worker
+2. Enter the amount of `SQD` tokens you want to delegate
+3. Click "Confirm" to proceed
 
-## Maximizing the rewards
+<Check>The form will show you the expected lock period and rewards.</Check>
 
-- You'll get most rewards if you delegate to high quality but obscure workers. Look for workers with high uptime percentage and a lot of free delegation capacity.
-- Currently, both the worker and its delegators are rewarded the most when the total delegated `SQD` count is around `30_000`. Anything more or less means less rewards.
+</Step>
+
+<Step title="Confirm the transaction" icon="check">
+
+Confirm the transaction in your wallet and wait for it to complete on-chain.
+
+<Check>
+  Transaction confirmed! Your delegation is now active and earning rewards.
+</Check>
+
+</Step>
+
+<Step title="Monitor your delegation" icon="chart-line">
+
+Go to the "Delegate" tab to view your active delegations.
+
+<Note>
+  The "Undelegate" button will be inactive until the current
+  [epoch](subsquid-network/faq/#epoch) ends.
+</Note>
+
+</Step>
+</Steps>
+
+## Undelegating Your Tokens
+
+<Steps>
+<Step title="Wait for the lockup period" icon="clock">
+
+Wait for your delegation lockup period to expire. The period is approximately **7 days** (50,000 Ethereum blocks), starting at the first block following the end of the [epoch](subsquid-network/faq/#epoch) when you delegated.
+
+<Warning>
+  You cannot undelegate your tokens until the lockup period has passed.
+</Warning>
+
+</Step>
+
+<Step title="Access your delegations" icon="wallet">
+
+1. Go to [network.subsquid.io](https://network.subsquid.io)
+2. Navigate to the "Delegate" tab
+3. You should see all your active delegations
+
+<Info>
+  An inactive "Undelegate" button indicates the delegation lockup period has not
+  yet passed.
+</Info>
+
+</Step>
+
+<Step title="Initiate undelegation" icon="arrow-up-from-bracket">
+
+1. Click the "Undelegate" button next to your delegation
+2. Enter the `SQD` amount you want to withdraw
+3. Click "Confirm" and approve the transaction in your wallet
+
+<Check>
+  Your tokens will be returned to your wallet once the transaction completes.
+</Check>
+
+</Step>
+</Steps>
+
+## Maximizing Your Rewards
+
+<Tip>
+  Choose high-quality but less popular workers for optimal rewards. Look for
+  workers with: - **High uptime percentage** (90%+) - **Available delegation
+  capacity** - **Consistent performance history**
+</Tip>
+
+### Optimal Delegation Amount
+
+Both workers and their delegators earn the most rewards when the total delegated `SQD` count is around **30,000 tokens**. Delegating significantly more or less than this optimal amount may result in lower rewards.
+
+<Note>
+  The optimal delegation amount may change based on network parameters. Monitor
+  your delegation performance regularly.
+</Note>

@@ -1,136 +1,212 @@
 ---
-title: Self-host a portal
-description: Operate a client node
-
+title: "Self-Host a Portal"
+description: "Run your own SQD Portal to access decentralized network data without relying on centralized services"
 ---
 
-# Self-host a portal
-
 <Info>
-  SQD Network portals are currently in closed beta. Please report any bugs or
-  suggestions to the SQD Portal chat or to [Squid Devs](https://t.me/HydraDevs).
+  SQD Network portals are currently in closed beta. Report bugs or suggestions
+  in the SQD Portal chat or to [Squid Devs](https://t.me/HydraDevs).
 </Info>
 
 <Warning>
-  If you want to use your private portal to index Solana, please read the [Using
-  your Portal - On Solana](#on-solana) section before committing.
+  If you plan to use your portal to index Solana, read the [Using your Portal -
+  On Solana](#on-solana) section before committing tokens.
 </Warning>
 
-Running a portal enables you to access the [permissionless SQD Network](subsquid-network/overview) data without relying on any centralized services. You can run a private portal for your own needs, or make a high-throughput public portal.
+Running your own portal enables you to access the [permissionless SQD Network](subsquid-network/overview) data without relying on centralized services. You can operate a private portal for personal use or deploy a high-throughput public portal.
 
-In either scenario you will need
+## Prerequisites
 
-- A working Docker installation
-- 10000 or more `SQD` tokens
-  - You won't have to spend the tokens, but you will need to keep them locked while you're using your portal. The more tokens you lock, the more bandwidth you get.
-  - For the minimum amount of 10000 `SQD` you'll get enough bandwidth to run a few squids. If you expect heavier workloads, read the [Token requirements and compute units](#staking-requirements-and-compute-units) section to estimate the required sum.
-  - The tokens can be in your wallet or in an SQD-issued vesting contract.
-- Some Arbitrum ETH (for gas)
+Before you begin, ensure you have:
 
-Portal hardware requirements:
+### Software Requirements
 
-- at least 25Gb of unused RAM (we're working to reduce this)
+- Working Docker installation
 
-The rest of the hardware requirements depend on how the portal will be used. A private portal with a single user can run on a laptop, provided that it has enough RAM.
+### Financial Requirements
 
-## Setting up a portal
+- **Minimum 10,000 `SQD` tokens**
+  - Tokens remain locked while your portal is active
+  - More tokens = more bandwidth
+  - Tokens can be in your wallet or SQD-issued vesting contract
+- **Arbitrum ETH** for gas fees
 
-#### Step 1: Lock some SQD
+<Info>
+  For the minimum 10,000 `SQD`, you'll get enough bandwidth to run a few squids.
+  For heavier workloads, see [Token requirements and compute
+  units](#token-requirements-and-compute-units) to estimate requirements.
+</Info>
 
-- Go to [network.subsquid.io](https://network.subsquid.io) and connect your wallet (we recommend Metamask). Use the wallet that holds the tokens or is the beneficiary of your vesting contract.
-- Go to the [portals page](https://network.subsquid.io/portals) and press the "Lock" button.
-- Specify the amount of `SQD` you want to lock and the duration of the lockup.
-- Press "Confirm" then confirm the transaction in your wallet.
+### Hardware Requirements
 
-The page should update to display the amount of `SQD` you locked and the duration of the lockup:
+- **Minimum 25GB unused RAM** (we're working to reduce this requirement)
+- Additional hardware depends on your use case:
+  - Private single-user portals can run on a laptop with sufficient RAM
+  - Public or high-throughput portals require more robust infrastructure
 
-Now you have some locked tokens associated with your wallet and are ready to set up the portal itself.
+<Note>Hardware requirements scale with your expected usage patterns.</Note>
+
+## Portal Setup
+
+<Steps>
+<Step title="Lock SQD tokens" icon="lock">
+
+1. Go to [network.subsquid.io](https://network.subsquid.io) and connect your wallet
+
+   - Use MetaMask (recommended) or another supported wallet
+   - Ensure your wallet holds the tokens or is the beneficiary of your vesting contract
+
+2. Navigate to the [portals page](https://network.subsquid.io/portals) and click "Lock"
+
+3. Specify:
+
+   - Amount of `SQD` to lock
+   - Duration of the lockup period
+
+4. Click "Confirm" and approve the transaction in your wallet
+
+<Check>
+  The page will update to show your locked `SQD` amount and lockup duration.
+</Check>
+
+### Enable Auto-Extension (Optional)
 
 <Tip>
-By default, your portal will go down at the end of the lock period. To prevent that, click the "Auto Extension" switch and confirm the transaction after locking. This will cause your `SQD` to be immediately relocked once the locking period ends. In this setup you have to unlock then wait for the end of the current locking period to withdraw your tokens.
-
+  By default, your portal stops working when the lock period ends. Enable
+  auto-extension to keep your portal running continuously.
 </Tip>
 
-#### Step 2: Generate a peer ID
+Click the "Auto Extension" switch and confirm the transaction. This automatically relocks your `SQD` when the current period ends.
 
-SQD Network is a decentralized peer-to-peer system. Portals are a type of peers participating in it. Like all peers, your portal requires a private key and a public unique identifier: the _peer ID_. Generate one of these with
+<Warning>
+  With auto-extension enabled, you must unlock first, then wait for the current
+  period to end before withdrawing tokens.
+</Warning>
 
-````bash
+</Step>
+
+<Step title="Generate a peer ID" icon="id-card">
+
+SQD Network operates as a decentralized peer-to-peer system. Your portal needs a private key and public peer ID to participate.
+
+Generate your peer ID:
+
+```bash
 docker run --rm subsquid/rpc-node:0.2.5 keygen > <KEY_FILE_PATH>
 ```
 
-The key will be written to the binary file at `<KEY_FILE_PATH>`. You will see your peer ID in the output:
+The command creates a key file at `<KEY_FILE_PATH>` and outputs:
 
-````
-
+```
 Your peer ID: THIS IS WHAT YOU NEED TO COPY
+```
 
-````
+**Copy your peer ID**—you'll need it for registration.
 
-Please copy your peer ID.
+<Warning>
+  Protect your key file! Ensure it won't be deleted accidentally and cannot be
+  accessed by unauthorized parties. See [consequences of losing your
+  key](#what-are-the-consequences-of-losing-my-key-file--getting-it-stolen).
+</Warning>
 
-⚠️ **Note:** Please make sure that the generated file is safe and secure at `<KEY_FILE_PATH>` (i.e. it will not be deleted accidentally and cannot be accessed by unauthorized parties). [Or else](#what-are-the-consequences-of-losing-my-key-file--getting-it-stolen).
+</Step>
 
-#### Step 3: Register your portal
+<Step title="Register your portal" icon="pen-to-square">
 
-- Go to the [portals page](https://network.subsquid.io/portals) and click the "Add portal" button.
+1. Go to the [portals page](https://network.subsquid.io/portals)
+2. Click the "Add portal" button
+3. Fill the portal registration form:
 
-- Fill the portal registration form.
+   - Enter your peer ID from the previous step
+   - If making your portal public, enable "Publicly available" and complete additional fields
 
-  If you plan to make your portal public, click the "Publicly available" switch and populate the additional fields.
+4. Click "Confirm" and approve the transaction in your wallet
 
-  Once done, click "Confirm" and confirm the transaction in your wallet.
+<Check>Your portal is now registered on-chain.</Check>
 
-#### Step 4: Run your portal
+</Step>
 
-- Clone the portal repo and enter the folder.
-  ```bash
-  git clone https://github.com/subsquid/sqd-portal
-  cd sqd-portal
-````
+<Step title="Run your portal" icon="rocket">
 
-- Prepare the environment. Begin with
+### Clone the Repository
 
-  ```bash
-  cp mainnet.env .env
-  ```
+```bash
+git clone https://github.com/subsquid/sqd-portal
+cd sqd-portal
+```
 
-  then set the path to your key file:
+### Configure Environment
 
-  ```bash
-  echo KEY_PATH=<KEY_FILE_PATH> >> .env
-  ```
+Copy the mainnet configuration:
 
-  ⚠️ **Warning:** Be careful when supplying the path to the key you created at step 4. If you make a mistake here, a new random key will be automatically created there and your node will attempt to operate with a new (unregistered) peer ID - unsuccessfully.
+```bash
+cp mainnet.env .env
+```
 
-- Run your portal. You can either utilize a pre-built Docker image:
+Set your key file path:
 
-  ```bash
-  docker compose up -d
-  ```
+```bash
+echo KEY_PATH=<KEY_FILE_PATH> >> .env
+```
 
-  or build it from source:
+<Warning>
+  Double-check the key path! An incorrect path will cause the system to generate
+  a new random key, resulting in your portal attempting to operate with an
+  unregistered peer ID.
+</Warning>
 
-  ```bash
-  cargo run --release
-  ```
+### Start the Portal
 
-  ⚠️ Tested on `cargo-1.82.0`; may not work on older versions.
+Choose your preferred method:
 
-  ⚠️ If you get a `Could not find protoc` error, please install the Protobuf compiler. E.g. on Ubuntu run
+<Tabs>
+<Tab title="Docker (Recommended)">
 
-  ```bash
-  apt-get install protobuf-compiler
-  ```
+```bash
+docker compose up -d
+```
 
-- If you're running the Docker image you can watch the logs with
-  ```bash
-  docker compose logs -f
-  ```
+Watch the logs:
 
-#### Step 5: Wait for your stake to become active
+```bash
+docker compose logs -f
+```
 
-This will happen at the beginning of the next [epoch](subsquid-network/faq/#epoch), that is, at some point during the next 20 minutes. The page will change to show that your lockup is now active:
+</Tab>
+
+<Tab title="Build from Source">
+
+```bash
+cargo run --release
+```
+
+<Note>Tested on `cargo-1.82.0`. May not work on older versions.</Note>
+
+**If you get a "Could not find protoc" error:**
+
+Install the Protobuf compiler:
+
+```bash
+apt-get install protobuf-compiler
+```
+
+</Tab>
+</Tabs>
+
+<Check>Your portal is now running!</Check>
+
+</Step>
+
+<Step title="Wait for activation" icon="hourglass">
+
+Your stake will become active at the beginning of the next [epoch](subsquid-network/faq/#epoch)—within approximately 20 minutes.
+
+The portals page will update to show your lockup is active.
+
+<Check>Portal activated! You can now use it to access SQD Network data.</Check>
+
+</Step>
+</Steps>
 
 ## Using your portal
 
@@ -199,10 +275,11 @@ node -r dotenv/config lib/main.js
 
 If the last command fails due to an HTTP 400 response, try raising the lowest block at described in [this comment](https://github.com/subsquid-labs/solana-example/blob/6ed90f7ec346a56effe29fde91eb918e149a558b/src/main.ts#L15-L17).
 
-<details>
-<summary>If you want to migrate an existing squid, here is a full instruction</summary>
+### Migrating an Existing Squid
 
-**A.** Replace all exising data sources with the portal:
+<Accordion title="Full migration instructions">
+
+**A.** Replace all existing data sources with the portal:
 
 ```diff
 +  .setPortal('https://portal.tethys.sqd.dev/datasets/solana-beta')
@@ -244,38 +321,38 @@ SLOT_NUMBER=320276063 curl --request POST --url https: "//api.mainnet-beta.solan
 **D.** If you need the block height (for example to stay compatible with your old code) request it in the `.setFields` call:
 
 ```diff
-   .setFields({
-     block: { // block header fields
-       timestamp: true,
+  .setFields({
+    block: { // block header fields
+      timestamp: true,
 +      height: true
-     },
+    },
 ```
 
+</Accordion>
 
-## Token requirements and compute units
+## Token Requirements and Compute Units
 
 The minimum token locking requirement for a portal is 10000 `SQD`. This should be enough for simple user cases like running 2-3 squid or grabbing some data for analytics. If you expect heavier workloads, read on.
 
 The rate limiting mechanism of SQD Network relies on the concept of a _compute unit_, or CU for short. CUs do not map directly to the amount of data fetched by a portal; instead, they (roughly) represent the amount of work that the network does internally while serving the portal's requests.
 
-<details>
-<summary>The definition of CU</summary>
+<Accordion title="Understanding compute units (CU)">
 
-SQD Network datasets are partitioned by the block number. Dataset chunks are randomly distributed among [worker nodes](subsquid-network/participate/worker).
+SQD Network datasets are partitioned by block number. Dataset chunks are randomly distributed among [worker nodes](subsquid-network/participate/worker).
 
 When an SQD portal receives a data request, the following happens:
 
-1. The portal forwards the request to several workers that hold the chunks of the relevant dataset.
+1. The portal forwards the request to several workers that hold the chunks of the relevant dataset
 
-2. The workers are executing the request separately on each chunk.
+2. The workers execute the request separately on each chunk
 
-3. Workers send the results back to the portal. For lightweight queries they send one response for each dataset chunk; however, if any response ends up being larger than 100 Mbytes, it's split into several parts.
+3. Workers send the results back to the portal. For lightweight queries, they send one response for each dataset chunk; however, if any response exceeds 100 Mbytes, it's split into several parts
 
-4. The portal concatenates the workers' replies and serves a continuous stream of data to the user.
+4. The portal concatenates the workers' replies and serves a continuous stream of data to the user
 
 Each response made by any of the workers in step 3 spends exactly 1 CU.
 
-</details>
+</Accordion>
 
 The more `SQD` you lock and the greater the lockup period is, the more CUs you get. Currently, each locked `SQD` generates 1-3 CU at the beginning of each [epoch](subsquid-network/faq/#epoch). Here's how the number of CUs per `SQD` changes with the lockup period:
 
@@ -295,32 +372,30 @@ Notes:
 - This is a rough estimate. Multiply it by ten to get a somewhat safe figure. If you want to minimize your `SQD` lockup, start at that safe figure, then measure the actual amount of CU you spend and reduce the lockup accordingly.
 - If your network has an Etherscan-style explorer, you can estimate the `transactions_per_block` by visiting its front page, reading the "Transactions" stat and dividing it by the "Last finalized block" height.
 
-<details>
-<summary>How the estimate is made</summary>
+<Accordion title="How the estimate is calculated">
 
-For a lightweight query, the amount of CU spent on it is determined by how many dataset chunks the network needs to look at to process it. The ingester makes chunks of roughly the same size within each dataset. Since the amount of data per block is roughly proportional to the number of transactions in the said block, we can assume that the number of chunks in any given range is proportional to the number of transactions per block.
+For a lightweight query, the amount of CU spent is determined by how many dataset chunks the network needs to examine to process it. The ingester creates chunks of roughly the same size within each dataset. Since the amount of data per block is roughly proportional to the number of transactions in that block, we can assume that the number of chunks in any given range is proportional to the number of transactions per block.
 
-Extrapolating from the Ethereum dataset, we get
-
-```
-
-num*chunks_in_range = range_length * (eth*chunks / eth_height) * (chain_txs_per_block / eth_txs_per_block)
+Extrapolating from the Ethereum dataset:
 
 ```
 
-Here,
+num_chunks_in_range = range_length _ (eth_chunks / eth_height) _ (chain_txs_per_block / eth_txs_per_block)
 
+```
+
+Where:
 - `eth_chunks` = 3.1e4
 - `eth_height` = 2.1e7
 - `eth_txs_per_block` = 1.2e2
 
 Multiplying all the known values together and rounding to one decimal digit, we get the `1e-5` coefficient of the final formula.
 
-The implicit assumption here is that all EVM datasets have the same chunk size as Ethereum. This does not hold: the chunk sizes vary, but are generally kept within the range of 50-1000 Mbytes. Ethereum chunk size is roughly 500 Mbytes; therefore we can expect the estimate to be off by a factor of 0.5-10, which is within the "order of magnitude" definition.
+**Important assumption:** This assumes all EVM datasets have the same chunk size as Ethereum. In reality, chunk sizes vary between 50-1000 Mbytes. Ethereum's chunk size is roughly 500 Mbytes, so expect the estimate to be off by a factor of 0.5-10, which is within the "order of magnitude" definition.
 
-Heavyweight queries scale in the same way, but may spend more than one CU per chunk. The heaviest possible queries (fetching the whole dataset) on Ethereum consume roughly 5 CUs per chunk.
+**Heavyweight queries:** Scale the same way but may spend more than one CU per chunk. The heaviest possible queries (fetching the whole dataset) on Ethereum consume roughly 5 CUs per chunk.
 
-</details>
+</Accordion>
 
 Now, if your queries consume `X` CUs each and you run them once per `Y` epochs, you need to lock up at least this much `SQD`:
 
@@ -328,7 +403,7 @@ Now, if your queries consume `X` CUs each and you run them once per `Y` epochs, 
 
 X / (Y \* boost_factor)
 
-```
+````
 
 Here, `boost_factor` is a multiplier ranging from 1 to 3 depending on the lockup length (see the graph above).
 
@@ -358,23 +433,45 @@ If you plan to automate running your portal instances, you may find [this helm c
 
 ## Troubleshooting
 
-#### What are the consequences of losing my key file / getting it stolen?
+<AccordionGroup>
+<Accordion title="What are the consequences of losing my key file / getting it stolen?">
 
-If you lose your key file you won't be able to run your portal until you get a new one and register it.
+**If you lose your key file:**
+- You won't be able to run your portal until you generate and register a new one
 
-If your key file get stolen the perpetrator will be able to cause connectivity issues for your portal, effectively causing a downtime.
+**If your key file is stolen:**
+- The perpetrator can cause connectivity issues, effectively creating downtime for your portal
 
-If any of that happens, unregister your portal (on the ["Portals" tab of network.subsquid.io](https://network.subsquid.io/portals)), then generate a new key file and register the new portal peer ID.
+**Recovery steps:**
 
-#### My portal is slower than I expected. How do I examine its throttling stats?
+1. Unregister your portal on the ["Portals" tab](https://network.subsquid.io/portals)
+2. Generate a new key file
+3. Register the new portal peer ID
 
-The stats are exposed at `/metrics`. For a local portal, take a look at the output of
+<Warning>
+  Always protect your key file! Store it securely and restrict access.
+</Warning>
 
-```
+</Accordion>
 
+<Accordion title="My portal is slower than I expected. How do I examine its throttling stats?">
+
+Portal performance metrics are exposed at the `/metrics` endpoint.
+
+For a local portal, check throttling statistics:
+
+```bash
 curl http://127.0.0.1:8000/metrics | grep throttled
+````
 
-```
+**Interpreting results:**
 
-The lower the value of `portal_stream_throttled_ratio_sum`, the better.
-```
+Lower values of `portal_stream_throttled_ratio_sum` indicate better performance.
+
+<Tip>
+  If throttling is high, consider locking more SQD tokens to increase your
+  bandwidth allocation.
+</Tip>
+
+</Accordion>
+</AccordionGroup>

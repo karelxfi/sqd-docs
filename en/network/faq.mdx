@@ -1,115 +1,219 @@
 ---
-title: FAQ
-description: Frequently asked questions about SQD Network
-
+title: "FAQ"
+description: "Frequently asked questions about the network, participation, and tokenomics"
 ---
 
-### What is SQD Network?
+<AccordionGroup>
+<Accordion title="What is SQD Network?">
 
-SQD Network is a decentralized data lake focused on making blockchain data accessible, regardless of scale. [Worker nodes](subsquid-network/participate/worker) of the network store the data and run queries on their local data chunks; data access nodes (called _SQD portals_) request partial query results from multiple workers, concatenate the outputs and expose a stream-based API.
+SQD Network is a decentralized data lake focused on making blockchain data accessible, regardless of scale. [Worker nodes](subsquid-network/participate/worker) store the data and run queries on their local data chunks, while data access nodes (called _SQD Portals_) request partial query results from multiple workers, concatenate the outputs, and expose a stream-based API.
 
-### How can I participate in SQD Network?
+</Accordion>
 
-Here are the possibilities:
+<Accordion title="How can I participate in SQD Network?">
 
-1. You can [run a worker node](subsquid-network/participate/worker). Workers contribute storage and compute resources to the network and are rewarded with `SQD` tokens.
+You can participate in SQD Network in several ways:
 
-2. You can reward well-performing workers by [delegating your `SQD` tokens](subsquid-network/participate/delegate) to them and get rewarded for that.
+1. **Run a worker node** - [Set up a worker](subsquid-network/participate/worker) to contribute storage and compute resources to the network and earn `SQD` tokens as rewards
+2. **Delegate tokens** - [Delegate your `SQD` tokens](subsquid-network/participate/delegate) to high-performing workers and earn a share of their rewards
 
-### What is a decentralized data lake?
+<Tip>
+  Non-technical users can still earn rewards by delegating tokens to reliable
+  workers.
+</Tip>
+
+</Accordion>
+
+<Accordion title="What is a decentralized data lake?">
 
 A decentralized data lake is a distributed system that stores and organizes large amounts of raw data in its native format until it's needed. SQD Network is an example of a decentralized data lake, providing scalable and efficient access to blockchain data.
 
-### What are some use cases for SQD’s decentralized data lake?
+</Accordion>
 
-SQD's decentralized data lake can be used for indexing blockchain data, powering blockchain explorers, analytics platforms, multi-chain aggregators, APIs for real-time and historical data, dApp backends and more.
+<Accordion title="What are some use cases for SQD's decentralized data lake?">
 
-### Is SQD production-ready? Can I trust it for my dApp?
+SQD's decentralized data lake powers various blockchain applications:
+
+- Indexing blockchain data for quick access
+- Blockchain explorers
+- Analytics platforms
+- Multi-chain aggregators
+- Real-time and historical data APIs
+- dApp backends and more
+
+</Accordion>
+
+<Accordion title="Is SQD production-ready? Can I trust it for my dApp?">
 
 Yes! SQD is production-ready and reliable for your dApp. It has been effectively used in over 500 use cases across ecosystems, proving its trustworthiness and utility within the Web3 developer community.
 
-### What are the hardware requirements to run a worker node?
+<Check>
+  SQD Network has powered production applications for hundreds of projects.
+</Check>
 
-To run a single worker you will need:
+</Accordion>
+
+<Accordion title="What are the hardware requirements to run a worker node?">
+
+To run a single worker, you will need:
+
+**Hardware:**
 
 - 4 vCPU
 - 16GB RAM
 - 1TB SSD
-- stable 24/7 Internet connection, at least 1Gbit
-- public IP and two ports open for incoming traffic:
-  - one UDP port for p2p communication (default 12345)
-  - one TCP port for Prometheus metrics (default 9090)
-- 100000 `SQD` tokens (in your wallet or in a special vesting contract)
-- some Arbitrum ETH (for gas)
+- Stable 24/7 Internet connection (at least 1Gbit)
 
-Please refer to [this page](subsquid-network/participate/worker) for further instructions.
+**Network:**
 
-A single account can register multiple workers.
+- Public IP address
+- Two ports open for incoming traffic:
+  - One UDP port for P2P communication (default: 12345)
+  - One TCP port for Prometheus metrics (default: 9090)
 
-### How do I deploy a simple squid indexer?
+**Financial:**
 
-Start your first squid indexer in 5 minutes! Learn more [here](sdk/how-to-start/squid-development/#templates).
+- 100,000 `SQD` tokens (in your wallet or vesting contract)
+- Some Arbitrum ETH for gas fees
 
-### What kind of datasets are available from SQD Network?
+<Info>
+  A single account can register multiple workers. See the [worker setup
+  guide](subsquid-network/participate/worker) for detailed instructions.
+</Info>
 
-Historical blockchain data optimized for batch access.
+</Accordion>
 
-### What chains are currently supported by SQD’s decentralized data lake and SDK?
+<Accordion title="How do I deploy a simple squid indexer?">
 
-SQD Network currently supports EVM / Ethereum-compatible chains, Substrate-based chains, Solana, Fuel and Starknet ([full list](subsquid-network/reference/networks)). More ecosystems will be integrated in the near future -- feel free to request in [SquidDevs](https://t.me/HydraDevs).
+You can start your first squid indexer in under 5 minutes using our templates! Learn more in the [development guide](sdk/how-to-start/squid-development/#templates).
 
-### How can I add a new chain to be indexed by SQD Network?
+</Accordion>
 
-Simply reach out via [this form](https://app.deform.cc/form/3f1021b2-6b70-4850-af09-a3b610f048a4), and we’ll get back to you as soon as possible.
+<Accordion title="What kind of datasets are available from SQD Network?">
 
-### I can’t code. How can I participate in SQD Network?
+SQD Network provides historical blockchain data optimized for batch access, enabling efficient indexing and querying across multiple blocks.
 
-As a non-coder, you will be able to participate in the SQD Network directly by [delegating SQD tokens](subsquid-network/participate/delegate) to reliable workers to receive a percentage of the reward.
+</Accordion>
 
-Additionally you can drive the growth of the SQD Network by helping to cultivate a vibrant community, amplifying the network's reach through social media and other platforms.
+<Accordion title="What chains are currently supported by SQD Network?">
 
-### Does participating in SQD Network require committing my tokens?
+SQD Network currently supports:
 
-Yes. If you delegate your SQD or register a worker, your tokens will be locked for a period of 50000 Ethereum blocks, starting at the end of the current [epoch](#what-is-an-epoch-in-the-context-of-sqd-network).
+- EVM / Ethereum-compatible chains
+- Substrate-based chains
+- Solana
+- Fuel
+- Starknet
 
-### What is SQD’s roadmap?
+View the [complete list of supported networks](subsquid-network/reference/networks).
 
-You can find the up-to-date roadmap [here](https://www.sqd.dev/roadmap).
+<Tip>
+  Want to request support for a new ecosystem? Reach out in the [SquidDevs
+  Telegram](https://t.me/HydraDevs).
+</Tip>
 
-### Does SQD Network have an app?
+</Accordion>
 
-Take a look at [network.subsquid.io](https://network.subsquid.io).
+<Accordion title="How can I add a new chain to be indexed by SQD Network?">
 
-### Why did SQD choose Arbitrum for its contracts?
+Submit a request via our [integration form](https://app.deform.cc/form/3f1021b2-6b70-4850-af09-a3b610f048a4), and we'll respond as soon as possible.
 
-We have chosen Arbitrum for its large community and the availability of quality tooling for smart contract deployment.
+</Accordion>
 
-### Where is the data that SQD Network indexes stored?
+<Accordion title="I can't code. How can I participate in SQD Network?">
 
-The data indexed by the SQD Network is stored in persistent storage. During the bootstrap phase, the persistent storage used by Subsquid Labs is an s3 compatible service with backups pinned to IPFS.
+Non-technical participants can contribute in multiple ways:
 
-### What is the difference between SQD Network and the Graph Network?
+**Delegation** - [Delegate SQD tokens](subsquid-network/participate/delegate) to reliable workers and earn a percentage of their rewards.
 
-Learn about the differences and see a full feature matrix [here](sdk/subsquid-vs-thegraph).
+**Community Growth** - Help grow the SQD Network by:
 
-### How does the SQD Network make blockchain data accessible for free? Are there costs involved?
+- Cultivating a vibrant community
+- Amplifying the network's reach through social media
+- Sharing information across various platforms
 
-The [open private](subsquid-network/overview/#open-private-network) SQD Network offers the data for free to consumers while charging fixed subscription fees to chains from which the data is provided.
+</Accordion>
 
-The [permissioness public](subsquid-network/overview/#permissionless-public-network) version of SQD Network requires users to lock `SQD` tokens to reserve bandwidth (i.e. requests per second). However, this limitation only applies if you're running an SQD portal yourself: SQD provides a free rate-limited portal open to everyone.
+<Accordion title="Does participating in SQD Network require committing my tokens?">
 
-For hosting indexers, we offer our [SQD Cloud](cloud) service. Free unlimited access to a dedicated SQD portal is included in subscription; you only pay for the computational resources you're using (such as CPUs, SSD space etc). Check out its [competitive pricing](cloud/pricing).
+Yes. When you delegate SQD or register a worker, your tokens will be locked for a period of 50,000 Ethereum blocks (approximately 7 days), starting at the end of the current [epoch](#what-is-an-epoch-in-the-context-of-sqd-network).
 
-Note that the fact that we have a paid hosting service does not mean that you cannot self-host your indexer(s). Feel free to shop around and find the best hosting infrastructure for your project! Here's our [self-hosting guide](sdk/resources/self-hosting).
+<Warning>Your tokens cannot be withdrawn during the lockup period.</Warning>
 
-### How does SQD ensure the security and privacy of the data accessed through the network?
+</Accordion>
 
-SQD Network will employ validators who listen to the logs of the executed queries and resubmit them to validate the response. There's also an arbitration process to handle any discrepancies.
+<Accordion title="What is SQD's roadmap?">
 
-### What is "an epoch" in the context of SQD Network?
+View the up-to-date roadmap at [sqd.dev/roadmap](https://www.sqd.dev/roadmap).
 
-"Epoch" is a unit of time that SQD Network uses for internal settlement. It is [defined on-chain](https://arbiscan.io/address/0x4cf58097d790b193d22ed633bf8b15c9bc4f0da7#readContract#F3) and is currently set to be 100 L1 (Ethereum) blocks, or roughly 20 minutes.
+</Accordion>
 
-### What is Tethys?
+<Accordion title="Does SQD Network have an app?">
 
-Tethys is the long-running testnet of SQD Network. Its contracts run on Arbitrum Sepolia. More details are available [here](https://github.com/subsquid/subsquid-network-contracts/wiki/Tethys-testnet-announcement).
+Yes! Access the SQD Network app at [network.subsquid.io](https://network.subsquid.io).
+
+</Accordion>
+
+<Accordion title="Why did SQD choose Arbitrum for its contracts?">
+
+We chose Arbitrum for its:
+
+- Large, active community
+- High-quality tooling for smart contract deployment
+- Cost-effective transactions
+
+</Accordion>
+
+<Accordion title="Where is the data that SQD Network indexes stored?">
+
+The data indexed by SQD Network is stored in persistent storage. During the bootstrap phase, Subsquid Labs uses an S3-compatible service with backups pinned to IPFS for data redundancy and availability.
+
+</Accordion>
+
+<Accordion title="What is the difference between SQD Network and the Graph Network?">
+
+Learn about the key differences and review a comprehensive feature comparison in our [SQD vs The Graph](sdk/subsquid-vs-thegraph) guide.
+
+</Accordion>
+
+<Accordion title="How does SQD Network make blockchain data accessible for free?">
+
+SQD Network offers data access through two models:
+
+**Open Private Network** - Free for consumers, funded by fixed subscription fees from blockchain networks providing data.
+
+**Permissionless Public Network** - Requires locking `SQD` tokens to reserve bandwidth (requests per second). However, SQD provides a free rate-limited portal accessible to everyone—you only need tokens if running your own portal.
+
+**Indexer Hosting** - [SQD Cloud](cloud) includes free unlimited access to a dedicated SQD Portal. You only pay for computational resources (CPUs, SSD space, etc.). View our [competitive pricing](cloud/pricing).
+
+<Info>
+  You can also self-host your indexers on any infrastructure. See our
+  [self-hosting guide](sdk/resources/self-hosting) for details.
+</Info>
+
+</Accordion>
+
+<Accordion title="How does SQD ensure the security and privacy of the data accessed through the network?">
+
+SQD Network employs validators who:
+
+- Listen to logs of executed queries
+- Resubmit queries to validate responses
+- Trigger an arbitration process to handle any discrepancies
+
+This validation mechanism ensures data integrity across the network.
+
+</Accordion>
+
+<Accordion title="What is an epoch in the context of SQD Network?">
+
+An "epoch" is a unit of time that SQD Network uses for internal settlement. It is [defined on-chain](https://arbiscan.io/address/0x4cf58097d790b193d22ed633bf8b15c9bc4f0da7#readContract#F3) and is currently set to 100 L1 (Ethereum) blocks, or approximately 20 minutes.
+
+</Accordion>
+
+<Accordion title="What is Tethys?">
+
+Tethys is the long-running testnet of SQD Network. Its contracts run on Arbitrum Sepolia. For more details, see the [Tethys testnet announcement](https://github.com/subsquid/subsquid-network-contracts/wiki/Tethys-testnet-announcement).
+
+</Accordion>
+</AccordionGroup>

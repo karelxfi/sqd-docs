@@ -1,60 +1,95 @@
 ---
-description: "Welcome to the SQD Portal Open Beta! Below you’ll find easy-to-follow instructions on what to do next and what you can expect from this release."
-title: Portal beta info
-
+title: "SQD Portal Open Beta"
+description: "Get started with SQD Portal beta - explore features, migrate to Cloud Portal, or set up your own self-hosted portal"
 ---
 
-# SQD Portal Open Beta
+Welcome to the SQD Portal Open Beta! This guide provides instructions on what you can do with Portal and what to expect from this release.
 
-Welcome to the SQD Portal Open Beta! Below you’ll find easy-to-follow instructions on what to do next and what you can expect from this release.
+## What is SQD Portal?
 
-## What is the SQD Portal?
+SQD Portal is a decentralized, streaming-based data retrieval solution designed to replace centralized gateways. It provides faster, more reliable, and flexible access to blockchain data through a distributed network of worker nodes.
 
-The SQD Portal is a decentralized, streaming-based data retrieval solution designed to replace our centralized gateways. It provides faster, more reliable, and flexible access to blockchain data.
+<Info>
+  SQD Portal can supply both historical and real-time data seamlessly,
+  eliminating the need for separate RPC endpoints in many cases.
+</Info>
 
-SQD Portal can supply both historical and real-time data seamlessly, eliminating the need for an RPC endpoint. Real-time capability is currently only available for Solana, with plans to add it for all EVM and Substate networks soon.
+### Key Features
 
-#### Key Features
+- **Fully Decentralized** - Powered by 1,900+ independent worker nodes
+- **High Replication** - Redundant data storage for maximum reliability, capable of querying up to 20 million blocks per second
+- **Improved Performance** - A new Rust-based query engine leverages parallelized queries and optimizations, delivering a **10-50x performance boost** compared to centralized gateways
+- **Real-time Capability** - Stream real-time data including unfinalized blocks
 
-- **Fully Decentralized**: Powered by 1,900+ independent worker nodes.
-- **High Replication**: Redundant data storage for maximum reliability, capable of querying up to **20 million blocks per second**.
-- **Improved Performance**: A new Rust-based query engine now leverages parallelized queries and incorporates numerous query execution performance optimizations, delivering an overall **10-50x performance boost** compared to the centralized gateways.
-  - Note: This performance improvement is specific to data retrieval. If your application faces other bottlenecks (like database limitations), you may experience a more moderate gain in indexing speed.
-- **Real-time Capability**: Portal is now capable of streaming real-time data, including unfinalized blocks.
-  - _Currently only available on Solana_
-  - Coming soon for EVM and Substrate networks
+<Note>
+  Performance improvements are specific to data retrieval. If your application
+  has other bottlenecks (like database limitations), you may see more moderate
+  gains in overall indexing speed.
+</Note>
 
-## What You Can Do
+**Real-time Data Availability:**
+- Currently available: Solana
+- Coming soon: EVM and Substrate networks
 
-### 1. Explore Soldexer — Our New Brand for Solana
+## Getting Started
 
-If you’re working with Solana, visit [soldexer.dev](https://soldexer.dev) to check out our new client architecture, powered by the updated Portal API.
+<Steps>
+<Step title="Explore Soldexer for Solana" icon="rocket">
 
-### 2. Migrate to the Cloud Portal
+If you're working with Solana, visit [soldexer.dev](https://soldexer.dev) to explore our new client architecture powered by the Portal API.
 
-Cloud users can now switch from centralized gateways to our dedicated Cloud Portal and benefit from enhanced performance and the latest features of our new query engine.
+<Check>Soldexer provides optimized tooling specifically for Solana developers.</Check>
 
-- **Migration guides**:
-  - [For EVM and Substate users](cloud/resources/migrate-to-portal-on-evm-or-substrate)
-  - [For Solana users](cloud/resources/migrate-to-portal-on-solana)
+</Step>
 
-### 3. Set Up a Self-Hosted Portal
+<Step title="Migrate to Cloud Portal" icon="cloud">
 
-- Take complete control of your data infrastructure by running your own Portal.
-- **Setup Guide**: [Self-Hosting Instructions](subsquid-network/participate/portal)
-- **Requirements**
-  - Minimum 10,000 SQD tokens.
-  - A working Docker installation.
-  - Some Arbitrum ETH for gas.
+Cloud users can switch from centralized gateways to our dedicated Cloud Portal for enhanced performance and the latest query engine features.
 
-### 4. Explore the Public Portal
+**Migration Guides:**
+- [EVM and Substrate users](cloud/resources/migrate-to-portal-on-evm-or-substrate)
+- [Solana users](cloud/resources/migrate-to-portal-on-solana)
 
-Public Portal allows access to nearly all the datasets that were available from the centralized gateways. Use it for development and tests.
+<Tip>
+  Cloud Portal offers significantly better performance than centralized gateways.
+</Tip>
 
-Browse EVM datasets at [portal-ui.sqd.dev](https://portal-ui.sqd.dev/). Solana [(and compatible SVM networks)](subsquid-network/reference/networks/#solana-and-compatibles) and Substrate datasets will be available soon.
+</Step>
 
----
+<Step title="Set Up a Self-Hosted Portal" icon="server">
 
-If you have any questions or feedback for us, please reach out to us on Telegram. We have created a special group for Portal Beta participants: [link](https://t.me/+JHrJZPz34kRjYmFk).
+Take complete control of your data infrastructure by running your own Portal.
+
+**Requirements:**
+- Minimum 10,000 SQD tokens
+- Working Docker installation
+- Some Arbitrum ETH for gas
+
+**Setup Guide:** [Self-Hosting Instructions](subsquid-network/participate/portal)
+
+<Warning>
+  You'll need to keep your SQD tokens locked while using your portal.
+</Warning>
+
+</Step>
+
+<Step title="Explore the Public Portal" icon="globe">
+
+The Public Portal provides access to nearly all datasets previously available from centralized gateways. Ideal for development and testing.
+
+Browse EVM datasets at [portal-ui.sqd.dev](https://portal-ui.sqd.dev/).
+
+<Info>
+  Solana [(and compatible SVM
+  networks)](subsquid-network/reference/networks/#solana-and-compatibles) and
+  Substrate datasets coming soon.
+</Info>
+
+</Step>
+</Steps>
+
+## Support and Feedback
+
+Have questions or feedback? Join our special Telegram group for Portal Beta participants: [Portal Beta Group](https://t.me/+JHrJZPz34kRjYmFk).
 
 — **The SQD Team**
