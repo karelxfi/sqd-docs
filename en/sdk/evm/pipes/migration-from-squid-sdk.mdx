@@ -36,14 +36,28 @@ Stick with Squid SDK if:
 
 **Squid SDK:**
 
-```
-Processor → Batch Handler → TypeORM Store → GraphQL Server
+```mermaid
+graph LR
+    A[Processor] --> B[Batch Handler]
+    B --> C[TypeORM Store]
+    C --> D[GraphQL Server]
+    
+    style A fill:#3B82F6,stroke:#1E40AF,stroke-width:2px,color:#fff
+    style B fill:#8B5CF6,stroke:#6D28D9,stroke-width:2px,color:#fff
+    style C fill:#F59E0B,stroke:#D97706,stroke-width:2px,color:#fff
+    style D fill:#10B981,stroke:#059669,stroke-width:2px,color:#fff
 ```
 
 **Pipes SDK:**
 
-```
-Source → Transformer → Target
+```mermaid
+graph LR
+    A[Source] --> B[Transformer]
+    B --> C[Target]
+    
+    style A fill:#3B82F6,stroke:#1E40AF,stroke-width:2px,color:#fff
+    style B fill:#8B5CF6,stroke:#6D28D9,stroke-width:2px,color:#fff
+    style C fill:#10B981,stroke:#059669,stroke-width:2px,color:#fff
 ```
 
 ### Concept Mapping

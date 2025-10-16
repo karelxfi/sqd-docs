@@ -53,10 +53,14 @@ This modular approach allows you to create self-contained, reusable components t
 
 Pipes SDK follows a pipeline architecture where data flows through three main components:
 
-```
-        ┌─────────┐      ┌──────────────┐      ┌────────┐
-        │ Source  │ ───> │ Transformer  │ ───> │ Target │
-        └─────────┘      └──────────────┘      └────────┘
+```mermaid
+graph LR
+    A[Source] --> B[Transformer]
+    B --> C[Target]
+    
+    style A fill:#3B82F6,stroke:#1E40AF,stroke-width:2px,color:#fff
+    style B fill:#8B5CF6,stroke:#6D28D9,stroke-width:2px,color:#fff
+    style C fill:#10B981,stroke:#059669,stroke-width:2px,color:#fff
 ```
 
 ### Sources
