@@ -316,39 +316,7 @@
                 "dropdown": "Solana",
                 "description": "Solana and SVM compatible chains",
                 "icon": "globe",
-                "groups": [
-                  {
-                    "group": "Getting Started",
-                    "pages": [
-                      "en/sdk/solana/quickstart",
-                      "en/sdk/solana/how-to-start",
-                      "en/sdk/solana/how-to-start/indexing-orca",
-                      "en/sdk/solana/how-to-start/cli-cheatsheet"
-                    ]
-                  },
-                  {
-                    "group": "Solana Reference",
-                    "pages": [
-                      "en/sdk/solana/sdk",
-                      {
-                        "group": "Batch Processor",
-                        "pages": [
-                          "en/sdk/solana/sdk/solana-batch/general",
-                          "en/sdk/solana/sdk/solana-batch/field-selection",
-                          "en/sdk/solana/sdk/solana-batch/context-interfaces",
-                          "en/sdk/solana/sdk/solana-batch/transactions",
-                          "en/sdk/solana/sdk/solana-batch/instructions",
-                          "en/sdk/solana/sdk/solana-batch/logs",
-                          "en/sdk/solana/sdk/solana-batch/balances",
-                          "en/sdk/solana/sdk/solana-batch/token-balances",
-                          "en/sdk/solana/sdk/solana-batch/rewards"
-                        ]
-                      },
-                      "en/sdk/solana/sdk/typegen",
-                      "en/sdk/solana/network-api"
-                    ]
-                  }
-                ]
+                "href": "https://docs.soldexer.dev/get-started/introduction"
               },
               {
                 "dropdown": "Substrate",
@@ -739,15 +707,7 @@
                 "dropdown": "Solana",
                 "icon": "globe",
                 "description": "Solana blockchain",
-                "groups": [
-                  {
-                    "group": "API",
-                    "openapi": {
-                      "source": "en/api-reference/solana/openapi.yaml",
-                      "directory": "api-reference/solana"
-                    }
-                  }
-                ]
+                "href": "https://docs.soldexer.dev/api-reference/introduction"
               }
             ]
           },
