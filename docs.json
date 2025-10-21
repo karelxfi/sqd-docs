@@ -12,13 +12,17 @@
     "background": "/logos/thumbnail.jpg"
   },
   "banner": {
-    "content": "[Try our new Pipes SDK - Get started in 5 minutes](/en/sdk/evm/pipes/quickstart)",
+    "content": "[Try our new Pipes SDK - Get started in 5 minutes](/en/sdk/pipes-sdk/quickstart)",
     "dismissible": true
   },
   "colors": {
     "primary": "#111111",
     "light": "#3B82F6",
     "dark": "#111111"
+  },
+  "appearance": {
+    "default": "light",
+    "strict": true
   },
   "contextual": {
     "options": ["copy", "view", "chatgpt", "claude", "perplexity", "cursor", {
@@ -45,6 +49,20 @@
     }
   },
   "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Blog",
+          "icon": "newspaper",
+          "href": "https://blog.sqd.dev"
+        },
+        {
+          "anchor": "Changelog",
+          "icon": "list",
+          "href": "https://product.sqd.ai"
+        }
+      ]
+    },
     "languages": [
       {
         "language": "en",
@@ -66,34 +84,35 @@
                   {
                     "group": "Overview",
                     "pages": [
-                      "en/sdk/evm/choose-your-approach"
+                      "en/sdk/choose-your-approach"
                     ]
                   },
                   {
                     "group": "Pipes SDK",
-                    "icon": "pipe",
+                    "tag": "BETA",
+                    "icon": "bars-staggered",
                     "pages": [
-                      "en/sdk/evm/pipes/overview",
-                      "en/sdk/evm/pipes/quickstart",
+                      "en/sdk/pipes-sdk/overview",
+                      "en/sdk/pipes-sdk/quickstart",
                       {
                         "group": "Core Concepts",
                         "pages": [
-                          "en/sdk/evm/pipes/installation",
-                          "en/sdk/evm/pipes/core-concepts",
-                          "en/sdk/evm/pipes/data-sources",
-                          "en/sdk/evm/pipes/transformers",
-                          "en/sdk/evm/pipes/targets",
-                          "en/sdk/evm/pipes/evm-event-decoding",
-                          "en/sdk/evm/pipes/data-persistence"
+                          "en/sdk/pipes-sdk/installation",
+                          "en/sdk/pipes-sdk/core-concepts",
+                          "en/sdk/pipes-sdk/data-sources",
+                          "en/sdk/pipes-sdk/transformers",
+                          "en/sdk/pipes-sdk/targets",
+                          "en/sdk/pipes-sdk/evm-event-decoding",
+                          "en/sdk/pipes-sdk/data-persistence"
                         ]
                       },
-                      "en/sdk/evm/pipes/examples",
+                      "en/sdk/pipes-sdk/examples",
                       {
                         "group": "Advanced",
                         "pages": [
-                          "en/sdk/evm/pipes/advanced-patterns",
-                          "en/sdk/evm/pipes/api-reference",
-                          "en/sdk/evm/pipes/migration-from-squid-sdk"
+                          "en/sdk/pipes-sdk/advanced-patterns",
+                          "en/sdk/pipes-sdk/api-reference",
+                          "en/sdk/pipes-sdk/migration-from-squid-sdk"
                         ]
                       }
                     ]
@@ -105,54 +124,54 @@
                       {
                         "group": "Getting Started",
                         "pages": [
-                          "en/sdk/getting-started/quickstart",
-                          "en/sdk/getting-started/overview",
-                          "en/sdk/getting-started/layout"
+                          "en/sdk/squid-sdk/getting-started/quickstart",
+                          "en/sdk/squid-sdk/getting-started/overview",
+                          "en/sdk/squid-sdk/getting-started/layout"
                         ]
                       },
                       {
                         "group": "EVM Development",
                         "pages": [
-                          "en/sdk/evm/quickstart",
-                          "en/sdk/evm/examples"
+                          "en/sdk/squid-sdk/evm/quickstart",
+                          "en/sdk/squid-sdk/evm/examples"
                         ]
                       },
                       {
                         "group": "EVM Reference",
                         "pages": [
-                          "en/sdk/evm/reference",
+                          "en/sdk/squid-sdk/evm/reference",
                           {
                             "group": "Batch Processor",
                             "pages": [
-                              "en/sdk/evm/reference/general",
-                              "en/sdk/evm/reference/logs",
-                              "en/sdk/evm/reference/transactions",
-                              "en/sdk/evm/reference/traces",
-                              "en/sdk/evm/reference/state-diffs",
-                              "en/sdk/evm/reference/field-selection",
-                              "en/sdk/evm/reference/context-interfaces",
-                              "en/sdk/evm/reference/logger"
+                              "en/sdk/squid-sdk/evm/reference/general",
+                              "en/sdk/squid-sdk/evm/reference/logs",
+                              "en/sdk/squid-sdk/evm/reference/transactions",
+                              "en/sdk/squid-sdk/evm/reference/traces",
+                              "en/sdk/squid-sdk/evm/reference/state-diffs",
+                              "en/sdk/squid-sdk/evm/reference/field-selection",
+                              "en/sdk/squid-sdk/evm/reference/context-interfaces",
+                              "en/sdk/squid-sdk/evm/reference/logger"
                             ]
                           },
                           {
                             "group": "Advanced Patterns",
                             "pages": [
-                              "en/sdk/evm/reference/proxy-contracts",
-                              "en/sdk/evm/reference/factory-contracts"
+                              "en/sdk/squid-sdk/evm/reference/proxy-contracts",
+                              "en/sdk/squid-sdk/evm/reference/factory-contracts"
                             ]
                           },
                           {
                             "group": "Data Storage",
                             "pages": [
-                              "en/sdk/evm/reference/store/typeorm",
-                              "en/sdk/evm/reference/store/bigquery",
+                              "en/sdk/squid-sdk/evm/reference/store/typeorm",
+                              "en/sdk/squid-sdk/evm/reference/store/bigquery",
                               {
                                 "group": "File Storage",
                                 "pages": [
-                                  "en/sdk/evm/reference/store/file/csv",
-                                  "en/sdk/evm/reference/store/file/json",
-                                  "en/sdk/evm/reference/store/file/parquet",
-                                  "en/sdk/evm/reference/store/file/s3-dest"
+                                  "en/sdk/squid-sdk/evm/reference/store/file/csv",
+                                  "en/sdk/squid-sdk/evm/reference/store/file/json",
+                                  "en/sdk/squid-sdk/evm/reference/store/file/parquet",
+                                  "en/sdk/squid-sdk/evm/reference/store/file/s3-dest"
                                 ]
                               }
                             ]
@@ -160,40 +179,40 @@
                           {
                             "group": "Schema Files",
                             "pages": [
-                              "en/sdk/evm/reference/schema-file/intro",
-                              "en/sdk/evm/reference/schema-file/entities",
-                              "en/sdk/evm/reference/schema-file/entity-relations",
-                              "en/sdk/evm/reference/schema-file/indexes-and-constraints",
-                              "en/sdk/evm/reference/schema-file/interfaces",
-                              "en/sdk/evm/reference/schema-file/unions-and-typed-json"
+                              "en/sdk/squid-sdk/evm/reference/schema-file/intro",
+                              "en/sdk/squid-sdk/evm/reference/schema-file/entities",
+                              "en/sdk/squid-sdk/evm/reference/schema-file/entity-relations",
+                              "en/sdk/squid-sdk/evm/reference/schema-file/indexes-and-constraints",
+                              "en/sdk/squid-sdk/evm/reference/schema-file/interfaces",
+                              "en/sdk/squid-sdk/evm/reference/schema-file/unions-and-typed-json"
                             ]
                           },
                           {
                             "group": "GraphQL Server",
                             "pages": [
-                              "en/sdk/evm/reference/openreader-server/overview",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/overview",
                               {
                                 "group": "API",
                                 "pages": [
-                                  "en/sdk/evm/reference/openreader-server/api/intro",
-                                  "en/sdk/evm/reference/openreader-server/api/queries",
-                                  "en/sdk/evm/reference/openreader-server/api/and-or-filters",
-                                  "en/sdk/evm/reference/openreader-server/api/sorting",
-                                  "en/sdk/evm/reference/openreader-server/api/paginate-query-results",
-                                  "en/sdk/evm/reference/openreader-server/api/nested-field-queries",
-                                  "en/sdk/evm/reference/openreader-server/api/cross-relation-field-queries",
-                                  "en/sdk/evm/reference/openreader-server/api/json-queries",
-                                  "en/sdk/evm/reference/openreader-server/api/resolve-union-types-interfaces"
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/intro",
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/queries",
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/and-or-filters",
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/sorting",
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/paginate-query-results",
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/nested-field-queries",
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/cross-relation-field-queries",
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/json-queries",
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/resolve-union-types-interfaces"
                                 ]
                               },
                               {
                                 "group": "Configuration",
                                 "pages": [
-                                  "en/sdk/evm/reference/openreader-server/configuration/custom-resolvers",
-                                  "en/sdk/evm/reference/openreader-server/configuration/authorization",
-                                  "en/sdk/evm/reference/openreader-server/configuration/caching",
-                                  "en/sdk/evm/reference/openreader-server/configuration/subscriptions",
-                                  "en/sdk/evm/reference/openreader-server/configuration/dos-protection"
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/custom-resolvers",
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/authorization",
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/caching",
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/subscriptions",
+                                  "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/dos-protection"
                                 ]
                               }
                             ]
@@ -203,24 +222,24 @@
                       {
                         "group": "Tutorials",
                         "pages": [
-                          "en/sdk/evm/tutorials",
-                          "en/sdk/evm/tutorials/batch-processor-in-action",
-                          "en/sdk/evm/tutorials/evm-local",
-                          "en/sdk/evm/tutorials/case-studies",
+                          "en/sdk/squid-sdk/evm/tutorials",
+                          "en/sdk/squid-sdk/evm/tutorials/batch-processor-in-action",
+                          "en/sdk/squid-sdk/evm/tutorials/evm-local",
+                          "en/sdk/squid-sdk/evm/tutorials/case-studies",
                           {
                             "group": "BAYC Tutorial Series",
                             "pages": [
-                              "en/sdk/evm/tutorials/bayc/step-one-indexing-transfers",
-                              "en/sdk/evm/tutorials/bayc/step-two-deriving-owners-and-tokens",
-                              "en/sdk/evm/tutorials/bayc/step-three-adding-external-data",
-                              "en/sdk/evm/tutorials/bayc/step-four-optimizations"
+                              "en/sdk/squid-sdk/evm/tutorials/bayc/step-one-indexing-transfers",
+                              "en/sdk/squid-sdk/evm/tutorials/bayc/step-two-deriving-owners-and-tokens",
+                              "en/sdk/squid-sdk/evm/tutorials/bayc/step-three-adding-external-data",
+                              "en/sdk/squid-sdk/evm/tutorials/bayc/step-four-optimizations"
                             ]
                           },
                           {
                             "group": "File-Based Storage",
                             "pages": [
-                              "en/sdk/evm/tutorials/file-csv",
-                              "en/sdk/evm/tutorials/file-parquet"
+                              "en/sdk/squid-sdk/evm/tutorials/file-csv",
+                              "en/sdk/squid-sdk/evm/tutorials/file-parquet"
                             ]
                           }
                         ]
@@ -228,84 +247,84 @@
                       {
                         "group": "Advanced Features",
                         "pages": [
-                          "en/sdk/features/batch-processing",
-                          "en/sdk/features/multichain",
-                          "en/sdk/features/external-api",
-                          "en/sdk/features/serving-graphql",
-                          "en/sdk/features/unfinalized-blocks"
+                          "en/sdk/squid-sdk/features/batch-processing",
+                          "en/sdk/squid-sdk/features/multichain",
+                          "en/sdk/squid-sdk/features/external-api",
+                          "en/sdk/squid-sdk/features/serving-graphql",
+                          "en/sdk/squid-sdk/features/unfinalized-blocks"
                         ]
                       },
                       {
                         "group": "Data Persistence",
                         "pages": [
-                          "en/sdk/features/persisting-data/overview",
-                          "en/sdk/features/persisting-data/typeorm",
-                          "en/sdk/features/persisting-data/file",
-                          "en/sdk/features/persisting-data/bigquery"
+                          "en/sdk/squid-sdk/features/persisting-data/overview",
+                          "en/sdk/squid-sdk/features/persisting-data/typeorm",
+                          "en/sdk/squid-sdk/features/persisting-data/file",
+                          "en/sdk/squid-sdk/features/persisting-data/bigquery"
                         ]
                       },
                       {
                         "group": "Resources",
                         "pages": [
-                          "en/sdk/features/sdk-resources"
+                          "en/sdk/squid-sdk/features/sdk-resources"
                         ]
                       },
                       {
                         "group": "Setup & Tools",
                         "pages": [
-                          "en/sdk/getting-started/development-environment-set-up",
-                          "en/sdk/getting-started/squid-development",
-                          "en/sdk/getting-started/squid-from-scratch",
-                          "en/sdk/tools/cli",
+                          "en/sdk/squid-sdk/getting-started/development-environment-set-up",
+                          "en/sdk/squid-sdk/getting-started/squid-development",
+                          "en/sdk/squid-sdk/getting-started/squid-from-scratch",
+                          "en/sdk/squid-sdk/tools/cli",
                           {
                             "group": "CLI Commands",
                             "pages": [
-                              "en/sdk/tools/cli/installation",
-                              "en/sdk/tools/cli/init",
-                              "en/sdk/tools/cli/run",
-                              "en/sdk/tools/cli/deploy",
-                              "en/sdk/tools/cli/logs",
-                              "en/sdk/tools/cli/explorer",
-                              "en/sdk/tools/cli/list",
-                              "en/sdk/tools/cli/prod",
-                              "en/sdk/tools/cli/restart",
-                              "en/sdk/tools/cli/remove",
-                              "en/sdk/tools/cli/secrets",
-                              "en/sdk/tools/cli/tags",
-                              "en/sdk/tools/cli/gateways",
-                              "en/sdk/tools/cli/auth",
-                              "en/sdk/tools/cli/whoami",
-                              "en/sdk/tools/cli/autocomplete",
-                              "en/sdk/tools/cli/commands-json"
+                              "en/sdk/squid-sdk/tools/cli/installation",
+                              "en/sdk/squid-sdk/tools/cli/init",
+                              "en/sdk/squid-sdk/tools/cli/run",
+                              "en/sdk/squid-sdk/tools/cli/deploy",
+                              "en/sdk/squid-sdk/tools/cli/logs",
+                              "en/sdk/squid-sdk/tools/cli/explorer",
+                              "en/sdk/squid-sdk/tools/cli/list",
+                              "en/sdk/squid-sdk/tools/cli/prod",
+                              "en/sdk/squid-sdk/tools/cli/restart",
+                              "en/sdk/squid-sdk/tools/cli/remove",
+                              "en/sdk/squid-sdk/tools/cli/secrets",
+                              "en/sdk/squid-sdk/tools/cli/tags",
+                              "en/sdk/squid-sdk/tools/cli/gateways",
+                              "en/sdk/squid-sdk/tools/cli/auth",
+                              "en/sdk/squid-sdk/tools/cli/whoami",
+                              "en/sdk/squid-sdk/tools/cli/autocomplete",
+                              "en/sdk/squid-sdk/tools/cli/commands-json"
                             ]
                           },
                           {
                             "group": "Code Generation",
                             "pages": [
-                              "en/sdk/tools/typegen/generation",
-                              "en/sdk/tools/typegen/decoding",
-                              "en/sdk/tools/typegen/state-queries",
-                              "en/sdk/tools/model-gen",
-                              "en/sdk/tools/squid-gen",
-                              "en/sdk/tools/migrations-gen"
+                              "en/sdk/squid-sdk/tools/typegen/generation",
+                              "en/sdk/squid-sdk/tools/typegen/decoding",
+                              "en/sdk/squid-sdk/tools/typegen/state-queries",
+                              "en/sdk/squid-sdk/tools/model-gen",
+                              "en/sdk/squid-sdk/tools/squid-gen",
+                              "en/sdk/squid-sdk/tools/migrations-gen"
                             ]
                           },
-                          "en/sdk/tools/hasura-configuration",
-                          "en/sdk/tools/external-tools/external-tools-overview",
-                          "en/sdk/tools/faq",
-                          "en/sdk/tools/troubleshooting"
+                          "en/sdk/squid-sdk/tools/hasura-configuration",
+                          "en/sdk/squid-sdk/tools/external-tools/external-tools-overview",
+                          "en/sdk/squid-sdk/tools/faq",
+                          "en/sdk/squid-sdk/tools/troubleshooting"
                         ]
                       },
                       {
                         "group": "Migration & Help",
                         "pages": [
-                          "en/sdk/migration/migrate-to-arrowsquid",
-                          "en/sdk/migration/migrate-to-arrowsquid-on-substrate",
-                          "en/sdk/migration/migrate-subgraph",
-                          "en/sdk/migration/subsquid-vs-thegraph",
-                          "en/sdk/migration/subgraphs-support/subgraphs-support",
-                          "en/sdk/migration/migrate-to-hasura-configuration-tool-v2",
-                          "en/sdk/migration/firesquid/firesquid-migration"
+                          "en/sdk/squid-sdk/migration/migrate-to-arrowsquid",
+                          "en/sdk/squid-sdk/migration/migrate-to-arrowsquid-on-substrate",
+                          "en/sdk/squid-sdk/migration/migrate-subgraph",
+                          "en/sdk/squid-sdk/migration/subsquid-vs-thegraph",
+                          "en/sdk/squid-sdk/migration/subgraphs-support/subgraphs-support",
+                          "en/sdk/squid-sdk/migration/migrate-to-hasura-configuration-tool-v2",
+                          "en/sdk/squid-sdk/migration/firesquid/firesquid-migration"
                         ]
                       }
                     ]
@@ -325,15 +344,15 @@
                   {
                     "group": "Getting Started",
                     "pages": [
-                      "en/sdk/substrate/quickstart"
+                      "en/sdk/squid-sdk/substrate/quickstart"
                     ]
                   },
                   {
                     "group": "Tutorials",
                     "pages": [
-                      "en/sdk/substrate/tutorials/substrate",
-                      "en/sdk/substrate/tutorials/ink",
-                      "en/sdk/substrate/tutorials/frontier-evm"
+                      "en/sdk/squid-sdk/substrate/tutorials/substrate",
+                      "en/sdk/squid-sdk/substrate/tutorials/ink",
+                      "en/sdk/squid-sdk/substrate/tutorials/frontier-evm"
                     ]
                   },
                   {
@@ -342,36 +361,36 @@
                       {
                         "group": "Batch Processor",
                         "pages": [
-                          "en/sdk/substrate/reference/general",
-                          "en/sdk/substrate/reference/data-requests",
-                          "en/sdk/substrate/reference/field-selection",
-                          "en/sdk/substrate/reference/context-interfaces",
-                          "en/sdk/substrate/reference/logger"
+                          "en/sdk/squid-sdk/substrate/reference/general",
+                          "en/sdk/squid-sdk/substrate/reference/data-requests",
+                          "en/sdk/squid-sdk/substrate/reference/field-selection",
+                          "en/sdk/squid-sdk/substrate/reference/context-interfaces",
+                          "en/sdk/squid-sdk/substrate/reference/logger"
                         ]
                       },
                       {
                         "group": "Advanced Topics",
                         "pages": [
-                          "en/sdk/substrate/reference/data-sourcing-miniguide",
-                          "en/sdk/substrate/reference/types-bundle-miniguide",
-                          "en/sdk/substrate/reference/frontier",
-                          "en/sdk/substrate/reference/frontier-evm",
-                          "en/sdk/substrate/reference/gear",
-                          "en/sdk/substrate/reference/ink"
+                          "en/sdk/squid-sdk/substrate/reference/data-sourcing-miniguide",
+                          "en/sdk/squid-sdk/substrate/reference/types-bundle-miniguide",
+                          "en/sdk/squid-sdk/substrate/reference/frontier",
+                          "en/sdk/squid-sdk/substrate/reference/frontier-evm",
+                          "en/sdk/squid-sdk/substrate/reference/gear",
+                          "en/sdk/squid-sdk/substrate/reference/ink"
                         ]
                       },
                       {
                         "group": "Data Storage",
                         "pages": [
-                          "en/sdk/substrate/reference/store/typeorm",
-                          "en/sdk/substrate/reference/store/bigquery",
+                          "en/sdk/squid-sdk/substrate/reference/store/typeorm",
+                          "en/sdk/squid-sdk/substrate/reference/store/bigquery",
                           {
                             "group": "File Storage",
                             "pages": [
-                              "en/sdk/substrate/reference/store/file/csv",
-                              "en/sdk/substrate/reference/store/file/json",
-                              "en/sdk/substrate/reference/store/file/parquet",
-                              "en/sdk/substrate/reference/store/file/s3-dest"
+                              "en/sdk/squid-sdk/substrate/reference/store/file/csv",
+                              "en/sdk/squid-sdk/substrate/reference/store/file/json",
+                              "en/sdk/squid-sdk/substrate/reference/store/file/parquet",
+                              "en/sdk/squid-sdk/substrate/reference/store/file/s3-dest"
                             ]
                           }
                         ]
@@ -379,12 +398,12 @@
                       {
                         "group": "Schema Files",
                         "pages": [
-                          "en/sdk/substrate/reference/schema-file/intro",
-                          "en/sdk/substrate/reference/schema-file/entities",
-                          "en/sdk/substrate/reference/schema-file/entity-relations",
-                          "en/sdk/substrate/reference/schema-file/indexes-and-constraints",
-                          "en/sdk/substrate/reference/schema-file/interfaces",
-                          "en/sdk/substrate/reference/schema-file/unions-and-typed-json"
+                          "en/sdk/squid-sdk/substrate/reference/schema-file/intro",
+                          "en/sdk/squid-sdk/substrate/reference/schema-file/entities",
+                          "en/sdk/squid-sdk/substrate/reference/schema-file/entity-relations",
+                          "en/sdk/squid-sdk/substrate/reference/schema-file/indexes-and-constraints",
+                          "en/sdk/squid-sdk/substrate/reference/schema-file/interfaces",
+                          "en/sdk/squid-sdk/substrate/reference/schema-file/unions-and-typed-json"
                         ]
                       }
                     ]
@@ -399,21 +418,21 @@
                   {
                     "group": "Fuel Network",
                     "pages": [
-                      "en/sdk/fuel/quickstart",
-                      "en/sdk/fuel/fuel-datasource",
-                      "en/sdk/fuel/indexing-receipts",
-                      "en/sdk/fuel/network-api",
-                      "en/sdk/fuel/cli-cheatsheet",
+                      "en/sdk/squid-sdk/fuel/quickstart",
+                      "en/sdk/squid-sdk/fuel/fuel-datasource",
+                      "en/sdk/squid-sdk/fuel/indexing-receipts",
+                      "en/sdk/squid-sdk/fuel/network-api",
+                      "en/sdk/squid-sdk/fuel/cli-cheatsheet",
                       {
                         "group": "Fuel Reference",
                         "pages": [
-                          "en/sdk/fuel/fuel-datasource/general",
-                          "en/sdk/fuel/fuel-datasource/field-selection",
-                          "en/sdk/fuel/fuel-datasource/context-interfaces",
-                          "en/sdk/fuel/fuel-datasource/receipts",
-                          "en/sdk/fuel/fuel-datasource/transactions",
-                          "en/sdk/fuel/fuel-datasource/inputs",
-                          "en/sdk/fuel/fuel-datasource/outputs"
+                          "en/sdk/squid-sdk/fuel/fuel-datasource/general",
+                          "en/sdk/squid-sdk/fuel/fuel-datasource/field-selection",
+                          "en/sdk/squid-sdk/fuel/fuel-datasource/context-interfaces",
+                          "en/sdk/squid-sdk/fuel/fuel-datasource/receipts",
+                          "en/sdk/squid-sdk/fuel/fuel-datasource/transactions",
+                          "en/sdk/squid-sdk/fuel/fuel-datasource/inputs",
+                          "en/sdk/squid-sdk/fuel/fuel-datasource/outputs"
                         ]
                       }
                     ]
@@ -421,20 +440,20 @@
                   {
                     "group": "Tron",
                     "pages": [
-                      "en/sdk/tron/quickstart",
-                      "en/sdk/tron/indexing-usdt-transfers",
-                      "en/sdk/tron/network-api",
-                      "en/sdk/tron/cli-cheatsheet",
-                      "en/sdk/tron/tron",
+                      "en/sdk/squid-sdk/tron/quickstart",
+                      "en/sdk/squid-sdk/tron/indexing-usdt-transfers",
+                      "en/sdk/squid-sdk/tron/network-api",
+                      "en/sdk/squid-sdk/tron/cli-cheatsheet",
+                      "en/sdk/squid-sdk/tron/tron",
                       {
                         "group": "Tron Reference",
                         "pages": [
-                          "en/sdk/tron/tron-batch-processor/general",
-                          "en/sdk/tron/tron-batch-processor/field-selection",
-                          "en/sdk/tron/tron-batch-processor/context-interfaces",
-                          "en/sdk/tron/tron-batch-processor/logs",
-                          "en/sdk/tron/tron-batch-processor/transactions",
-                          "en/sdk/tron/tron-batch-processor/internal-transactions"
+                          "en/sdk/squid-sdk/tron/tron-batch-processor/general",
+                          "en/sdk/squid-sdk/tron/tron-batch-processor/field-selection",
+                          "en/sdk/squid-sdk/tron/tron-batch-processor/context-interfaces",
+                          "en/sdk/squid-sdk/tron/tron-batch-processor/logs",
+                          "en/sdk/squid-sdk/tron/tron-batch-processor/transactions",
+                          "en/sdk/squid-sdk/tron/tron-batch-processor/internal-transactions"
                         ]
                       }
                     ]
@@ -442,7 +461,7 @@
                   {
                     "group": "Starknet",
                     "pages": [
-                      "en/sdk/starknet/quickstart"
+                      "en/sdk/squid-sdk/starknet/quickstart"
                     ]
                   }
                 ]
@@ -455,6 +474,7 @@
             "groups": [
               {
                 "group": "Cloud",
+                "icon": "cloud",
                 "pages": [
                   {
                     "group": "Getting Started",
@@ -519,7 +539,7 @@
                 "group": "Self-Hosting",
                 "icon": "hard-drive",
                 "pages": [
-                  "en/sdk/features/self-hosting"
+                  "en/sdk/squid-sdk/features/self-hosting"
                 ]
               }
             ]
@@ -530,6 +550,7 @@
             "groups": [
               {
                 "group": "SQD Network",
+                "icon": "globe",
                 "pages": [
                   "en/network/overview",
                   "en/network/faq",
@@ -539,6 +560,7 @@
               },
               {
                 "group": "Participate",
+                "icon": "handshake",
                 "pages": [
                   "en/network/participate/procuring-sqd",
                   "en/network/participate/delegate",
@@ -691,15 +713,10 @@
                 "dropdown": "EVM",
                 "icon": "ethereum",
                 "description": "Ethereum and EVM-compatible chains",
-                "groups": [
-                  {
-                    "group": "API",
-                    "openapi": {
-                      "source": "en/api-reference/evm/openapi.yaml",
-                      "directory": "api-reference/evm"
-                    }
-                  }
-                ]
+                "openapi": {
+                  "source": "en/api/evm/openapi.yaml",
+                  "directory": "api/evm"
+                }
               },
               {
                 "dropdown": "Solana",
@@ -715,8 +732,17 @@
             "groups": [
               {
                 "group": "Documentation",
+                "icon": "lines-leaning",
                 "pages": [
                   "en/other/glossary/glossary"
+                ]
+              },
+              {
+                "group": "Showcase",
+                "tag": "EXPERIMENTAL",
+                "icon": "lightbulb",
+                "pages": [
+                  "en/other/showcase/showcase"
                 ]
               }
             ]
@@ -1044,11 +1070,12 @@
       "href": "https://github.com/subsquid/squid-sdk"
     },
     "links": [{
-      "label": "sqd.ai",
-      "href": "https://github.com/subsquid/squid-sdk"
-    }, {
       "label": "For LLMs",
       "href": "https://sqd-2119b3c3.mintlify.app/llms-full.txt"
+    }, {
+      "label": "Get help",
+      "href": "https://t.me/hydradevs",
+      "icon": "telegram"
     }]
   },
   "redirects": [

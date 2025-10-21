@@ -1,42 +1,40 @@
-/* Group headers */
+/* Group headers - Section names like CLOUD, PIPES SDK */
 .nav-group-title,
 .sidebar-group-header {
   font-size: 12px !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.06em !important;
-  color: #6b7280 !important;
-  opacity: 0.8 !important;
+  color: #4b5563 !important; /* Darker gray for better visibility */
+  opacity: 1 !important;
   margin-bottom: 8px !important;
   padding: 8px 12px 4px 12px !important;
   background: none !important;
   border: none !important;
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  .nav-group-title,
-  .sidebar-group-header {
-    color: #9ca3af !important;
-  }
-  .nav-anchor:hover,
-  .sidebar-group .nav-anchor:hover {
-    background: rgba(255, 255, 255, 0.06);
-  }
-  .nav-anchor[aria-current="true"],
-  .sidebar-group .nav-anchor[aria-current="true"] {
-    background: rgba(255, 255, 255, 0.08);
-  }
-  .nav-group:nth-of-type(3)::before,
-  .nav-group:nth-of-type(5)::before,
-  .sidebar-group:nth-child(3)::before,
-  .sidebar-group:nth-child(5)::before {
-    background: rgba(255, 255, 255, 0.12);
-  }
+/* Global anchors (Blog, Changelog) - Make darker/more prominent */
+.nav-global-anchor,
+.sidebar-global-anchor,
+a[class*="global-anchor"],
+a[href*="blog.sqd.dev"],
+a[href*="product.sqd.ai"],
+nav a[href*="blog"],
+nav a[href*="changelog"],
+.sidebar a[href*="blog"],
+.sidebar a[href*="changelog"],
+[class*="sidebar"] a[href*="blog"],
+[class*="sidebar"] a[href*="changelog"],
+.nav-global a,
+[data-type="anchor"],
+.anchor-link,
+aside a[href^="https://blog"],
+aside a[href^="https://product"]
+{
+  color: #111827 !important;
 }
 
-/* Dropdown styling - balanced vibrancy for LIGHT mode */
-html:not(.dark) button.nav-dropdown-trigger,
+/* Dropdown styling - balanced vibrancy */
 button.nav-dropdown-trigger {
   background: linear-gradient(
     135deg,
@@ -49,7 +47,6 @@ button.nav-dropdown-trigger {
   transition: all 0.2s ease !important;
 }
 
-html:not(.dark) button.nav-dropdown-trigger:hover,
 button.nav-dropdown-trigger:hover {
   background: linear-gradient(
     135deg,
@@ -62,51 +59,72 @@ button.nav-dropdown-trigger:hover {
   transform: translateY(-1px) !important;
 }
 
-/* Dark mode - balanced blue glow */
-@media (prefers-color-scheme: dark) {
-  button.nav-dropdown-trigger {
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.15) 0%,
-      rgba(96, 165, 250, 0.2) 50%,
-      rgba(147, 197, 253, 0.16) 100%
-    ) !important;
-    border: 1px solid rgba(96, 165, 250, 0.3) !important;
-    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2) !important;
-  }
-
-  button.nav-dropdown-trigger:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.22) 0%,
-      rgba(96, 165, 250, 0.28) 50%,
-      rgba(147, 197, 253, 0.24) 100%
-    ) !important;
-    border-color: rgba(96, 165, 250, 0.45) !important;
-    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25) !important;
-    transform: translateY(-1px) !important;
-  }
+/* Make sidebar navigation links darker/more prominent */
+.nav-anchor,
+.sidebar-group .nav-anchor {
+  color: #111827 !important; /* Very dark - more prominent than section headers */
 }
 
-html.dark button.nav-dropdown-trigger {
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.15) 0%,
-    rgba(96, 165, 250, 0.2) 50%,
-    rgba(147, 197, 253, 0.16) 100%
-  ) !important;
-  border: 1px solid rgba(96, 165, 250, 0.3) !important;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2) !important;
+/* Navigation tags - Base styling */
+.nav-tag-pill {
+  background: #5b7dff !important; /* Default: Royal blue for BETA */
+  border: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+  padding: 2px 8px !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
 }
 
-html.dark button.nav-dropdown-trigger:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.22) 0%,
-    rgba(96, 165, 250, 0.28) 50%,
-    rgba(147, 197, 253, 0.24) 100%
-  ) !important;
-  border-color: rgba(96, 165, 250, 0.45) !important;
-  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25) !important;
-  transform: translateY(-1px) !important;
+/* Yellow for NEW tags */
+.nav-tag-pill:has(
+    .nav-tag-pill-text:is([data-text*="NEW"], [data-content*="NEW"])
+  ),
+.nav-tag-pill[data-tag="new"],
+.nav-tag-pill[data-label="NEW"] {
+  background: #f59e0b !important;
+}
+
+.nav-tag-pill::before,
+.nav-tag-pill::after {
+  display: none !important;
+}
+
+.nav-tag-pill *,
+.nav-tag-pill > * {
+  background: transparent !important;
+}
+
+.nav-tag-pill:hover {
+  background: #4d6fef !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+/* Yellow hover for NEW tags */
+.nav-tag-pill:has(
+    .nav-tag-pill-text:is([data-text*="NEW"], [data-content*="NEW"])
+  ):hover,
+.nav-tag-pill[data-tag="new"]:hover,
+.nav-tag-pill[data-label="NEW"]:hover {
+  background: #d97706 !important;
+}
+
+.nav-tag-pill-text {
+  color: #ffffff !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  text-shadow: none !important;
+  background: transparent !important;
+}
+
+/* JavaScript-added classes for tag differentiation */
+.nav-tag-pill.tag-new {
+  background: #f59e0b !important;
+}
+
+.nav-tag-pill.tag-new:hover {
+  background: #d97706 !important;
 }

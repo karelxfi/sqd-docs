@@ -35,5 +35,5 @@ def validate_details_tags(file_path):
     print()
 
 if __name__ == "__main__":
-    validate_details_tags('en/api-reference/reference/substrate-api.mdx')
-    validate_details_tags('en/api-reference/reference/starknet-api.mdx')
+    validate_details_tags('en/api/reference/substrate-api.mdx')
+    validate_details_tags('en/api/reference/starknet-api.mdx')

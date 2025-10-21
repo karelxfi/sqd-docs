@@ -1,3 +1,5 @@
+import React from "react";
+
 export const Container = ({ children }) => {
   return <div className="px-4 lg:px-10 py-14">{children}</div>;
 };
@@ -83,6 +85,52 @@ export const ImageCard = ({ img, href, title, description }) => {
       </div>
     </a>
   );
+};
+
+export const TagColorScript = () => {
+  React.useEffect(() => {
+    function updateTagColors() {
+      const pills = document.querySelectorAll(".nav-tag-pill");
+      console.log("Found", pills.length, "tag pills");
+      
+      pills.forEach((pill) => {
+        const text = pill.textContent.trim().toUpperCase();
+        console.log("Tag text:", text);
+        
+        if (text === "NEW") {
+          pill.classList.add("tag-new");
+          console.log("Applied tag-new class");
+        } else if (text === "BETA") {
+          pill.classList.remove("tag-new");
+        }
+      });
+    }
+
+    // Run immediately
+    updateTagColors();
+
+    // Run after a short delay to catch dynamically loaded content
+    setTimeout(updateTagColors, 100);
+    setTimeout(updateTagColors, 500);
+    setTimeout(updateTagColors, 1000);
+
+    // Watch for any DOM changes
+    const observer = new MutationObserver(() => {
+      updateTagColors();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    return () => observer.disconnect();
+
+}, []);
+
+return null;
 };
 
 ;

@@ -1,38 +1,136 @@
 ---
 title: "Abstract Mainnet"
-description: "Data catalog and field definitions for Abstract Mainnet"
-
+description: "Data catalog and endpoint information for Abstract Mainnet"
 ---
 
 # Abstract Mainnet
 
-Network ID: 
+<Info>
+  ✨ **Portal Available** - This network is available on Portal with 10-50x
+  faster performance.
+</Info>
+
+## Network Information
+
+- **Network ID**: `abstract-mainnet`
+- **Chain ID**: `2741`
+- **Portal Status**: ✓ Available
+- **Real-time Streaming**: Not Available
+- **State Diffs**: Not Available
+- **Traces**: Not Available
+
+## Endpoints
+
+<Warning>
+  V2 archives will be sunset soon. [Migrate to Portal
+  →](/en/cloud/resources/migrate-to-portal/)
+</Warning>
+
+<Tabs>
+  <Tab title="Portal (Recommended)">
+    ### Portal Endpoint
+    
+    ```
+    https://portal.sqd.dev/datasets/abstract-mainnet
+    ```
+    
+    <Tip>
+    **Benefits**: 10-50x faster queries, decentralized (1,600+ nodes), 30x replication
+    </Tip>
+    
+    ### Usage
+    
+    ```typescript
+    import { EvmBatchProcessor } from '@subsquid/evm-processor'
+    
+    const processor = new EvmBatchProcessor()
+      .setGateway('https://portal.sqd.dev/datasets/abstract-mainnet')
+      .setRpcEndpoint('<your_rpc_endpoint>')
+      .setFinalityConfirmation(75)
+      .setBlockRange({ from: 0 })
+    ```
+  </Tab>
+  
+  <Tab title="V2 Archive (Legacy)">
+    ### V2 Archive Endpoint
+    
+    ```
+    https://v2.archive.subsquid.io/network/abstract-mainnet
+    ```
+    
+    <Warning>
+    **Legacy**: Rate limited at 50 req/10s per IP. Will be sunset soon.
+    </Warning>
+    
+    ### Usage
+    
+    ```typescript
+    import { EvmBatchProcessor } from '@subsquid/evm-processor'
+    
+    const processor = new EvmBatchProcessor()
+      .setGateway('https://v2.archive.subsquid.io/network/abstract-mainnet')
+      .setRpcEndpoint('<your_rpc_endpoint>')
+      .setFinalityConfirmation(75)
+      .setBlockRange({ from: 0 })
+    ```
+  </Tab>
+</Tabs>
 
 ## Available Data
 
 This network provides the following data types and fields:
 
-### Entity Type
-
-| Field Name | Data Type | Description |
-|------------|-----------|-------------|
-|  | Data Type | Description |
-
 ### Blocks
 
-| Field Name | Data Type | Description |
-|------------|-----------|-------------|
-|  | integer | Block number |
+| Field Name      | Data Type | Description                 |
+| --------------- | --------- | --------------------------- |
+| `number`        | integer   | Block number                |
+| `hash`          | string    | Block hash                  |
+| `timestamp`     | integer   | Block timestamp (Unix)      |
+| `parentHash`    | string    | Parent block hash           |
+| `gasUsed`       | bigint    | Total gas used in block     |
+| `gasLimit`      | bigint    | Block gas limit             |
+| `baseFeePerGas` | bigint    | Base fee per gas (EIP-1559) |
 
-### Tx
+### Transactions
 
-| Field Name | Data Type | Description |
-|------------|-----------|-------------|
-|  | integer | Index of the transaction in the block |
+| Field Name | Data Type | Description                                   |
+| ---------- | --------- | --------------------------------------------- |
+| `hash`     | string    | Transaction hash                              |
+| `from`     | address   | Sender address                                |
+| `to`       | address   | Recipient address                             |
+| `value`    | bigint    | Transaction value in wei                      |
+| `gasUsed`  | bigint    | Gas used by transaction                       |
+| `gasPrice` | bigint    | Gas price in wei                              |
+| `input`    | bytes     | Transaction input data                        |
+| `nonce`    | integer   | Transaction nonce                             |
+| `status`   | integer   | Transaction status (1 = success, 0 = failure) |
 
 ### Logs
 
-| Field Name | Data Type | Description |
-|------------|-----------|-------------|
-|  | integer | Index of the log in the block |
+| Field Name         | Data Type | Description                           |
+| ------------------ | --------- | ------------------------------------- |
+| `address`          | address   | Contract address that emitted the log |
+| `topics`           | array     | Indexed event topics (up to 4)        |
+| `data`             | bytes     | Non-indexed event data                |
+| `logIndex`         | integer   | Log index in the block                |
+| `transactionIndex` | integer   | Index of parent transaction           |
+| `transactionHash`  | string    | Hash of parent transaction            |
 
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="Quick Start" icon="rocket" href="/en/sdk/pipes-sdk/quickstart">
+    Build your first indexer
+  </Card>
+  <Card title="EVM API Reference" icon="code" href="/en/api/reference/evm-api">
+    Complete API documentation
+  </Card>
+  <Card
+    title="Migration Guide"
+    icon="arrow-right"
+    href="/en/cloud/resources/migrate-to-portal/"
+  >
+    Migrate from v2 archives to Portal
+  </Card>
+</CardGroup>

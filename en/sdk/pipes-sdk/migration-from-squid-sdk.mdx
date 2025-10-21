@@ -41,7 +41,7 @@ graph LR
     A[Processor] --> B[Batch Handler]
     B --> C[TypeORM Store]
     C --> D[GraphQL Server]
-    
+
     style A fill:#3B82F6,stroke:#1E40AF,stroke-width:2px,color:#fff
     style B fill:#8B5CF6,stroke:#6D28D9,stroke-width:2px,color:#fff
     style C fill:#F59E0B,stroke:#D97706,stroke-width:2px,color:#fff
@@ -54,7 +54,7 @@ graph LR
 graph LR
     A[Source] --> B[Transformer]
     B --> C[Target]
-    
+
     style A fill:#3B82F6,stroke:#1E40AF,stroke-width:2px,color:#fff
     style B fill:#8B5CF6,stroke:#6D28D9,stroke-width:2px,color:#fff
     style C fill:#10B981,stroke:#059669,stroke-width:2px,color:#fff
@@ -372,24 +372,26 @@ const enrichmentTransformer = {
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Examples" icon="code" href="/en/sdk/evm/pipes/examples">
+  <Card title="Examples" icon="code" href="/en/sdk/pipes-sdk/examples">
     See side-by-side comparison examples
   </Card>
 
 {" "}
+
 <Card
   title="API Reference"
   icon="file-code"
-  href="/en/sdk/evm/pipes/api-reference"
+  href="/en/sdk/pipes-sdk/api-reference"
 >
   Complete Pipes SDK API documentation
 </Card>
 
 {" "}
+
 <Card
   title="Data Persistence"
   icon="database"
-  href="/en/sdk/evm/pipes/data-persistence"
+  href="/en/sdk/pipes-sdk/data-persistence"
 >
   Learn about Clickhouse integration
 </Card>
@@ -397,7 +399,7 @@ const enrichmentTransformer = {
   <Card
     title="Advanced Patterns"
     icon="rocket"
-    href="/en/sdk/evm/pipes/advanced-patterns"
+    href="/en/sdk/pipes-sdk/advanced-patterns"
   >
     Explore advanced indexing patterns
   </Card>

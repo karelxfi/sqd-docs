@@ -69,9 +69,9 @@ def main():
     files_to_fix = [
         'en/sdk/evm/reference/factory-contracts.mdx',
         'en/sdk/evm/reference/logs.mdx',
-        'en/api-reference/reference/evm-api.mdx',
-        'en/api-reference/reference/starknet-api.mdx',
-        'en/api-reference/reference/substrate-api.mdx',
+        'en/api/reference/evm-api.mdx',
+        'en/api/reference/starknet-api.mdx',
+        'en/api/reference/substrate-api.mdx',
         'en/cloud/reference/rpc-proxy-networks.mdx',
     ]
 
