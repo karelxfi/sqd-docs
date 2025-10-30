@@ -199,7 +199,7 @@ Database credentials must be supplied via the environment variables:
 * `DB_URL` (default `undefined`, see the [DB_URL section](#db_url))
 
 <Info>
-When deploying to [Cloud](cloud) with the [Postgres addon](cloud/reference/pg) enabled in the [manifest](cloud/reference/manifest), any user-supplied values are overwritten for most of these variables. See [Variable shadowing](cloud/reference/pg/#variable-shadowing).
+When deploying to [Cloud](cloud) with the [Postgres addon](/en/cloud/reference/pg) enabled in the [manifest](/en/cloud/reference/manifest), any user-supplied values are overwritten for most of these variables. See [Variable shadowing](/en/cloud/reference/pg/#variable-shadowing).
 </Info>
 
 `typorm-store` also supports the following variables for connecting to databases that require client-side SSL:
@@ -212,7 +212,7 @@ When deploying to [Cloud](cloud) with the [Postgres addon](cloud/reference/pg) e
 * `DB_SSL_KEY_FILE` - path to client key in plain text
 
 <Tip>
-In case you're deploying to [Cloud](cloud) you can set [secrets](cloud/resources/env-variables/#secrets) to the contents of any given file via stdin:
+In case you're deploying to [Cloud](cloud) you can set [secrets](/en/cloud/resources/env-variables/#secrets) to the contents of any given file via stdin:
 ```bash
 sqd secrets set DB_SSL_CA < ca.crt
 ```

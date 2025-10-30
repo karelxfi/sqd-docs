@@ -1,0 +1,431 @@
+---
+title: "Migration from Squid SDK"
+description: "Migrate from Squid SDK to Pipes SDK"
+---
+
+## Key Differences
+
+| Aspect       | Squid SDK          | Pipes SDK       |
+| ------------ | ------------------ | --------------- |
+| Architecture | Batch processor    | Streaming pipes |
+| Database     | TypeORM (required) | Any (DIY)       |
+| GraphQL      | Auto-generated     | Manual          |
+| Setup        | Full stack         | Minimal         |
+| Flexibility  | Structured         | Maximum         |
+
+## Conceptual Mapping
+
+### Data Source
+
+**Squid SDK:**
+
+```ts
+const processor = new EvmBatchProcessor()
+  .setDataSource({
+    archive: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+    chain: "https://rpc.ankr.com/eth",
+  })
+  .setBlockRange({ from: 20000000 });
+```
+
+**Pipes SDK:**
+
+```ts
+const source = createEvmPortalSource({
+  portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
+});
+
+const decoder = createEvmDecoder({
+  range: { from: 20000000 },
+  // ...
+});
+```
+
+### Log Selection
+
+**Squid SDK:**
+
+```ts
+processor.addLog({
+  address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+  topic0: [erc20.events.Transfer.topic],
+});
+```
+
+**Pipes SDK:**
+
+```ts
+// Option 1: With EvmQueryBuilder
+const query = new EvmQueryBuilder()
+  .addFields({
+    block: { number: true, hash: true },
+    log: { address: true, topics: true, data: true },
+  })
+  .addLog({
+    request: {
+      address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+      topic0: [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+      ],
+    },
+    range: { from: 20000000 },
+  });
+
+// Option 2: With createEvmDecoder
+const decoder = createEvmDecoder({
+  range: { from: 20000000 },
+  contracts: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+  events: {
+    transfer: commonAbis.erc20.events.Transfer,
+  },
+});
+```
+
+### Processing
+
+**Squid SDK:**
+
+```ts
+processor.run(db, async (ctx) => {
+  for (let block of ctx.blocks) {
+    for (let log of block.logs) {
+      if (log.topics[0] === erc20.events.Transfer.topic) {
+        const { from, to, value } = erc20.events.Transfer.decode(log);
+        // Save to TypeORM
+        await ctx.store.save(new Transfer({ from, to, value }));
+      }
+    }
+  }
+});
+```
+
+**Pipes SDK:**
+
+```ts
+const target = createTarget({
+  write: async ({ ctx: { logger }, read }) => {
+    for await (const { data } of read()) {
+      for (const transfer of data.transfer) {
+        // Save to any database
+        await database.insert({
+          from: transfer.event.from,
+          to: transfer.event.to,
+          value: transfer.event.value,
+        });
+      }
+    }
+  },
+});
+
+await source.pipe(decoder).pipeTo(target);
+```
+
+## Complete Migration Example
+
+### Squid SDK
+
+```ts
+import { EvmBatchProcessor } from "@subsquid/evm-processor";
+import { TypeormDatabase } from "@subsquid/typeorm-store";
+import * as erc20 from "./abi/erc20";
+
+const processor = new EvmBatchProcessor()
+  .setDataSource({
+    archive: "https://v2.archive.subsquid.io/network/ethereum-mainnet",
+  })
+  .setBlockRange({ from: 20000000 })
+  .addLog({
+    address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+    topic0: [erc20.events.Transfer.topic],
+  });
+
+processor.run(new TypeormDatabase(), async (ctx) => {
+  const transfers = [];
+
+  for (let block of ctx.blocks) {
+    for (let log of block.logs) {
+      const { from, to, value } = erc20.events.Transfer.decode(log);
+      transfers.push(
+        new Transfer({
+          blockNumber: block.header.height,
+          timestamp: new Date(block.header.timestamp),
+          from,
+          to,
+          value: value.toString(),
+        })
+      );
+    }
+  }
+
+  await ctx.store.save(transfers);
+});
+```
+
+### Pipes SDK
+
+```ts
+import {
+  createEvmPortalSource,
+  createEvmDecoder,
+  commonAbis,
+} from "@sqd-pipes/pipes/evm";
+import { createTarget } from "@sqd-pipes/pipes";
+
+const source = createEvmPortalSource({
+  portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
+});
+
+const decoder = createEvmDecoder({
+  range: { from: 20000000 },
+  contracts: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+  events: {
+    transfer: commonAbis.erc20.events.Transfer,
+  },
+});
+
+const target = createTarget({
+  write: async ({ ctx: { logger }, read }) => {
+    for await (const { data } of read()) {
+      const transfers = data.transfer.map((t) => ({
+        blockNumber: t.blockNumber,
+        timestamp: t.timestamp,
+        from: t.event.from,
+        to: t.event.to,
+        value: t.event.value.toString(),
+      }));
+
+      await database.insertMany(transfers);
+      logger.info(`Saved ${transfers.length} transfers`);
+    }
+  },
+});
+
+await source.pipe(decoder).pipeTo(target);
+```
+
+## Factory Pattern
+
+### Squid SDK
+
+```ts
+processor.addLog({
+  address: ["0x1f98431c8ad98523631ae4a59f267346ea31f984"],
+  topic0: [uniswapFactory.events.PoolCreated.topic],
+});
+
+// Track pools manually
+const pools = new Set<string>();
+
+processor.run(db, async (ctx) => {
+  for (let block of ctx.blocks) {
+    for (let log of block.logs) {
+      if (log.topics[0] === uniswapFactory.events.PoolCreated.topic) {
+        const { pool } = uniswapFactory.events.PoolCreated.decode(log);
+        pools.add(pool);
+      }
+    }
+  }
+});
+```
+
+### Pipes SDK
+
+```ts
+const decoder = createEvmDecoder({
+  range: { from: 12369621 },
+  contracts: createFactory({
+    address: "0x1f98431c8ad98523631ae4a59f267346ea31f984",
+    event: factoryAbi.events.PoolCreated,
+    parameter: (e) => e.pool,
+    database: await sqliteFactoryDatabase({ path: "./pools.sqlite" }),
+  }),
+  events: {
+    swap: poolAbi.events.Swap,
+  },
+});
+```
+
+## Database Integration
+
+### Squid SDK (TypeORM)
+
+```ts
+@Entity_()
+export class Transfer {
+  @PrimaryColumn_()
+  id!: string;
+
+  @Index_()
+  @Column_("int4", { nullable: false })
+  blockNumber!: number;
+
+  @Column_("text", { nullable: false })
+  from!: string;
+
+  @Column_("text", { nullable: false })
+  to!: string;
+
+  @Column_("numeric", { nullable: false })
+  value!: bigint;
+}
+
+processor.run(new TypeormDatabase(), async (ctx) => {
+  await ctx.store.save(transfers);
+});
+```
+
+### Pipes SDK (Any Database)
+
+```ts
+// PostgreSQL
+const target = createTarget({
+  write: async ({read}) => {
+    for await (const {data} of read()) {
+      await postgres.query(
+        'INSERT INTO transfers (block_number, from_address, to_address, value) VALUES ($1, $2, $3, $4)',
+        data.transfer.map(t => [t.blockNumber, t.event.from, t.event.to, t.event.value.toString()])
+      )
+    }
+  }
+})
+
+// ClickHouse
+const target = createClickhouseTarget({
+  client: clickhouseClient,
+  onData: async ({store, data}) => {
+    store.insert({
+      table: 'transfers',
+      values: data.transfer.map(t => ({...})),
+      format: 'JSONEachRow'
+    })
+  },
+  onRollback: async ({store, cursor}) => {
+    await store.removeAllRows({
+      tables: ['transfers'],
+      where: `block_number > ${cursor.number}`
+    })
+  }
+})
+```
+
+## Cursor Management
+
+### Squid SDK
+
+```ts
+// Automatic via TypeORM
+```
+
+### Pipes SDK
+
+```ts
+// Manual cursor management
+let cursor = await loadCursor()
+
+const source = createEvmPortalSource({
+  portal: 'https://portal.sqd.dev/datasets/ethereum-mainnet',
+  cursor: cursor ? { blockNumber: cursor.blockNumber } : undefined
+})
+
+const target = createTarget({
+  write: async ({read}) => {
+    for await (const {data} of read()) {
+      await database.insert(data.transfer)
+      const lastBlock = Math.max(...data.transfer.map(t => t.blockNumber))
+      await saveCursor(lastBlock)
+    }
+  }
+})
+
+// Or use ClickHouse target (automatic)
+const target = createClickhouseTarget({
+  client,
+  onData: async ({store, data}) => {
+    store.insert({ table: 'transfers', values: [...] })
+  },
+  onRollback: async ({store, cursor}) => {
+    await store.removeAllRows({ tables: ['transfers'], where: `block_number > ${cursor.number}` })
+  }
+})
+```
+
+## Migration Checklist
+
+<Steps>
+<Step title="Install Pipes SDK">
+  ```bash
+  npm install @sqd-pipes/pipes
+  ```
+</Step>
+
+<Step title="Update data source">
+  Replace `EvmBatchProcessor` with `createEvmPortalSource`.
+</Step>
+
+<Step title="Convert log selection">
+  Use `EvmQueryBuilder` or `createEvmDecoder` instead of `processor.addLog()`.
+</Step>
+
+<Step title="Replace TypeORM">
+  Choose your database (PostgreSQL, ClickHouse, etc.) and implement target.
+</Step>
+
+<Step title="Update processing logic">
+  Replace `processor.run()` with pipe pattern and `createTarget()`.
+</Step>
+
+<Step title="Handle cursors">
+  Implement cursor management or use ClickHouse target.
+</Step>
+
+<Step title="Test pipeline">
+  Run on small block range first.
+</Step>
+</Steps>
+
+## When to Use Each
+
+### Use Squid SDK
+
+- Need auto-generated GraphQL API
+- Want TypeORM integration
+- Prefer structured approach
+- Building standard indexer
+
+### Use Pipes SDK
+
+- Need custom database
+- Want streaming pipes
+- Need maximum flexibility
+- Building custom data pipes
+- Performance-critical applications
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/en/sdk/pipes-sdk/quickstart">
+    Build your first pipe
+  </Card>
+
+{" "}
+<Card
+  title="Examples"
+  icon="lightbulb"
+  href="/en/sdk/pipes-sdk/examples/getting-started"
+>
+  View code examples
+</Card>
+
+{" "}
+<Card
+  title="Core Concepts"
+  icon="book"
+  href="/en/sdk/pipes-sdk/core-concepts/core-concepts"
+>
+  Learn the architecture
+</Card>
+
+  <Card title="Reference" icon="code" href="/en/sdk/pipes-sdk/reference/reference">
+    API reference
+  </Card>
+</CardGroup>

@@ -1,0 +1,345 @@
+---
+title: "Track NFT Transfers"
+description: "Monitor ERC-721 and ERC-1155 NFT transfers using Portal"
+---
+
+Monitor ERC-721 Transfer events across multiple NFT collections to track collection activity, analyze whale movements, or build NFT analytics platforms.
+
+## Use Case
+
+NFT transfer tracking enables you to:
+
+- Build NFT transfer trackers and analytics
+- Monitor collection activity and floor prices
+- Track whale movements across collections
+- Analyze trading patterns and market trends
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
+      "log": {
+        "address": true,
+        "topics": true,
+        "transactionHash": true
+      }
+    },
+    "logs": [{
+      "address": [
+        "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D",
+        "0x60E4d786628Fea6478F785A6d7e704777c86a7c6",
+        "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB"
+      ],
+      "topic0": ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+});
+
+// Popular NFT collections
+const NFT_CONTRACTS = [
+  "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D", // BAYC
+  "0x60E4d786628Fea6478F785A6d7e704777c86a7c6", // MAYC
+  "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB", // CryptoPunks
+];
+
+const TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    block: { number: true, timestamp: true },
+    log: {
+      address: true,
+      topics: true,
+      transactionHash: true,
+    },
+  },
+  logs: [
+    {
+      address: NFT_CONTRACTS,
+      topic0: [TRANSFER_TOPIC],
+    },
+  ],
+});
+
+// Process NFT transfers
+for (const block of blocks) {
+  for (const log of block.logs) {
+    const from = `0x${log.topics[1].slice(26)}`;
+    const to = `0x${log.topics[2].slice(26)}`;
+    const tokenId = BigInt(log.topics[3]);
+    
+    console.log({
+      blockNumber: block.header.number,
+      collection: log.address,
+      from,
+      to,
+      tokenId: tokenId.toString(),
+      txHash: log.transactionHash,
+    });
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/ethereum-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+# Popular NFT collections
+nft_contracts = [
+    "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D",  # BAYC
+    "0x60E4d786628Fea6478F785A6d7e704777c86a7c6",  # MAYC
+    "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB"   # CryptoPunks
+]
+
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        },
+        "log": {
+            "address": True,
+            "topics": True,
+            "transactionHash": True
+        }
+    },
+    "logs": [{
+        "address": nft_contracts,
+        "topic0": ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for log in block.get('logs', []):
+        from_address = "0x" + log['topics'][1][26:]
+        to_address = "0x" + log['topics'][2][26:]
+        token_id = int(log['topics'][3], 16)
+        
+        print({
+            "blockNumber": block['header']['number'],
+            "collection": log['address'],
+            "from": from_address,
+            "to": to_address,
+            "tokenId": token_id,
+            "txHash": log['transactionHash']
+        })
+```
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `address` | NFT collection contract addresses. Multiple addresses use OR logic |
+| `topic0` | Transfer event signature (same for ERC-721 and ERC-20) |
+| `topics[1]` | From address (indexed parameter) |
+| `topics[2]` | To address (indexed parameter) |
+| `topics[3]` | Token ID (indexed parameter in ERC-721) |
+
+<Tip>
+ERC-721 Transfer events have the token ID in `topics[3]`. ERC-20 transfers don't have this field (amount is in `data` instead).
+</Tip>
+
+## Expected Output
+
+```json
+{
+  "header": {
+    "number": 18000123,
+    "timestamp": 1697544779
+  },
+  "logs": [
+    {
+      "address": "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+      "topics": [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+        "0x000000000000000000000000a9d1e08c7793af67e9d92fe308d5697fb81d3e43",
+        "0x00000000000000000000000028c6c06298d514db089934071355e5743bf21d60",
+        "0x0000000000000000000000000000000000000000000000000000000000000001"
+      ],
+      "transactionHash": "0x123..."
+    }
+  ]
+}
+```
+
+## Track Specific Wallet Activity
+
+Monitor NFT transfers for a specific wallet address:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "log": {
+        "address": true,
+        "topics": true,
+        "transactionHash": true
+      }
+    },
+    "logs": [{
+      "address": ["0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"],
+      "topic0": ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"],
+      "topic2": ["0x00000000000000000000000028c6c06298d514db089934071355e5743bf21d60"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const WALLET = "0x28c6c06298d514db089934071355e5743bf21d60";
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    log: { address: true, topics: true, transactionHash: true },
+  },
+  logs: [
+    {
+      address: ["0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"], // BAYC
+      topic0: ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"],
+      topic2: [`0x000000000000000000000000${WALLET.slice(2)}`], // To address
+    },
+  ],
+});
+```
+
+```python Python
+wallet = "0x28c6c06298d514db089934071355e5743bf21d60"
+
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "log": {
+            "address": True,
+            "topics": True,
+            "transactionHash": True
+        }
+    },
+    "logs": [{
+        "address": ["0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"],
+        "topic0": ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"],
+        "topic2": [f"0x000000000000000000000000{wallet[2:]}"]
+    }]
+}
+```
+</CodeGroup>
+
+## Track Minting Events
+
+Monitor NFT mints (transfers from null address):
+
+<CodeGroup>
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    log: { address: true, topics: true },
+  },
+  logs: [
+    {
+      address: ["0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"],
+      topic0: ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"],
+      topic1: ["0x0000000000000000000000000000000000000000000000000000000000000000"], // From null
+    },
+  ],
+});
+```
+</CodeGroup>
+
+<Note>
+Minting is represented as a transfer from the zero address (`0x000...000`).
+</Note>
+
+## ERC-1155 Transfers
+
+For ERC-1155 NFTs, use different event signatures:
+
+<CodeGroup>
+```typescript TypeScript
+// ERC-1155 TransferSingle event
+const TRANSFER_SINGLE = "0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62";
+
+// ERC-1155 TransferBatch event
+const TRANSFER_BATCH = "0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb";
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    log: { address: true, topics: true, data: true },
+  },
+  logs: [
+    {
+      address: ["0x..."], // ERC-1155 contract
+      topic0: [TRANSFER_SINGLE, TRANSFER_BATCH],
+    },
+  ],
+});
+```
+</CodeGroup>
+
+## Performance Tips
+
+1. **Filter by collection**: Specify exact contract addresses
+2. **Use topic filters**: Filter by from/to addresses at Portal level
+3. **Batch processing**: Query 10k-50k blocks at a time
+4. **Minimal fields**: Request only needed fields
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Event Logs" icon="file-lines" href="/en/sdk/portal-evm/examples/query-logs">
+  General event log querying
+</Card>
+
+<Card title="Index DEX Swaps" icon="repeat" href="/en/sdk/portal-evm/examples/dex-swaps">
+  Track DEX trading activity
+</Card>
+
+<Card title="Query Transactions" icon="arrow-right-arrow-left" href="/en/sdk/portal-evm/examples/query-transactions">
+  Monitor transaction activity
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/sdk/portal-evm/api-reference">
+  View complete API docs
+</Card>
+</CardGroup>
+

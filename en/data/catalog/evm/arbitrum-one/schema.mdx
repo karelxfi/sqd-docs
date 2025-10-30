@@ -1,0 +1,82 @@
+---
+title: "Schema"
+description: "Complete data schema and field reference for Arbitrum One"
+---
+
+# Arbitrum One Data Schema
+
+Arbitrum One datasets provide comprehensive Layer 2 on-chain data including blocks, transactions, logs (events), and traces (internal transactions). All data is indexed and queryable through Portal or v2 archives.
+
+## Available Data Types
+
+<AccordionGroup>
+<Accordion title="Blocks">
+Block headers contain metadata about each block in the Arbitrum One chain.
+
+| Field Name   | Data Type | Description             |
+| ------------ | --------- | ----------------------- |
+| `number`     | integer   | Block number            |
+| `hash`       | string    | Block hash              |
+| `timestamp`  | integer   | Block timestamp (Unix)  |
+| `parentHash` | string    | Parent block hash       |
+| `gasUsed`    | bigint    | Total gas used in block |
+| `gasLimit`   | bigint    | Block gas limit         |
+
+</Accordion>
+
+<Accordion title="Transactions">
+Transaction data includes all executed transactions with their execution details.
+
+| Field Name | Data Type | Description                                   |
+| ---------- | --------- | --------------------------------------------- |
+| `hash`     | string    | Transaction hash                              |
+| `from`     | address   | Sender address                                |
+| `to`       | address   | Recipient address                             |
+| `value`    | bigint    | Transaction value in wei                      |
+| `gasUsed`  | bigint    | Gas used by transaction                       |
+| `gasPrice` | bigint    | Gas price in wei                              |
+| `input`    | bytes     | Transaction input data                        |
+| `nonce`    | integer   | Transaction nonce                             |
+| `status`   | integer   | Transaction status (1 = success, 0 = failure) |
+
+</Accordion>
+
+<Accordion title="Logs">
+Event logs emitted by smart contracts during transaction execution.
+
+| Field Name         | Data Type | Description                           |
+| ------------------ | --------- | ------------------------------------- |
+| `address`          | address   | Contract address that emitted the log |
+| `topics`           | array     | Indexed event topics (up to 4)        |
+| `data`             | bytes     | Non-indexed event data                |
+| `logIndex`         | integer   | Log index in the block                |
+| `transactionIndex` | integer   | Index of parent transaction           |
+| `transactionHash`  | string    | Hash of parent transaction            |
+
+</Accordion>
+
+<Accordion title="Traces">
+Internal transactions and call traces showing execution flow within transactions.
+
+| Field Name         | Data Type | Description                                |
+| ------------------ | --------- | ------------------------------------------ |
+| `transactionIndex` | integer   | Index of parent transaction                |
+| `type`             | string    | Trace type (call, create, suicide, reward) |
+| `from`             | address   | Trace originator address                   |
+| `to`               | address   | Trace destination address                  |
+| `value`            | bigint    | Value transferred                          |
+| `gas`              | bigint    | Gas provided                               |
+| `gasUsed`          | bigint    | Gas actually used                          |
+| `input`            | bytes     | Input data                                 |
+| `output`           | bytes     | Output data                                |
+
+</Accordion>
+</AccordionGroup>
+
+## Usage Examples
+
+For code examples showing how to query this data, see:
+
+- [Query Logs Example](/en/sdk/portal-evm/examples/query-logs)
+- [Query Transactions Example](/en/sdk/portal-evm/examples/query-transactions)
+- [Query Traces Example](/en/sdk/portal-evm/examples/query-traces)

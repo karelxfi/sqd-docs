@@ -1,0 +1,66 @@
+---
+title: "Overview"
+description: "Starknet Mainnet data indexing and API access"
+---
+
+<Info>
+  Starting today (2025-02-23) all open private network gateways are rate limited
+  at 50 requests per 10 seconds per IP. Higher bandwidths will soon become
+  available via the public network.
+</Info>
+
+## Network Information
+
+- **Network ID**: `starknet-mainnet`
+- **Gateway**: Open Private Network
+
+## Endpoints
+
+### Gateway Endpoint
+
+```
+https://v2.archive.subsquid.io/network/starknet-mainnet
+```
+
+### Usage
+
+```typescript
+import { StarknetDataSource } from '@subsquid/starknet-stream'
+
+const dataSource = new StarknetDataSource()
+  .setGateway("https://v2.archive.subsquid.io/network/starknet-mainnet")
+  .setBlockRange({ from: 0 });
+```
+
+## Quick Start
+
+Get started indexing Starknet Mainnet data:
+
+<Card
+  title="Quick Start"
+  icon="terminal"
+  href="/en/sdk/squid-sdk/starknet/quickstart"
+>
+  Quick reference for building your indexer
+</Card>
+
+## Schema Reference
+
+<Card
+  title="View Schema"
+  icon="database"
+  href="/en/data/catalog/starknet/starknet-mainnet/schema"
+>
+  See complete field definitions for all data types
+</Card>
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="code" href="/en/subsquid-network/reference/starknet-api">
+    Complete API documentation
+  </Card>
+  <Card title="Network Overview" icon="network-wired" href="/en/subsquid-network/overview">
+    Learn about the Subsquid Network
+  </Card>
+</CardGroup>

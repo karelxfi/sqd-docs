@@ -1,7 +1,6 @@
 ---
 title: "Logger"
 description: Native logger of Squid SDK
-
 ---
 
 # Logger
@@ -10,14 +9,14 @@ A [`Logger`](https://github.com/subsquid/squid/tree/master/util/logger) interfac
 
 `Logger` exposes the following logging levels, in order of increasing severity:
 
-* `TRACE`
-* `DEBUG`
-* `INFO`
-* `WARN`
-* `ERROR`
-* `FATAL`
+- `TRACE`
+- `DEBUG`
+- `INFO`
+- `WARN`
+- `ERROR`
+- `FATAL`
 
-By default, the logging level is set to `INFO`. 
+By default, the logging level is set to `INFO`.
 
 And here is an example:
 
@@ -28,7 +27,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
   ctx.log.info("Info Log example");
   ctx.log.warn("Warn Log example");
   ctx.log.error("Error Log example");
-  ctx.log.fatal("Fatal Log example")
+  ctx.log.fatal("Fatal Log example");
 });
 ```
 
@@ -40,12 +39,13 @@ The log level can be overridden by setting a matching namespace selector to one 
 SQD_DEBUG=sqd:processor:mapping
 ```
 
-The namespace selector supports wildcards, so one can also enable internal debug logs of `@subsquid/substrate-processor` with
+The namespace selector supports wildcards, so one can also enable internal debug logs of `@subsquid/evm-processor` with
+
 ```
 SQD_DEBUG=sqd:processor*
 ```
-since all processor context loggers inherit the processor-level namespace `sqd:processor`.
 
+since all processor context loggers inherit the processor-level namespace `sqd:processor`.
 
 ## Accessing logs of a deployed Squid
 
@@ -54,28 +54,34 @@ Processor logs can be inspected once the squid is deployed to Cloud:
 ```bash
 sqd logs -n <name> -s <slot> -f --level=<level>
 ```
+
 or
+
 ```bash
 sqd logs -n <name> -t <tag> -f --level=<level>
 ```
+
 <details>
 <summary>For older version-based deployments...</summary>
 
 ...the slot string is `v$\{version\}`, so use
+
 ```bash
 sqd logs -n <name> -s v<version> -f --level=<level>
 ```
-Check out the [Slots and tags guide](cloud/resources/slots-and-tags) to learn more.
+
+Check out the [Slots and tags guide](/en/cloud/resources/slots-and-tags) to learn more.
 
 </details>
 
 The available levels are:
- * `info`
- * `warning`
- * `debug`
- * `error` - will fetch messages emitted by
-   - `ctx.log.error`
-   - `ctx.log.fatal`
-   - `ctx.log.trace`
+
+- `info`
+- `warning`
+- `debug`
+- `error` - will fetch messages emitted by
+  - `ctx.log.error`
+  - `ctx.log.fatal`
+  - `ctx.log.trace`
 
 See [CLI Reference](squid-cli/logs) or `sqd logs --help` for a full list of log options supported by SQD Cloud.

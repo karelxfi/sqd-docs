@@ -1,0 +1,301 @@
+---
+title: "Query Event Logs"
+description: "Track smart contract events like ERC-20 transfers using Portal"
+---
+
+Monitor USDC Transfer events on Ethereum mainnet to build a token tracker or analyze transfer patterns.
+
+## Use Case
+
+Event logs are emitted by smart contracts when specific actions occur. This example tracks all USDC Transfer events, which you can use to:
+
+- Build token transfer trackers
+- Analyze trading patterns
+- Monitor wallet activity
+- Track liquidity flows
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18100000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
+      "log": {
+        "address": true,
+        "topics": true,
+        "data": true,
+        "transactionHash": true,
+        "logIndex": true
+      }
+    },
+    "logs": [{
+      "address": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"],
+      "topic0": ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+});
+
+// USDC contract address
+const USDC_ADDRESS = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+// Transfer(address,address,uint256) event signature
+const TRANSFER_TOPIC =
+  "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18100000,
+  fields: {
+    block: { number: true, timestamp: true },
+    log: {
+      address: true,
+      topics: true,
+      data: true,
+      transactionHash: true,
+      logIndex: true,
+    },
+  },
+  logs: [
+    {
+      address: [USDC_ADDRESS],
+      topic0: [TRANSFER_TOPIC],
+    },
+  ],
+});
+
+// Process the logs
+for (const block of blocks) {
+  for (const log of block.logs) {
+    const from = `0x${log.topics[1].slice(26)}`;
+    const to = `0x${log.topics[2].slice(26)}`;
+
+    console.log({
+      blockNumber: block.header.number,
+      timestamp: block.header.timestamp,
+      txHash: log.transactionHash,
+      from,
+      to,
+      // Decode amount from data field as needed
+    });
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/ethereum-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18100000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        },
+        "log": {
+            "address": True,
+            "topics": True,
+            "data": True,
+            "transactionHash": True,
+            "logIndex": True
+        }
+    },
+    "logs": [{
+        "address": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"],
+        "topic0": ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for log in block.get('logs', []):
+        from_address = "0x" + log['topics'][1][26:]
+        to_address = "0x" + log['topics'][2][26:]
+
+        print({
+            "blockNumber": block['header']['number'],
+            "timestamp": block['header']['timestamp'],
+            "txHash": log['transactionHash'],
+            "from": from_address,
+            "to": to_address
+        })
+```
+
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter | Description                                                                                             |
+| --------- | ------------------------------------------------------------------------------------------------------- |
+| `address` | Contract address to filter logs. Array supports multiple addresses (OR logic)                           |
+| `topic0`  | Event signature (keccak256 hash of event definition). For Transfer: `Transfer(address,address,uint256)` |
+| `topic1`  | First indexed parameter (from address in Transfer events)                                               |
+| `topic2`  | Second indexed parameter (to address in Transfer events)                                                |
+| `topics`  | Array containing all event topics. topic[0] is signature, topic[1-3] are indexed params                 |
+| `data`    | Non-indexed event parameters (amount in Transfer events)                                                |
+
+<Tip>
+  To get the event signature, compute
+  `keccak256("Transfer(address,address,uint256)")`. The result is
+  `0xddf252ad...`.
+</Tip>
+
+## Expected Output
+
+Each line in the response represents one block containing matching logs:
+
+```json
+{
+  "header": {
+    "number": 18000123,
+    "timestamp": 1697544779
+  },
+  "logs": [
+    {
+      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "topics": [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+        "0x000000000000000000000000a9d1e08c7793af67e9d92fe308d5697fb81d3e43",
+        "0x00000000000000000000000028c6c06298d514db089934071355e5743bf21d60"
+      ],
+      "data": "0x0000000000000000000000000000000000000000000000000000000002faf080",
+      "transactionHash": "0x123...",
+      "logIndex": 45
+    }
+  ]
+}
+```
+
+## Filtering Multiple Contracts
+
+Query logs from multiple ERC-20 tokens:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "log": {
+        "address": true,
+        "topics": true,
+        "data": true
+      }
+    },
+    "logs": [{
+      "address": [
+        "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+      ],
+      "topic0": ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    log: { address: true, topics: true, data: true },
+  },
+  logs: [
+    {
+      address: [
+        "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", // USDC
+        "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT
+        "0x6B175474E89094C44Da98b954EedeAC495271d0F", // DAI
+      ],
+      topic0: [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+      ],
+    },
+  ],
+});
+```
+
+```python Python
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "log": {
+            "address": True,
+            "topics": True,
+            "data": True
+        }
+    },
+    "logs": [{
+        "address": [
+            "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",  # USDC
+            "0xdAC17F958D2ee523a2206206994597C13D831ec7",  # USDT
+            "0x6B175474E89094C44Da98b954EedeAC495271d0F"   # DAI
+        ],
+        "topic0": ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
+    }]
+}
+```
+
+</CodeGroup>
+
+## Performance Tips
+
+1. **Request only needed fields**: Don't request `data` if you only need addresses
+2. **Use specific filters**: Filter by contract address and event signature
+3. **Batch appropriately**: Query 10k-50k blocks at a time for best performance
+4. **Filter by indexed parameters**: Use topic1, topic2, topic3 to narrow results
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Transactions" icon="arrow-right-arrow-left" href="/en/sdk/portal-evm/examples/query-transactions">
+  Monitor transaction activity
+</Card>
+
+<Card
+  title="Track NFT Transfers"
+  icon="image"
+  href="/en/sdk/portal-evm/examples/nft-transfers"
+>
+  Monitor NFT collection events
+</Card>
+
+<Card
+  title="Index DEX Swaps"
+  icon="repeat"
+  href="/en/sdk/portal-evm/examples/dex-swaps"
+>
+  Track DEX trading activity
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/sdk/portal-evm/api-reference">
+  View complete API docs
+</Card>
+</CardGroup>

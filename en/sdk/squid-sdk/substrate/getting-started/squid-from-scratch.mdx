@@ -1,0 +1,326 @@
+---
+title: "Build an Indexer from Scratch"
+description: "Learn to compose SDK packages into a complete indexer"
+---
+
+# Build an Indexer from Scratch
+
+This guide demonstrates how SDK packages can be combined into a working indexer (called a _squid_).
+
+This page goes through all the technical details to make the squid architecture easier to understand. If you want to get to a working indexer ASAP, [bootstrap from a template](/en/sdk/squid-sdk/substrate/getting-started/squid-development#templates).
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- **Node.js 20.x or newer** - [Download here](https://nodejs.org/)
+- **Docker** - [Download here](https://www.docker.com/)
+
+## Project: Polkadot Balance Transfers API
+
+In this tutorial, you'll build an indexer that tracks balance transfers on Polkadot, saves the data to PostgreSQL, and serves it as a GraphQL API.
+
+### Required packages
+
+From the requirements above, you'll need these [packages](/en/sdk/squid-sdk/substrate/getting-started/overview):
+
+- `@subsquid/substrate-processor` - for retrieving Substrate chain data
+- `@subsquid/typeorm-store`, `@subsquid/typeorm-codegen`, and `@subsquid/typeorm-migration` - for saving data to PostgreSQL
+
+### Optional packages
+
+- `@subsquid/substrate-typegen` - for generating type-safe wrappers for Substrate events and calls
+- `@subsquid/graphql-server` / [OpenReader](/en/sdk/squid-sdk/reference/openreader-server/overview) - for serving GraphQL API
+
+## Build the Indexer
+
+<Steps>
+
+<Step title="Initialize the project">
+
+Create a new folder and initialize a Node.js project:
+
+```bash
+npm init
+```
+
+Create a `.gitignore` file:
+
+```.gitignore .gitignore
+node_modules
+lib
+```
+
+</Step>
+
+<Step title="Install dependencies">
+
+Install the required packages:
+
+```bash
+npm i dotenv typeorm @subsquid/substrate-processor @subsquid/typeorm-store @subsquid/typeorm-migration @subsquid/graphql-server
+```
+
+Install development dependencies:
+
+```bash
+npm i typescript @subsquid/typeorm-codegen @subsquid/substrate-typegen --save-dev
+```
+
+</Step>
+
+<Step title="Configure TypeScript">
+
+Create a `tsconfig.json` file with minimal configuration:
+
+```json tsconfig.json
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib",
+    "module": "commonjs",
+    "target": "es2020",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
+```
+
+</Step>
+
+<Step title="Define the data schema">
+
+Create a `schema.graphql` file to define your data model:
+
+```graphql schema.graphql
+type Transfer @entity {
+  id: ID!
+  from: String! @index
+  to: String! @index
+  amount: BigInt!
+  blockNumber: Int!
+  timestamp: DateTime!
+}
+```
+
+Generate TypeORM classes from the schema:
+
+```bash
+npx squid-typeorm-codegen
+```
+
+<Check>The TypeORM classes are now available at `src/model/index.ts`.</Check>
+
+</Step>
+
+<Step title="Set up the database">
+
+Create environment variables in a `.env` file:
+
+```.env .env
+DB_NAME=squid
+DB_PORT=23798
+RPC_POLKADOT_HTTP=https://rpc.polkadot.io
+```
+
+Create a `docker-compose.yaml` file for PostgreSQL:
+
+```yaml docker-compose.yaml
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: "${DB_NAME}"
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "${DB_PORT}:5432"
+```
+
+Start the database:
+
+```bash
+docker compose up -d
+```
+
+Compile the TypeORM classes:
+
+```bash
+npx tsc
+```
+
+Generate and apply the database migration:
+
+```bash
+npx squid-typeorm-migration generate
+npx squid-typeorm-migration apply
+```
+
+</Step>
+
+<Step title="Generate type-safe wrappers">
+
+Create a `typegen.json` file to specify which Substrate types to generate:
+
+```json typegen.json
+{
+  "outDir": "src/types",
+  "specVersions": "https://v2.archive.subsquid.io/metadata/polkadot",
+  "pallets": {
+    "Balances": {
+      "events": ["Transfer"]
+    }
+  }
+}
+```
+
+Generate TypeScript type-safe wrappers:
+
+```bash
+npx squid-substrate-typegen typegen.json
+```
+
+<Check>The type-safe wrappers are now available in `src/types`.</Check>
+
+</Step>
+
+<Step title="Create the processor">
+
+Create `src/main.ts` with the following code:
+
+```typescript main.ts
+import { SubstrateBatchProcessor } from "@subsquid/substrate-processor";
+import { TypeormDatabase } from "@subsquid/typeorm-store";
+import { events } from "./types";
+import { Transfer } from "./model";
+
+const processor = new SubstrateBatchProcessor()
+  .setGateway("https://v2.archive.subsquid.io/network/polkadot")
+  .setRpcEndpoint({
+    url: process.env.RPC_POLKADOT_HTTP,
+    rateLimit: 10,
+  })
+  .setBlockRange({ from: 1000000 })
+  .addEvent({
+    name: [events.balances.transfer.name],
+  })
+  .setFields({
+    event: {
+      args: true,
+    },
+    block: {
+      timestamp: true,
+    },
+  });
+
+const db = new TypeormDatabase();
+
+processor.run(db, async (ctx) => {
+  const transfers: Transfer[] = [];
+  
+  for (let block of ctx.blocks) {
+    for (let event of block.events) {
+      if (event.name === events.balances.transfer.name) {
+        let decoded = events.balances.transfer.v1050.decode(event);
+        
+        transfers.push(
+          new Transfer({
+            id: event.id,
+            from: decoded.from,
+            to: decoded.to,
+            amount: decoded.amount,
+            blockNumber: block.header.height,
+            timestamp: new Date(block.header.timestamp!),
+          })
+        );
+      }
+    }
+  }
+  
+  await ctx.store.insert(transfers);
+});
+```
+
+<Tip>
+  The typegen tool automatically detects which spec versions are needed and generates versioned decoders. The example uses `v1050` - your actual version may differ.
+</Tip>
+
+</Step>
+
+<Step title="Run the processor">
+
+Compile the project:
+
+```bash
+npx tsc
+```
+
+Start the processor:
+
+```bash
+node -r dotenv/config lib/main.js
+```
+
+<Check>
+  The processor is now indexing balance transfers from the Polkadot blockchain.
+</Check>
+
+</Step>
+
+<Step title="Start the GraphQL server">
+
+Update your `.env` file to include the GraphQL server port:
+
+```.env .env
+DB_NAME=squid
+DB_PORT=23798
+RPC_POLKADOT_HTTP=https://rpc.polkadot.io
+GRAPHQL_SERVER_PORT=4350
+```
+
+In a separate terminal, start the GraphQL server:
+
+```bash
+npx squid-graphql-server
+```
+
+<Check>
+  The GraphQL API with GraphiQL is available at
+  [localhost:4350/graphql](http://localhost:4350/graphql).
+</Check>
+
+</Step>
+
+</Steps>
+
+## Next Steps
+
+Congratulations! You've built a complete Substrate blockchain indexer from scratch.
+
+<CardGroup cols={2}>
+  <Card
+    title="Substrate Tutorial"
+    icon="book"
+    href="/en/sdk/squid-sdk/substrate/tutorials/substrate"
+  >
+    Follow a complete Substrate indexing tutorial
+  </Card>
+
+  <Card
+    title="Development Flow"
+    icon="diagram-project"
+    href="/en/sdk/squid-sdk/substrate/getting-started/squid-development"
+  >
+    Learn about the general development workflow
+  </Card>
+</CardGroup>
+
+<Tip>
+  The commands in this tutorial are often abbreviated as [custom `sqd`
+  commands](/en/sdk/squid-sdk/tools/cli) in production squids. Use the
+  [`commands.json` file from the Substrate
+  template](https://github.com/subsquid-labs/squid-substrate-template/blob/main/commands.json)
+  as a starter.
+</Tip>
+

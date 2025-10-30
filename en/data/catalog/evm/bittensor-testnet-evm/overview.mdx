@@ -1,0 +1,196 @@
+---
+title: "Overview"
+description: "Data catalog and field definitions for Bittensor Testnet"
+---
+
+## Network Information
+
+- **Network ID**: `bittensor-testnet-evm`
+- **Portal Status**: Not Available
+- **Real-time Streaming**: Not Available
+- **State Diffs**: Not Available
+- **Traces**: Not Available
+
+## Endpoints
+
+<Warning>
+  V2 archives will be sunset soon. [Migrate to Portal
+  →](/en/portal/migration/cloud-portal-evm)
+</Warning>
+
+<Tabs>
+<Tab title="Portal (Recommended)">
+### Portal Endpoint
+
+```
+https://portal.sqd.dev/datasets/bittensor-testnet-evm
+```
+
+### Usage
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/bittensor-testnet-evm/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 10000000,
+    "toBlock": 10001000,
+    "fields": {
+      "block": { "number": true, "hash": true },
+      "log": { "address": true, "topics": true, "data": true }
+    },
+    "logs": [{
+      "address": ["0x0000000000000000000000000000000000000000"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { createEvmPortalSource, EvmQueryBuilder } from "@sqd-pipes/pipes/evm";
+
+const queryBuilder = new EvmQueryBuilder()
+  .addFields({
+    block: { number: true, hash: true },
+    log: { address: true, topics: true, data: true },
+  })
+  .addLog({
+    request: { address: ["0x0000000000000000000000000000000000000000"] },
+    range: { from: 10000000 },
+  });
+
+const source = createEvmPortalSource({
+  portal: "https://portal.sqd.dev/datasets/bittensor-testnet-evm",
+  query: queryBuilder,
+});
+```
+
+```python Python
+import requests
+
+url = "https://portal.sqd.dev/datasets/bittensor-testnet-evm/stream"
+headers = {"Content-Type": "application/json"}
+payload = {
+    "type": "evm",
+    "fromBlock": 10000000,
+    "toBlock": 10001000,
+    "fields": {
+        "block": {"number": True, "hash": True},
+        "log": {"address": True, "topics": True, "data": True}
+    },
+    "logs": [{
+        "address": ["0x0000000000000000000000000000000000000000"]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+data = response.json()
+```
+
+```go Go
+package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "net/http"
+)
+
+func main() {
+    url := "https://portal.sqd.dev/datasets/bittensor-testnet-evm/stream"
+    payload := map[string]interface{}{
+        "type":      "evm",
+        "fromBlock": 10000000,
+        "toBlock":   10001000,
+        "fields": map[string]interface{}{
+            "block": map[string]bool{"number": true, "hash": true},
+            "log":   map[string]bool{"address": true, "topics": true, "data": true},
+        },
+        "logs": []map[string]interface{}{
+            {"address": []string{"0x0000000000000000000000000000000000000000"}},
+        },
+    }
+
+    jsonData, _ := json.Marshal(payload)
+    resp, _ := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+    defer resp.Body.Close()
+}
+```
+</CodeGroup>
+
+</Tab>
+
+<Tab title="V2 Archive (Legacy)">
+### V2 Archive Endpoint
+
+```
+https://v2.archive.subsquid.io/network/bittensor-testnet-evm
+```
+
+<Warning>
+  **Legacy**: Rate limited at 50 req/10s per IP. Will be sunset soon.
+</Warning>
+
+### Usage
+
+```typescript
+import { EvmBatchProcessor } from "@subsquid/evm-processor";
+
+const processor = new EvmBatchProcessor()
+  .setGateway("https://v2.archive.subsquid.io/network/bittensor-testnet-evm")
+  .setRpcEndpoint("<your_rpc_endpoint>")
+  .setFinalityConfirmation(75)
+  .setBlockRange({ from: 0 });
+```
+
+</Tab>
+</Tabs>
+
+## Quick Start
+
+Get started indexing Bittensor Testnet data in minutes:
+
+<CardGroup cols={2}>
+  <Card
+    title="Pipes SDK Quickstart"
+    icon="bars-staggered"
+    href="/en/sdk/pipes-sdk/quickstart"
+  >
+    Build a high-performance indexer with the Pipes SDK
+  </Card>
+  <Card
+    title="Squid SDK Quickstart"
+    icon="server"
+    href="/en/sdk/squid-sdk/evm/quickstart"
+  >
+    Create a full-stack indexer with GraphQL API
+  </Card>
+</CardGroup>
+
+## Schema Reference
+
+<Card
+  title="View Schema"
+  icon="database"
+  href="/en/data/catalog/evm/bittensor-testnet-evm/schema"
+>
+  See complete field definitions for blocks, transactions, logs
+</Card>
+
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="EVM API Reference" icon="code" href="/api/evm/dataset-metadata">
+    Complete API documentation
+  </Card>
+  <Card
+    title="Migration Guide"
+    icon="arrow-right"
+    href="/en/portal/migration/cloud-portal-evm"
+  >
+    Migrate from v2 archives to Portal
+  </Card>
+  <Card title="Portal Overview" icon="network-wired" href="/en/portal/overview">
+    Learn about Portal infrastructure
+  </Card>
+</CardGroup>

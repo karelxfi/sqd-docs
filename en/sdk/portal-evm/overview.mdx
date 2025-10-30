@@ -1,0 +1,108 @@
+---
+title: "Overview"
+description: "Access raw EVM blockchain data through SQD Portal's decentralized network"
+---
+
+Portal provides direct access to raw EVM blockchain data through a decentralized network of 2000+ worker nodes. Query blocks, transactions, logs, traces, and state diffs with 10-50x faster performance than traditional RPC nodes.
+
+## Quick Start
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18001000,
+    "fields": {
+      "block": { "number": true, "timestamp": true },
+      "log": { "address": true, "topics": true, "data": true }
+    }
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+});
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18001000,
+  fields: {
+    block: { number: true, timestamp: true },
+    log: { address: true, topics: true, data: true },
+  },
+});
+```
+
+```python Python
+import requests
+
+url = "https://portal.sqd.dev/datasets/ethereum-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18001000,
+    "fields": {
+        "block": {"number": True, "timestamp": True},
+        "log": {"address": True, "topics": True, "data": True}
+    }
+}
+
+response = requests.post(url, headers=headers, json=payload)
+```
+
+</CodeGroup>
+
+## Access Methods
+
+Portal offers three ways to access blockchain data:
+
+### Cloud Portal
+
+Managed Portal access through SQD Cloud with no setup required.
+
+- No token requirements or infrastructure setup
+- Integrated with SQD Cloud deployment platform
+- Pay-as-you-go pricing
+- Ideal for production applications
+
+**Endpoint:** Provided via SQD Cloud environment
+
+<Card title="Cloud Portal Guide" icon="cloud" href="/en/cloud/overview">
+  Deploy with Cloud Portal
+</Card>
+
+### Self-Hosted Portal
+
+Run your own Portal instance with complete control over infrastructure.
+
+**Requirements:**
+
+- TBD
+
+**Benefits:**
+
+- No usage or rate limits
+- Direct network participation
+- TBD
+
+<Card title="Self-Hosting Guide" icon="server" href="/en/portal/self-hosting">
+  Set up your Portal instance
+</Card>
+
+### Public Portal
+
+Free access for development and testing with rate limits.
+
+- Free access to all SQD datasets
+- Rate limited: 20 requests per 10 seconds
+- Ideal for development and prototyping
+- No account required
+
+**Endpoint:** `https://portal.sqd.dev`

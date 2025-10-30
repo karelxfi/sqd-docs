@@ -1,0 +1,70 @@
+---
+title: "Overview"
+description: "Fuel Mainnet data indexing and API access"
+---
+
+<Info>
+  Starting today (2025-02-23) all open private network gateways are rate limited
+  at 50 requests per 10 seconds per IP. Higher bandwidths will soon become
+  available via the public network.
+</Info>
+
+## Network Information
+
+- **Network ID**: `fuel-mainnet`
+- **Gateway**: Open Private Network
+
+## Endpoints
+
+### Gateway Endpoint
+
+```
+https://v2.archive.subsquid.io/network/fuel-mainnet
+```
+
+### Usage
+
+```typescript
+import { FuelDataSource } from '@subsquid/fuel-stream'
+
+const dataSource = new FuelDataSource()
+  .setGateway("https://v2.archive.subsquid.io/network/fuel-mainnet")
+  .setFields({
+    block: { height: true },
+    transaction: { id: true },
+    receipt: { receiptType: true, data: true }
+  });
+```
+
+## Quick Start
+
+Get started indexing Fuel Mainnet data:
+
+<Card
+  title="Quick Start"
+  icon="terminal"
+  href="/en/fuel-indexing/cli-cheatsheet"
+>
+  Quick reference for building your indexer
+</Card>
+
+## Schema Reference
+
+<Card
+  title="View Schema"
+  icon="database"
+  href="/en/data/catalog/fuel/fuel-mainnet/schema"
+>
+  See complete field definitions for all data types
+</Card>
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="code" href="/en/fuel-indexing/network-api/fuel-api">
+    Complete API documentation
+  </Card>
+  <Card title="Network Overview" icon="network-wired" href="/en/subsquid-network/overview">
+    Learn about the Subsquid Network
+  </Card>
+</CardGroup>

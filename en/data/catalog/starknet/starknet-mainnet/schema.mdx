@@ -1,0 +1,80 @@
+---
+title: "Schema"
+description: "Complete data schema and field reference for Starknet Mainnet"
+---
+
+# Starknet Mainnet Data Schema
+
+Starknet Mainnet datasets provide comprehensive on-chain data indexed and queryable through the Subsquid Network.
+
+## Available Data Types
+
+<AccordionGroup>
+<Accordion title="Blocks">
+Block data contains metadata about each block in the chain.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `block_hash` | string | Block hash |
+| `block_number` | integer | Block number |
+| `parent_hash` | string | Parent block hash |
+| `timestamp` | integer | Block timestamp |
+| `sequencer_address` | string | Sequencer address |
+| `state_root` | string | State root hash |
+| `transaction_count` | integer | Number of transactions in block |
+</Accordion>
+
+<Accordion title="Transactions">
+Transaction data includes all executed transactions with their details.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `transaction_hash` | string | Transaction hash |
+| `block_number` | integer | Block number |
+| `transaction_index` | integer | Transaction index in block |
+| `type` | string | Transaction type (invoke, declare, deploy, etc.) |
+| `version` | string | Transaction version |
+| `nonce` | string | Transaction nonce |
+| `max_fee` | string | Maximum fee |
+| `actual_fee` | string | Actual fee paid |
+| `execution_status` | string | Execution status |
+| `finality_status` | string | Finality status |
+</Accordion>
+
+<Accordion title="Events">
+Event data emitted by the network.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `event_index` | integer | Event index |
+| `transaction_hash` | string | Transaction hash |
+| `from_address` | string | Contract address that emitted the event |
+| `keys` | array | Event keys |
+| `data` | array | Event data |
+| `block_number` | integer | Block number |
+</Accordion>
+
+<Accordion title="Messages">
+Cross-layer messages.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `message_hash` | string | Message hash |
+| `from_address` | string | L1 sender address |
+| `to_address` | string | L2 recipient address |
+| `payload` | array | Message payload |
+| `block_number` | integer | Block number |
+</Accordion>
+
+<Accordion title="State Updates">
+State change information.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `block_hash` | string | Block hash |
+| `new_root` | string | New state root |
+| `old_root` | string | Old state root |
+| `state_diff` | object | State differences |
+</Accordion>
+
+</AccordionGroup>

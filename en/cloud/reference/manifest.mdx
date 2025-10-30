@@ -11,12 +11,12 @@ The deployment manifest is named `squid.yaml` by convention. The manifest define
 With the introduction of the deployment manifest the add-ons (`postgres`) and the API services (`api`) become optional. This allows flexible deployment configuration for analytic use-cases (e.g. transform and write to s3 or BigQuery).
 
 <Tip>
-Cloud [secrets](cloud/resources/env-variables/#secrets) of the squid's [organization](cloud/resources/organizations) are exposed as the `secrets` context. You can set any variable defined in any of the `env:` sections mentioned below:
+Cloud [secrets](/en/cloud/resources/env-variables/#secrets) of the squid's [organization](/en/cloud/resources/organizations) are exposed as the `secrets` context. You can set any variable defined in any of the `env:` sections mentioned below:
 ```yaml
 env:
   RPC_ENDPOINT: "${{ secrets.FAST_RPC_ENDPOINT_URL }}"
 ```
-See the [Environment variables](cloud/resources/env-variables) page for more info.
+See the [Environment variables](/en/cloud/resources/env-variables) page for more info.
 </Tip>
 
 ## Header
@@ -75,11 +75,11 @@ A list of add-on services to be deployed along the squid services.
 
 - **`postgres:`**
 
-See [Postgres add-on](cloud/reference/pg).
+See [Postgres add-on](/en/cloud/reference/pg).
 
 - **`rpc`**
 
-See [RPC add-on](cloud/resources/rpc-proxy).
+See [RPC add-on](/en/cloud/resources/rpc-proxy).
 
 ### `migrate:`
 
@@ -142,7 +142,7 @@ where `process:prod:bsc` and `process:prod:eth` are extra `sqd` commands defined
 
 ## `scale:`
 
-See the [Scale the deployment](cloud/reference/scale) section.
+See the [Scale the deployment](/en/cloud/reference/scale) section.
 
 ## Examples
 

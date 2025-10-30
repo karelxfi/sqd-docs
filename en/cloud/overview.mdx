@@ -3,6 +3,13 @@ title: "SQD Cloud Overview"
 description: "Deploy and scale your squids on SQD Cloud with enterprise-grade infrastructure"
 ---
 
+<Frame>
+  <img
+    src="/images/home/cloud.png"
+    alt="SQD Cloud - Deploy and scale your squids"
+  />
+</Frame>
+
 # SQD Cloud Overview
 
 SQD Cloud provides enterprise-grade infrastructure for deploying, managing, and scaling your blockchain indexers. This guide shows you how to deploy a production-ready indexer ("squid") to SQD Cloud.
@@ -27,7 +34,7 @@ Before you begin, ensure you have:
 Ensure your squid is ready for production deployment:
 
 - **Test locally** - Verify the squid works as expected in your local environment
-- **Performance check** - Ensure no major performance issues. See [Best practices](cloud/resources/best-practices) for guidance
+- **Performance check** - Ensure no major performance issues. See [Best practices](/en/cloud/resources/best-practices) for guidance
 - **Update configuration** - Update the `squid.yaml` file with correct values for your use case
 - **Set up secrets** - Configure SQD Cloud secrets if your squid requires sensitive data
 
@@ -56,12 +63,12 @@ Create your SQD Cloud account:
 
 Set up your organization for production use:
 
-1. Create a new [organization](cloud/resources/organizations) in SQD Cloud
-2. Upgrade to [professional](cloud/resources/organizations/#professional-organizations) by attaching a valid credit card in the "Billing" tab
+1. Create a new [organization](/en/cloud/resources/organizations) in SQD Cloud
+2. Upgrade to [professional](/en/cloud/resources/organizations/#professional-organizations) by attaching a valid credit card in the "Billing" tab
 
 <Note>
   You can skip this step, but you'll only be able to deploy to your account's
-  [playground](cloud/resources/organizations/#playgrounds). Playground squids
+  [playground](/en/cloud/resources/organizations/#playgrounds). Playground squids
   are trial/development solutions with limited functionality and are not
   suitable for production use.
 </Note>
@@ -78,11 +85,11 @@ Configure your deployment manifest for SQD Cloud:
 
 ### Basic Configuration
 
-First, set squid name, description, and other metadata in the [header section](cloud/reference/manifest/#header) of the `squid.yaml` file.
+First, set squid name, description, and other metadata in the [header section](/en/cloud/reference/manifest/#header) of the `squid.yaml` file.
 
-If necessary, configure your [`build` options](cloud/reference/manifest/#build) next. If the defaults (NodeJS v20 and `npm` for package manager) work for you, just create an empty `build` section.
+If necessary, configure your [`build` options](/en/cloud/reference/manifest/#build) next. If the defaults (NodeJS v20 and `npm` for package manager) work for you, just create an empty `build` section.
 
-Finally, edit the [`deploy` section](cloud/reference/manifest/#deploy) to specify the deployment options.
+Finally, edit the [`deploy` section](/en/cloud/reference/manifest/#deploy) to specify the deployment options.
 
 **Example configuration:**
 
@@ -112,7 +119,7 @@ SQD Cloud addons enable extra services for your squid. Enable them in the `deplo
 <AccordionGroup>
 <Accordion title="RPC Addon" icon="network-wired">
 
-Use the [`rpc` addon](cloud/resources/rpc-proxy) for real-time data access:
+Use the [`rpc` addon](/en/cloud/resources/rpc-proxy) for real-time data access:
 
 **Steps to configure:**
 
@@ -156,7 +163,7 @@ export const processor = new EvmBatchProcessor().setRpcEndpoint(
 
 <Accordion title="PostgreSQL Addon" icon="database">
 
-For squids that [write their data to PostgreSQL](sdk/resources/persisting-data/typeorm), use the [`postgres` addon](cloud/reference/pg):
+For squids that [write their data to PostgreSQL](sdk/resources/persisting-data/typeorm), use the [`postgres` addon](/en/cloud/reference/pg):
 
 **Basic configuration:**
 
@@ -170,7 +177,7 @@ deploy:
 
 <Warning>
   Always configure the [`scale` section for the
-  addon](cloud/reference/pg/#scaling) when deploying to production.
+  addon](/en/cloud/reference/pg/#scaling) when deploying to production.
 </Warning>
 
 ```yaml squid.yaml
@@ -190,7 +197,7 @@ scale:
 
 <Accordion title="Hasura Addon" icon="server">
 
-If your squid [uses a dedicated Hasura instance](sdk/resources/serving-graphql/#hasura), configure the [`hasura` addon](cloud/reference/hasura) to provision it.
+If your squid [uses a dedicated Hasura instance](sdk/resources/serving-graphql/#hasura), configure the [`hasura` addon](/en/cloud/reference/hasura) to provision it.
 
 ```yaml squid.yaml
 deploy:
@@ -212,7 +219,7 @@ Configure resource allocation for your squid components to ensure optimal perfor
 
 #### API Service Configuration
 
-Squids include a GraphQL service by default. You can enable or disable it by adding or removing the `deploy.api` section. Use the [`scale.api` section](cloud/reference/scale/#api) to configure resources and replicas.
+Squids include a GraphQL service by default. You can enable or disable it by adding or removing the `deploy.api` section. Use the [`scale.api` section](/en/cloud/reference/scale/#api) to configure resources and replicas.
 
 ```yaml squid.yaml
 deploy:
@@ -230,12 +237,12 @@ scale:
   [OpenReader](sdk/resources/serving-graphql/#openreader) (default) and
   [PostGraphile](sdk/resources/serving-graphql/#postgraphile). For
   [Hasura](sdk/resources/serving-graphql/#hasura), see the [`hasura` addon
-  documentation](cloud/reference/hasura).
+  documentation](/en/cloud/reference/hasura).
 </Note>
 
 #### Processor Configuration
 
-Configure the indexer processor resources based on your data processing requirements. See the [processor scale reference](cloud/reference/scale/#processor) for all available options.
+Configure the indexer processor resources based on your data processing requirements. See the [processor scale reference](/en/cloud/reference/scale/#processor) for all available options.
 
 ```yaml squid.yaml
 scale:
@@ -250,7 +257,7 @@ scale:
 
 #### Dedicated Deployment
 
-[Dedicated deployment](cloud/reference/scale/#dedicated) ensures your squid runs on dedicated resources for optimal performance and reliability. This is the default for professional organizations.
+[Dedicated deployment](/en/cloud/reference/scale/#dedicated) ensures your squid runs on dedicated resources for optimal performance and reliability. This is the default for professional organizations.
 
 <Warning>
   If your `squid.yaml` contains `dedicated: false` (from previous playground
@@ -310,14 +317,14 @@ scale:
 
 <Tip>
   For detailed information on all available deployment options, see the
-  [deployment manifest reference](cloud/reference/manifest).
+  [deployment manifest reference](/en/cloud/reference/manifest).
 </Tip>
 
 </Step>
 
 <Step title="Set any required secrets" icon="key">
 
-If your squid uses any sensitive data such as a private URL or an access key, store it securely in a [SQD Cloud secret](cloud/resources/env-variables/#secrets).
+If your squid uses any sensitive data such as a private URL or an access key, store it securely in a [SQD Cloud secret](/en/cloud/resources/env-variables/#secrets).
 
 You can add secrets using either method:
 
@@ -378,7 +385,7 @@ After deployment, monitor your squid's performance and health through the SQD Cl
 3. View the monitoring dashboard with metrics and logs
 
 <Tip>
-  Visit the [logging documentation](cloud/resources/logging) for tips on
+  Visit the [logging documentation](/en/cloud/resources/logging) for tips on
   emitting structured logs and using log filters effectively.
 </Tip>
 
@@ -400,7 +407,7 @@ Your deployed squid is now accessible and ready to use:
 
 **Production workflows:**
 
-Squid deployments use [slots and tags](cloud/resources/slots-and-tags) for flexible deployment management. This enables:
+Squid deployments use [slots and tags](/en/cloud/resources/slots-and-tags) for flexible deployment management. This enables:
 
 - **Zero downtime updates**: Deploy new versions without interrupting service
 - **Version management**: Maintain multiple versions simultaneously
@@ -408,7 +415,7 @@ Squid deployments use [slots and tags](cloud/resources/slots-and-tags) for flexi
 
 <Tip>
   We strongly recommend using the [zero downtime update
-  workflow](cloud/resources/slots-and-tags/#zero-downtime-updates) for all
+  workflow](/en/cloud/resources/slots-and-tags/#zero-downtime-updates) for all
   production squids.
 </Tip>
 

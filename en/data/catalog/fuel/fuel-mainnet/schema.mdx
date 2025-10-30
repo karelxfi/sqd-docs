@@ -1,0 +1,95 @@
+---
+title: "Schema"
+description: "Complete data schema and field reference for Fuel Mainnet"
+---
+
+# Fuel Mainnet Data Schema
+
+Fuel Mainnet datasets provide comprehensive on-chain data indexed and queryable through the Subsquid Network.
+
+## Available Data Types
+
+<AccordionGroup>
+<Accordion title="Blocks">
+Block data contains metadata about each block in the chain.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `height` | integer | Block height |
+| `id` | string | Block ID |
+| `header` | object | Block header |
+| `consensus` | object | Consensus data |
+| `transactions` | array | Block transactions |
+| `timestamp` | integer | Block timestamp |
+</Accordion>
+
+<Accordion title="Transactions">
+Transaction data includes all executed transactions with their details.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `id` | string | Transaction ID |
+| `input_asset_ids` | array | Input asset IDs |
+| `input_contracts` | array | Input contracts |
+| `input_contract_utxo_id` | string | Input contract UTXO ID |
+| `input_contract_balance_root` | string | Input contract balance root |
+| `input_contract_state_root` | string | Input contract state root |
+| `input_contract_tx_pointer` | object | Input contract transaction pointer |
+| `input_contract` | string | Input contract address |
+| `gas_price` | integer | Gas price |
+| `gas_limit` | integer | Gas limit |
+| `maturity` | integer | Transaction maturity |
+| `mint_amount` | integer | Mint amount |
+| `mint_asset_id` | string | Mint asset ID |
+</Accordion>
+
+<Accordion title="Receipts">
+Receipt data from transaction execution.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `receipt_type` | string | Type of receipt |
+| `id` | string | Receipt ID |
+| `val` | integer | Receipt value |
+| `pc` | integer | Program counter |
+| `is` | integer | Instruction start |
+| `to` | string | Recipient address |
+| `amount` | integer | Amount transferred |
+| `asset_id` | string | Asset ID |
+| `gas` | integer | Gas used |
+| `param1` | integer | Parameter 1 |
+| `param2` | integer | Parameter 2 |
+| `len` | integer | Data length |
+| `digest` | string | Data digest |
+| `data` | string | Receipt data |
+</Accordion>
+
+<Accordion title="Inputs">
+Transaction inputs.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `input_type` | string | Type of input |
+| `utxo_id` | string | UTXO ID |
+| `owner` | string | Input owner |
+| `amount` | integer | Input amount |
+| `asset_id` | string | Asset ID |
+| `tx_pointer` | object | Transaction pointer |
+| `witness_index` | integer | Witness index |
+| `maturity` | integer | Input maturity |
+| `predicate` | string | Predicate code |
+| `predicate_data` | string | Predicate data |
+</Accordion>
+
+<Accordion title="Outputs">
+Transaction outputs.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `output_type` | string | Type of output |
+| `to` | string | Recipient address |
+| `amount` | integer | Output amount |
+| `asset_id` | string | Asset ID |
+</Accordion>
+
+</AccordionGroup>

@@ -12,8 +12,12 @@
     "background": "/logos/thumbnail.jpg"
   },
   "banner": {
-    "content": "[Try our new Pipes SDK - Get started in 5 minutes](/en/sdk/pipes-sdk/quickstart)",
-    "dismissible": true
+    "content": "⚠️ Documentation is a work in progress. To provide feedback, use the \"Report to Linear\" button.",
+    "dismissible": true,
+    "style": {
+      "backgroundColor": "#8B0000",
+      "textColor": "#FFFFFF"
+    }
   },
   "colors": {
     "primary": "#111111",
@@ -25,20 +29,34 @@
     "strict": true
   },
   "contextual": {
-    "options": ["copy", "view", "chatgpt", "claude", "perplexity", "cursor", {
-      "title": "Share on X",
-      "description": "Share this page on X",
-      "icon": "x",
-      "href": {
-        "base": "https://x.com/intent/tweet",
-        "query": [
-          {
-            "key": "text",
-            "value": "Check out this documentation: {{page}}"
-          }
-        ]
+    "options": [
+      {
+        "title": "Report to Linear",
+        "description": "Report an issue or feedback",
+        "icon": "flag",
+        "href": "https://linear.app/sqd-ai/new?template=c2828c13-dc56-48a8-9842-6d7503bcca0f"
+      },
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "cursor",
+      {
+        "title": "Share on X",
+        "description": "Share this page on X",
+        "icon": "x",
+        "href": {
+          "base": "https://x.com/intent/tweet",
+          "query": [
+            {
+              "key": "text",
+              "value": "Check out this documentation: {{page}}"
+            }
+          ]
+        }
       }
-    }]
+    ]
   },
   "fonts": {
     "body": {
@@ -70,7 +88,32 @@
           {
             "tab": "Home",
             "icon": "house",
-            "pages": ["en/home"]
+            "pages": [
+              "en/home"
+            ]
+          },
+          {
+            "tab": "Portal",
+            "icon": "network-wired",
+            "tag": "BETA",
+            "pages": [
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "en/portal/overview",
+                  "en/portal/pricing",
+                  "en/portal/quickstart"
+                ]
+              },
+              {
+                "group": "Migration Guides",
+                "pages": [
+                  "en/portal/migration/from-rpc",
+                  "en/portal/migration/cloud-portal-evm",
+                  "en/portal/migration/cloud-portal-solana"
+                ]
+              }
+            ]
           },
           {
             "tab": "Build",
@@ -79,12 +122,35 @@
               {
                 "dropdown": "EVM",
                 "description": "Ethereum and EVM compatible chains",
-                "icon":"ethereum",
+                "icon": "ethereum",
                 "groups": [
                   {
                     "group": "Overview",
                     "pages": [
-                      "en/sdk/choose-your-approach"
+                      "en/sdk/choose-your-approach",
+                      "en/sdk/comparison"
+                    ]
+                  },
+                  {
+                    "group": "Portal",
+                    "tag": "NEW",
+                    "icon": "network-wired",
+                    "pages": [
+                      "en/sdk/portal-evm/overview",
+                      "en/sdk/portal-evm/quickstart",
+                      {
+                        "group": "Examples",
+                        "pages": [
+                          "en/sdk/portal-evm/examples/query-logs",
+                          "en/sdk/portal-evm/examples/query-transactions",
+                          "en/sdk/portal-evm/examples/query-traces",
+                          "en/sdk/portal-evm/examples/nft-transfers",
+                          "en/sdk/portal-evm/examples/dex-swaps",
+                          "en/sdk/portal-evm/examples/contract-deployments",
+                          "en/sdk/portal-evm/examples/state-diffs"
+                        ]
+                      },
+                      "en/sdk/portal-evm/api-reference"
                     ]
                   },
                   {
@@ -92,27 +158,40 @@
                     "tag": "BETA",
                     "icon": "bars-staggered",
                     "pages": [
-                      "en/sdk/pipes-sdk/overview",
                       "en/sdk/pipes-sdk/quickstart",
                       {
                         "group": "Core Concepts",
                         "pages": [
-                          "en/sdk/pipes-sdk/installation",
-                          "en/sdk/pipes-sdk/core-concepts",
-                          "en/sdk/pipes-sdk/data-sources",
-                          "en/sdk/pipes-sdk/transformers",
-                          "en/sdk/pipes-sdk/targets",
-                          "en/sdk/pipes-sdk/evm-event-decoding",
-                          "en/sdk/pipes-sdk/data-persistence"
+                          "en/sdk/pipes-sdk/core-concepts/overview",
+                          "en/sdk/pipes-sdk/core-concepts/core-concepts",
+                          "en/sdk/pipes-sdk/core-concepts/query-builder",
+                          "en/sdk/pipes-sdk/core-concepts/transformers",
+                          "en/sdk/pipes-sdk/core-concepts/event-decoding",
+                          "en/sdk/pipes-sdk/core-concepts/targets"
                         ]
                       },
-                      "en/sdk/pipes-sdk/examples",
                       {
-                        "group": "Advanced",
+                        "group": "Integration & Advanced",
                         "pages": [
-                          "en/sdk/pipes-sdk/advanced-patterns",
-                          "en/sdk/pipes-sdk/api-reference",
-                          "en/sdk/pipes-sdk/migration-from-squid-sdk"
+                          "en/sdk/pipes-sdk/integration-advanced/clickhouse-integration",
+                          "en/sdk/pipes-sdk/integration-advanced/advanced-patterns"
+                        ]
+                      },
+                      {
+                        "group": "Examples",
+                        "pages": [
+                          "en/sdk/pipes-sdk/examples/getting-started",
+                          "en/sdk/pipes-sdk/examples/event-decoding",
+                          "en/sdk/pipes-sdk/examples/data-persistence",
+                          "en/sdk/pipes-sdk/examples/factory-pattern",
+                          "en/sdk/pipes-sdk/examples/performance"
+                        ]
+                      },
+                      {
+                        "group": "Reference",
+                        "pages": [
+                          "en/sdk/pipes-sdk/reference/reference",
+                          "en/sdk/pipes-sdk/reference/migration-from-squid-sdk"
                         ]
                       }
                     ]
@@ -121,61 +200,44 @@
                     "group": "Squid SDK",
                     "icon": "server",
                     "pages": [
+                      "en/sdk/squid-sdk/evm/quickstart",
                       {
                         "group": "Getting Started",
                         "pages": [
-                          "en/sdk/squid-sdk/getting-started/quickstart",
-                          "en/sdk/squid-sdk/getting-started/overview",
-                          "en/sdk/squid-sdk/getting-started/layout"
+                          "en/sdk/squid-sdk/evm/getting-started/overview",
+                          "en/sdk/squid-sdk/evm/getting-started/layout",
+                          "en/sdk/squid-sdk/evm/getting-started/development-environment-set-up",
+                          "en/sdk/squid-sdk/evm/getting-started/squid-development",
+                          "en/sdk/squid-sdk/evm/getting-started/squid-from-scratch",
+                          "en/sdk/squid-sdk/evm/getting-started/cli-cheatsheet"
                         ]
                       },
                       {
-                        "group": "EVM Development",
+                        "group": "Guides",
                         "pages": [
-                          "en/sdk/squid-sdk/evm/quickstart",
-                          "en/sdk/squid-sdk/evm/examples"
+                          "en/sdk/squid-sdk/evm/concepts/architecture",
+                          "en/sdk/squid-sdk/evm/guides/indexing-logs",
+                          "en/sdk/squid-sdk/evm/guides/indexing-transactions",
+                          "en/sdk/squid-sdk/evm/guides/indexing-traces",
+                          "en/sdk/squid-sdk/evm/guides/indexing-state-diffs",
+                          "en/sdk/squid-sdk/evm/guides/proxy-contracts",
+                          "en/sdk/squid-sdk/evm/guides/factory-contracts",
+                          "en/sdk/squid-sdk/evm/guides/local-development"
                         ]
                       },
                       {
-                        "group": "EVM Reference",
+                        "group": "Reference",
                         "pages": [
-                          "en/sdk/squid-sdk/evm/reference",
-                          {
-                            "group": "Batch Processor",
-                            "pages": [
-                              "en/sdk/squid-sdk/evm/reference/general",
-                              "en/sdk/squid-sdk/evm/reference/logs",
-                              "en/sdk/squid-sdk/evm/reference/transactions",
-                              "en/sdk/squid-sdk/evm/reference/traces",
-                              "en/sdk/squid-sdk/evm/reference/state-diffs",
-                              "en/sdk/squid-sdk/evm/reference/field-selection",
-                              "en/sdk/squid-sdk/evm/reference/context-interfaces",
-                              "en/sdk/squid-sdk/evm/reference/logger"
-                            ]
-                          },
-                          {
-                            "group": "Advanced Patterns",
-                            "pages": [
-                              "en/sdk/squid-sdk/evm/reference/proxy-contracts",
-                              "en/sdk/squid-sdk/evm/reference/factory-contracts"
-                            ]
-                          },
-                          {
-                            "group": "Data Storage",
-                            "pages": [
-                              "en/sdk/squid-sdk/evm/reference/store/typeorm",
-                              "en/sdk/squid-sdk/evm/reference/store/bigquery",
-                              {
-                                "group": "File Storage",
-                                "pages": [
-                                  "en/sdk/squid-sdk/evm/reference/store/file/csv",
-                                  "en/sdk/squid-sdk/evm/reference/store/file/json",
-                                  "en/sdk/squid-sdk/evm/reference/store/file/parquet",
-                                  "en/sdk/squid-sdk/evm/reference/store/file/s3-dest"
-                                ]
-                              }
-                            ]
-                          },
+                          "en/sdk/squid-sdk/evm/reference/batch-processor",
+                          "en/sdk/squid-sdk/evm/reference/field-selection",
+                          "en/sdk/squid-sdk/evm/reference/context-interfaces",
+                          "en/sdk/squid-sdk/evm/reference/logger"
+                        ]
+                      },
+                      {
+                        "group": "Schema & Data",
+                        "pages": [
+                          "en/sdk/squid-sdk/evm/features/persisting-data/overview",
                           {
                             "group": "Schema Files",
                             "pages": [
@@ -188,31 +250,20 @@
                             ]
                           },
                           {
-                            "group": "GraphQL Server",
+                            "group": "Data Storage",
                             "pages": [
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/overview",
+                              "en/sdk/squid-sdk/evm/reference/store/typeorm",
+                              "en/sdk/squid-sdk/evm/features/persisting-data/typeorm",
+                              "en/sdk/squid-sdk/evm/reference/store/bigquery",
+                              "en/sdk/squid-sdk/evm/features/persisting-data/bigquery",
                               {
-                                "group": "API",
+                                "group": "File Storage",
                                 "pages": [
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/intro",
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/queries",
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/and-or-filters",
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/sorting",
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/paginate-query-results",
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/nested-field-queries",
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/cross-relation-field-queries",
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/json-queries",
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/api/resolve-union-types-interfaces"
-                                ]
-                              },
-                              {
-                                "group": "Configuration",
-                                "pages": [
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/custom-resolvers",
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/authorization",
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/caching",
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/subscriptions",
-                                  "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/dos-protection"
+                                  "en/sdk/squid-sdk/evm/reference/store/file/csv",
+                                  "en/sdk/squid-sdk/evm/reference/store/file/json",
+                                  "en/sdk/squid-sdk/evm/reference/store/file/parquet",
+                                  "en/sdk/squid-sdk/evm/reference/store/file/s3-dest",
+                                  "en/sdk/squid-sdk/evm/features/persisting-data/file"
                                 ]
                               }
                             ]
@@ -220,111 +271,106 @@
                         ]
                       },
                       {
-                        "group": "Tutorials",
+                        "group": "GraphQL API",
                         "pages": [
-                          "en/sdk/squid-sdk/evm/tutorials",
-                          "en/sdk/squid-sdk/evm/tutorials/batch-processor-in-action",
-                          "en/sdk/squid-sdk/evm/tutorials/evm-local",
-                          "en/sdk/squid-sdk/evm/tutorials/case-studies",
+                          "en/sdk/squid-sdk/evm/reference/openreader-server/overview",
+                          "en/sdk/squid-sdk/evm/features/serving-graphql",
                           {
-                            "group": "BAYC Tutorial Series",
+                            "group": "API Reference",
                             "pages": [
-                              "en/sdk/squid-sdk/evm/tutorials/bayc/step-one-indexing-transfers",
-                              "en/sdk/squid-sdk/evm/tutorials/bayc/step-two-deriving-owners-and-tokens",
-                              "en/sdk/squid-sdk/evm/tutorials/bayc/step-three-adding-external-data",
-                              "en/sdk/squid-sdk/evm/tutorials/bayc/step-four-optimizations"
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/intro",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/queries",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/and-or-filters",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/sorting",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/paginate-query-results",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/nested-field-queries",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/cross-relation-field-queries",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/json-queries",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/resolve-union-types-interfaces"
                             ]
                           },
                           {
-                            "group": "File-Based Storage",
+                            "group": "Configuration",
                             "pages": [
-                              "en/sdk/squid-sdk/evm/tutorials/file-csv",
-                              "en/sdk/squid-sdk/evm/tutorials/file-parquet"
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/custom-resolvers",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/authorization",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/caching",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/subscriptions",
+                              "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/dos-protection",
+                              "en/sdk/squid-sdk/evm/tools/hasura-configuration"
                             ]
                           }
                         ]
                       },
                       {
-                        "group": "Advanced Features",
+                        "group": "CLI & Tools",
                         "pages": [
-                          "en/sdk/squid-sdk/features/batch-processing",
-                          "en/sdk/squid-sdk/features/multichain",
-                          "en/sdk/squid-sdk/features/external-api",
-                          "en/sdk/squid-sdk/features/serving-graphql",
-                          "en/sdk/squid-sdk/features/unfinalized-blocks"
-                        ]
-                      },
-                      {
-                        "group": "Data Persistence",
-                        "pages": [
-                          "en/sdk/squid-sdk/features/persisting-data/overview",
-                          "en/sdk/squid-sdk/features/persisting-data/typeorm",
-                          "en/sdk/squid-sdk/features/persisting-data/file",
-                          "en/sdk/squid-sdk/features/persisting-data/bigquery"
-                        ]
-                      },
-                      {
-                        "group": "Resources",
-                        "pages": [
-                          "en/sdk/squid-sdk/features/sdk-resources"
-                        ]
-                      },
-                      {
-                        "group": "Setup & Tools",
-                        "pages": [
-                          "en/sdk/squid-sdk/getting-started/development-environment-set-up",
-                          "en/sdk/squid-sdk/getting-started/squid-development",
-                          "en/sdk/squid-sdk/getting-started/squid-from-scratch",
-                          "en/sdk/squid-sdk/tools/cli",
                           {
-                            "group": "CLI Commands",
+                            "group": "CLI",
                             "pages": [
-                              "en/sdk/squid-sdk/tools/cli/installation",
-                              "en/sdk/squid-sdk/tools/cli/init",
-                              "en/sdk/squid-sdk/tools/cli/run",
-                              "en/sdk/squid-sdk/tools/cli/deploy",
-                              "en/sdk/squid-sdk/tools/cli/logs",
-                              "en/sdk/squid-sdk/tools/cli/explorer",
-                              "en/sdk/squid-sdk/tools/cli/list",
-                              "en/sdk/squid-sdk/tools/cli/prod",
-                              "en/sdk/squid-sdk/tools/cli/restart",
-                              "en/sdk/squid-sdk/tools/cli/remove",
-                              "en/sdk/squid-sdk/tools/cli/secrets",
-                              "en/sdk/squid-sdk/tools/cli/tags",
-                              "en/sdk/squid-sdk/tools/cli/gateways",
-                              "en/sdk/squid-sdk/tools/cli/auth",
-                              "en/sdk/squid-sdk/tools/cli/whoami",
-                              "en/sdk/squid-sdk/tools/cli/autocomplete",
-                              "en/sdk/squid-sdk/tools/cli/commands-json"
+                              "en/sdk/squid-sdk/evm/tools/cli",
+                              "en/sdk/squid-sdk/evm/tools/cli/installation",
+                              "en/sdk/squid-sdk/evm/tools/cli/init",
+                              "en/sdk/squid-sdk/evm/tools/cli/run",
+                              "en/sdk/squid-sdk/evm/tools/cli/deploy",
+                              "en/sdk/squid-sdk/evm/tools/cli/logs",
+                              "en/sdk/squid-sdk/evm/tools/cli/explorer",
+                              "en/sdk/squid-sdk/evm/tools/cli/list",
+                              "en/sdk/squid-sdk/evm/tools/cli/prod",
+                              "en/sdk/squid-sdk/evm/tools/cli/restart",
+                              "en/sdk/squid-sdk/evm/tools/cli/remove",
+                              "en/sdk/squid-sdk/evm/tools/cli/secrets",
+                              "en/sdk/squid-sdk/evm/tools/cli/tags",
+                              "en/sdk/squid-sdk/evm/tools/cli/gateways",
+                              "en/sdk/squid-sdk/evm/tools/cli/auth",
+                              "en/sdk/squid-sdk/evm/tools/cli/whoami",
+                              "en/sdk/squid-sdk/evm/tools/cli/autocomplete",
+                              "en/sdk/squid-sdk/evm/tools/cli/commands-json"
                             ]
                           },
                           {
                             "group": "Code Generation",
                             "pages": [
-                              "en/sdk/squid-sdk/tools/typegen/generation",
-                              "en/sdk/squid-sdk/tools/typegen/decoding",
-                              "en/sdk/squid-sdk/tools/typegen/state-queries",
-                              "en/sdk/squid-sdk/tools/model-gen",
-                              "en/sdk/squid-sdk/tools/squid-gen",
-                              "en/sdk/squid-sdk/tools/migrations-gen"
+                              "en/sdk/squid-sdk/evm/tools/typegen/generation",
+                              "en/sdk/squid-sdk/evm/tools/typegen/decoding",
+                              "en/sdk/squid-sdk/evm/tools/typegen/state-queries",
+                              "en/sdk/squid-sdk/evm/tools/model-gen",
+                              "en/sdk/squid-sdk/evm/tools/squid-gen",
+                              "en/sdk/squid-sdk/evm/tools/migrations-gen"
                             ]
                           },
-                          "en/sdk/squid-sdk/tools/hasura-configuration",
-                          "en/sdk/squid-sdk/tools/external-tools/external-tools-overview",
-                          "en/sdk/squid-sdk/tools/faq",
-                          "en/sdk/squid-sdk/tools/troubleshooting"
+                          "en/sdk/squid-sdk/evm/tools/external-tools/external-tools-overview",
+                          "en/sdk/squid-sdk/evm/features/sdk-resources",
+                          "en/sdk/squid-sdk/evm/tools/faq",
+                          "en/sdk/squid-sdk/evm/tools/troubleshooting"
+                        ]
+                      },
+                      {
+                        "group": "Advanced",
+                        "pages": [
+                          "en/sdk/squid-sdk/evm/features/batch-processing",
+                          "en/sdk/squid-sdk/evm/features/multichain",
+                          "en/sdk/squid-sdk/evm/features/external-api",
+                          "en/sdk/squid-sdk/evm/features/unfinalized-blocks"
+                        ]
+                      },
+                      {
+                        "group": "Learn More",
+                        "pages": [
+                          "en/sdk/squid-sdk/evm/tutorials",
+                          "en/sdk/squid-sdk/evm/examples"
                         ]
                       },
                       {
                         "group": "Migration & Help",
                         "pages": [
-                          "en/sdk/squid-sdk/migration/migrate-to-arrowsquid",
-                          "en/sdk/squid-sdk/migration/migrate-to-arrowsquid-on-substrate",
-                          "en/sdk/squid-sdk/migration/migrate-subgraph",
-                          "en/sdk/squid-sdk/migration/subsquid-vs-thegraph",
-                          "en/sdk/squid-sdk/migration/subgraphs-support/subgraphs-support",
-                          "en/sdk/squid-sdk/migration/migrate-to-hasura-configuration-tool-v2",
-                          "en/sdk/squid-sdk/migration/firesquid/firesquid-migration"
+                          "en/sdk/squid-sdk/evm/migration/migrate-to-arrowsquid",
+                          "en/sdk/squid-sdk/evm/migration/migrate-to-arrowsquid-on-substrate",
+                          "en/sdk/squid-sdk/evm/migration/migrate-subgraph",
+                          "en/sdk/squid-sdk/evm/migration/subsquid-vs-thegraph",
+                          "en/sdk/squid-sdk/evm/migration/subgraphs-support/subgraphs-support",
+                          "en/sdk/squid-sdk/evm/migration/migrate-to-hasura-configuration-tool-v2",
+                          "en/sdk/squid-sdk/evm/migration/firesquid/firesquid-migration"
                         ]
                       }
                     ]
@@ -342,35 +388,37 @@
                 "icon": "link",
                 "groups": [
                   {
-                    "group": "Getting Started",
+                    "group": "Substrate",
                     "pages": [
-                      "en/sdk/squid-sdk/substrate/quickstart"
-                    ]
-                  },
-                  {
-                    "group": "Tutorials",
-                    "pages": [
-                      "en/sdk/squid-sdk/substrate/tutorials/substrate",
-                      "en/sdk/squid-sdk/substrate/tutorials/ink",
-                      "en/sdk/squid-sdk/substrate/tutorials/frontier-evm"
-                    ]
-                  },
-                  {
-                    "group": "Substrate Reference",
-                    "pages": [
+                      "en/sdk/squid-sdk/substrate/quickstart",
                       {
-                        "group": "Batch Processor",
+                        "group": "Getting Started",
+                        "pages": [
+                          "en/sdk/squid-sdk/substrate/getting-started/overview",
+                          "en/sdk/squid-sdk/substrate/getting-started/layout",
+                          "en/sdk/squid-sdk/substrate/getting-started/development-environment-set-up",
+                          "en/sdk/squid-sdk/substrate/getting-started/squid-development",
+                          "en/sdk/squid-sdk/substrate/getting-started/squid-from-scratch",
+                          "en/sdk/squid-sdk/substrate/getting-started/cli-cheatsheet"
+                        ]
+                      },
+                      {
+                        "group": "Guides",
+                        "pages": [
+                          "en/sdk/squid-sdk/substrate/reference/architecture",
+                          "en/sdk/squid-sdk/substrate/tutorials/substrate",
+                          "en/sdk/squid-sdk/substrate/tutorials/ink",
+                          "en/sdk/squid-sdk/substrate/tutorials/frontier-evm"
+                        ]
+                      },
+                      {
+                        "group": "Reference",
                         "pages": [
                           "en/sdk/squid-sdk/substrate/reference/general",
                           "en/sdk/squid-sdk/substrate/reference/data-requests",
                           "en/sdk/squid-sdk/substrate/reference/field-selection",
                           "en/sdk/squid-sdk/substrate/reference/context-interfaces",
-                          "en/sdk/squid-sdk/substrate/reference/logger"
-                        ]
-                      },
-                      {
-                        "group": "Advanced Topics",
-                        "pages": [
+                          "en/sdk/squid-sdk/substrate/reference/logger",
                           "en/sdk/squid-sdk/substrate/reference/data-sourcing-miniguide",
                           "en/sdk/squid-sdk/substrate/reference/types-bundle-miniguide",
                           "en/sdk/squid-sdk/substrate/reference/frontier",
@@ -380,30 +428,65 @@
                         ]
                       },
                       {
-                        "group": "Data Storage",
+                        "group": "Schema & Data",
                         "pages": [
-                          "en/sdk/squid-sdk/substrate/reference/store/typeorm",
-                          "en/sdk/squid-sdk/substrate/reference/store/bigquery",
                           {
-                            "group": "File Storage",
+                            "group": "Schema Files",
                             "pages": [
-                              "en/sdk/squid-sdk/substrate/reference/store/file/csv",
-                              "en/sdk/squid-sdk/substrate/reference/store/file/json",
-                              "en/sdk/squid-sdk/substrate/reference/store/file/parquet",
-                              "en/sdk/squid-sdk/substrate/reference/store/file/s3-dest"
+                              "en/sdk/squid-sdk/substrate/reference/schema-file/intro",
+                              "en/sdk/squid-sdk/substrate/reference/schema-file/entities",
+                              "en/sdk/squid-sdk/substrate/reference/schema-file/entity-relations",
+                              "en/sdk/squid-sdk/substrate/reference/schema-file/indexes-and-constraints",
+                              "en/sdk/squid-sdk/substrate/reference/schema-file/interfaces",
+                              "en/sdk/squid-sdk/substrate/reference/schema-file/unions-and-typed-json"
+                            ]
+                          },
+                          {
+                            "group": "Data Storage",
+                            "pages": [
+                              "en/sdk/squid-sdk/substrate/reference/store/typeorm",
+                              "en/sdk/squid-sdk/substrate/reference/store/bigquery",
+                              {
+                                "group": "File Storage",
+                                "pages": [
+                                  "en/sdk/squid-sdk/substrate/reference/store/file/csv",
+                                  "en/sdk/squid-sdk/substrate/reference/store/file/json",
+                                  "en/sdk/squid-sdk/substrate/reference/store/file/parquet",
+                                  "en/sdk/squid-sdk/substrate/reference/store/file/s3-dest"
+                                ]
+                              }
                             ]
                           }
                         ]
                       },
                       {
-                        "group": "Schema Files",
+                        "group": "GraphQL API",
                         "pages": [
-                          "en/sdk/squid-sdk/substrate/reference/schema-file/intro",
-                          "en/sdk/squid-sdk/substrate/reference/schema-file/entities",
-                          "en/sdk/squid-sdk/substrate/reference/schema-file/entity-relations",
-                          "en/sdk/squid-sdk/substrate/reference/schema-file/indexes-and-constraints",
-                          "en/sdk/squid-sdk/substrate/reference/schema-file/interfaces",
-                          "en/sdk/squid-sdk/substrate/reference/schema-file/unions-and-typed-json"
+                          "en/sdk/squid-sdk/reference/openreader-server/overview",
+                          {
+                            "group": "API Reference",
+                            "pages": [
+                              "en/sdk/squid-sdk/reference/openreader-server/api/intro",
+                              "en/sdk/squid-sdk/reference/openreader-server/api/queries",
+                              "en/sdk/squid-sdk/reference/openreader-server/api/and-or-filters",
+                              "en/sdk/squid-sdk/reference/openreader-server/api/sorting",
+                              "en/sdk/squid-sdk/reference/openreader-server/api/paginate-query-results",
+                              "en/sdk/squid-sdk/reference/openreader-server/api/nested-field-queries",
+                              "en/sdk/squid-sdk/reference/openreader-server/api/cross-relation-field-queries",
+                              "en/sdk/squid-sdk/reference/openreader-server/api/json-queries",
+                              "en/sdk/squid-sdk/reference/openreader-server/api/resolve-union-types-interfaces"
+                            ]
+                          },
+                          {
+                            "group": "Configuration",
+                            "pages": [
+                              "en/sdk/squid-sdk/reference/openreader-server/configuration/custom-resolvers",
+                              "en/sdk/squid-sdk/reference/openreader-server/configuration/authorization",
+                              "en/sdk/squid-sdk/reference/openreader-server/configuration/caching",
+                              "en/sdk/squid-sdk/reference/openreader-server/configuration/subscriptions",
+                              "en/sdk/squid-sdk/reference/openreader-server/configuration/dos-protection"
+                            ]
+                          }
                         ]
                       }
                     ]
@@ -474,19 +557,11 @@
             "groups": [
               {
                 "group": "Cloud",
-                "icon": "cloud",
                 "pages": [
-                  {
-                    "group": "Getting Started",
-                    "icon": "rocket",
-                    "pages": [
-                      "en/cloud/overview",
-                      "en/cloud/pricing"
-                    ]
-                  },
+                  "en/cloud/overview",
+                  "en/cloud/pricing",
                   {
                     "group": "Configuration",
-                    "icon": "gear",
                     "pages": [
                       "en/cloud/reference/manifest",
                       "en/cloud/reference/scale",
@@ -497,47 +572,37 @@
                     ]
                   },
                   {
-                    "group": "Operations",
-                    "icon": "server",
+                    "group": "Managing Your Deployment",
                     "pages": [
                       "en/cloud/resources/organizations",
                       "en/cloud/resources/slots-and-tags",
                       "en/cloud/resources/env-variables",
+                      "en/cloud/resources/production-alias",
                       "en/cloud/resources/logging",
                       "en/cloud/resources/monitoring",
-                      "en/cloud/resources/rpc-proxy",
-                      "en/cloud/resources/production-alias"
+                      "en/cloud/resources/rpc-proxy"
                     ]
                   },
                   {
-                    "group": "Optimization",
-                    "icon": "gauge-high",
+                    "group": "Performance & Troubleshooting",
                     "pages": [
                       "en/cloud/resources/best-practices",
-                      "en/cloud/resources/query-optimization"
-                    ]
-                  },
-                  {
-                    "group": "Migration",
-                    "icon": "arrow-right-arrow-left",
-                    "pages": [
-                      "en/cloud/resources/migrate-to-portal-on-evm-or-substrate",
-                      "en/cloud/resources/migrate-to-portal-on-solana"
-                    ]
-                  },
-                  {
-                    "group": "Troubleshooting",
-                    "icon": "triangle-exclamation",
-                    "pages": [
+                      "en/cloud/resources/query-optimization",
                       "en/cloud/troubleshooting",
                       "en/cloud/reference/deployments-two-changelog"
+                    ]
+                  },
+                  {
+                    "group": "Other",
+                    "pages": [
+                      "en/portal/migration/cloud-portal-evm",
+                      "en/portal/migration/cloud-portal-solana"
                     ]
                   }
                 ]
               },
               {
                 "group": "Self-Hosting",
-                "icon": "hard-drive",
                 "pages": [
                   "en/sdk/squid-sdk/features/self-hosting"
                 ]
@@ -587,44 +652,272 @@
                   {
                     "group": "Supported Networks",
                     "pages": [
-                      "en/data/catalog/evm/ethereum-mainnet",
-                      "en/data/catalog/evm/ethereum-sepolia",
-                      "en/data/catalog/evm/ethereum-holesky",
-                      "en/data/catalog/evm/arbitrum-one",
-                      "en/data/catalog/evm/arbitrum-nova",
-                      "en/data/catalog/evm/arbitrum-sepolia",
-                      "en/data/catalog/evm/base-mainnet",
-                      "en/data/catalog/evm/base-sepolia",
-                      "en/data/catalog/evm/optimism-mainnet",
-                      "en/data/catalog/evm/optimism-sepolia",
-                      "en/data/catalog/evm/polygon-mainnet",
-                      "en/data/catalog/evm/polygon-amoy-testnet",
-                      "en/data/catalog/evm/polygon-zkevm-mainnet",
-                      "en/data/catalog/evm/avalanche-mainnet",
-                      "en/data/catalog/evm/avalanche-testnet",
-                      "en/data/catalog/evm/binance-mainnet",
-                      "en/data/catalog/evm/binance-testnet",
-                      "en/data/catalog/evm/fantom-mainnet",
-                      "en/data/catalog/evm/fantom-testnet",
-                      "en/data/catalog/evm/gnosis-mainnet",
-                      "en/data/catalog/evm/scroll-mainnet",
-                      "en/data/catalog/evm/blast-l2-mainnet",
-                      "en/data/catalog/evm/linea-mainnet",
-                      "en/data/catalog/evm/manta-pacific",
-                      "en/data/catalog/evm/mantle-mainnet",
-                      "en/data/catalog/evm/mode-mainnet",
-                      "en/data/catalog/evm/zksync-mainnet",
-                      "en/data/catalog/evm/zora-mainnet",
-                      "en/data/catalog/evm/berachain-mainnet",
-                      "en/data/catalog/evm/berachain-bartio",
-                      "en/data/catalog/evm/sonic-mainnet",
-                      "en/data/catalog/evm/sonic-testnet",
-                      "en/data/catalog/evm/taiko-mainnet",
-                      "en/data/catalog/evm/unichain-mainnet",
-                      "en/data/catalog/evm/abstract-mainnet",
-                      "en/data/catalog/evm/cyber-mainnet",
-                      "en/data/catalog/evm/ink-mainnet",
-                      "en/data/catalog/evm/superseed-mainnet"
+                      {
+                        "group": "Abstract Mainnet",
+                        "pages": [
+                          "en/data/catalog/evm/abstract-mainnet/overview",
+                          "en/data/catalog/evm/abstract-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Arbitrum Nova",
+                        "pages": [
+                          "en/data/catalog/evm/arbitrum-nova/overview",
+                          "en/data/catalog/evm/arbitrum-nova/schema"
+                        ]
+                      },
+                      {
+                        "group": "Arbitrum One",
+                        "pages": [
+                          "en/data/catalog/evm/arbitrum-one/overview",
+                          "en/data/catalog/evm/arbitrum-one/schema"
+                        ]
+                      },
+                      {
+                        "group": "Arbitrum Sepolia",
+                        "pages": [
+                          "en/data/catalog/evm/arbitrum-sepolia/overview",
+                          "en/data/catalog/evm/arbitrum-sepolia/schema"
+                        ]
+                      },
+                      {
+                        "group": "Avalanche",
+                        "pages": [
+                          "en/data/catalog/evm/avalanche-mainnet/overview",
+                          "en/data/catalog/evm/avalanche-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Avalanche Testnet",
+                        "pages": [
+                          "en/data/catalog/evm/avalanche-testnet/overview",
+                          "en/data/catalog/evm/avalanche-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Base",
+                        "pages": [
+                          "en/data/catalog/evm/base-mainnet/overview",
+                          "en/data/catalog/evm/base-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Base Sepolia",
+                        "pages": [
+                          "en/data/catalog/evm/base-sepolia/overview",
+                          "en/data/catalog/evm/base-sepolia/schema"
+                        ]
+                      },
+                      {
+                        "group": "Berachain bArtio",
+                        "pages": [
+                          "en/data/catalog/evm/berachain-bartio/overview",
+                          "en/data/catalog/evm/berachain-bartio/schema"
+                        ]
+                      },
+                      {
+                        "group": "Berachain Mainnet",
+                        "pages": [
+                          "en/data/catalog/evm/berachain-mainnet/overview",
+                          "en/data/catalog/evm/berachain-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Binance",
+                        "pages": [
+                          "en/data/catalog/evm/binance-mainnet/overview",
+                          "en/data/catalog/evm/binance-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Binance Testnet",
+                        "pages": [
+                          "en/data/catalog/evm/binance-testnet/overview",
+                          "en/data/catalog/evm/binance-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Blast L2",
+                        "pages": [
+                          "en/data/catalog/evm/blast-l2-mainnet/overview",
+                          "en/data/catalog/evm/blast-l2-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Cyber Mainnet",
+                        "pages": [
+                          "en/data/catalog/evm/cyber-mainnet/overview",
+                          "en/data/catalog/evm/cyber-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Ethereum",
+                        "pages": [
+                          "en/data/catalog/evm/ethereum-mainnet/overview",
+                          "en/data/catalog/evm/ethereum-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Ethereum Holesky",
+                        "pages": [
+                          "en/data/catalog/evm/ethereum-holesky/overview",
+                          "en/data/catalog/evm/ethereum-holesky/schema"
+                        ]
+                      },
+                      {
+                        "group": "Ethereum Sepolia",
+                        "pages": [
+                          "en/data/catalog/evm/ethereum-sepolia/overview",
+                          "en/data/catalog/evm/ethereum-sepolia/schema"
+                        ]
+                      },
+                      {
+                        "group": "Fantom",
+                        "pages": [
+                          "en/data/catalog/evm/fantom-mainnet/overview",
+                          "en/data/catalog/evm/fantom-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Fantom Testnet",
+                        "pages": [
+                          "en/data/catalog/evm/fantom-testnet/overview",
+                          "en/data/catalog/evm/fantom-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Gnosis",
+                        "pages": [
+                          "en/data/catalog/evm/gnosis-mainnet/overview",
+                          "en/data/catalog/evm/gnosis-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Ink Mainnet",
+                        "pages": [
+                          "en/data/catalog/evm/ink-mainnet/overview",
+                          "en/data/catalog/evm/ink-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Linea",
+                        "pages": [
+                          "en/data/catalog/evm/linea-mainnet/overview",
+                          "en/data/catalog/evm/linea-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Manta Pacific",
+                        "pages": [
+                          "en/data/catalog/evm/manta-pacific/overview",
+                          "en/data/catalog/evm/manta-pacific/schema"
+                        ]
+                      },
+                      {
+                        "group": "Mantle",
+                        "pages": [
+                          "en/data/catalog/evm/mantle-mainnet/overview",
+                          "en/data/catalog/evm/mantle-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Mode Mainnet",
+                        "pages": [
+                          "en/data/catalog/evm/mode-mainnet/overview",
+                          "en/data/catalog/evm/mode-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Optimism",
+                        "pages": [
+                          "en/data/catalog/evm/optimism-mainnet/overview",
+                          "en/data/catalog/evm/optimism-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Optimism Sepolia",
+                        "pages": [
+                          "en/data/catalog/evm/optimism-sepolia/overview",
+                          "en/data/catalog/evm/optimism-sepolia/schema"
+                        ]
+                      },
+                      {
+                        "group": "Polygon",
+                        "pages": [
+                          "en/data/catalog/evm/polygon-mainnet/overview",
+                          "en/data/catalog/evm/polygon-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Polygon Amoy Testnet",
+                        "pages": [
+                          "en/data/catalog/evm/polygon-amoy-testnet/overview",
+                          "en/data/catalog/evm/polygon-amoy-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Polygon zkEVM",
+                        "pages": [
+                          "en/data/catalog/evm/polygon-zkevm-mainnet/overview",
+                          "en/data/catalog/evm/polygon-zkevm-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Scroll",
+                        "pages": [
+                          "en/data/catalog/evm/scroll-mainnet/overview",
+                          "en/data/catalog/evm/scroll-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Sonic Mainnet",
+                        "pages": [
+                          "en/data/catalog/evm/sonic-mainnet/overview",
+                          "en/data/catalog/evm/sonic-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Sonic Testnet",
+                        "pages": [
+                          "en/data/catalog/evm/sonic-testnet/overview",
+                          "en/data/catalog/evm/sonic-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Superseed Mainnet",
+                        "pages": [
+                          "en/data/catalog/evm/superseed-mainnet/overview",
+                          "en/data/catalog/evm/superseed-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Taiko Mainnet",
+                        "pages": [
+                          "en/data/catalog/evm/taiko-mainnet/overview",
+                          "en/data/catalog/evm/taiko-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Unichain Mainnet",
+                        "pages": [
+                          "en/data/catalog/evm/unichain-mainnet/overview",
+                          "en/data/catalog/evm/unichain-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "zkSync",
+                        "pages": [
+                          "en/data/catalog/evm/zksync-mainnet/overview",
+                          "en/data/catalog/evm/zksync-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Zora",
+                        "pages": [
+                          "en/data/catalog/evm/zora-mainnet/overview",
+                          "en/data/catalog/evm/zora-mainnet/schema"
+                        ]
+                      }
                     ]
                   }
                 ]
@@ -643,11 +936,615 @@
                   {
                     "group": "Networks",
                     "pages": [
-                      "en/data/catalog/substrate/polkadot",
-                      "en/data/catalog/substrate/kusama",
-                      "en/data/catalog/substrate/moonbeam",
-                      "en/data/catalog/substrate/astar",
-                      "en/data/catalog/substrate/acala"
+                      {
+                        "group": "Acala",
+                        "pages": [
+                          "en/data/catalog/substrate/acala/overview",
+                          "en/data/catalog/substrate/acala/schema"
+                        ]
+                      },
+                      {
+                        "group": "Acurast Canary",
+                        "pages": [
+                          "en/data/catalog/substrate/acurast-canary/overview",
+                          "en/data/catalog/substrate/acurast-canary/schema"
+                        ]
+                      },
+                      {
+                        "group": "Agung",
+                        "pages": [
+                          "en/data/catalog/substrate/agung/overview",
+                          "en/data/catalog/substrate/agung/schema"
+                        ]
+                      },
+                      {
+                        "group": "Aleph Zero",
+                        "pages": [
+                          "en/data/catalog/substrate/aleph-zero/overview",
+                          "en/data/catalog/substrate/aleph-zero/schema"
+                        ]
+                      },
+                      {
+                        "group": "Aleph Zero Testnet",
+                        "pages": [
+                          "en/data/catalog/substrate/aleph-zero-testnet/overview",
+                          "en/data/catalog/substrate/aleph-zero-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Amplitude",
+                        "pages": [
+                          "en/data/catalog/substrate/amplitude/overview",
+                          "en/data/catalog/substrate/amplitude/schema"
+                        ]
+                      },
+                      {
+                        "group": "Asset Hub Kusama (\\*)",
+                        "pages": [
+                          "en/data/catalog/substrate/asset-hub-kusama/overview",
+                          "en/data/catalog/substrate/asset-hub-kusama/schema"
+                        ]
+                      },
+                      {
+                        "group": "Asset Hub Polkadot (\\*)",
+                        "pages": [
+                          "en/data/catalog/substrate/asset-hub-polkadot/overview",
+                          "en/data/catalog/substrate/asset-hub-polkadot/schema"
+                        ]
+                      },
+                      {
+                        "group": "Asset Hub Rococo",
+                        "pages": [
+                          "en/data/catalog/substrate/asset-hub-rococo/overview",
+                          "en/data/catalog/substrate/asset-hub-rococo/schema"
+                        ]
+                      },
+                      {
+                        "group": "Asset Hub Westend",
+                        "pages": [
+                          "en/data/catalog/substrate/asset-hub-westend/overview",
+                          "en/data/catalog/substrate/asset-hub-westend/schema"
+                        ]
+                      },
+                      {
+                        "group": "Asset Hub Westend Next",
+                        "pages": [
+                          "en/data/catalog/substrate/asset-hub-westend-next/overview",
+                          "en/data/catalog/substrate/asset-hub-westend-next/schema"
+                        ]
+                      },
+                      {
+                        "group": "Astar",
+                        "pages": [
+                          "en/data/catalog/substrate/astar-substrate/overview",
+                          "en/data/catalog/substrate/astar-substrate/schema"
+                        ]
+                      },
+                      {
+                        "group": "Avail Mainnet (\\*\\*)",
+                        "pages": [
+                          "en/data/catalog/substrate/avail/overview",
+                          "en/data/catalog/substrate/avail/schema"
+                        ]
+                      },
+                      {
+                        "group": "Basilisk",
+                        "pages": [
+                          "en/data/catalog/substrate/basilisk/overview",
+                          "en/data/catalog/substrate/basilisk/schema"
+                        ]
+                      },
+                      {
+                        "group": "Bifrost Kusama",
+                        "pages": [
+                          "en/data/catalog/substrate/bifrost-kusama/overview",
+                          "en/data/catalog/substrate/bifrost-kusama/schema"
+                        ]
+                      },
+                      {
+                        "group": "Bifrost Polkadot",
+                        "pages": [
+                          "en/data/catalog/substrate/bifrost-polkadot/overview",
+                          "en/data/catalog/substrate/bifrost-polkadot/schema"
+                        ]
+                      },
+                      {
+                        "group": "Bittensor",
+                        "pages": [
+                          "en/data/catalog/substrate/bittensor/overview",
+                          "en/data/catalog/substrate/bittensor/schema"
+                        ]
+                      },
+                      {
+                        "group": "Bittensor Testnet",
+                        "pages": [
+                          "en/data/catalog/substrate/bittensor-testnet/overview",
+                          "en/data/catalog/substrate/bittensor-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Bridge Hub Kusama",
+                        "pages": [
+                          "en/data/catalog/substrate/bridge-hub-kusama/overview",
+                          "en/data/catalog/substrate/bridge-hub-kusama/schema"
+                        ]
+                      },
+                      {
+                        "group": "Bridge Hub Polkadot",
+                        "pages": [
+                          "en/data/catalog/substrate/bridge-hub-polkadot/overview",
+                          "en/data/catalog/substrate/bridge-hub-polkadot/schema"
+                        ]
+                      },
+                      {
+                        "group": "Bridge Hub Rococo",
+                        "pages": [
+                          "en/data/catalog/substrate/bridge-hub-rococo/overview",
+                          "en/data/catalog/substrate/bridge-hub-rococo/schema"
+                        ]
+                      },
+                      {
+                        "group": "Bridge Hub Westend",
+                        "pages": [
+                          "en/data/catalog/substrate/bridge-hub-westend/overview",
+                          "en/data/catalog/substrate/bridge-hub-westend/schema"
+                        ]
+                      },
+                      {
+                        "group": "Centrifuge",
+                        "pages": [
+                          "en/data/catalog/substrate/centrifuge/overview",
+                          "en/data/catalog/substrate/centrifuge/schema"
+                        ]
+                      },
+                      {
+                        "group": "Cere",
+                        "pages": [
+                          "en/data/catalog/substrate/cere/overview",
+                          "en/data/catalog/substrate/cere/schema"
+                        ]
+                      },
+                      {
+                        "group": "Chainfliip",
+                        "pages": [
+                          "en/data/catalog/substrate/chainflip/overview",
+                          "en/data/catalog/substrate/chainflip/schema"
+                        ]
+                      },
+                      {
+                        "group": "Clover",
+                        "pages": [
+                          "en/data/catalog/substrate/clover/overview",
+                          "en/data/catalog/substrate/clover/schema"
+                        ]
+                      },
+                      {
+                        "group": "Collectives Polkadot",
+                        "pages": [
+                          "en/data/catalog/substrate/collectives-polkadot/overview",
+                          "en/data/catalog/substrate/collectives-polkadot/schema"
+                        ]
+                      },
+                      {
+                        "group": "Collectives Westend",
+                        "pages": [
+                          "en/data/catalog/substrate/collectives-westend/overview",
+                          "en/data/catalog/substrate/collectives-westend/schema"
+                        ]
+                      },
+                      {
+                        "group": "Crust",
+                        "pages": [
+                          "en/data/catalog/substrate/crust/overview",
+                          "en/data/catalog/substrate/crust/schema"
+                        ]
+                      },
+                      {
+                        "group": "Dancebox",
+                        "pages": [
+                          "en/data/catalog/substrate/dancebox/overview",
+                          "en/data/catalog/substrate/dancebox/schema"
+                        ]
+                      },
+                      {
+                        "group": "Dancelight",
+                        "pages": [
+                          "en/data/catalog/substrate/dancelight/overview",
+                          "en/data/catalog/substrate/dancelight/schema"
+                        ]
+                      },
+                      {
+                        "group": "Darwinia",
+                        "pages": [
+                          "en/data/catalog/substrate/darwinia/overview",
+                          "en/data/catalog/substrate/darwinia/schema"
+                        ]
+                      },
+                      {
+                        "group": "Darwinia Crab",
+                        "pages": [
+                          "en/data/catalog/substrate/darwinia-crab/overview",
+                          "en/data/catalog/substrate/darwinia-crab/schema"
+                        ]
+                      },
+                      {
+                        "group": "Data Avail (Avail Goldberg)",
+                        "pages": [
+                          "en/data/catalog/substrate/data-avail/overview",
+                          "en/data/catalog/substrate/data-avail/schema"
+                        ]
+                      },
+                      {
+                        "group": "Eden",
+                        "pages": [
+                          "en/data/catalog/substrate/eden/overview",
+                          "en/data/catalog/substrate/eden/schema"
+                        ]
+                      },
+                      {
+                        "group": "Enjin Canary Matrix",
+                        "pages": [
+                          "en/data/catalog/substrate/enjin-canary-matrix/overview",
+                          "en/data/catalog/substrate/enjin-canary-matrix/schema"
+                        ]
+                      },
+                      {
+                        "group": "Enjin Matrix",
+                        "pages": [
+                          "en/data/catalog/substrate/enjin-matrix/overview",
+                          "en/data/catalog/substrate/enjin-matrix/schema"
+                        ]
+                      },
+                      {
+                        "group": "Enjin Relay",
+                        "pages": [
+                          "en/data/catalog/substrate/enjin-relay/overview",
+                          "en/data/catalog/substrate/enjin-relay/schema"
+                        ]
+                      },
+                      {
+                        "group": "Equilibrium",
+                        "pages": [
+                          "en/data/catalog/substrate/equilibrium/overview",
+                          "en/data/catalog/substrate/equilibrium/schema"
+                        ]
+                      },
+                      {
+                        "group": "Foucoco",
+                        "pages": [
+                          "en/data/catalog/substrate/foucoco/overview",
+                          "en/data/catalog/substrate/foucoco/schema"
+                        ]
+                      },
+                      {
+                        "group": "Frequency",
+                        "pages": [
+                          "en/data/catalog/substrate/frequency/overview",
+                          "en/data/catalog/substrate/frequency/schema"
+                        ]
+                      },
+                      {
+                        "group": "Gemini 3h",
+                        "pages": [
+                          "en/data/catalog/substrate/gemini-3h/overview",
+                          "en/data/catalog/substrate/gemini-3h/schema"
+                        ]
+                      },
+                      {
+                        "group": "HydraDX",
+                        "pages": [
+                          "en/data/catalog/substrate/hydradx/overview",
+                          "en/data/catalog/substrate/hydradx/schema"
+                        ]
+                      },
+                      {
+                        "group": "Integritee Network",
+                        "pages": [
+                          "en/data/catalog/substrate/integritee/overview",
+                          "en/data/catalog/substrate/integritee/schema"
+                        ]
+                      },
+                      {
+                        "group": "Interlay",
+                        "pages": [
+                          "en/data/catalog/substrate/interlay/overview",
+                          "en/data/catalog/substrate/interlay/schema"
+                        ]
+                      },
+                      {
+                        "group": "Invarch Parachain",
+                        "pages": [
+                          "en/data/catalog/substrate/invarch-parachain/overview",
+                          "en/data/catalog/substrate/invarch-parachain/schema"
+                        ]
+                      },
+                      {
+                        "group": "Invarch Tinkernet",
+                        "pages": [
+                          "en/data/catalog/substrate/invarch-tinkernet/overview",
+                          "en/data/catalog/substrate/invarch-tinkernet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Joystream",
+                        "pages": [
+                          "en/data/catalog/substrate/joystream/overview",
+                          "en/data/catalog/substrate/joystream/schema"
+                        ]
+                      },
+                      {
+                        "group": "Karura",
+                        "pages": [
+                          "en/data/catalog/substrate/karura/overview",
+                          "en/data/catalog/substrate/karura/schema"
+                        ]
+                      },
+                      {
+                        "group": "Khala",
+                        "pages": [
+                          "en/data/catalog/substrate/khala/overview",
+                          "en/data/catalog/substrate/khala/schema"
+                        ]
+                      },
+                      {
+                        "group": "Kilt",
+                        "pages": [
+                          "en/data/catalog/substrate/kilt/overview",
+                          "en/data/catalog/substrate/kilt/schema"
+                        ]
+                      },
+                      {
+                        "group": "Kintsugi",
+                        "pages": [
+                          "en/data/catalog/substrate/kintsugi/overview",
+                          "en/data/catalog/substrate/kintsugi/schema"
+                        ]
+                      },
+                      {
+                        "group": "Kusama",
+                        "pages": [
+                          "en/data/catalog/substrate/kusama/overview",
+                          "en/data/catalog/substrate/kusama/schema"
+                        ]
+                      },
+                      {
+                        "group": "Litentry",
+                        "pages": [
+                          "en/data/catalog/substrate/litentry/overview",
+                          "en/data/catalog/substrate/litentry/schema"
+                        ]
+                      },
+                      {
+                        "group": "Moonbase",
+                        "pages": [
+                          "en/data/catalog/substrate/moonbase-substrate/overview",
+                          "en/data/catalog/substrate/moonbase-substrate/schema"
+                        ]
+                      },
+                      {
+                        "group": "Moonbeam",
+                        "pages": [
+                          "en/data/catalog/substrate/moonbeam-substrate/overview",
+                          "en/data/catalog/substrate/moonbeam-substrate/schema"
+                        ]
+                      },
+                      {
+                        "group": "Moonriver",
+                        "pages": [
+                          "en/data/catalog/substrate/moonriver-substrate/overview",
+                          "en/data/catalog/substrate/moonriver-substrate/schema"
+                        ]
+                      },
+                      {
+                        "group": "Paseo",
+                        "pages": [
+                          "en/data/catalog/substrate/paseo/overview",
+                          "en/data/catalog/substrate/paseo/schema"
+                        ]
+                      },
+                      {
+                        "group": "Peaq",
+                        "pages": [
+                          "en/data/catalog/substrate/peaq-mainnet-substrate/overview",
+                          "en/data/catalog/substrate/peaq-mainnet-substrate/schema"
+                        ]
+                      },
+                      {
+                        "group": "Pendulum",
+                        "pages": [
+                          "en/data/catalog/substrate/pendulum/overview",
+                          "en/data/catalog/substrate/pendulum/schema"
+                        ]
+                      },
+                      {
+                        "group": "People Chain",
+                        "pages": [
+                          "en/data/catalog/substrate/people-chain/overview",
+                          "en/data/catalog/substrate/people-chain/schema"
+                        ]
+                      },
+                      {
+                        "group": "Phala",
+                        "pages": [
+                          "en/data/catalog/substrate/phala/overview",
+                          "en/data/catalog/substrate/phala/schema"
+                        ]
+                      },
+                      {
+                        "group": "Phala Testnet",
+                        "pages": [
+                          "en/data/catalog/substrate/phala-testnet/overview",
+                          "en/data/catalog/substrate/phala-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Picasso",
+                        "pages": [
+                          "en/data/catalog/substrate/picasso/overview",
+                          "en/data/catalog/substrate/picasso/schema"
+                        ]
+                      },
+                      {
+                        "group": "Polimec",
+                        "pages": [
+                          "en/data/catalog/substrate/polimec/overview",
+                          "en/data/catalog/substrate/polimec/schema"
+                        ]
+                      },
+                      {
+                        "group": "Polkadex",
+                        "pages": [
+                          "en/data/catalog/substrate/polkadex/overview",
+                          "en/data/catalog/substrate/polkadex/schema"
+                        ]
+                      },
+                      {
+                        "group": "Polkadot",
+                        "pages": [
+                          "en/data/catalog/substrate/polkadot/overview",
+                          "en/data/catalog/substrate/polkadot/schema"
+                        ]
+                      },
+                      {
+                        "group": "Polymesh",
+                        "pages": [
+                          "en/data/catalog/substrate/polymesh/overview",
+                          "en/data/catalog/substrate/polymesh/schema"
+                        ]
+                      },
+                      {
+                        "group": "Reef",
+                        "pages": [
+                          "en/data/catalog/substrate/reef/overview",
+                          "en/data/catalog/substrate/reef/schema"
+                        ]
+                      },
+                      {
+                        "group": "Reef Testnet",
+                        "pages": [
+                          "en/data/catalog/substrate/reef-testnet/overview",
+                          "en/data/catalog/substrate/reef-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Robonomics",
+                        "pages": [
+                          "en/data/catalog/substrate/robonomics/overview",
+                          "en/data/catalog/substrate/robonomics/schema"
+                        ]
+                      },
+                      {
+                        "group": "Rococo",
+                        "pages": [
+                          "en/data/catalog/substrate/rococo/overview",
+                          "en/data/catalog/substrate/rococo/schema"
+                        ]
+                      },
+                      {
+                        "group": "Rolimec",
+                        "pages": [
+                          "en/data/catalog/substrate/rolimec/overview",
+                          "en/data/catalog/substrate/rolimec/schema"
+                        ]
+                      },
+                      {
+                        "group": "Shibuya",
+                        "pages": [
+                          "en/data/catalog/substrate/shibuya-substrate/overview",
+                          "en/data/catalog/substrate/shibuya-substrate/schema"
+                        ]
+                      },
+                      {
+                        "group": "Shiden",
+                        "pages": [
+                          "en/data/catalog/substrate/shiden-substrate/overview",
+                          "en/data/catalog/substrate/shiden-substrate/schema"
+                        ]
+                      },
+                      {
+                        "group": "Sora",
+                        "pages": [
+                          "en/data/catalog/substrate/sora-mainnet/overview",
+                          "en/data/catalog/substrate/sora-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Subsocial Parachain",
+                        "pages": [
+                          "en/data/catalog/substrate/subsocial-parachain/overview",
+                          "en/data/catalog/substrate/subsocial-parachain/schema"
+                        ]
+                      },
+                      {
+                        "group": "Tanssi",
+                        "pages": [
+                          "en/data/catalog/substrate/tanssi-substrate/overview",
+                          "en/data/catalog/substrate/tanssi-substrate/schema"
+                        ]
+                      },
+                      {
+                        "group": "Ternoa",
+                        "pages": [
+                          "en/data/catalog/substrate/ternoa/overview",
+                          "en/data/catalog/substrate/ternoa/schema"
+                        ]
+                      },
+                      {
+                        "group": "Turing",
+                        "pages": [
+                          "en/data/catalog/substrate/turing-mainnet/overview",
+                          "en/data/catalog/substrate/turing-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Turing Avail",
+                        "pages": [
+                          "en/data/catalog/substrate/turing-avail/overview",
+                          "en/data/catalog/substrate/turing-avail/schema"
+                        ]
+                      },
+                      {
+                        "group": "Vara",
+                        "pages": [
+                          "en/data/catalog/substrate/vara/overview",
+                          "en/data/catalog/substrate/vara/schema"
+                        ]
+                      },
+                      {
+                        "group": "Vara Testnet",
+                        "pages": [
+                          "en/data/catalog/substrate/vara-testnet/overview",
+                          "en/data/catalog/substrate/vara-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Westend",
+                        "pages": [
+                          "en/data/catalog/substrate/westend/overview",
+                          "en/data/catalog/substrate/westend/schema"
+                        ]
+                      },
+                      {
+                        "group": "Zeitgeist",
+                        "pages": [
+                          "en/data/catalog/substrate/zeitgeist/overview",
+                          "en/data/catalog/substrate/zeitgeist/schema"
+                        ]
+                      },
+                      {
+                        "group": "Zeitgeist Testnet",
+                        "pages": [
+                          "en/data/catalog/substrate/zeitgeist-testnet/overview",
+                          "en/data/catalog/substrate/zeitgeist-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "zkVerify Testnet",
+                        "pages": [
+                          "en/data/catalog/substrate/zkverify-testnet/overview",
+                          "en/data/catalog/substrate/zkverify-testnet/schema"
+                        ]
+                      }
                     ]
                   }
                 ]
@@ -666,9 +1563,27 @@
                   {
                     "group": "Networks",
                     "pages": [
-                      "en/data/catalog/solana/solana-mainnet",
-                      "en/data/catalog/solana/eclipse-mainnet",
-                      "en/data/catalog/solana/soon-mainnet"
+                      {
+                        "group": "Solana Mainnet",
+                        "pages": [
+                          "en/data/catalog/solana/solana-mainnet/overview",
+                          "en/data/catalog/solana/solana-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Eclipse Mainnet",
+                        "pages": [
+                          "en/data/catalog/solana/eclipse-mainnet/overview",
+                          "en/data/catalog/solana/eclipse-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Soon Mainnet",
+                        "pages": [
+                          "en/data/catalog/solana/soon-mainnet/overview",
+                          "en/data/catalog/solana/soon-mainnet/schema"
+                        ]
+                      }
                     ]
                   }
                 ]
@@ -681,24 +1596,51 @@
                   {
                     "group": "Fuel",
                     "pages": [
-                      "en/data/networks/fuel",
-                      "en/data/catalog/fuel/fuel-mainnet",
-                      "en/data/catalog/fuel/fuel-testnet"
+                      {
+                        "group": "Fuel Mainnet",
+                        "pages": [
+                          "en/data/catalog/fuel/fuel-mainnet/overview",
+                          "en/data/catalog/fuel/fuel-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Fuel Testnet",
+                        "pages": [
+                          "en/data/catalog/fuel/fuel-testnet/overview",
+                          "en/data/catalog/fuel/fuel-testnet/schema"
+                        ]
+                      }
                     ]
                   },
                   {
                     "group": "Tron",
                     "pages": [
-                      "en/data/networks/tron",
-                      "en/data/catalog/tron/tron-mainnet"
+                      {
+                        "group": "Tron Mainnet",
+                        "pages": [
+                          "en/data/catalog/tron/tron-mainnet/overview",
+                          "en/data/catalog/tron/tron-mainnet/schema"
+                        ]
+                      }
                     ]
                   },
                   {
                     "group": "Starknet",
                     "pages": [
-                      "en/data/networks/starknet",
-                      "en/data/catalog/starknet/starknet-mainnet",
-                      "en/data/catalog/starknet/starknet-sepolia"
+                      {
+                        "group": "Starknet Mainnet",
+                        "pages": [
+                          "en/data/catalog/starknet/starknet-mainnet/overview",
+                          "en/data/catalog/starknet/starknet-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Starknet Sepolia",
+                        "pages": [
+                          "en/data/catalog/starknet/starknet-sepolia/overview",
+                          "en/data/catalog/starknet/starknet-sepolia/schema"
+                        ]
+                      }
                     ]
                   }
                 ]
@@ -706,7 +1648,7 @@
             ]
           },
           {
-            "tab": "API Reference",
+            "tab": "Portal API Reference",
             "icon": "code",
             "dropdowns": [
               {
@@ -751,315 +1693,32 @@
       },
       {
         "language": "es",
-        "tabs": [
-          {
-            "tab": "Inicio",
-            "pages": ["es/home"]
-          },
-          {
-            "tab": "SDKs",
-            "groups": [
-              {
-                "group": "Primeros pasos",
-                "pages": [
-                  "es/sdk/overview/sdk-overview",
-                  "es/sdk/quickstart/sdk-quickstart",
-                  "es/sdk/how-to-start/getting-started"
-                ]
-              },
-              {
-                "group": "EVM",
-                "pages": [
-                  "es/sdk/tutorials/evm-tutorials",
-                  "es/sdk/examples/evm-examples",
-                  "es/sdk/reference/evm-reference",
-                  "es/sdk/troubleshooting/sdk-troubleshooting",
-                  "es/sdk/faq/sdk-faq",
-                  "es/sdk/subsquid-vs-thegraph/subsquid-vs-thegraph"
-                ]
-              },
-              {
-                "group": "Solana",
-                "pages": [
-                  "es/sdk/solana-indexing/how-to-start/solana-getting-started",
-                  "es/sdk/solana-indexing/sdk/solana-sdk",
-                  "es/sdk/solana-indexing/network-api/solana-network-api"
-                ]
-              },
-              {
-                "group": "Fuel",
-                "pages": [
-                  "es/sdk/fuel-indexing/indexing-receipts/fuel-indexing-receipts",
-                  "es/sdk/fuel-indexing/network-api/fuel-network-api"
-                ]
-              },
-              {
-                "group": "Tron",
-                "pages": [
-                  "es/sdk/tron-indexing/indexing-tron-data/tron-indexing-data"
-                ]
-              },
-              {
-                "group": "Compatibilidad con Subgraphs",
-                "pages": [
-                  "es/sdk/subgraphs-support/subgraphs-support"
-                ]
-              },
-              {
-                "group": "Referencia CLI",
-                "pages": [
-                  "es/squid-cli/installation/squid-cli-installation",
-                  "es/squid-cli/explorer/squid-cli-explorer"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Cloud",
-            "groups": [
-              {
-                "group": "Descripción general",
-                "pages": [
-                  "es/cloud/overview/deployment-workflow"
-                ]
-              },
-              {
-                "group": "Precios",
-                "pages": [
-                  "es/cloud/pricing/cloud-pricing"
-                ]
-              },
-              {
-                "group": "Referencia",
-                "pages": [
-                  "es/cloud/reference/cloud-reference"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Red",
-            "groups": [
-              {
-                "group": "Descripción general",
-                "pages": [
-                  "es/network/overview/network-overview"
-                ]
-              },
-              {
-                "group": "Participación",
-                "pages": [
-                  "es/network/participate/network-participate"
-                ]
-              },
-              {
-                "group": "Preguntas frecuentes",
-                "pages": [
-                  "es/network/faq/network-faq"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Recursos",
-            "groups": [
-              {
-                "group": "Redes",
-                "pages": [
-                  "es/supported-networks",
-                  "es/supported-networks/ethereum",
-                  "es/supported-networks/solana",
-                  "es/supported-networks/fuel"
-                ]
-              },
-              {
-                "group": "Documentación",
-                "pages": [
-                  "es/other/glossary/glossary",
-                  "es/other/conduit-integration/conduit-integration"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Soporte",
-            "groups": [
-              {
-                "group": "Ayuda",
-                "pages": []
-              }
-            ]
-          }
+        "pages": [
+          "es/404"
         ]
       },
       {
         "language": "ko",
-        "tabs": [
-          {
-            "tab": "홈",
-            "pages": ["ko/home"]
-          },
-          {
-            "tab": "SDKs",
-            "groups": [
-              {
-                "group": "시작하기",
-                "pages": [
-                  "ko/sdk/overview/sdk-overview",
-                  "ko/sdk/quickstart/sdk-quickstart",
-                  "ko/sdk/how-to-start/getting-started"
-                ]
-              },
-              {
-                "group": "EVM",
-                "pages": [
-                  "ko/sdk/tutorials/evm-tutorials",
-                  "ko/sdk/examples/evm-examples",
-                  "ko/sdk/reference/evm-reference",
-                  "ko/sdk/troubleshooting/sdk-troubleshooting",
-                  "ko/sdk/faq/sdk-faq",
-                  "ko/sdk/subsquid-vs-thegraph/subsquid-vs-thegraph"
-                ]
-              },
-              {
-                "group": "Solana",
-                "pages": [
-                  "ko/sdk/solana-indexing/how-to-start/solana-getting-started",
-                  "ko/sdk/solana-indexing/sdk/solana-sdk",
-                  "ko/sdk/solana-indexing/network-api/solana-network-api"
-                ]
-              },
-              {
-                "group": "Fuel",
-                "pages": [
-                  "ko/sdk/fuel-indexing/indexing-receipts/fuel-indexing-receipts",
-                  "ko/sdk/fuel-indexing/network-api/fuel-network-api"
-                ]
-              },
-              {
-                "group": "Tron",
-                "pages": [
-                  "ko/sdk/tron-indexing/indexing-tron-data/tron-indexing-data"
-                ]
-              },
-              {
-                "group": "Subgraphs 지원",
-                "pages": [
-                  "ko/sdk/subgraphs-support/subgraphs-support"
-                ]
-              },
-              {
-                "group": "CLI 레퍼런스",
-                "pages": [
-                  "ko/squid-cli/installation/squid-cli-installation",
-                  "ko/squid-cli/explorer/squid-cli-explorer"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Cloud",
-            "groups": [
-              {
-                "group": "개요",
-                "pages": [
-                  "ko/cloud/overview/deployment-workflow"
-                ]
-              },
-              {
-                "group": "가격",
-                "pages": [
-                  "ko/cloud/pricing/cloud-pricing"
-                ]
-              },
-              {
-                "group": "참조",
-                "pages": [
-                  "ko/cloud/reference/cloud-reference"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "네트워크",
-            "groups": [
-              {
-                "group": "개요",
-                "pages": [
-                  "ko/network/overview/network-overview"
-                ]
-              },
-              {
-                "group": "참여",
-                "pages": [
-                  "ko/network/participate/network-participate"
-                ]
-              },
-              {
-                "group": "자주 묻는 질문",
-                "pages": [
-                  "ko/network/faq/network-faq"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "리소스",
-            "groups": [
-              {
-                "group": "네트워크",
-                "pages": [
-                  "ko/supported-networks",
-                  "ko/supported-networks/ethereum",
-                  "ko/supported-networks/solana",
-                  "ko/supported-networks/fuel"
-                ]
-              },
-              {
-                "group": "문서",
-                "pages": [
-                  "ko/other/glossary/glossary",
-                  "ko/other/conduit-integration/conduit-integration"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "지원",
-            "groups": [
-              {
-                "group": "도움말",
-                "pages": []
-              }
-            ]
-          }
+        "pages": [
+          "ko/404"
         ]
       },
       {
         "language": "de",
-        "tabs": [
-          {
-            "tab": "Startseite",
-            "pages": ["de/home"]
-          }
+        "pages": [
+          "de/404"
         ]
       },
       {
         "language": "tr",
-        "tabs": [
-          {
-            "tab": "Ana Sayfa",
-            "pages": ["tr/home"]
-          }
+        "pages": [
+          "tr/404"
         ]
       },
       {
         "language": "fr",
-        "tabs": [
-          {
-            "tab": "Accueil",
-            "pages": ["fr/home"]
-          }
+        "pages": [
+          "fr/404"
         ]
       }
     ]
@@ -1069,14 +1728,17 @@
       "type": "github",
       "href": "https://github.com/subsquid/squid-sdk"
     },
-    "links": [{
-      "label": "For LLMs",
-      "href": "https://sqd-2119b3c3.mintlify.app/llms-full.txt"
-    }, {
-      "label": "Get help",
-      "href": "https://t.me/hydradevs",
-      "icon": "telegram"
-    }]
+    "links": [
+      {
+        "label": "For LLMs",
+        "href": "https://sqd-2119b3c3.mintlify.app/llms-full.txt"
+      },
+      {
+        "label": "Get help",
+        "href": "https://t.me/hydradevs",
+        "icon": "telegram"
+      }
+    ]
   },
   "redirects": [
     {
@@ -1084,6 +1746,11 @@
       "destination": "/404.html"
     }
   ],
+  "errors": {
+    "404": {
+      "redirect": false
+    }
+  },
   "seo": {
     "metatags": {
       "robots": "noindex"

@@ -1,0 +1,403 @@
+---
+title: "Squid CLI"
+description: "Command-line interface for managing Squid projects and deployments"
+---
+
+# Squid CLI
+
+The Squid CLI is a powerful command-line tool for scaffolding, managing, and deploying Squid indexers. It streamlines the development workflow from project creation to production deployment.
+
+<Info>
+  The CLI provides a unified interface for all Squid operations, from local
+  development to cloud deployment.
+</Info>
+
+## Installation
+
+Install the Squid CLI globally:
+
+```bash
+npm install -g @subsquid/cli
+```
+
+<Check>Verify installation by running `sqd --version`</Check>
+
+<Tip>
+  Keep your CLI updated to the latest version for access to new features and bug
+  fixes.
+</Tip>
+
+## Core Commands
+
+### Project Management
+
+#### Initialize New Project
+
+Create a new Squid project from templates or repositories:
+
+```bash
+# Create from template
+sqd init my-indexer -t evm
+
+# Create from GitHub repository
+sqd init my-indexer -t https://github.com/subsquid-labs/showcase01-all-usdc-transfers
+
+# List available templates
+sqd init --help
+```
+
+<Note>
+  Templates include pre-configured examples for different blockchain types (EVM,
+  Substrate, Solana, etc.).
+</Note>
+
+#### Project Development
+
+Essential commands for development workflow:
+
+```bash
+# Install dependencies
+sqd install
+
+# Build project
+sqd build
+
+# Generate TypeORM models
+sqd codegen
+
+# Apply database migrations
+sqd migration:apply
+
+# Start development server
+sqd serve:dev
+```
+
+<Tip>
+  Use `sqd serve:dev` for local development with hot reloading and GraphQL
+  playground access.
+</Tip>
+
+### Process Management
+
+#### Run Processor
+
+Start and manage your indexer processor:
+
+```bash
+# Start processor
+sqd process
+
+# Run with specific configuration
+sqd process:prod
+```
+
+<Warning>
+  Ensure your database is running before starting the processor. Use `docker
+  compose up -d` for local development.
+</Warning>
+
+#### Database Operations
+
+Manage database migrations and schema changes:
+
+```bash
+# Create migration
+sqd migration:create
+
+# Apply migrations
+sqd migration:apply
+
+# Revert migration
+sqd migration:revert
+```
+
+<Check>Always test migrations locally before deploying to production.</Check>
+
+### Deployment
+
+#### SQD Cloud Deployment
+
+Deploy your indexer to SQD Cloud:
+
+```bash
+# Deploy to SQD Cloud
+sqd deploy
+
+# Deploy with custom name
+sqd deploy --name my-production-indexer
+
+# Check deployment status
+sqd deploy:status
+```
+
+<Note>
+  You need to authenticate with SQD Cloud before deploying. Use `sqd auth` to
+  set up authentication.
+</Note>
+
+## Configuration
+
+### squid.yaml
+
+The main configuration file for your Squid project:
+
+```yaml squid.yaml
+manifestVersion: subsquid.io/v0.1
+name: my-indexer
+version: 1
+description: My awesome indexer
+
+build:
+  dockerfile: Dockerfile
+
+deploy:
+  addons:
+    postgres:
+      version: 14
+  processor:
+    cmd: ["node", "lib/main.js"]
+  api:
+    cmd: ["npx", "squid-graphql-server"]
+```
+
+<Info>
+  The `squid.yaml` file defines your project's build and deployment
+  configuration. It's automatically generated when you create a new project.
+</Info>
+
+### Environment Variables
+
+Configure your development and production environments:
+
+```bash .env
+# Database connection
+DB_NAME=squid
+DB_PORT=5432
+DB_HOST=localhost
+DB_USER=postgres
+DB_PASS=postgres
+
+# SQD Cloud
+SQD_TOKEN=your-token-here
+```
+
+<Warning>
+  Never commit sensitive environment variables to version control. Use `.env`
+  files and SQD Cloud secrets for production.
+</Warning>
+
+## Templates
+
+### Available Templates
+
+Choose from pre-built templates for different blockchain types:
+
+<CardGroup cols={2}>
+  <Card
+    title="EVM Template"
+    href="https://github.com/subsquid-labs/squid-evm-template"
+  >
+    Basic EVM indexer template for Ethereum and EVM-compatible chains
+  </Card>
+  <Card
+    title="Substrate Template"
+    href="https://github.com/subsquid-labs/squid-substrate-template"
+  >
+    Substrate blockchain indexer for Polkadot, Kusama, and Substrate chains
+  </Card>
+  <Card
+    title="Solana Template"
+    href="https://github.com/subsquid-labs/squid-solana-template"
+  >
+    Solana blockchain indexer for Solana programs and transactions
+  </Card>
+  <Card
+    title="Multi-chain Template"
+    href="https://github.com/subsquid-labs/squid-multichain-template"
+  >
+    Index multiple blockchains in a single project
+  </Card>
+</CardGroup>
+
+### Custom Templates
+
+Use your own templates for specialized use cases:
+
+```bash
+# Use custom GitHub repository as template
+sqd init my-project -t https://github.com/your-org/custom-template
+
+# Use local directory as template
+sqd init my-project -t ./local-template
+```
+
+<Tip>
+  Custom templates allow you to standardize project structure across your
+  organization and include your specific configurations.
+</Tip>
+
+## Advanced Usage
+
+### Custom Commands
+
+Define custom commands in `commands.json` for project-specific workflows:
+
+```json commands.json
+{
+  "commands": {
+    "build:prod": {
+      "description": "Build for production",
+      "cmd": ["npm", "run", "build:prod"]
+    },
+    "test:e2e": {
+      "description": "Run end-to-end tests",
+      "cmd": ["npm", "run", "test:e2e"]
+    }
+  }
+}
+```
+
+<Note>
+Custom commands are executed using `sqd <command-name>` and can include any shell commands or scripts.
+</Note>
+
+### Multi-environment Setup
+
+Configure different environments for development, staging, and production:
+
+```bash
+# Development
+sqd process --env development
+
+# Staging
+sqd process --env staging
+
+# Production
+sqd process --env production
+```
+
+<Tip>
+  Use environment-specific configuration files (e.g., `.env.development`,
+  `.env.production`) to manage different settings.
+</Tip>
+
+## Troubleshooting
+
+### Common Issues
+
+<AccordionGroup>
+<Accordion title="Permission denied errors">
+  Ensure you have proper permissions and are logged in to SQD Cloud:
+  ```bash
+  sqd auth
+  ```
+  
+  <Note>
+  Check that your SQD Cloud account has the necessary permissions for the organization.
+  </Note>
+</Accordion>
+
+<Accordion title="Build failures">
+  Clear cache and rebuild: ```bash sqd clean sqd build ```
+  <Tip>
+    If issues persist, try deleting `node_modules` and running `npm install`
+    again.
+  </Tip>
+</Accordion>
+
+<Accordion title="Database connection issues">
+  Check your environment variables and database status: ```bash sqd db:status
+  ```
+  <Warning>
+    Ensure your database is running and accessible with the correct credentials.
+  </Warning>
+</Accordion>
+
+<Accordion title="Deployment failures">
+  Check your `squid.yaml` configuration and authentication:
+  ```bash
+  sqd deploy --dry-run
+  sqd auth --check
+  ```
+</Accordion>
+</AccordionGroup>
+
+### Debug Mode
+
+Enable detailed logging for troubleshooting:
+
+```bash
+# Enable verbose logging
+sqd --verbose process
+
+# Debug specific command
+DEBUG=* sqd build
+```
+
+<Info>
+  Debug mode provides detailed information about CLI operations, which is
+  helpful for diagnosing issues.
+</Info>
+
+## Best Practices
+
+Follow these best practices for effective CLI usage:
+
+- **Version Control**: Use version control for your Squid projects to track changes and collaborate
+- **Local Testing**: Always test locally before deploying to SQD Cloud
+- **Environment Management**: Use environment-specific configurations for different deployment stages
+- **CLI Updates**: Regularly update CLI to the latest version for new features and bug fixes
+- **Monitoring**: Monitor deployment logs for issues and performance insights
+- **Security**: Never commit sensitive credentials to version control
+
+<Tip>
+  Set up automated testing and deployment pipelines to streamline your
+  development workflow.
+</Tip>
+
+## CLI Reference
+
+### Global Options
+
+| Option          | Description           |
+| --------------- | --------------------- |
+| `--help, -h`    | Show help information |
+| `--version, -V` | Show CLI version      |
+| `--verbose, -v` | Enable verbose output |
+| `--quiet, -q`   | Suppress output       |
+
+### Command Categories
+
+<CardGroup cols={2}>
+<Card title="Project Commands" icon="folder">
+  - `init` - Initialize new project
+  - `build` - Build project
+  - `clean` - Clean build artifacts
+</Card>
+
+<Card title="Database Commands" icon="database">
+  - `migration:*` - Manage migrations - `codegen` - Generate TypeORM models
+</Card>
+
+<Card title="Development Commands" icon="code">
+  - `serve:*` - Start development servers - `process` - Run processor
+</Card>
+
+<Card title="Deployment Commands" icon="cloud">
+  - `deploy` - Deploy to SQD Cloud
+  - `auth` - Manage authentication
+</Card>
+</CardGroup>
+
+### Complete Command Reference
+
+For detailed information about all available commands:
+
+```bash
+sqd --help
+```
+
+<Info>
+  Each command also supports `--help` for specific usage information, e.g., `sqd
+  deploy --help`.
+</Info>

@@ -7,12 +7,12 @@ description: "Manage multiple squid deployments"
 # Slots and tags
 
 <Tip>
-If you used SQD Cloud before the slots and tags update, you may want to take a look at the [Changelog](cloud/reference/deployments-two-changelog), including its [Backwards compatibility section](cloud/reference/deployments-two-changelog/#backwards-compatibility).
+If you used SQD Cloud before the slots and tags update, you may want to take a look at the [Changelog](/en/cloud/reference/deployments-two-changelog), including its [Backwards compatibility section](/en/cloud/reference/deployments-two-changelog/#backwards-compatibility).
 </Tip>
 
 Starting with `@subsquid/cli>=3.0.0` SQD Cloud is using a new deployment system based on the following concepts:
 
-* **Slots:** Given a squid name and an [organization](cloud/resources/organizations), slot name uniquely identifies a squid deployment.
+* **Slots:** Given a squid name and an [organization](/en/cloud/resources/organizations), slot name uniquely identifies a squid deployment.
   - Slots are identified by short strings. They directly replace versions from the old workflow, which were identified by numbers.
   - You can specify a slot on deployment or omit it. In the latter case the Cloud will create a new slot with a random identifier.
   - Deploying to an already occupied slot will result in updating the initial deployment.
@@ -31,7 +31,7 @@ Both tags and slots can be specified in squid manifest as well as via command li
 ## Zero-downtime updates
 
 <Info>
-The functionality in this section mirrors the now-deprecated [production aliases](cloud/resources/production-alias).
+The functionality in this section mirrors the now-deprecated [production aliases](/en/cloud/resources/production-alias).
 </Info>
 
 As you develop your squid you will sometimes need to re-sync it from scratch. With tags you can do this without a maintenance downtime.
@@ -141,6 +141,6 @@ Now that you've seen how slots and tags can help you with some common tasks, you
   ```
   All the flags you can use to refer to deployments and to disable protective user prompts are described there.
 
-- The detailed [changelog](cloud/reference/deployments-two-changelog) that (for now) doubles as the reference documentation page. It describes the new system by comparing it to the old one that was based on versions and [production aliases](cloud/resources/production-alias).
+- The detailed [changelog](/en/cloud/reference/deployments-two-changelog) that (for now) doubles as the reference documentation page. It describes the new system by comparing it to the old one that was based on versions and [production aliases](/en/cloud/resources/production-alias).
 
-- If you used the old system or witnessed the migration of your organization, you may want to take a look at the [Backwards compatibility](cloud/reference/deployments-two-changelog/#backwards-compatibility) section of the changelog.
+- If you used the old system or witnessed the migration of your organization, you may want to take a look at the [Backwards compatibility](/en/cloud/reference/deployments-two-changelog/#backwards-compatibility) section of the changelog.

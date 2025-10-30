@@ -71,7 +71,7 @@ Configure your squid to ingest data from the portal by replacing the call to `.s
    export const processor = new EvmBatchProcessor()-  .setGateway('<gateway URL for your dataset>')+  .setPortal('<portal URL for your dataset>')
   ```
 
-- If you intend to run your squid in [the Cloud](cloud/), you should source the URL from the environment variable you configured in the manifest, e.g.
+- If you intend to run your squid in [the Cloud](/en/cloud/), you should source the URL from the environment variable you configured in the manifest, e.g.
 
   ```
   +import { assertNotNull } from '@subsquid/util-internal'; export const processor = new EvmBatchProcessor()-  .setGateway('<gateway URL for your dataset>')+  .setPortal(assertNotNull(+    process.env.PORTAL_URL, +    'Required env variable PORTAL_URL is missing'+  ))

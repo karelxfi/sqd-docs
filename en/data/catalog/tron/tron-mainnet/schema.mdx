@@ -1,0 +1,80 @@
+---
+title: "Schema"
+description: "Complete data schema and field reference for Tron Mainnet"
+---
+
+# Tron Mainnet Data Schema
+
+Tron Mainnet datasets provide comprehensive on-chain data indexed and queryable through the Subsquid Network.
+
+## Available Data Types
+
+<AccordionGroup>
+<Accordion title="Blocks">
+Block data contains metadata about each block in the chain.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `number` | integer | Block number |
+| `hash` | string | Block hash |
+| `parent_hash` | string | Parent block hash |
+| `timestamp` | integer | Block timestamp |
+| `witness_address` | string | Block producer address |
+| `witness_signature` | string | Block producer signature |
+| `merkle_root_hash` | string | Merkle root hash |
+| `tx_trie_root` | string | Transaction trie root |
+</Accordion>
+
+<Accordion title="Transactions">
+Transaction data includes all executed transactions with their details.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `hash` | string | Transaction hash |
+| `block_number` | integer | Block number |
+| `index` | integer | Transaction index in block |
+| `success` | boolean | Whether transaction succeeded |
+| `result` | string | Transaction result |
+| `energy_usage` | integer | Energy consumed |
+| `energy_fee` | integer | Energy fee paid |
+| `net_usage` | integer | Bandwidth consumed |
+| `net_fee` | integer | Bandwidth fee paid |
+</Accordion>
+
+<Accordion title="Contracts">
+Smart contract interaction data.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `type` | string | Contract type |
+| `parameter` | object | Contract parameters |
+| `provider` | string | Contract provider |
+| `contract_name` | string | Contract name |
+| `permission_id` | integer | Permission ID |
+</Accordion>
+
+<Accordion title="Internal Transactions">
+Internal transaction traces.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `hash` | string | Internal transaction hash |
+| `caller_address` | string | Caller address |
+| `transferto_address` | string | Transfer to address |
+| `call_value_info` | array | Call value information |
+| `note` | string | Transaction note |
+</Accordion>
+
+<Accordion title="Logs">
+Event logs emitted during transaction execution.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `address` | string | Contract address |
+| `topics` | array | Log topics |
+| `data` | string | Log data |
+| `block_number` | integer | Block number |
+| `transaction_hash` | string | Transaction hash |
+</Accordion>
+
+</AccordionGroup>

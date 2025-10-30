@@ -1,0 +1,64 @@
+---
+title: "Schema"
+description: "Complete data schema and field reference for Astar"
+---
+
+# Astar Data Schema
+
+Astar datasets provide comprehensive on-chain data indexed and queryable through the Subsquid Network.
+
+## Available Data Types
+
+<AccordionGroup>
+<Accordion title="Blocks">
+Block data contains metadata about each block in the chain.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `number` | integer | Block number |
+| `hash` | string | Block hash |
+| `parent_hash` | string | Parent block hash |
+| `timestamp` | integer | Block timestamp |
+| `state_root` | string | State root hash |
+| `extrinsics_root` | string | Extrinsics root hash |
+| `spec_version` | integer | Runtime specification version |
+</Accordion>
+
+<Accordion title="Extrinsics">
+Extrinsics (transactions) submitted to the network.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `index` | integer | Extrinsic index in block |
+| `hash` | string | Extrinsic hash |
+| `call` | object | Call data |
+| `signature` | object | Signature information |
+| `success` | boolean | Whether extrinsic succeeded |
+| `error` | object | Error information if failed |
+</Accordion>
+
+<Accordion title="Events">
+Event data emitted by the network.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `index` | integer | Event index in block |
+| `extrinsic_index` | integer | Related extrinsic index |
+| `phase` | string | Event phase (initialization, apply_extrinsic, finalization) |
+| `pallet` | string | Pallet name |
+| `name` | string | Event name |
+| `args` | object | Event arguments |
+</Accordion>
+
+<Accordion title="Smart Contracts">
+Data fields for smart contracts.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `contract_address` | string | Contract address |
+| `code_hash` | string | Contract code hash |
+| `storage_deposit` | integer | Storage deposit amount |
+| `instantiate_data` | object | Contract instantiation data |
+</Accordion>
+
+</AccordionGroup>

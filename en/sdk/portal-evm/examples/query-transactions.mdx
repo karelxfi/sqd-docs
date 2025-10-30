@@ -1,0 +1,332 @@
+---
+title: "Query Transactions"
+description: "Monitor wallet activity and transaction flows using Portal"
+---
+
+Retrieve all transactions sent to a specific address to track wallet activity, exchange flows, or smart contract interactions.
+
+## Use Case
+
+Transaction queries help you:
+
+- Track incoming transactions to wallets or exchanges
+- Monitor smart contract interactions
+- Analyze transaction patterns
+- Build transaction history feeds
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
+      "transaction": {
+        "hash": true,
+        "from": true,
+        "to": true,
+        "value": true,
+        "input": true,
+        "gasUsed": true,
+        "status": true
+      }
+    },
+    "transactions": [{
+      "to": ["0xdAC17F958D2ee523a2206206994597C13D831ec7"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+});
+
+const TARGET_ADDRESS = "0xdAC17F958D2ee523a2206206994597C13D831ec7"; // USDT
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    block: { number: true, timestamp: true },
+    transaction: {
+      hash: true,
+      from: true,
+      to: true,
+      value: true,
+      input: true,
+      gasUsed: true,
+      status: true,
+    },
+  },
+  transactions: [
+    {
+      to: [TARGET_ADDRESS],
+    },
+  ],
+});
+
+// Process transactions
+for (const block of blocks) {
+  for (const tx of block.transactions) {
+    console.log({
+      blockNumber: block.header.number,
+      txHash: tx.hash,
+      from: tx.from,
+      to: tx.to,
+      value: tx.value,
+      gasUsed: tx.gasUsed,
+      success: tx.status === 1,
+    });
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/ethereum-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        },
+        "transaction": {
+            "hash": True,
+            "from": True,
+            "to": True,
+            "value": True,
+            "input": True,
+            "gasUsed": True,
+            "status": True
+        }
+    },
+    "transactions": [{
+        "to": ["0xdAC17F958D2ee523a2206206994597C13D831ec7"]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for tx in block.get('transactions', []):
+        print({
+            "blockNumber": block['header']['number'],
+            "txHash": tx['hash'],
+            "from": tx['from'],
+            "to": tx['to'],
+            "value": tx['value'],
+            "gasUsed": tx['gasUsed'],
+            "success": tx['status'] == 1
+        })
+```
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `from` | Filter transactions by sender address |
+| `to` | Filter transactions by recipient address |
+| `sighash` | Filter by function signature (first 4 bytes of input data) |
+| `status` | Transaction status: 1 = success, 0 = failure |
+| `value` | ETH amount transferred (in wei) |
+| `input` | Transaction calldata |
+| `gasUsed` | Actual gas consumed |
+
+## Expected Output
+
+```json
+{
+  "header": {
+    "number": 18000123,
+    "timestamp": 1697544779
+  },
+  "transactions": [
+    {
+      "hash": "0x123...",
+      "from": "0xa9d1e08c7793af67e9d92fe308d5697fb81d3e43",
+      "to": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "value": "0",
+      "input": "0xa9059cbb000000000000000000000000...",
+      "gasUsed": "54234",
+      "status": 1
+    }
+  ]
+}
+```
+
+## Filter by Function Signature
+
+Query only specific function calls (e.g., ERC-20 `transfer` function):
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "transaction": {
+        "hash": true,
+        "from": true,
+        "to": true,
+        "input": true
+      }
+    },
+    "transactions": [{
+      "to": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"],
+      "sighash": ["0xa9059cbb"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    transaction: { hash: true, from: true, to: true, input: true },
+  },
+  transactions: [
+    {
+      to: ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"], // USDC
+      sighash: ["0xa9059cbb"], // transfer(address,uint256)
+    },
+  ],
+});
+```
+
+```python Python
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "transaction": {
+            "hash": True,
+            "from": True,
+            "to": True,
+            "input": True
+        }
+    },
+    "transactions": [{
+        "to": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"],
+        "sighash": ["0xa9059cbb"]
+    }]
+}
+```
+</CodeGroup>
+
+<Tip>
+Function signature is computed as `keccak256("transfer(address,uint256)")[0:4]`. The result is `0xa9059cbb`.
+</Tip>
+
+## Monitor Outgoing Transactions
+
+Track transactions from a specific wallet:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "transaction": {
+        "hash": true,
+        "from": true,
+        "to": true,
+        "value": true
+      }
+    },
+    "transactions": [{
+      "from": ["0x28C6c06298d514Db089934071355E5743bf21d60"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    transaction: { hash: true, from: true, to: true, value: true },
+  },
+  transactions: [
+    {
+      from: ["0x28C6c06298d514Db089934071355E5743bf21d60"],
+    },
+  ],
+});
+```
+
+```python Python
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "transaction": {
+            "hash": True,
+            "from": True,
+            "to": True,
+            "value": True
+        }
+    },
+    "transactions": [{
+        "from": ["0x28C6c06298d514Db089934071355E5743bf21d60"]
+    }]
+}
+```
+</CodeGroup>
+
+## Performance Tips
+
+1. **Combine filters**: Use both `from` and `to` for bidirectional tracking
+2. **Filter by sighash**: Reduces results to specific function calls
+3. **Request minimal fields**: Omit `input` if you don't need calldata
+4. **Check status**: Filter failed transactions in post-processing if needed
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Event Logs" icon="file-lines" href="/en/sdk/portal-evm/examples/query-logs">
+  Track smart contract events
+</Card>
+
+<Card title="Query Traces" icon="diagram-project" href="/en/sdk/portal-evm/examples/query-traces">
+  Analyze internal transactions
+</Card>
+
+<Card title="Contract Deployments" icon="rocket" href="/en/sdk/portal-evm/examples/contract-deployments">
+  Monitor new contract deployments
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/sdk/portal-evm/api-reference">
+  View complete API docs
+</Card>
+</CardGroup>
+

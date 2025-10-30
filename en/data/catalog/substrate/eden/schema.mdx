@@ -1,0 +1,66 @@
+---
+title: "Schema"
+description: "Complete data schema and field reference for Eden"
+---
+
+# Eden Data Schema
+
+Eden datasets provide comprehensive on-chain data indexed and queryable through the Subsquid Network.
+
+## Available Data Types
+
+<AccordionGroup>
+<Accordion title="Blocks">
+Block data contains metadata about each block in the chain.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `number` | integer | Block number |
+| `hash` | string | Block hash |
+| `parent_hash` | string | Parent block hash |
+| `timestamp` | integer | Block timestamp |
+| `state_root` | string | State root hash |
+| `extrinsics_root` | string | Extrinsics root hash |
+| `spec_version` | integer | Runtime specification version |
+</Accordion>
+
+<Accordion title="Extrinsics">
+Extrinsics (transactions) submitted to the network.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `index` | integer | Extrinsic index in block |
+| `hash` | string | Extrinsic hash |
+| `version` | integer | Extrinsic version |
+| `signature` | object | Signature information |
+| `success` | boolean | Whether extrinsic succeeded |
+| `error` | object | Error information if failed |
+| `call` | object | Call data |
+</Accordion>
+
+<Accordion title="Events">
+Events emitted during block execution.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `index` | integer | Event index |
+| `phase` | string | Execution phase (ApplyExtrinsic, Finalization, Initialization) |
+| `extrinsic_index` | integer | Associated extrinsic index |
+| `name` | string | Event name |
+| `args` | object | Event arguments |
+| `topics` | array | Event topics |
+</Accordion>
+
+<Accordion title="Calls">
+Call data from extrinsic execution.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `name` | string | Call name (pallet.method) |
+| `args` | object | Call arguments |
+| `origin` | object | Call origin |
+| `success` | boolean | Whether call succeeded |
+| `error` | object | Error information if failed |
+</Accordion>
+
+</AccordionGroup>

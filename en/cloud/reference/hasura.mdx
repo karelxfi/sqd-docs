@@ -8,7 +8,7 @@ description: "Run a Hasura instance"
 
 ## Running Hasura
 
-To provision a [Hasura](https://hasura.io) instance, add an empty `deploy.addons.hasura` section to the [deployment manifest](cloud/reference/manifest). Provide some basic configuration:
+To provision a [Hasura](https://hasura.io) instance, add an empty `deploy.addons.hasura` section to the [deployment manifest](/en/cloud/reference/manifest). Provide some basic configuration:
 ```yaml
 deploy:
   env:
@@ -19,7 +19,7 @@ deploy:
     postgres:
     hasura:
 ```
-Note the use of a [Cloud secret](cloud/resources/env-variables/#secrets) for storing the admin password.
+Note the use of a [Cloud secret](/en/cloud/resources/env-variables/#secrets) for storing the admin password.
 
 ## Configuring a Hasura API
 

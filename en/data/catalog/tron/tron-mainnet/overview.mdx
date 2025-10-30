@@ -1,0 +1,66 @@
+---
+title: "Overview"
+description: "Tron Mainnet data indexing and API access"
+---
+
+<Info>
+  Starting today (2025-02-23) all open private network gateways are rate limited
+  at 50 requests per 10 seconds per IP. Higher bandwidths will soon become
+  available via the public network.
+</Info>
+
+## Network Information
+
+- **Network ID**: `tron-mainnet`
+- **Gateway**: Open Private Network
+
+## Endpoints
+
+### Gateway Endpoint
+
+```
+https://v2.archive.subsquid.io/network/tron-mainnet
+```
+
+### Usage
+
+```typescript
+import { TronBatchProcessor } from '@subsquid/tron-processor'
+
+const processor = new TronBatchProcessor()
+  .setGateway("https://v2.archive.subsquid.io/network/tron-mainnet")
+  .setBlockRange({ from: 0 });
+```
+
+## Quick Start
+
+Get started indexing Tron Mainnet data:
+
+<Card
+  title="Quick Start"
+  icon="terminal"
+  href="/en/tron-indexing/cli-cheatsheet"
+>
+  Quick reference for building your indexer
+</Card>
+
+## Schema Reference
+
+<Card
+  title="View Schema"
+  icon="database"
+  href="/en/data/catalog/tron/tron-mainnet/schema"
+>
+  See complete field definitions for all data types
+</Card>
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="code" href="/en/tron-indexing/network-api/tron-api">
+    Complete API documentation
+  </Card>
+  <Card title="Network Overview" icon="network-wired" href="/en/subsquid-network/overview">
+    Learn about the Subsquid Network
+  </Card>
+</CardGroup>

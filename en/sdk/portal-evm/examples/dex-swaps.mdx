@@ -1,0 +1,356 @@
+---
+title: "Index DEX Swaps"
+description: "Track decentralized exchange trading activity using Portal"
+---
+
+Monitor Uniswap V3 Swap events to build DEX analytics dashboards, analyze liquidity patterns, or create price feeds.
+
+## Use Case
+
+DEX swap tracking enables you to:
+
+- Build DEX trading analytics and volume trackers
+- Monitor liquidity pool activity
+- Analyze trading patterns and arbitrage
+- Create real-time price feeds
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 12369621,
+    "toBlock": 12400000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
+      "log": {
+        "address": true,
+        "topics": true,
+        "data": true,
+        "transactionHash": true
+      }
+    },
+    "logs": [{
+      "topic0": ["0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+});
+
+// Uniswap V3 Swap event signature
+const SWAP_TOPIC = "0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67";
+
+const blocks = await dataSource.getBlocks({
+  from: 12369621, // Uniswap V3 deployment block
+  to: 12400000,
+  fields: {
+    block: { number: true, timestamp: true },
+    log: {
+      address: true,
+      topics: true,
+      data: true,
+      transactionHash: true,
+    },
+  },
+  logs: [
+    {
+      topic0: [SWAP_TOPIC],
+    },
+  ],
+});
+
+// Process swaps
+for (const block of blocks) {
+  for (const log of block.logs) {
+    const sender = `0x${log.topics[1].slice(26)}`;
+    const recipient = `0x${log.topics[2].slice(26)}`;
+    
+    console.log({
+      blockNumber: block.header.number,
+      timestamp: block.header.timestamp,
+      pool: log.address,
+      sender,
+      recipient,
+      txHash: log.transactionHash,
+      // Decode amounts from data field
+    });
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/ethereum-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+# Uniswap V3 Swap event
+swap_topic = "0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67"
+
+payload = {
+    "type": "evm",
+    "fromBlock": 12369621,  # Uniswap V3 deployment
+    "toBlock": 12400000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        },
+        "log": {
+            "address": True,
+            "topics": True,
+            "data": True,
+            "transactionHash": True
+        }
+    },
+    "logs": [{
+        "topic0": [swap_topic]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for log in block.get('logs', []):
+        sender = "0x" + log['topics'][1][26:]
+        recipient = "0x" + log['topics'][2][26:]
+        
+        print({
+            "blockNumber": block['header']['number'],
+            "timestamp": block['header']['timestamp'],
+            "pool": log['address'],
+            "sender": sender,
+            "recipient": recipient,
+            "txHash": log['transactionHash']
+        })
+```
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `topic0` | Swap event signature (`Swap(address,address,int256,int256,uint160,uint128,int24)`) |
+| `topics[1]` | Sender address (who initiated the swap) |
+| `topics[2]` | Recipient address (who receives the output) |
+| `data` | Swap amounts and other parameters (amount0, amount1, sqrtPriceX96, liquidity, tick) |
+| `address` | Pool contract address |
+
+<Note>
+The Swap event signature varies by DEX. Uniswap V3 uses a different signature than Uniswap V2 or other DEXs.
+</Note>
+
+## Expected Output
+
+```json
+{
+  "header": {
+    "number": 12369650,
+    "timestamp": 1620054321
+  },
+  "logs": [
+    {
+      "address": "0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8",
+      "topics": [
+        "0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67",
+        "0x00000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+        "0x00000000000000000000000028c6c06298d514db089934071355e5743bf21d60"
+      ],
+      "data": "0x...",
+      "transactionHash": "0x123..."
+    }
+  ]
+}
+```
+
+## Track Specific Pool
+
+Monitor swaps for a specific trading pair:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "log": {
+        "address": true,
+        "topics": true,
+        "data": true
+      }
+    },
+    "logs": [{
+      "address": ["0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8"],
+      "topic0": ["0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const USDC_WETH_POOL = "0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8"; // Uniswap V3 USDC/WETH
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    log: { address: true, topics: true, data: true },
+  },
+  logs: [
+    {
+      address: [USDC_WETH_POOL],
+      topic0: ["0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67"],
+    },
+  ],
+});
+```
+
+```python Python
+usdc_weth_pool = "0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8"
+
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "log": {
+            "address": True,
+            "topics": True,
+            "data": True
+        }
+    },
+    "logs": [{
+        "address": [usdc_weth_pool],
+        "topic0": ["0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67"]
+    }]
+}
+```
+</CodeGroup>
+
+## Uniswap V2 Swaps
+
+For Uniswap V2, use the V2 Swap event signature:
+
+<CodeGroup>
+```typescript TypeScript
+// Uniswap V2 Swap event: Swap(address,uint256,uint256,uint256,uint256,address)
+const V2_SWAP_TOPIC = "0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822";
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    log: { address: true, topics: true, data: true },
+  },
+  logs: [
+    {
+      topic0: [V2_SWAP_TOPIC],
+    },
+  ],
+});
+```
+</CodeGroup>
+
+<Tip>
+Different DEX protocols use different event signatures. Check the contract ABI to find the correct signature for your target DEX.
+</Tip>
+
+## Decode Swap Amounts
+
+Swap amounts are encoded in the `data` field. Here's how to decode them for Uniswap V3:
+
+<CodeGroup>
+```typescript TypeScript
+import { ethers } from "ethers";
+
+// Uniswap V3 Swap event ABI
+const swapEventAbi = [
+  "event Swap(address indexed sender, address indexed recipient, int256 amount0, int256 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick)"
+];
+
+const iface = new ethers.Interface(swapEventAbi);
+
+for (const block of blocks) {
+  for (const log of block.logs) {
+    const decoded = iface.parseLog({
+      topics: log.topics,
+      data: log.data,
+    });
+    
+    console.log({
+      amount0: decoded.args.amount0.toString(),
+      amount1: decoded.args.amount1.toString(),
+      sqrtPriceX96: decoded.args.sqrtPriceX96.toString(),
+      liquidity: decoded.args.liquidity.toString(),
+      tick: decoded.args.tick,
+    });
+  }
+}
+```
+
+```python Python
+from eth_abi import decode
+
+# Decode data field (amounts and other params)
+# Uniswap V3: (int256 amount0, int256 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick)
+types = ['int256', 'int256', 'uint160', 'uint128', 'int24']
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for log in block.get('logs', []):
+        decoded = decode(types, bytes.fromhex(log['data'][2:]))
+        amount0, amount1, sqrtPriceX96, liquidity, tick = decoded
+        
+        print({
+            "amount0": amount0,
+            "amount1": amount1,
+            "sqrtPriceX96": sqrtPriceX96,
+            "liquidity": liquidity,
+            "tick": tick
+        })
+```
+</CodeGroup>
+
+## Performance Tips
+
+1. **Filter by pool address**: Query specific pools instead of all swaps
+2. **Use block ranges**: Process data in 10k-50k block batches
+3. **Decode off-chain**: Decode swap amounts in your application, not in the query
+4. **Combine with traces**: Use traces to track multi-hop swaps through aggregators
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Event Logs" icon="file-lines" href="/en/sdk/portal-evm/examples/query-logs">
+  General event log querying
+</Card>
+
+<Card title="Query Traces" icon="diagram-project" href="/en/sdk/portal-evm/examples/query-traces">
+  Track multi-hop swaps with traces
+</Card>
+
+<Card title="Track NFT Transfers" icon="image" href="/en/sdk/portal-evm/examples/nft-transfers">
+  Monitor NFT marketplace activity
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/sdk/portal-evm/api-reference">
+  View complete API docs
+</Card>
+</CardGroup>
+

@@ -6,10 +6,10 @@ description: "Scale the squid with the deployment manifest"
 
 # Scale the deployment
 
-The `scale:` section of the [deployment manifest](cloud/reference/manifest) allows allocating additional computing resources for the squid add-ons and services. This option is only available for paid squids deployed in [professional organizations](cloud/resources/organizations/#professional-organizations).
+The `scale:` section of the [deployment manifest](/en/cloud/reference/manifest) allows allocating additional computing resources for the squid add-ons and services. This option is only available for paid squids deployed in [professional organizations](/en/cloud/resources/organizations/#professional-organizations).
 
 <Info>
-Visit the [Pricing page](cloud/pricing) and/or our [costs calculator](https://subsquid.io/subsquid-cloud#calculator) if you're looking for an estimate.
+Visit the [Pricing page](/en/cloud/pricing) and/or our [costs calculator](https://subsquid.io/subsquid-cloud#calculator) if you're looking for an estimate.
 </Info>
 
 The manifest supports the following scaling options:
@@ -19,7 +19,7 @@ The manifest supports the following scaling options:
 Default: `dedicate
 d: true`.
 
-When a dedicated profile is used, the resources that the squid requests are reserved in advance. **This is the new/current default** and is the recommended profile for production squids. Squid deployment must be dedicated to be a subject of [SQD Cloud SLA](cloud/pricing).
+When a dedicated profile is used, the resources that the squid requests are reserved in advance. **This is the new/current default** and is the recommended profile for production squids. Squid deployment must be dedicated to be a subject of [SQD Cloud SLA](/en/cloud/pricing).
 
 By setting `dedicated: false` you can request for your deployment to be _collocated_ - that is, share resources with other deployments. The allocation of full resources is not guaranteed for collocated squids.
 
@@ -29,7 +29,7 @@ All playground squids must use the collocated profile, that is, explicitly speci
 
 ### `postgres:`
 
-See [Postgres add-on](cloud/reference/pg) for details.
+See [Postgres add-on](/en/cloud/reference/pg) for details.
 
 ## `services:`
 

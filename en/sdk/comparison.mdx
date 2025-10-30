@@ -1,0 +1,712 @@
+---
+title: "Comparison Guide"
+description: "Compare Portal, SDKs, and competing blockchain indexing solutions"
+---
+
+This guide helps you understand the differences between SQD's offerings and how SQD compares to other blockchain indexing solutions.
+
+## Portal vs SDKs
+
+Portal and SDKs serve different use cases in the blockchain data indexing pipeline. Understanding when to use each will help you choose the right tool for your project.
+
+### Portal: Direct Data Access
+
+Portal provides raw blockchain data access through a simple HTTP API. You query specific blocks, transactions, logs, or traces and receive the raw data directly.
+
+<CodeGroup>
+```bash Portal Query Example
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18001000,
+    "fields": {
+      "log": {
+        "address": true,
+        "topics": true,
+        "data": true
+      }
+    },
+    "logs": [{
+      "address": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]
+    }]
+  }'
+```
+
+```python Portal Python Example
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/ethereum-mainnet/stream"
+response = requests.post(url, json={
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18001000,
+    "fields": {"log": {"address": True, "topics": True}},
+    "logs": [{"address": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]}]
+})
+
+for line in response.text.strip().split('\n'):
+    data = json.loads(line)
+    # Process raw blockchain data
+```
+
+</CodeGroup>
+
+### SDKs: Data Transformation Frameworks
+
+SDKs (Pipes and Squid) build on top of Portal to provide data transformation, decoding, and persistence capabilities.
+
+<CodeGroup>
+```typescript Pipes SDK Example
+import { createTarget } from "@sqd-pipes/pipes";
+import { createEvmPortalSource, EvmQueryBuilder } from "@sqd-pipes/pipes/evm";
+
+const queryBuilder = new EvmQueryBuilder()
+.addFields({ block: { number: true, hash: true }, log: { data: true } })
+.addLog({
+request: { address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"] },
+range: { from: 20000000, to: 20001000 }
+});
+
+const source = createEvmPortalSource({
+portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
+query: queryBuilder
+});
+
+const target = createTarget({
+write: async ({ read }) => {
+for await (const { data } of read()) {
+// Transform and persist to your database
+}
+}
+});
+
+await source.pipeTo(target);
+
+````
+
+```typescript Squid SDK Example
+import { EvmBatchProcessor } from "@subsquid/evm-processor";
+import { TypeormDatabase } from "@subsquid/typeorm-store";
+
+const processor = new EvmBatchProcessor()
+  .setGateway("https://v2.archive.subsquid.io/network/ethereum-mainnet")
+  .addLog({
+    address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+    topic0: [usdcAbi.events.Transfer.topic]
+  });
+
+const db = new TypeormDatabase();
+
+processor.run(db, async (ctx) => {
+  const transfers: Transfer[] = [];
+  for (let block of ctx.blocks) {
+    for (let log of block.logs) {
+      let { from, to, value } = usdcAbi.events.Transfer.decode(log);
+      transfers.push(new Transfer({ from, to, value }));
+    }
+  }
+  await ctx.store.insert(transfers);
+});
+````
+
+</CodeGroup>
+
+### Detailed Comparison
+
+| Aspect                  | Portal                                  | SDKs (Pipes/Squid)                       |
+| ----------------------- | --------------------------------------- | ---------------------------------------- |
+| **Purpose**             | Raw data retrieval                      | Data transformation and persistence      |
+| **Output**              | Raw blockchain data (JSON)              | Processed data in databases/APIs         |
+| **Performance**         | 10-50x faster than RPC                  | Additional processing overhead           |
+| **Setup Complexity**    | Minimal (HTTP requests only)            | Project scaffolding, TypeScript required |
+| **Data Decoding**       | Manual (you handle ABI decoding)        | Built-in ABI decoding                    |
+| **Database**            | Bring your own                          | PostgreSQL (Squid), custom (Pipes)       |
+| **GraphQL API**         | Not included                            | Auto-generated (Squid only)              |
+| **Type Safety**         | Limited (JSON responses)                | Full TypeScript support                  |
+| **State Management**    | Manual                                  | Built-in with fork handling              |
+| **Best For**            | Analytics, data lakes, custom pipelines | dApps, APIs, traditional backends        |
+| **Languages Supported** | Any (HTTP API)                          | TypeScript                               |
+| **Learning Curve**      | Low (HTTP + your language)              | Medium (TypeScript + framework concepts) |
+
+### When to Use Portal
+
+<CardGroup cols={2}>
+<Card title="Data Analytics" icon="chart-line">
+  Stream raw data directly into analytics platforms like ClickHouse, BigQuery, or Snowflake
+</Card>
+
+<Card title="Custom Pipelines" icon="diagram-project">
+  Build data pipelines in Python, Go, Rust, or any language with HTTP support
+</Card>
+
+<Card title="Data Lakes" icon="database">
+  Populate data warehouses with raw blockchain data for long-term analysis
+</Card>
+
+<Card title="Rapid Prototyping" icon="bolt">
+  Quick experiments without setting up a full indexing framework
+</Card>
+</CardGroup>
+
+### When to Use SDKs
+
+<CardGroup cols={2}>
+<Card title="dApp Backends" icon="server">
+  Build GraphQL APIs that power decentralized applications
+</Card>
+
+<Card title="Complex Transformations" icon="gears">
+  Decode events, track relationships, and maintain state across blocks
+</Card>
+
+<Card title="Production APIs" icon="cloud">
+  Deploy scalable indexers with built-in monitoring and deployment tools
+</Card>
+
+<Card title="Type Safety" icon="shield">
+  Leverage TypeScript for compile-time safety and better developer experience
+</Card>
+</CardGroup>
+
+## Pipes SDK vs Squid SDK
+
+Both SDKs consume data from Portal but offer different levels of abstraction and flexibility.
+
+### Architecture Differences
+
+<Tabs>
+<Tab title="Pipes SDK">
+**Streaming Library Approach**
+
+Pipes SDK is a lightweight streaming library that gives you maximum flexibility:
+
+- You define the data flow using a pipe-and-target pattern
+- You bring your own database and persistence logic
+- You control exactly how data is processed and stored
+- No CLI tools or scaffolding - integrate into existing projects
+
+```typescript
+// Minimal setup - you control everything
+const source = createEvmPortalSource({ portal: url, query });
+const target = createTarget({ write: yourCustomLogic });
+await source.pipeTo(target);
+```
+
+</Tab>
+
+<Tab title="Squid SDK">
+**Complete Framework Approach**
+
+Squid SDK is a full-featured framework with built-in conventions:
+
+- CLI tools for project scaffolding and management
+- PostgreSQL database with automatic migrations
+- Auto-generated GraphQL API from schema
+- Built-in deployment tools for SQD Cloud
+
+```typescript
+// Opinionated structure with built-in features
+const processor = new EvmBatchProcessor()
+  .setGateway(url)
+  .addLog({ ... });
+
+const db = new TypeormDatabase();
+processor.run(db, async (ctx) => {
+  // Framework handles state, rollbacks, persistence
+});
+```
+
+</Tab>
+</Tabs>
+
+### Feature Comparison Matrix
+
+| Feature               | Pipes SDK                      | Squid SDK                             |
+| --------------------- | ------------------------------ | ------------------------------------- |
+| **Type**              | Streaming library              | Complete framework                    |
+| **Installation**      | `npm install @sqd-pipes/pipes` | `npm i -g @subsquid/cli`              |
+| **Project Setup**     | Manual integration             | CLI scaffolding (`sqd init`)          |
+| **Database**          | Bring your own (any)           | PostgreSQL (built-in)                 |
+| **GraphQL API**       | Not included                   | Auto-generated from schema            |
+| **Migrations**        | You implement                  | Auto-generated                        |
+| **Type Generation**   | Manual                         | Auto-generated from ABI and schema    |
+| **Event Decoding**    | Built-in codec                 | Built-in codec                        |
+| **State Rollbacks**   | You implement                  | Built-in fork handling                |
+| **CLI Tools**         | None                           | Full CLI suite                        |
+| **Cloud Deployment**  | Manual                         | `sqd deploy` command                  |
+| **Local Development** | Standard Node.js               | Docker Compose included               |
+| **Data Targets**      | Custom (you implement)         | TypeORM, BigQuery, CSV, JSON, Parquet |
+| **Real-time Support** | Yes (streaming)                | Yes (unfinal blocks)                  |
+| **Best For**          | Custom pipelines, flexibility  | Full-stack dApps, rapid development   |
+| **Learning Curve**    | Lower (simpler API)            | Higher (more concepts)                |
+| **Bundle Size**       | Smaller                        | Larger (includes framework)           |
+| **Customization**     | Maximum flexibility            | Opinionated but extensible            |
+
+### Code Comparison: Same Task
+
+Both SDKs can accomplish the same goal - indexing USDC transfers - but with different approaches:
+
+<Tabs>
+<Tab title="Pipes SDK">
+```typescript
+import { createTarget } from "@sqd-pipes/pipes";
+import { createEvmPortalSource, EvmQueryBuilder } from "@sqd-pipes/pipes/evm";
+import { Pool } from "pg"; // Bring your own DB client
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+const queryBuilder = new EvmQueryBuilder()
+.addFields({
+block: { number: true, hash: true },
+log: { address: true, topics: true, data: true, transactionHash: true }
+})
+.addLog({
+request: {
+address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+topic0: ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
+},
+range: { from: 18000000 }
+});
+
+const source = createEvmPortalSource({
+portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
+query: queryBuilder
+});
+
+const target = createTarget({
+write: async ({ read }) => {
+for await (const { data } of read()) {
+for (const block of data.blocks) {
+for (const log of block.logs) {
+// You decode and store however you want
+const decoded = decodeTransfer(log);
+await pool.query(
+'INSERT INTO transfers (from_addr, to_addr, value) VALUES ($1, $2, $3)',
+[decoded.from, decoded.to, decoded.value.toString()]
+);
+}
+}
+}
+}
+});
+
+await source.pipeTo(target);
+
+````
+
+**Pros:** Maximum control, integrate with existing codebase, use any database
+**Cons:** More boilerplate, manual schema management
+</Tab>
+
+<Tab title="Squid SDK">
+```typescript
+import { EvmBatchProcessor } from "@subsquid/evm-processor";
+import { TypeormDatabase } from "@subsquid/typeorm-store";
+import * as usdcAbi from "./abi/usdc";
+import { Transfer } from "./model";
+
+const processor = new EvmBatchProcessor()
+  .setGateway("https://v2.archive.subsquid.io/network/ethereum-mainnet")
+  .setRpcEndpoint(process.env.RPC_ENDPOINT)
+  .setFinalityConfirmation(75)
+  .addLog({
+    range: { from: 18000000 },
+    address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+    topic0: [usdcAbi.events.Transfer.topic]
+  })
+  .setFields({ log: { transactionHash: true } });
+
+const db = new TypeormDatabase({ supportHotBlocks: true });
+
+processor.run(db, async (ctx) => {
+  const transfers: Transfer[] = [];
+
+  for (let block of ctx.blocks) {
+    for (let log of block.logs) {
+      // Auto-generated typings from ABI
+      let { from, to, value } = usdcAbi.events.Transfer.decode(log);
+      transfers.push(new Transfer({
+        id: log.id,
+        from,
+        to,
+        value,
+        txnHash: log.transactionHash
+      }));
+    }
+  }
+
+  // Automatic batching, fork handling, and rollbacks
+  await ctx.store.insert(transfers);
+});
+````
+
+**Pros:** Less boilerplate, auto-generated types, GraphQL API included  
+**Cons:** PostgreSQL required, more opinionated structure
+
+</Tab>
+</Tabs>
+
+### Migration Between SDKs
+
+<AccordionGroup>
+<Accordion title="Migrating from Pipes to Squid SDK">
+**When to migrate:**
+- You need a GraphQL API
+- You want automatic database migrations
+- You're deploying to production and want integrated tooling
+
+**Key changes:**
+
+1. Replace `createEvmPortalSource` with `EvmBatchProcessor`
+2. Adopt the TypeORM model pattern
+3. Create a `schema.graphql` file
+4. Use generated types instead of manual decoding
+5. Replace custom persistence with `ctx.store` operations
+
+<Note>
+The core logic (event decoding, data transformation) can often be reused with minimal changes.
+</Note>
+</Accordion>
+
+<Accordion title="Migrating from Squid SDK to Pipes">
+**When to migrate:**
+- You need to use a non-PostgreSQL database
+- You want lighter-weight solution without CLI dependencies
+- You're integrating indexing into an existing application
+- You need maximum flexibility in data handling
+
+**Key changes:**
+
+1. Replace `EvmBatchProcessor` with `EvmQueryBuilder`
+2. Implement custom persistence logic
+3. Handle database migrations manually
+4. Implement fork detection if needed
+5. Set up your own API layer (if needed)
+
+<Tip>
+Pipes SDK is great for embedding indexing logic into existing applications without the full framework overhead.
+</Tip>
+</Accordion>
+</AccordionGroup>
+
+### Decision Matrix
+
+<Tabs>
+<Tab title="Choose Pipes SDK">
+You should use Pipes SDK if:
+
+- ✅ You want maximum flexibility and control
+- ✅ You're integrating into an existing codebase
+- ✅ You want to use a specific database (MongoDB, ClickHouse, etc.)
+- ✅ You don't need a GraphQL API
+- ✅ You prefer lightweight dependencies
+- ✅ You want to build custom data pipelines
+- ✅ You're experienced with database design and management
+
+**Example use cases:**
+
+- Real-time dashboards with custom databases
+- Data pipelines feeding multiple systems
+- Microservices that need blockchain data
+- Custom analytics engines
+  </Tab>
+
+<Tab title="Choose Squid SDK">
+You should use Squid SDK if:
+
+- ✅ You want a complete solution with minimal setup
+- ✅ You need a GraphQL API
+- ✅ You're building a dApp backend
+- ✅ You want automatic type generation
+- ✅ You prefer PostgreSQL
+- ✅ You need built-in deployment tools
+- ✅ You want comprehensive documentation and examples
+
+**Example use cases:**
+
+- dApp backends with GraphQL APIs
+- NFT marketplaces
+- DeFi analytics platforms
+- Governance tools
+    </Tab>
+</Tabs>
+
+## SQD vs Competitors
+
+How SQD compares to other blockchain indexing solutions from a developer perspective.
+
+### SQD vs The Graph
+
+[The Graph](https://thegraph.com) is the most established blockchain indexing protocol. Here's how SQD compares:
+
+#### Architecture Philosophy
+
+<Tabs>
+<Tab title="The Graph">
+**Black-Box Execution Model**
+
+The Graph uses a closed execution model:
+
+- Subgraphs are compiled to WASM
+- Data comes directly from archival nodes
+- Postgres database is sealed (GraphQL-only access)
+- AssemblyScript language (compiled to WASM)
+- Fixed data flow and processing model
+
+```typescript
+// The Graph subgraph handler
+export function handleTransfer(event: TransferEvent): void {
+  let transfer = new Transfer(event.transaction.hash.toHex());
+  transfer.from = event.params.from;
+  transfer.to = event.params.to;
+  transfer.value = event.params.value;
+  transfer.save(); // Must use the built-in save pattern
+}
+```
+
+</Tab>
+
+<Tab title="SQD">
+**Open Modular Architecture**
+
+SQD uses an open, flexible approach:
+
+- Separated data layer (SQD Network/Portal)
+- Client-side processing in TypeScript
+- Multiple data target options
+- Full database access (not sealed)
+- Extensible with custom logic
+
+```typescript
+// SQD processor handler
+processor.run(db, async (ctx) => {
+  const transfers = [];
+  for (let block of ctx.blocks) {
+    for (let log of block.logs) {
+      let { from, to, value } = abi.events.Transfer.decode(log);
+
+      // Full flexibility: call APIs, complex logic, etc.
+      const metadata = await fetchFromIPFS(log.data);
+
+      transfers.push(new Transfer({ from, to, value, metadata }));
+    }
+  }
+  await ctx.store.insert(transfers); // Or use raw SQL, or any storage
+});
+```
+
+</Tab>
+</Tabs>
+
+#### Feature Matrix
+
+|                                      |                         SQD (Portal + Squid SDK)                          |             The Graph             |
+| :----------------------------------: | :-----------------------------------------------------------------------: | :-------------------------------: |
+|       **Programming language**       |                                TypeScript                                 | AssemblyScript (compiled to WASM) |
+|          **Indexing speed**          |                                ~1k-50k bps                                |           ~100-150 bps            |
+|       **ABI-based generator**        |                                    Yes                                    |                Yes                |
+| **Real-time indexing** (unfinalized) |                                    Yes                                    |                No                 |
+|          **Off-chain data**          |                                    Yes                                    |                No                 |
+|           **Data targets**           |                               Customizable                                |           Postgres-only           |
+|    **Customizable DB migrations**    |                                    Yes                                    |                No                 |
+|    **Factory contract indexing**     |                            Yes, via wildcards                             |                Yes                |
+|     **Multi-contract indexing**      |                                    Yes                                    |              Limited              |
+|      **Analytic data targets**       |                          BigQuery, Parquet, CSV                           |                No                 |
+|           **Local setup**            |                                   Easy                                    |      Requires archival node       |
+|           **GraphQL API**            |                           Generated from schema                           |       Generated from schema       |
+|   **Custom resolvers & mutations**   |                                    Yes                                    |                No                 |
+|          **Subscriptions**           |                                    Yes                                    |          Via middleware           |
+|          **Hosted service**          |                                    Yes                                    |        Yes (being sunset)         |
+|       **Secret env variables**       |                                    Yes                                    |                No                 |
+|             **Payment**              |                            Fiat, subscription                             |        GRT, pay-per-query         |
+|         **Decentralization**         | Decentralized data sourcing via SQD Network, opt-in decentralized targets |         The Graph network         |
+
+#### Performance Comparison
+
+<Tabs>
+<Tab title="Indexing Speed">
+**SQD: 1,000-50,000 blocks/second**
+- Optimized data retrieval from SQD Network
+- Efficient batch processing
+- Parallel processing support
+
+**The Graph: 100-150 blocks/second**
+
+- Direct archival node queries
+- Sequential processing model
+- WASM execution overhead
+
+<Tip>
+For a large NFT collection starting from genesis, SQD can complete initial sync in minutes vs. hours with The Graph.
+</Tip>
+</Tab>
+
+<Tab title="Development Speed">
+**SQD:**
+```bash
+sqd init my-indexer -t erc721
+cd my-indexer
+npm install
+docker compose up -d
+npm run build && node -r dotenv/config lib/main.js
+# Running in ~2 minutes
+```
+
+**The Graph:**
+
+```bash
+graph init my-subgraph
+cd my-subgraph
+npm install
+# Need to set up and sync archival node (hours/days)
+# Or wait for hosted service deployment
+graph deploy
+```
+
+</Tab>
+</Tabs>
+
+#### Cost Comparison
+
+<Tabs>
+<Tab title="SQD">
+**Subscription-Based Pricing**
+
+- Predictable monthly costs
+- Pay for compute resources, not queries
+- Free tier available for development
+- Enterprise plans for production
+
+[View SQD Cloud pricing](/en/cloud/pricing)
+
+</Tab>
+
+<Tab title="The Graph">
+**Pay-Per-Query Model**
+
+- Pay in GRT tokens per query
+- Costs vary with usage
+- Requires managing GRT token balance
+- Hosted service being sunset
+    </Tab>
+</Tabs>
+
+### SQD vs Envio
+
+[Envio](https://envio.dev) is a newer indexing framework focused on performance and developer experience.
+
+<Warning>
+  Detailed comparison coming soon. The table below contains placeholder
+  information pending comprehensive research.
+</Warning>
+
+| Feature                  | SQD                          | Envio               |
+| ------------------------ | ---------------------------- | ------------------- |
+| **Programming Language** | TypeScript                   | ReScript/TypeScript |
+| **Indexing Speed**       | ~1k-50k bps                  | TBD                 |
+| **Data Source**          | SQD Network + RPC            | TBD                 |
+| **Database Options**     | PostgreSQL, BigQuery, Files  | TBD                 |
+| **GraphQL API**          | Auto-generated               | TBD                 |
+| **Real-time Indexing**   | Yes (unfinalized blocks)     | TBD                 |
+| **Multi-chain Support**  | EVM, Substrate, Solana, Fuel | TBD                 |
+| **Local Development**    | Docker Compose included      | TBD                 |
+| **Cloud Deployment**     | SQD Cloud                    | TBD                 |
+| **Pricing Model**        | Subscription-based           | TBD                 |
+
+<Note>
+  We're actively researching Envio's capabilities. If you have experience with
+  both platforms, [contribute to this
+  comparison](https://github.com/subsquid/squid-sdk).
+</Note>
+
+### SQD vs Ponder
+
+[Ponder](https://ponder.sh) is a TypeScript-first indexing framework with a focus on simplicity.
+
+<Warning>
+  Detailed comparison coming soon. The table below contains placeholder
+  information pending comprehensive research.
+</Warning>
+
+| Feature                  | SQD                          | Ponder     |
+| ------------------------ | ---------------------------- | ---------- |
+| **Programming Language** | TypeScript                   | TypeScript |
+| **Indexing Speed**       | ~1k-50k bps                  | TBD        |
+| **Data Source**          | SQD Network + RPC            | TBD        |
+| **Database Options**     | PostgreSQL, BigQuery, Files  | TBD        |
+| **GraphQL API**          | Auto-generated               | TBD        |
+| **Real-time Indexing**   | Yes (unfinalized blocks)     | TBD        |
+| **Multi-chain Support**  | EVM, Substrate, Solana, Fuel | TBD        |
+| **Local Development**    | Docker Compose included      | TBD        |
+| **Cloud Deployment**     | SQD Cloud                    | TBD        |
+| **Pricing Model**        | Subscription-based           | TBD        |
+
+<Note>
+  We're actively researching Ponder's capabilities. If you have experience with
+  both platforms, [contribute to this
+  comparison](https://github.com/subsquid/squid-sdk).
+</Note>
+
+### Key Differentiators for SQD
+
+Across all comparisons, SQD offers unique advantages:
+
+<CardGroup cols={2}>
+<Card title="Modular Architecture" icon="cubes">
+  Separate data layer (Portal) from processing (SDKs) for maximum flexibility
+</Card>
+
+<Card title="Multiple SDKs" icon="code">
+  Choose between Pipes (lightweight) and Squid (full framework) based on your
+  needs
+</Card>
+
+<Card title="Multi-Chain Native" icon="link">
+  First-class support for EVM, Substrate, Solana, Fuel, Tron, and Starknet
+</Card>
+
+<Card title="Performance Focused" icon="gauge-high">
+  10-50x faster than RPC, optimized batch processing
+</Card>
+
+<Card title="TypeScript Native" icon="code">
+  Full TypeScript support, not compiled or constrained languages
+</Card>
+
+<Card title="Flexible Data Targets" icon="database">
+  PostgreSQL, BigQuery, CSV, JSON, Parquet, or custom destinations
+</Card>
+
+<Card title="Open Development Model" icon="code-branch">
+  Full database access, external APIs, custom logic, IPFS integration
+</Card>
+
+<Card title="Predictable Pricing" icon="dollar-sign">
+  Subscription-based costs, not per-query charges
+</Card>
+</CardGroup>
+
+## Next Steps
+
+Now that you understand the differences, choose your path:
+
+<CardGroup cols={3}>
+<Card title="Try Portal" icon="network-wired" href="/en/sdk/portal-evm/quickstart">
+  Start querying raw blockchain data in minutes
+</Card>
+
+<Card
+  title="Try Pipes SDK"
+  icon="bars-staggered"
+  href="/en/sdk/pipes-sdk/quickstart"
+>
+  Build a lightweight data pipeline
+</Card>
+
+<Card title="Try Squid SDK" icon="server" href="/en/sdk/squid-sdk/evm/quickstart">
+  Create a full-featured indexer with GraphQL API
+</Card>
+</CardGroup>

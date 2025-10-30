@@ -1,11 +1,11 @@
 ---
-title: "Getting Tokens"
-description: "Purchase tokens from exchanges or DEXes to participate in the network"
+title: "Getting SQD Tokens"
+description: "Purchase SQD tokens from exchanges or DEXes to participate in the network"
 ---
 
 Participating in SQD Network requires SQD tokens. This guide shows you all the ways to acquire them.
 
-## Important Information
+## Before You Start
 
 <Warning>
   Always verify you're using the correct SQD token contract addresses to avoid
@@ -14,67 +14,179 @@ Participating in SQD Network requires SQD tokens. This guide shows you all the w
 
 ### Official Token Contracts
 
-- **Arbitrum:** [0x1337420dED5ADb9980CFc35f8f2B054ea86f8aB1](https://arbiscan.io/address/0x1337420dED5ADb9980CFc35f8f2B054ea86f8aB1)
-- **Base:** [0xd4554BEa546EFa83C1E6B389ecac40EA999B3E78](https://basescan.org/address/0xd4554bea546efa83c1e6b389ecac40ea999b3e78)
-- **Ethereum:** [0x1337420dED5ADb9980CFc35f8f2B054ea86f8aB1](https://etherscan.io/token/0x1337420ded5adb9980cfc35f8f2b054ea86f8ab1)
+<Tabs>
+<Tab title="Arbitrum">
+**Contract Address:** `0x1337420dED5ADb9980CFc35f8f2B054ea86f8aB1`
+
+[View on Arbiscan](https://arbiscan.io/address/0x1337420dED5ADb9980CFc35f8f2B054ea86f8aB1)
+
+</Tab>
+
+<Tab title="Base">
+**Contract Address:** `0xd4554BEa546EFa83C1E6B389ecac40EA999B3E78`
+
+[View on Basescan](https://basescan.org/address/0xd4554bea546efa83c1e6b389ecac40ea999b3e78)
+
+</Tab>
+
+<Tab title="Ethereum">
+**Contract Address:** `0x1337420dED5ADb9980CFc35f8f2B054ea86f8aB1`
+
+[View on Etherscan](https://etherscan.io/token/0x1337420ded5adb9980cfc35f8f2b054ea86f8ab1)
+
+</Tab>
+</Tabs>
 
 <Info>
-  To interact with SQD Network contracts, your tokens must be on the **Arbitrum
-  One** network.
+  To interact with SQD Network contracts, your tokens must be on **Arbitrum
+  One**.
 </Info>
 
-### Wallet Requirements
+### Supported Wallets
 
-Use the [SQD Network app](https://network.subsquid.io) to interact with contracts. Supported wallets include:
+Use the [SQD Network app](https://network.subsquid.io) to interact with contracts. Connect with any of these wallets:
 
-- [MetaMask](https://metamask.io)
-- [Rainbow](https://rainbow.me)
-- [Coinbase Wallet](https://www.coinbase.com/wallet)
-- Any wallet accessible via [WalletConnect](https://walletconnect.network)
+<CardGroup cols={2}>
+<Card title="MetaMask" icon="wallet" href="https://metamask.io">
+Most popular Ethereum wallet
+</Card>
 
-## Purchase Options
+<Card title="Rainbow" icon="palette" href="https://rainbow.me">
+  User-friendly mobile wallet
+</Card>
 
-### Decentralized Exchanges (DEXes)
+<Card
+  title="Coinbase Wallet"
+  icon="bitcoin"
+  href="https://www.coinbase.com/wallet"
+>
+  Secure self-custody wallet
+</Card>
 
-#### Buy on Arbitrum (Recommended)
+<Card title="WalletConnect" icon="link" href="https://walletconnect.network">
+Connect any compatible wallet
+</Card>
+</CardGroup>
 
-[Buy SQD on PancakeSwap](https://pancakeswap.finance/?chain=arb&outputCurrency=0x1337420dED5ADb9980CFc35f8f2B054ea86f8aB1)
+## Purchase SQD Tokens
+
+<Tabs>
+<Tab title="DEXes (Recommended)">
+
+### Buy on Arbitrum
+
+<Card
+  title="PancakeSwap (Best Rates)"
+  icon="arrow-right"
+  href="https://pancakeswap.finance/?chain=arb&outputCurrency=0x1337420dED5ADb9980CFc35f8f2B054ea86f8aB1"
+>
+  Buy SQD directly on Arbitrum One
+</Card>
 
 <Tip>
   The WETH/SQD pool on PancakeSwap Arbitrum is the best-funded SQD pool across
-  all DEXes, typically offering the best rates.
+  all DEXes, typically offering the best rates and lowest slippage.
 </Tip>
 
-#### Buy on Base
+### Buy on Base
 
-[Buy SQD on Aerodrome](https://aerodrome.finance/swap?from=0x833589fcd6edb6e08f4c7c32d4f71b54bda02913&to=0xd4554bea546efa83c1e6b389ecac40ea999b3e78&chain0=8453&chain1=8453)
+<Card
+  title="Aerodrome Finance"
+  icon="arrow-right"
+  href="https://aerodrome.finance/swap?from=0x833589fcd6edb6e08f4c7c32d4f71b54bda02913&to=0xd4554bea546efa83c1e6b389ecac40ea999b3e78&chain0=8453&chain1=8453"
+>
+  Buy SQD on Base network
+</Card>
 
-After purchasing on Base, bridge your tokens to Arbitrum One:
+<Warning>
+  If you purchase on Base, you'll need to bridge your tokens to Arbitrum One to
+  use them with SQD Network.
+</Warning>
 
-**Fast Bridge:**
+<AccordionGroup>
+<Accordion title="Bridge from Base to Arbitrum">
 
-- [IceCreamSwap bridge](https://icecreamswap.com/bridge?chain=base) - Quick transfers
+<Steps>
+<Step title="Choose your bridge option">
+Select between fast bridges or native bridges based on your priorities:
+- **Fast bridges:** Quick transfers (minutes to hours)
+- **Native bridges:** Lower fees but longer wait times (up to 7 days)
+</Step>
 
-**Native Bridges (Lower Fees):**
+<Step title="Fast bridge option">
+Use [IceCreamSwap bridge](https://icecreamswap.com/bridge?chain=base) for quick transfers.
 
-- [Base → Ethereum](https://superbridge.app/base)
-- [Ethereum → Arbitrum](https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum&token=0x1337420ded5adb9980cfc35f8f2b054ea86f8ab1)
+<Check>
+Your tokens will arrive within minutes to a few hours.
+</Check>
+</Step>
+
+<Step title="Native bridge option (Lower fees)">
+For minimal fees, use the native bridges:
+
+1. Bridge from [Base → Ethereum](https://superbridge.app/base)
+2. Then bridge from [Ethereum → Arbitrum](https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum&token=0x1337420ded5adb9980cfc35f8f2b054ea86f8ab1)
 
 <Note>
-  Native bridges offer minimal fees but require up to 7 days for transfers.
+Native bridges require up to 7 days for transfers but offer the lowest fees.
 </Note>
+</Step>
+</Steps>
 
-### Centralized Exchanges (CEXes)
+</Accordion>
+</AccordionGroup>
 
-Purchase SQD on major centralized exchanges:
+</Tab>
 
-- [Bybit](https://www.bybit.com/en-US/trade/spot/SQD/USDT)
-- [MEXC](https://www.mexc.com/exchange/SQD_USDT)
-- [KuCoin](https://www.kucoin.com/trade/SQD-USDT)
-- [Gate.io](https://www.gate.io/trade/SQD_USDT)
-- [CoinEx](https://www.coinex.com/en/exchange/sqd-usdt)
+<Tab title="Centralized Exchanges">
+
+### Major Exchanges
+
+Purchase SQD on these centralized exchanges and withdraw to your wallet:
+
+<CardGroup cols={2}>
+<Card title="Bybit" icon="building-columns" href="https://www.bybit.com/en-US/trade/spot/SQD/USDT">
+Trade SQD/USDT
+</Card>
+
+<Card
+  title="MEXC"
+  icon="building-columns"
+  href="https://www.mexc.com/exchange/SQD_USDT"
+>
+  Trade SQD/USDT
+</Card>
+
+<Card
+  title="KuCoin"
+  icon="building-columns"
+  href="https://www.kucoin.com/trade/SQD-USDT"
+>
+  Trade SQD/USDT
+</Card>
+
+<Card
+  title="Gate.io"
+  icon="building-columns"
+  href="https://www.gate.io/trade/SQD_USDT"
+>
+  Trade SQD/USDT
+</Card>
+
+<Card title="CoinEx" icon="building-columns" href="https://www.coinex.com/en/exchange/sqd-usdt">
+Trade SQD/USDT
+</Card>
+</CardGroup>
 
 <Info>
-  View the complete list of exchanges on our [CoinMarketCap
-  entry](https://coinmarketcap.com/currencies/subsquid/).
+  View the complete list of exchanges supporting SQD on our [CoinMarketCap
+  page](https://coinmarketcap.com/currencies/subsquid/).
 </Info>
+
+<Warning>
+  After purchasing on a centralized exchange, make sure to withdraw your tokens
+  to Arbitrum One network to interact with SQD Network contracts.
+</Warning>
+
+</Tab>
+</Tabs>

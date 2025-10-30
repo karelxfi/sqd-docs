@@ -1,0 +1,426 @@
+---
+title: "Query State Diffs"
+description: "Track storage state changes for smart contracts using Portal"
+---
+
+Track storage state changes for smart contracts to monitor specific storage slots, analyze contract state evolution, or track ownership changes.
+
+## Use Case
+
+State diff tracking enables you to:
+
+- Monitor specific storage slots (e.g., owner, balance mappings)
+- Track contract state evolution over time
+- Analyze state changes without replaying transactions
+- Build state-based analytics
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "block": {
+        "number": true
+      },
+      "stateDiff": {
+        "address": true,
+        "key": true,
+        "kind": true,
+        "prev": true,
+        "next": true
+      }
+    }
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+});
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    block: { number: true },
+    stateDiff: {
+      address: true,
+      key: true,
+      kind: true,
+      prev: true,
+      next: true,
+    },
+  },
+});
+
+// Process state changes
+for (const block of blocks) {
+  if (block.stateDiffs) {
+    for (const diff of block.stateDiffs) {
+      console.log({
+        blockNumber: block.header.number,
+        contract: diff.address,
+        storageKey: diff.key,
+        changeType: diff.kind, // "=", "+", "*", "-"
+        previousValue: diff.prev,
+        newValue: diff.next,
+      });
+    }
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/ethereum-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "block": {
+            "number": True
+        },
+        "stateDiff": {
+            "address": True,
+            "key": True,
+            "kind": True,
+            "prev": True,
+            "next": True
+        }
+    }
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    if 'stateDiffs' in block:
+        for diff in block['stateDiffs']:
+            print({
+                "blockNumber": block['header']['number'],
+                "contract": diff['address'],
+                "storageKey": diff['key'],
+                "changeType": diff['kind'],
+                "previousValue": diff.get('prev'),
+                "newValue": diff.get('next')
+            })
+```
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `address` | Contract address to track state changes |
+| `key` | Storage slot key (keccak256 hash for mappings) |
+| `kind` | Change type: `=` (unchanged), `+` (added), `*` (modified), `-` (removed) |
+| `prev` | Previous value (null for new slots) |
+| `next` | New value (null for removed slots) |
+
+<Note>
+State diffs capture all storage changes that occurred in a block, providing a complete picture of contract state evolution.
+</Note>
+
+## Expected Output
+
+```json
+{
+  "header": {
+    "number": 18000123
+  },
+  "stateDiffs": [
+    {
+      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "key": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+      "kind": "*",
+      "prev": "0x0000000000000000000000000000000000000000000000000000000000000064",
+      "next": "0x00000000000000000000000000000000000000000000000000000000000000c8"
+    }
+  ]
+}
+```
+
+## Filter by Contract
+
+Track state changes for a specific contract:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "stateDiff": {
+        "address": true,
+        "key": true,
+        "kind": true,
+        "prev": true,
+        "next": true
+      }
+    },
+    "stateDiffs": [{
+      "address": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const USDC_CONTRACT = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    stateDiff: {
+      address: true,
+      key: true,
+      kind: true,
+      prev: true,
+      next: true,
+    },
+  },
+  stateDiffs: [
+    {
+      address: [USDC_CONTRACT],
+    },
+  ],
+});
+```
+
+```python Python
+usdc_contract = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "stateDiff": {
+            "address": True,
+            "key": True,
+            "kind": True,
+            "prev": True,
+            "next": True
+        }
+    },
+    "stateDiffs": [{
+        "address": [usdc_contract]
+    }]
+}
+```
+</CodeGroup>
+
+## Understanding Change Types
+
+The `kind` field indicates the type of state change:
+
+| Kind | Meaning | Description |
+|------|---------|-------------|
+| `=` | Unchanged | Storage slot was accessed but not modified |
+| `+` | Added | New storage slot created |
+| `*` | Modified | Existing storage slot value changed |
+| `-` | Removed | Storage slot deleted (SSTORE with zero value) |
+
+<CodeGroup>
+```typescript TypeScript
+// Filter only modifications
+for (const block of blocks) {
+  if (block.stateDiffs) {
+    for (const diff of block.stateDiffs) {
+      if (diff.kind === "*") {
+        console.log(`Modified at block ${block.header.number}`);
+        console.log(`  ${diff.prev} → ${diff.next}`);
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+## Track Specific Storage Slots
+
+Monitor a specific storage slot (e.g., owner variable):
+
+<CodeGroup>
+```typescript TypeScript
+// Example: Track owner changes
+// Owner is typically at slot 0 for many contracts
+const OWNER_SLOT = "0x0000000000000000000000000000000000000000000000000000000000000000";
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    block: { number: true, timestamp: true },
+    stateDiff: {
+      address: true,
+      key: true,
+      prev: true,
+      next: true,
+    },
+  },
+  stateDiffs: [
+    {
+      address: ["0xYourContractAddress"],
+    },
+  ],
+});
+
+for (const block of blocks) {
+  if (block.stateDiffs) {
+    for (const diff of block.stateDiffs) {
+      if (diff.key === OWNER_SLOT) {
+        console.log({
+          block: block.header.number,
+          timestamp: block.header.timestamp,
+          previousOwner: diff.prev,
+          newOwner: diff.next,
+        });
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+<Tip>
+For mappings, the storage key is computed as `keccak256(abi.encode(mappingKey, slot))`. You'll need to compute this off-chain to track specific mapping entries.
+</Tip>
+
+## Monitor Balance Changes
+
+Track balance mapping changes for ERC-20 tokens:
+
+<CodeGroup>
+```typescript TypeScript
+import { ethers } from "ethers";
+
+// Compute storage key for balance mapping
+function getBalanceSlot(address: string, balanceMappingSlot: number): string {
+  // For Solidity: mapping(address => uint256) balances;
+  // Key = keccak256(abi.encode(address, slot))
+  return ethers.keccak256(
+    ethers.AbiCoder.defaultAbiCoder().encode(
+      ["address", "uint256"],
+      [address, balanceMappingSlot]
+    )
+  );
+}
+
+const WALLET = "0x28C6c06298d514Db089934071355E5743bf21d60";
+const BALANCE_SLOT = 1; // Balance mapping slot for USDC
+
+const balanceKey = getBalanceSlot(WALLET, BALANCE_SLOT);
+
+// Query state diffs and filter for this specific key
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    stateDiff: { address: true, key: true, prev: true, next: true },
+  },
+  stateDiffs: [
+    {
+      address: ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"], // USDC
+    },
+  ],
+});
+
+for (const block of blocks) {
+  if (block.stateDiffs) {
+    for (const diff of block.stateDiffs) {
+      if (diff.key === balanceKey) {
+        const prevBalance = BigInt(diff.prev || "0");
+        const nextBalance = BigInt(diff.next || "0");
+        console.log(`Balance change: ${prevBalance} → ${nextBalance}`);
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+## Performance Tips
+
+1. **Filter by contract**: Always specify contract addresses to reduce data volume
+2. **Post-filter keys**: Filter specific storage keys in your application
+3. **Understand data volume**: State diffs can be very large for active contracts
+4. **Combine with logs**: Use event logs to identify interesting blocks, then query state diffs
+
+<Warning>
+State diffs can generate massive amounts of data, especially for busy contracts. Always filter by specific contract addresses.
+</Warning>
+
+## Common Use Cases
+
+### Track Governance Changes
+
+Monitor governance parameter changes:
+
+```typescript
+// Filter state changes for governance contracts
+// Look for proposal state changes, quorum updates, etc.
+```
+
+### Monitor Oracle Updates
+
+Track price oracle state updates:
+
+```typescript
+// Track specific storage slots for price data
+// Useful for MEV analysis or price feed monitoring
+```
+
+### Audit Storage Access
+
+Analyze which storage slots are frequently accessed:
+
+```typescript
+const slotAccessCounts = new Map<string, number>();
+
+for (const block of blocks) {
+  if (block.stateDiffs) {
+    for (const diff of block.stateDiffs) {
+      const key = `${diff.address}:${diff.key}`;
+      slotAccessCounts.set(key, (slotAccessCounts.get(key) || 0) + 1);
+    }
+  }
+}
+```
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Event Logs" icon="file-lines" href="/en/sdk/portal-evm/examples/query-logs">
+  Track smart contract events
+</Card>
+
+<Card title="Query Transactions" icon="arrow-right-arrow-left" href="/en/sdk/portal-evm/examples/query-transactions">
+  Monitor transaction activity
+</Card>
+
+<Card title="Query Traces" icon="diagram-project" href="/en/sdk/portal-evm/examples/query-traces">
+  Analyze internal transactions
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/sdk/portal-evm/api-reference">
+  View complete API docs
+</Card>
+</CardGroup>
+

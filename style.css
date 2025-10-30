@@ -1,3 +1,16 @@
+/* Center tables in wide mode pages */
+[data-mode="wide"] table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Center card titles */
+.card-title,
+[class*="card"] h3,
+[class*="Card"] h3 {
+  text-align: center !important;
+}
+
 /* Group headers - Section names like CLOUD, PIPES SDK */
 .nav-group-title,
 .sidebar-group-header {
@@ -127,4 +140,33 @@ button.nav-dropdown-trigger:hover {
 
 .nav-tag-pill.tag-new:hover {
   background: #d97706 !important;
+}
+
+/* Style Report to Linear button to be light coral - noticeable but not aggressive */
+#page-context-menu-button,
+.page-context-menu-button,
+[id*="page-context-menu-button"] {
+  background: #ffcccb !important;
+  color: #333333 !important;
+  border: none !important;
+}
+
+#page-context-menu-button:hover,
+.page-context-menu-button:hover,
+[id*="page-context-menu-button"]:hover {
+  background: #ffb3b3 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 8px rgba(255, 179, 179, 0.3) !important;
+}
+
+/* Also target the specific Linear button in the menu */
+#page-context-menu a[href*="linear.app"],
+#page-context-menu button:has(a[href*="linear.app"]) {
+  background: #ffcccb !important;
+  color: #333333 !important;
+}
+
+#page-context-menu a[href*="linear.app"]:hover,
+#page-context-menu button:has(a[href*="linear.app"]):hover {
+  background: #ffb3b3 !important;
 }

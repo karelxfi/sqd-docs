@@ -1,0 +1,548 @@
+---
+title: "API Reference"
+description: "API reference for accessing EVM blockchain data through Portal"
+---
+
+This page provides a quick reference for the Portal API. For complete OpenAPI specification with all fields and options, see the [full API documentation](/en/api/evm).
+
+## Installation
+
+```bash
+npm install @subsquid/portal-client
+```
+
+## Quick Start
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18001000,
+    "fields": {
+      "block": { "number": true, "timestamp": true },
+      "log": { "address": true, "topics": true, "data": true }
+    }
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+});
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18001000,
+  fields: {
+    block: { number: true, timestamp: true },
+    log: { address: true, topics: true, data: true },
+  },
+});
+```
+
+```python Python
+import requests
+
+url = "https://portal.sqd.dev/datasets/ethereum-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18001000,
+    "fields": {
+        "block": {"number": True, "timestamp": True},
+        "log": {"address": True, "topics": True, "data": True}
+    }
+}
+
+response = requests.post(url, headers=headers, json=payload)
+```
+
+</CodeGroup>
+
+## Available Fields
+
+### Block Fields
+
+Select which block header fields to retrieve:
+
+```typescript
+fields: {
+  block: {
+    number: true,          // Block number
+    hash: true,            // Block hash
+    parentHash: true,      // Parent block hash
+    timestamp: true,       // Unix timestamp
+    size: true,            // Block size in bytes
+    gasUsed: true,         // Total gas used
+    gasLimit: true,        // Gas limit
+    baseFeePerGas: true,   // Base fee (EIP-1559)
+    stateRoot: true,       // State root hash
+    transactionsRoot: true,// Transactions root
+    receiptsRoot: true,    // Receipts root
+    logsBloom: true,       // Logs bloom filter
+    difficulty: true,      // Difficulty
+    totalDifficulty: true, // Total difficulty
+    miner: true,           // Block producer address
+    nonce: true,           // Block nonce
+    mixHash: true,         // Mix hash
+    extraData: true,       // Extra data
+  }
+}
+```
+
+### Transaction Fields
+
+Select transaction data fields:
+
+```typescript
+fields: {
+  transaction: {
+    hash: true,            // Transaction hash
+    from: true,            // Sender address
+    to: true,              // Recipient address (null for deployments)
+    value: true,           // ETH value transferred
+    input: true,           // Transaction input data
+    nonce: true,           // Sender nonce
+    gas: true,             // Gas limit
+    gasPrice: true,        // Gas price (legacy)
+    maxFeePerGas: true,    // Max fee (EIP-1559)
+    maxPriorityFeePerGas: true, // Priority fee (EIP-1559)
+    gasUsed: true,         // Actual gas used
+    cumulativeGasUsed: true, // Cumulative gas in block
+    effectiveGasPrice: true, // Effective gas price paid
+    status: true,          // Status (1 = success, 0 = failure)
+    type: true,            // Transaction type
+    chainId: true,         // Chain ID
+    v: true,               // Signature V
+    r: true,               // Signature R
+    s: true,               // Signature S
+    yParity: true,         // Y parity (EIP-2930/1559)
+    contractAddress: true, // Deployed contract address
+    transactionIndex: true,// Index in block
+  }
+}
+```
+
+### Log Fields
+
+Select event log fields:
+
+```typescript
+fields: {
+  log: {
+    address: true,         // Contract address
+    topics: true,          // Event topics (topic0-topic3)
+    data: true,            // Event data
+    logIndex: true,        // Log index in block
+    transactionIndex: true,// Transaction index
+    transactionHash: true, // Transaction hash
+    blockHash: true,       // Block hash
+    blockNumber: true,     // Block number
+    removed: true,         // Whether log was removed (reorg)
+  }
+}
+```
+
+### Trace Fields
+
+Select call trace fields:
+
+```typescript
+fields: {
+  trace: {
+    type: true,            // Trace type (call, delegatecall, etc.)
+    from: true,            // Caller address
+    to: true,              // Callee address
+    value: true,           // Value transferred
+    input: true,           // Call input data
+    output: true,          // Call output data
+    gas: true,             // Gas provided
+    gasUsed: true,         // Gas actually used
+    error: true,           // Error message (if failed)
+    revertReason: true,    // Revert reason (if reverted)
+    createResultAddress: true, // Created contract address
+    createResultCode: true,    // Created contract code
+  }
+}
+```
+
+### State Diff Fields
+
+Select state change fields:
+
+```typescript
+fields: {
+  stateDiff: {
+    address: true,         // Contract address
+    key: true,             // Storage key
+    kind: true,            // Change type (=, +, *, -)
+    prev: true,            // Previous value
+    next: true,            // New value
+  }
+}
+```
+
+## Filtering Options
+
+### Log Filters
+
+Filter logs by contract address and event topics:
+
+```typescript
+logs: [
+  {
+    address: ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"], // USDC
+    topic0: [
+      "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+    ], // Transfer
+    topic1: ["0x..."], // Optional: first indexed param
+    topic2: ["0x..."], // Optional: second indexed param
+    topic3: ["0x..."], // Optional: third indexed param
+  },
+  // Multiple filter objects = OR logic
+  {
+    address: ["0x..."],
+    topic0: ["0x..."],
+  },
+];
+```
+
+**Filter logic:**
+
+- Multiple addresses in one object = OR
+- Multiple topics in one object = AND
+- Multiple filter objects = OR
+
+### Transaction Filters
+
+Filter transactions by sender, recipient, or function signature:
+
+```typescript
+transactions: [
+  {
+    from: ["0x..."], // Sender addresses
+    to: ["0x..."], // Recipient addresses
+    sighash: ["0xa9059cbb"], // Function signature (first 4 bytes)
+  },
+];
+```
+
+### Trace Filters
+
+Filter traces by type, caller, or callee:
+
+```typescript
+traces: [
+  {
+    type: ["call", "delegatecall", "staticcall"],
+    callFrom: ["0x..."], // Caller address
+    callTo: ["0x..."], // Callee address
+    callSighash: ["0x..."], // Function signature
+  },
+];
+```
+
+### State Diff Filters
+
+Filter state changes by contract address:
+
+```typescript
+stateDiffs: [
+  {
+    address: ["0x..."], // Contract addresses
+  },
+];
+```
+
+## Network Selection
+
+Specify the EVM network when creating the data source:
+
+```typescript
+// Ethereum mainnet
+const eth = new DataSource({ network: "ethereum-mainnet" });
+
+// Ethereum testnet
+const sepolia = new DataSource({ network: "ethereum-sepolia" });
+
+// Layer 2 networks
+const arbitrum = new DataSource({ network: "arbitrum-one" });
+const optimism = new DataSource({ network: "optimism-mainnet" });
+const base = new DataSource({ network: "base-mainnet" });
+const polygon = new DataSource({ network: "polygon-mainnet" });
+
+// Other EVM chains
+const bsc = new DataSource({ network: "binance-mainnet" });
+const avalanche = new DataSource({ network: "avalanche-mainnet" });
+```
+
+<Card title="View All Networks" icon="database" href="/en/data/networks/evm">
+  See complete list of 100+ supported EVM networks
+</Card>
+
+## Query Patterns
+
+### Pattern 1: Range Query
+
+Query a specific block range:
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18100000,
+  fields: {
+    /* fields */
+  },
+  logs: [
+    /* filters */
+  ],
+});
+```
+
+### Pattern 2: Batch Processing
+
+Process large ranges in batches:
+
+```typescript
+const BATCH_SIZE = 10000;
+
+for (let i = startBlock; i < endBlock; i += BATCH_SIZE) {
+  const blocks = await dataSource.getBlocks({
+    from: i,
+    to: Math.min(i + BATCH_SIZE, endBlock),
+    fields: {
+      /* fields */
+    },
+  });
+
+  // Process blocks
+  await processBlocks(blocks);
+}
+```
+
+### Pattern 3: Multi-Contract Query
+
+Query multiple contracts simultaneously:
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18100000,
+  fields: {
+    log: { address: true, topics: true, data: true },
+  },
+  logs: [
+    {
+      address: [
+        "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", // USDC
+        "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT
+        "0x6B175474E89094C44Da98b954EedeAC495271d0F", // DAI
+      ],
+      topic0: [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+      ],
+    },
+  ],
+});
+```
+
+## Performance Optimization
+
+### 1. Request Only Needed Fields
+
+```typescript
+// Good: Minimal fields
+fields: {
+  log: {
+    address: true,
+    topics: true,
+  }
+}
+
+// Avoid: Requesting unnecessary fields
+fields: {
+  log: {
+    address: true,
+    topics: true,
+    data: true,        // Only if needed
+    transactionHash: true, // Only if needed
+    blockNumber: true,     // Only if needed
+  }
+}
+```
+
+### 2. Use Specific Filters
+
+```typescript
+// Good: Filter at Portal level
+logs: [
+  {
+    address: ["0xSpecificContract"],
+    topic0: ["0xSpecificEvent"],
+  },
+];
+
+// Avoid: Fetching everything and filtering in code
+logs: []; // Gets all logs
+```
+
+### 3. Optimal Batch Sizes
+
+```typescript
+// Good: 10k-50k blocks per query for most use cases
+const BATCH_SIZE = 10000;
+
+// Adjust based on:
+// - More filters = larger batches OK
+// - More fields = smaller batches
+// - More activity (mainnet) = smaller batches
+```
+
+### 4. Parallel Queries
+
+```typescript
+// Process multiple ranges in parallel
+const ranges = [
+  { from: 18000000, to: 18100000 },
+  { from: 18100000, to: 18200000 },
+  { from: 18200000, to: 18300000 },
+];
+
+const results = await Promise.all(
+  ranges.map((range) =>
+    dataSource.getBlocks({
+      from: range.from,
+      to: range.to,
+      fields: {
+        /* fields */
+      },
+    })
+  )
+);
+```
+
+## Error Handling
+
+```typescript
+try {
+  const blocks = await dataSource.getBlocks({
+    from: 18000000,
+    to: 18100000,
+    fields: {
+      /* fields */
+    },
+  });
+} catch (error) {
+  if (error.code === "RATE_LIMIT_EXCEEDED") {
+    // Handle rate limiting (Public Portal)
+    console.error("Rate limit exceeded, waiting...");
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+  } else if (error.code === "INVALID_BLOCK_RANGE") {
+    // Handle invalid range
+    console.error("Invalid block range");
+  } else if (error.code === "NETWORK_ERROR") {
+    // Handle network issues
+    console.error("Network error, retrying...");
+  } else {
+    // Handle other errors
+    console.error("Unknown error:", error);
+  }
+}
+```
+
+## Common Use Cases
+
+### Use Case 1: Event Monitoring
+
+Monitor specific smart contract events:
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: latestProcessedBlock + 1,
+  fields: {
+    block: { number: true, timestamp: true },
+    log: { address: true, topics: true, data: true },
+  },
+  logs: [
+    {
+      address: [CONTRACT_ADDRESS],
+      topic0: [EVENT_SIGNATURE],
+    },
+  ],
+});
+```
+
+### Use Case 2: Transaction Tracking
+
+Track transactions to/from specific addresses:
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: startBlock,
+  to: endBlock,
+  fields: {
+    transaction: { hash: true, from: true, to: true, value: true },
+  },
+  transactions: [
+    {
+      from: [WATCHED_ADDRESS],
+    },
+  ],
+});
+```
+
+### Use Case 3: Analytics Pipeline
+
+Build analytics on blockchain data:
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: startBlock,
+  to: endBlock,
+  fields: {
+    block: { number: true, timestamp: true, gasUsed: true },
+    transaction: { gasUsed: true, value: true },
+  },
+});
+
+// Aggregate statistics
+const stats = blocks.map((block) => ({
+  block: block.header.number,
+  txCount: block.transactions.length,
+  totalGas: block.header.gasUsed,
+  totalValue: block.transactions.reduce(
+    (sum, tx) => sum + BigInt(tx.value),
+    0n
+  ),
+}));
+```
+
+## Complete API Specification
+
+For the complete OpenAPI specification with all available fields, options, and detailed schemas:
+
+<Card
+  title="Full EVM API Specification"
+  icon="file-code"
+  href="/api/evm/dataset-metadata"
+>
+  View complete OpenAPI documentation
+</Card>
+
+## Next Steps
+
+<CardGroup cols={2}>
+<Card title="View Examples" icon="code" href="/en/sdk/portal-evm/examples">
+  Explore practical Portal examples
+</Card>
+
+<Card title="Supported Networks" icon="database" href="/en/data/networks/evm">
+  See all supported EVM networks
+</Card>
+</CardGroup>

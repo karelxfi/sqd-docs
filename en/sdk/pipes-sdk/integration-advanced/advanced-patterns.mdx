@@ -1,0 +1,377 @@
+---
+title: "Advanced Patterns"
+description: "Advanced techniques for production pipes"
+---
+
+## Factory Pattern
+
+Index events from dynamically created contracts.
+
+```ts
+import { createFactory, sqliteFactoryDatabase } from "@sqd-pipes/pipes/evm";
+import * as factoryAbi from "./abi/uniswap-v3-factory";
+import * as poolAbi from "./abi/uniswap-v3-pool";
+
+const decoder = createEvmDecoder({
+  range: { from: 12369621 },
+  contracts: createFactory({
+    address: "0x1f98431c8ad98523631ae4a59f267346ea31f984",
+    event: factoryAbi.events.PoolCreated,
+    parameter: (e) => e.pool,
+    database: await sqliteFactoryDatabase({ path: "./pools.sqlite" }),
+  }),
+  events: {
+    swap: poolAbi.events.Swap,
+  },
+});
+```
+
+### How It Works
+
+```mermaid
+graph TB
+    A[Factory Contract] -->|PoolCreated| B[createFactory]
+    B --> C[SQLite Storage]
+    C --> D[Track Pool Addresses]
+    D --> E[Decode Swaps from Pools]
+
+    style A fill:#dbeafe
+    style B fill:#dbeafe
+    style C fill:#dbeafe
+    style E fill:#dbeafe
+```
+
+1. Monitor factory contract for creation events
+2. Extract child contract addresses
+3. Store addresses in SQLite
+4. Decode events from all discovered contracts
+
+### Factory Database
+
+```ts
+const database = await sqliteFactoryDatabase({
+  path: "./uniswap-v3-pools.sqlite",
+});
+```
+
+## Composite Pipes
+
+Process multiple data streams simultaneously.
+
+```ts
+const pipeline = source.pipeComposite({
+  transfers: createEvmDecoder({
+    range: { from: 20000000 },
+    contracts: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+    events: { transfer: commonAbis.erc20.events.Transfer },
+  }),
+  swaps: createEvmDecoder({
+    range: { from: 20000000 },
+    contracts: ["0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640"],
+    events: { swap: uniswapAbi.events.Swap },
+  }),
+});
+
+for await (const { data } of pipeline) {
+  console.log(`Transfers: ${data.transfers.transfer.length}`);
+  console.log(`Swaps: ${data.swaps.swap.length}`);
+}
+```
+
+### Data Structure
+
+```mermaid
+graph TB
+    A[Portal Source] --> B[pipeComposite]
+    B --> C[ERC20 Decoder]
+    B --> D[Uniswap Decoder]
+    C --> E[data.transfers]
+    D --> F[data.swaps]
+
+    style A fill:#dbeafe
+    style B fill:#dbeafe
+    style C fill:#dbeafe
+    style D fill:#dbeafe
+    style E fill:#dbeafe
+    style F fill:#dbeafe
+```
+
+## Portal Caching
+
+Cache Portal responses locally for faster iteration.
+
+```ts
+import { sqliteCacheAdapter } from "@sqd-pipes/pipes/portal-cache";
+
+const source = createEvmPortalSource({
+  portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
+  cache: {
+    adapter: await sqliteCacheAdapter({
+      path: "./portal-cache.sqlite",
+    }),
+  },
+});
+```
+
+### Performance
+
+- **First run**: 55s (fetch from Portal)
+- **Cached run**: 35s (fetch from SQLite)
+
+### When to Use
+
+- Development iteration
+- Testing pipelines
+- Repeated processing of same blocks
+
+## Custom Logging
+
+Integrate custom log transports.
+
+```ts
+import pino from "pino";
+
+const customLogger = pino({
+  transport: {
+    target: "pino-pretty",
+    options: {
+      colorize: true,
+      translateTime: "HH:MM:ss",
+    },
+  },
+});
+
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    // Override ctx.logger
+    const logger = customLogger;
+
+    for await (const { data } of read()) {
+      logger.info({ count: data.length }, "Processed batch");
+    }
+  },
+});
+```
+
+## Custom Metrics
+
+Track custom performance metrics.
+
+```ts
+const metrics = {
+  blocksProcessed: 0,
+  eventsDecoded: 0,
+  startTime: Date.now(),
+};
+
+const target = createTarget({
+  write: async ({ ctx: { profiler }, read }) => {
+    for await (const { data } of read()) {
+      const span = profiler.start("processing");
+
+      metrics.blocksProcessed += data.blocks?.length || 0;
+      metrics.eventsDecoded += data.transfer?.length || 0;
+
+      await processData(data);
+
+      span.end();
+
+      // Log metrics
+      if (metrics.blocksProcessed % 100 === 0) {
+        const elapsed = (Date.now() - metrics.startTime) / 1000;
+        const bps = metrics.blocksProcessed / elapsed;
+        console.log({
+          blocks: metrics.blocksProcessed,
+          events: metrics.eventsDecoded,
+          blocksPerSec: bps.toFixed(2),
+        });
+      }
+    }
+  },
+});
+```
+
+### Profiler Usage
+
+```ts
+write: async ({ ctx: { profiler }, read }) => {
+  for await (const { data } of read()) {
+    const decodeSpan = profiler.start("decode");
+    const decoded = decodeEvents(data);
+    decodeSpan.end();
+
+    const saveSpan = profiler.start("save");
+    await database.insert(decoded);
+    saveSpan.end();
+  }
+};
+```
+
+## Indexing Latency
+
+Measure time from block production to indexing.
+
+```ts
+const target = createTarget({
+  write: async ({ ctx: { logger }, read }) => {
+    for await (const { data } of read()) {
+      for (const transfer of data.transfer) {
+        const blockTime = transfer.timestamp.getTime();
+        const now = Date.now();
+        const latency = now - blockTime;
+
+        logger.info({
+          block: transfer.blockNumber,
+          latencyMs: latency,
+          latencySec: (latency / 1000).toFixed(2),
+        });
+      }
+    }
+  },
+});
+```
+
+## Pre-indexing Factories
+
+Pre-populate factory database before running main pipe.
+
+```ts expandable
+import { createFactory, sqliteFactoryDatabase } from "@sqd-pipes/pipes/evm";
+
+const database = await sqliteFactoryDatabase({ path: "./pools.sqlite" });
+
+// Pre-index phase
+const preIndexSource = createEvmPortalSource({
+  portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
+});
+
+const preIndexDecoder = createEvmDecoder({
+  range: { from: 12369621, to: 20000000 },
+  contracts: ["0x1f98431c8ad98523631ae4a59f267346ea31f984"],
+  events: {
+    poolCreated: factoryAbi.events.PoolCreated,
+  },
+});
+
+const preIndexTarget = createTarget({
+  write: async ({ read }) => {
+    for await (const { data } of read()) {
+      for (const event of data.poolCreated) {
+        await database.add(event.event.pool);
+      }
+    }
+  },
+});
+
+// Pre-index all pools
+await preIndexSource.pipe(preIndexDecoder).pipeTo(preIndexTarget);
+
+// Now run main pipe with populated factory database
+const mainDecoder = createEvmDecoder({
+  range: { from: 20000000 },
+  contracts: createFactory({
+    address: "0x1f98431c8ad98523631ae4a59f267346ea31f984",
+    event: factoryAbi.events.PoolCreated,
+    parameter: (e) => e.pool,
+    database,
+  }),
+  events: {
+    swap: poolAbi.events.Swap,
+  },
+});
+
+await source.pipe(mainDecoder).pipeTo(target);
+```
+
+## Combining Patterns
+
+```ts expandable
+// Portal caching + Composite pipes + Custom metrics
+const source = createEvmPortalSource({
+  portal: 'https://portal.sqd.dev/datasets/ethereum-mainnet',
+  cache: {
+    adapter: await sqliteCacheAdapter({ path: './cache.sqlite' })
+  }
+})
+
+const metrics = {
+  transfers: 0,
+  swaps: 0
+}
+
+const pipeline = source.pipeComposite({
+  transfers: createEvmDecoder({
+    profiler: { id: 'ERC20' },
+    range: { from: 20000000 },
+    contracts: ['0x...'],
+    events: { transfer: commonAbis.erc20.events.Transfer }
+  }),
+  swaps: createEvmDecoder({
+    profiler: { id: 'Uniswap' },
+    range: { from: 20000000 },
+    contracts: createFactory({
+      address: '0x...',
+      event: factoryAbi.events.PoolCreated,
+      parameter: (e) => e.pool,
+      database: await sqliteFactoryDatabase({ path: './pools.sqlite' })
+    }),
+    events: { swap: poolAbi.events.Swap }
+  })
+})
+
+const target = createClickhouseTarget({
+  client,
+  onData: async ({store, data, ctx}) => {
+    metrics.transfers += data.transfers.transfer.length
+    metrics.swaps += data.swaps.swap.length
+
+    ctx.logger.info(metrics)
+
+    store.insert({
+      table: 'transfers',
+      values: data.transfers.transfer.map(t => ({...})),
+      format: 'JSONEachRow'
+    })
+
+    store.insert({
+      table: 'swaps',
+      values: data.swaps.swap.map(s => ({...})),
+      format: 'JSONEachRow'
+    })
+  },
+  onRollback: async ({store, cursor}) => {
+    await store.removeAllRows({
+      tables: ['transfers', 'swaps'],
+      where: `block_number > ${cursor.number}`
+    })
+  }
+})
+
+await pipeline.pipeTo(target)
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Examples"
+    icon="lightbulb"
+    href="/en/sdk/pipes-sdk/examples/factory-pattern"
+  >
+    Factory examples
+  </Card>
+
+{" "}
+
+<Card
+  title="Performance"
+  icon="rocket"
+  href="/en/sdk/pipes-sdk/examples/performance"
+>
+  Performance examples
+</Card>
+
+  <Card title="Reference" icon="book" href="/en/sdk/pipes-sdk/reference/reference">
+    Full API reference
+  </Card>
+</CardGroup>

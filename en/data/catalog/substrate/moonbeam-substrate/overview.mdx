@@ -1,0 +1,67 @@
+---
+title: "Overview"
+description: "Moonbeam data indexing and API access"
+---
+
+<Info>
+  Starting today (2025-02-23) all open private network gateways are rate limited
+  at 50 requests per 10 seconds per IP. Higher bandwidths will soon become
+  available via the public network.
+</Info>
+
+## Network Information
+
+- **Network ID**: `moonbeam-substrate`
+- **Gateway**: Open Private Network
+
+## Endpoints
+
+### Gateway Endpoint
+
+```
+https://v2.archive.subsquid.io/network/moonbeam-substrate
+```
+
+### Usage
+
+```typescript
+import { SubstrateBatchProcessor } from '@subsquid/substrate-processor'
+
+const processor = new SubstrateBatchProcessor()
+  .setGateway("https://v2.archive.subsquid.io/network/moonbeam-substrate")
+  .setRpcEndpoint("<your_rpc_endpoint>")
+  .setBlockRange({ from: 0 });
+```
+
+## Quick Start
+
+Get started indexing Moonbeam data:
+
+<Card
+  title="Quick Start"
+  icon="terminal"
+  href="/en/sdk/squid-sdk/substrate/quickstart"
+>
+  Quick reference for building your indexer
+</Card>
+
+## Schema Reference
+
+<Card
+  title="View Schema"
+  icon="database"
+  href="/en/data/catalog/substrate/moonbeam-substrate/schema"
+>
+  See complete field definitions for all data types
+</Card>
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="code" href="/en/subsquid-network/reference/substrate-api">
+    Complete API documentation
+  </Card>
+  <Card title="Network Overview" icon="network-wired" href="/en/subsquid-network/overview">
+    Learn about the Subsquid Network
+  </Card>
+</CardGroup>

@@ -1,0 +1,96 @@
+---
+title: "Schema"
+description: "Complete data schema and field reference for Avalanche"
+---
+
+# Avalanche Data Schema
+
+Avalanche datasets provide comprehensive on-chain data including blocks, transactions, and logs (events), traces (internal transactions), and state changes. All data is indexed and queryable through Portal or v2 archives.
+
+## Available Data Types
+
+<AccordionGroup>
+<Accordion title="Blocks">
+Block headers contain metadata about each block in the chain.
+
+| Field Name      | Data Type | Description                 |
+| --------------- | --------- | --------------------------- |
+| `number`        | integer   | Block number                |
+| `hash`          | string    | Block hash                  |
+| `timestamp`     | integer   | Block timestamp (Unix)      |
+| `parentHash`    | string    | Parent block hash           |
+| `gasUsed`       | bigint    | Total gas used in block     |
+| `gasLimit`      | bigint    | Block gas limit             |
+| `baseFeePerGas` | bigint    | Base fee per gas (EIP-1559) |
+</Accordion>
+
+<Accordion title="Transactions">
+Transaction data includes all executed transactions with their execution details.
+
+| Field Name             | Data Type | Description                                   |
+| ---------------------- | --------- | --------------------------------------------- |
+| `hash`                 | string    | Transaction hash                              |
+| `from`                 | address   | Sender address                                |
+| `to`                   | address   | Recipient address                             |
+| `value`                | bigint    | Transaction value in wei                      |
+| `gasUsed`              | bigint    | Gas used by transaction                       |
+| `gasPrice`             | bigint    | Gas price in wei                              |
+| `maxFeePerGas`         | bigint    | Max fee per gas (EIP-1559)                    |
+| `maxPriorityFeePerGas` | bigint    | Max priority fee (EIP-1559)                   |
+| `input`                | bytes     | Transaction input data                        |
+| `nonce`                | integer   | Transaction nonce                             |
+| `status`               | integer   | Transaction status (1 = success, 0 = failure) |
+</Accordion>
+
+<Accordion title="Logs">
+Event logs emitted by smart contracts during transaction execution.
+
+| Field Name         | Data Type | Description                           |
+| ------------------ | --------- | ------------------------------------- |
+| `address`          | address   | Contract address that emitted the log |
+| `topics`           | array     | Indexed event topics (up to 4)        |
+| `data`             | bytes     | Non-indexed event data                |
+| `logIndex`         | integer   | Log index in the block                |
+| `transactionIndex` | integer   | Index of parent transaction           |
+| `transactionHash`  | string    | Hash of parent transaction            |
+</Accordion>
+
+<Accordion title="Traces">
+Internal transactions and call traces showing execution flow within transactions.
+
+| Field Name         | Data Type | Description                                |
+| ------------------ | --------- | ------------------------------------------ |
+| `transactionIndex` | integer   | Index of parent transaction                |
+| `type`             | string    | Trace type (call, create, suicide, reward) |
+| `from`             | address   | Trace originator address                   |
+| `to`               | address   | Trace destination address                  |
+| `value`            | bigint    | Value transferred                          |
+| `gas`              | bigint    | Gas provided                               |
+| `gasUsed`          | bigint    | Gas actually used                          |
+| `input`            | bytes     | Input data                                 |
+| `output`           | bytes     | Output data                                |
+</Accordion>
+
+<Accordion title="State Diffs">
+State changes tracking modifications to account balances, storage, and code.
+
+| Field Name         | Data Type | Description                                    |
+| ------------------ | --------- | ---------------------------------------------- |
+| `transactionIndex` | integer   | Index of parent transaction                    |
+| `address`          | address   | Account address                                |
+| `key`              | bytes32   | Storage slot key                               |
+| `kind`             | string    | Type of change (balance, code, nonce, storage) |
+| `prev`             | bytes     | Previous value                                 |
+| `next`             | bytes     | New value                                      |
+</Accordion>
+
+</AccordionGroup>
+
+## Usage Examples
+
+For code examples showing how to query this data, see:
+
+- [Query Logs Example](/en/sdk/portal-evm/examples/query-logs)
+- [Query Transactions Example](/en/sdk/portal-evm/examples/query-transactions)
+- [Query Traces Example](/en/sdk/portal-evm/examples/query-traces)
+- [State Diffs Example](/en/sdk/portal-evm/examples/state-diffs)

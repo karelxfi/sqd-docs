@@ -1,0 +1,529 @@
+---
+title: "Migrate from RPC to Portal"
+description: "Learn how to migrate from traditional RPC nodes to SQD Portal for better performance and reliability"
+---
+
+This guide helps you migrate from traditional RPC nodes to SQD Portal. Portal provides significantly better performance for blockchain data access, especially for historical data queries and batch operations.
+
+## Why Migrate to Portal?
+
+Portal offers substantial advantages over traditional RPC nodes:
+
+<CardGroup cols={2}>
+<Card title="10-50x Faster" icon="bolt">
+  Optimized batch queries and parallel execution deliver exceptional speed
+</Card>
+
+<Card title="Better Reliability" icon="shield">
+  Decentralized network with 30x replication eliminates single points of failure
+</Card>
+
+<Card title="Lower Costs" icon="dollar-sign">
+  Efficient bulk data access reduces costs compared to RPC rate limits
+</Card>
+
+<Card title="Unified API" icon="code">
+  Single API for both historical and real-time data
+</Card>
+</CardGroup>
+
+## Understanding the Differences
+
+### RPC Nodes
+
+Traditional RPC nodes are designed for:
+
+- Single transaction submission
+- Individual block queries
+- Sequential data access
+- Real-time state queries
+
+**Limitations:**
+
+- Slow for bulk historical data
+- Rate limits restrict throughput
+- Expensive for large-scale operations
+- Single point of failure
+
+### SQD Portal
+
+Portal is optimized for:
+
+- Bulk data retrieval
+- Efficient historical queries
+- Batch processing
+- High-throughput applications
+
+**Advantages:**
+
+- Fast batch queries
+- Decentralized infrastructure
+- No restrictive rate limits
+- Cost-effective at scale
+
+<Info>
+  Portal is ideal for data indexing, analytics, and applications that need to
+  process large amounts of blockchain data. For simple transaction submission,
+  you may still need an RPC node.
+</Info>
+
+## Migration Patterns
+
+### Pattern 1: Historical Data Indexing
+
+**Before (RPC):**
+
+```typescript
+// Slow: Sequential RPC calls for each block
+for (let blockNumber = startBlock; blockNumber <= endBlock; blockNumber++) {
+  const block = await provider.getBlock(blockNumber);
+  const logs = await provider.getLogs({
+    fromBlock: blockNumber,
+    toBlock: blockNumber,
+    address: contractAddress,
+  });
+  await processBlockData(block, logs);
+}
+```
+
+**After (Portal):**
+
+```typescript
+// Fast: Batch query with Portal
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+});
+
+const blocks = await dataSource.getBlocks({
+  from: startBlock,
+  to: endBlock,
+  fields: {
+    block: { number: true, timestamp: true },
+    log: { address: true, topics: true, data: true },
+  },
+  logs: [{ address: [contractAddress] }],
+});
+
+for (const block of blocks) {
+  await processBlockData(block);
+}
+```
+
+<Tip>
+  Portal can retrieve thousands of blocks in a single request, dramatically
+  improving indexing speed.
+</Tip>
+
+### Pattern 2: Event Log Queries
+
+**Before (RPC):**
+
+```typescript
+// Limited: RPC often restricts block range
+const chunkSize = 1000; // Many RPCs limit to 1000 blocks
+for (let i = startBlock; i < endBlock; i += chunkSize) {
+  const logs = await provider.getLogs({
+    fromBlock: i,
+    toBlock: Math.min(i + chunkSize, endBlock),
+    address: contractAddress,
+    topics: [eventSignature],
+  });
+  await processLogs(logs);
+}
+```
+
+**After (Portal):**
+
+```typescript
+// No limits: Query millions of blocks efficiently
+const blocks = await dataSource.getBlocks({
+  from: startBlock,
+  to: endBlock,
+  fields: {
+    log: {
+      address: true,
+      topics: true,
+      data: true,
+      transactionHash: true,
+      logIndex: true,
+    },
+  },
+  logs: [
+    {
+      address: [contractAddress],
+      topic0: [eventSignature],
+    },
+  ],
+});
+```
+
+### Pattern 3: Transaction History
+
+**Before (RPC):**
+
+```typescript
+// Slow: Must query each block individually
+const transactions = [];
+for (let i = startBlock; i <= endBlock; i++) {
+  const block = await provider.getBlockWithTransactions(i);
+  transactions.push(
+    ...block.transactions.filter((tx) => tx.to === targetAddress)
+  );
+}
+```
+
+**After (Portal):**
+
+```typescript
+// Fast: Filtered at query level
+const blocks = await dataSource.getBlocks({
+  from: startBlock,
+  to: endBlock,
+  fields: {
+    transaction: {
+      hash: true,
+      from: true,
+      to: true,
+      value: true,
+      input: true,
+    },
+  },
+  transactions: [
+    {
+      to: [targetAddress],
+    },
+  ],
+});
+```
+
+## Step-by-Step Migration
+
+<Steps>
+<Step title="Choose Portal Access Method">
+
+Decide which Portal access fits your needs:
+
+- **Cloud Portal** - Managed infrastructure (recommended for production)
+- **Self-Hosted Portal** - Full control (requires 10,000+ SQD tokens)
+- **Public Portal** - Free tier for development
+
+<Card
+  title="Compare Access Methods"
+  icon="scale-balanced"
+  href="/en/portal/overview#how-to-access-portal"
+>
+  Learn more about Portal access options
+</Card>
+
+</Step>
+
+<Step title="Install Portal Client">
+
+Install the Portal client library:
+
+```bash
+npm install @subsquid/portal-client
+```
+
+Or if using SQD SDK (Pipes or Squid), it's already included.
+
+</Step>
+
+<Step title="Initialize Data Source">
+
+Replace your RPC provider with Portal data source:
+
+```typescript
+// Old: RPC provider
+import { JsonRpcProvider } from "ethers";
+const provider = new JsonRpcProvider(RPC_URL);
+
+// New: Portal data source
+import { DataSource } from "@subsquid/portal-client";
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+  // gateway: 'https://portal.sqd.dev' // Optional: specify gateway
+});
+```
+
+</Step>
+
+<Step title="Refactor Data Queries">
+
+Convert your sequential RPC calls to batch Portal queries:
+
+1. **Identify query patterns** - Find loops that query blocks sequentially
+2. **Batch queries** - Combine multiple block queries into single Portal request
+3. **Filter at source** - Use Portal's filtering instead of post-processing
+4. **Select only needed fields** - Request only the data you'll use
+
+<Tip>The biggest performance gains come from batching sequential queries.</Tip>
+
+</Step>
+
+<Step title="Update Data Processing">
+
+Adjust your data processing logic for Portal's response format:
+
+```typescript
+// Portal returns structured block data
+for (const block of blocks) {
+  // Access block header
+  console.log("Block:", block.header.number);
+
+  // Process logs
+  for (const log of block.logs) {
+    await processLog(log);
+  }
+
+  // Process transactions
+  for (const tx of block.transactions) {
+    await processTransaction(tx);
+  }
+}
+```
+
+</Step>
+
+<Step title="Test and Optimize">
+
+Test your migration and optimize performance:
+
+1. **Compare results** - Verify data matches your RPC queries
+2. **Measure performance** - Benchmark speed improvements
+3. **Optimize batch sizes** - Find the right balance for your use case
+4. **Monitor resource usage** - Ensure efficient processing
+
+<Check>You should see 10-50x faster data retrieval compared to RPC!</Check>
+
+</Step>
+</Steps>
+
+## Common Migration Scenarios
+
+### Scenario 1: DeFi Protocol Indexer
+
+**Goal:** Index all trades from a DEX across its history
+
+**Challenge with RPC:**
+
+- Must query millions of blocks
+- Rate limits slow down indexing
+- Takes days or weeks to sync
+
+**Solution with Portal:**
+
+- Batch query millions of blocks efficiently
+- Filter trades at Portal level
+- Complete sync in hours
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: 0,
+  fields: {
+    log: { address: true, topics: true, data: true },
+  },
+  logs: [
+    {
+      address: [DEX_CONTRACT],
+      topic0: [SWAP_EVENT_SIGNATURE],
+    },
+  ],
+});
+```
+
+### Scenario 2: NFT Analytics Platform
+
+**Goal:** Track all NFT transfers and sales
+
+**Challenge with RPC:**
+
+- Multiple contracts to monitor
+- Historic data retrieval is slow
+- High API costs
+
+**Solution with Portal:**
+
+- Query multiple contracts simultaneously
+- Efficient historical data access
+- Lower costs with batch queries
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: startBlock,
+  fields: {
+    log: { address: true, topics: true, data: true },
+  },
+  logs: [
+    {
+      address: nftContractAddresses, // Multiple contracts
+      topic0: [TRANSFER_SIGNATURE],
+    },
+  ],
+});
+```
+
+### Scenario 3: Wallet Activity Tracker
+
+**Goal:** Monitor all transactions for specific addresses
+
+**Challenge with RPC:**
+
+- Must scan many blocks
+- No efficient address filtering
+- Slow and expensive
+
+**Solution with Portal:**
+
+- Filter by sender/recipient at query level
+- Fast historical scanning
+- Efficient updates
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: startBlock,
+  fields: {
+    transaction: { hash: true, from: true, to: true, value: true },
+  },
+  transactions: [
+    {
+      from: watchedAddresses,
+      to: watchedAddresses,
+    },
+  ],
+});
+```
+
+## Best Practices
+
+### 1. Batch Size Optimization
+
+```typescript
+// Good: Reasonable batch size
+const BATCH_SIZE = 10000;
+for (let i = startBlock; i < endBlock; i += BATCH_SIZE) {
+  const blocks = await dataSource.getBlocks({
+    from: i,
+    to: Math.min(i + BATCH_SIZE, endBlock),
+    // ...
+  });
+}
+```
+
+### 2. Field Selection
+
+```typescript
+// Good: Only request needed fields
+fields: {
+  log: {
+    address: true,
+    topics: true,
+    data: true
+    // Don't request fields you won't use
+  }
+}
+```
+
+### 3. Efficient Filtering
+
+```typescript
+// Good: Filter at Portal level
+logs: [
+  {
+    address: [CONTRACT_ADDRESS],
+    topic0: [EVENT_SIGNATURE],
+  },
+];
+
+// Bad: Don't filter after retrieval
+const blocks = await dataSource.getBlocks({
+  /* get all logs */
+});
+const filtered = blocks.flatMap((b) =>
+  b.logs.filter((log) => log.address === CONTRACT_ADDRESS)
+);
+```
+
+## Handling Edge Cases
+
+### Real-Time Data
+
+For real-time updates, Portal supports streaming (currently Solana only):
+
+```typescript
+const dataSource = new DataSource({
+  network: "solana-mainnet",
+  realtime: true,
+});
+
+for await (const block of dataSource.getBlockStream()) {
+  // Process real-time blocks
+}
+```
+
+<Info>
+  For EVM networks, combine Portal for historical data with RPC for real-time
+  updates until Portal real-time support is available.
+</Info>
+
+### Transaction Submission
+
+Portal is optimized for data retrieval, not transaction submission:
+
+```typescript
+// Use Portal for data retrieval
+const blocks = await dataSource.getBlocks({
+  /* ... */
+});
+
+// Still use RPC for transaction submission
+const signer = new ethers.Wallet(PRIVATE_KEY, rpcProvider);
+const tx = await signer.sendTransaction({
+  /* ... */
+});
+```
+
+## Troubleshooting
+
+### Issue: Data Doesn't Match RPC
+
+**Solution:** Ensure you're querying the same block range and using correct filters.
+
+### Issue: Queries Are Slow
+
+**Solutions:**
+
+- Reduce batch size
+- Select fewer fields
+- Use more specific filters
+- Check network connection
+
+### Issue: Rate Limits on Public Portal
+
+**Solution:** Upgrade to Cloud Portal or self-host for higher limits.
+
+## Next Steps
+
+<CardGroup cols={2}>
+<Card title="Portal API Reference" icon="code" href="/en/portal/api-reference/evm">
+  Explore the complete API documentation
+</Card>
+
+<Card
+  title="Cloud Portal Migration"
+  icon="cloud"
+  href="/en/portal/migration/cloud-portal-evm"
+>
+  Migrate to Cloud Portal for production
+</Card>
+
+<Card title="SQD SDKs" icon="tools" href="/en/sdk/choose-your-approach">
+  Use SDKs for advanced data processing
+</Card>
+
+<Card title="Get Help" icon="question" href="https://t.me/HydraDevs">
+  Join our community for support
+</Card>
+</CardGroup>

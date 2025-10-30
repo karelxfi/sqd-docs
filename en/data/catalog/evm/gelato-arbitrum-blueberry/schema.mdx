@@ -1,0 +1,70 @@
+---
+title: "Schema"
+description: "Complete data schema and field reference for Arbitrum Blueberry"
+---
+
+# Arbitrum Blueberry Data Schema
+
+Arbitrum Blueberry datasets provide comprehensive on-chain data including blocks, transactions, and logs (events), traces (internal transactions). All data is indexed and queryable through Portal or v2 archives.
+
+## Available Data Types
+
+<AccordionGroup>
+<Accordion title="Entity Type">
+Data fields for entity type.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+|  | Data Type | Description |
+</Accordion>
+
+<Accordion title="Blocks">
+Block headers contain metadata about each block in the chain.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+|  | integer | Block number |
+</Accordion>
+
+<Accordion title="Tx">
+Data fields for tx.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+|  | integer | Index of the transaction in the block |
+</Accordion>
+
+<Accordion title="Logs">
+Event logs emitted by smart contracts during transaction execution.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+|  | integer | Index of the log in the block |
+</Accordion>
+
+<Accordion title="Traces">
+Internal transactions and call traces showing execution flow within transactions.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+|  | integer | Index of the parent transaction |
+</Accordion>
+
+<Accordion title="State_Diffs">
+Data fields for state_diffs.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+|  | integer | Index of the parent transaction |
+</Accordion>
+
+</AccordionGroup>
+
+## Usage Examples
+
+For code examples showing how to query this data, see:
+
+- [Query Logs Example](/en/sdk/portal-evm/examples/query-logs)
+- [Query Transactions Example](/en/sdk/portal-evm/examples/query-transactions)
+- [Query Traces Example](/en/sdk/portal-evm/examples/query-traces)
+

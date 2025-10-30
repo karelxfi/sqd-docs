@@ -1,0 +1,297 @@
+---
+title: "Quickstart"
+description: "Get started with Portal to query EVM blockchain data"
+---
+
+Get up and running with Portal to access raw EVM blockchain data in minutes.
+
+## Prerequisites
+
+<Tabs>
+<Tab title="curl">
+No installation required. Use curl from your terminal.
+</Tab>
+
+<Tab title="TypeScript">- Node.js 16 or later - npm or yarn</Tab>
+
+<Tab title="Python">
+- Python 3.7 or later
+- requests library
+</Tab>
+</Tabs>
+
+## Installation
+
+<Steps>
+<Step title="Choose your access method">
+Portal offers three ways to access blockchain data:
+
+- **Public Portal**: Free, rate-limited access for development
+- **Cloud Portal**: Managed access through SQD Cloud
+- **Self-Hosted Portal**: Run your own instance
+
+For this quickstart, we'll use the Public Portal endpoint.
+
+</Step>
+
+<Step title="Install dependencies (optional)">
+<Tabs>
+<Tab title="curl">
+No installation needed.
+</Tab>
+
+<Tab title="TypeScript">```bash npm install @subsquid/portal-client ```</Tab>
+
+<Tab title="Python">
+```bash
+pip install requests
+```
+</Tab>
+</Tabs>
+</Step>
+</Steps>
+
+## Your First Query
+
+Query the last 1,000 blocks from Ethereum mainnet:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18001000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true,
+        "gasUsed": true
+      }
+    }
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+});
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18001000,
+  fields: {
+    block: {
+      number: true,
+      timestamp: true,
+      gasUsed: true,
+    },
+  },
+});
+
+console.log(`Retrieved ${blocks.length} blocks`);
+blocks.forEach((block) => {
+  console.log(`Block ${block.header.number}: ${block.header.gasUsed} gas used`);
+});
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/ethereum-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18001000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True,
+            "gasUsed": True
+        }
+    }
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+# Response is newline-delimited JSON
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    print(f"Block {block['header']['number']}: {block['header']['gasUsed']} gas used")
+```
+
+</CodeGroup>
+
+## Understanding the Response
+
+Portal returns data in newline-delimited JSON format. Each line represents one block:
+
+```json
+{
+  "header": {
+    "number": 18000000,
+    "timestamp": 1697544779,
+    "gasUsed": "12534567"
+  },
+  "transactions": [],
+  "logs": []
+}
+```
+
+<Note>
+  The response includes only the fields you requested. This keeps responses fast
+  and bandwidth-efficient.
+</Note>
+
+## Query Event Logs
+
+Track USDC Transfer events:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "log": {
+        "address": true,
+        "topics": true,
+        "data": true,
+        "transactionHash": true
+      }
+    },
+    "logs": [{
+      "address": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"],
+      "topic0": ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+});
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    log: {
+      address: true,
+      topics: true,
+      data: true,
+      transactionHash: true,
+    },
+  },
+  logs: [
+    {
+      address: ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"], // USDC
+      topic0: [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+      ], // Transfer
+    },
+  ],
+});
+
+for (const block of blocks) {
+  for (const log of block.logs) {
+    console.log(`Transfer in tx ${log.transactionHash}`);
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/ethereum-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "log": {
+            "address": True,
+            "topics": True,
+            "data": True,
+            "transactionHash": True
+        }
+    },
+    "logs": [{
+        "address": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"],
+        "topic0": ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for log in block.get('logs', []):
+        print(f"Transfer in tx {log['transactionHash']}")
+```
+
+</CodeGroup>
+
+<Tip>
+  Filter at the Portal level to reduce bandwidth and improve performance. Only
+  request the fields you need.
+</Tip>
+
+## Rate Limits
+
+The Public Portal has the following limits:
+
+- **20 requests per 10 seconds**
+- Suitable for development and testing
+
+For production use, consider [Cloud Portal](/en/cloud/overview) or [Self-Hosted Portal](/en/portal/self-hosting).
+
+## Next Steps
+
+Explore practical examples for common use cases:
+
+<CardGroup cols={2}>
+<Card title="Query Event Logs" icon="file-lines" href="/en/sdk/portal-evm/examples/query-logs">
+  Track smart contract events
+</Card>
+
+<Card
+  title="Query Transactions"
+  icon="arrow-right-arrow-left"
+  href="/en/sdk/portal-evm/examples/query-transactions"
+>
+  Monitor wallet activity
+</Card>
+
+<Card
+  title="Track NFT Transfers"
+  icon="image"
+  href="/en/sdk/portal-evm/examples/nft-transfers"
+>
+  Index NFT collection activity
+</Card>
+
+<Card title="Index DEX Swaps" icon="repeat" href="/en/sdk/portal-evm/examples/dex-swaps">
+  Build DEX analytics
+</Card>
+</CardGroup>
+
+<Card
+  title="View All Examples"
+  icon="code"
+  href="/en/sdk/portal-evm/examples/query-logs"
+>
+  Browse all Portal examples
+</Card>

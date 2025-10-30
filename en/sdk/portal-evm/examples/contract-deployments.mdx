@@ -1,0 +1,371 @@
+---
+title: "Monitor Contract Deployments"
+description: "Track new smart contract deployments using Portal"
+---
+
+Find all new smart contract deployments in a block range to track protocol launches, analyze deployment patterns, or monitor for security research.
+
+## Use Case
+
+Contract deployment monitoring helps you:
+
+- Track new protocol and dApp launches
+- Analyze deployment patterns and trends
+- Monitor for security research and auditing
+- Build contract discovery tools
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
+      "transaction": {
+        "hash": true,
+        "from": true,
+        "input": true,
+        "gasUsed": true,
+        "contractAddress": true
+      }
+    },
+    "transactions": [{
+      "to": []
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+});
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    block: { number: true, timestamp: true },
+    transaction: {
+      hash: true,
+      from: true,
+      input: true,
+      gasUsed: true,
+      contractAddress: true,
+    },
+  },
+  transactions: [
+    {
+      to: [], // Empty array = null recipient (contract creation)
+    },
+  ],
+});
+
+// Process deployments
+for (const block of blocks) {
+  for (const tx of block.transactions) {
+    if (tx.contractAddress) {
+      console.log({
+        blockNumber: block.header.number,
+        timestamp: block.header.timestamp,
+        deployer: tx.from,
+        contractAddress: tx.contractAddress,
+        bytecodeSize: tx.input.length / 2 - 1,
+        gasUsed: tx.gasUsed,
+        txHash: tx.hash,
+      });
+    }
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/ethereum-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        },
+        "transaction": {
+            "hash": True,
+            "from": True,
+            "input": True,
+            "gasUsed": True,
+            "contractAddress": True
+        }
+    },
+    "transactions": [{
+        "to": []  # Empty list = null recipient (contract creation)
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for tx in block.get('transactions', []):
+        if tx.get('contractAddress'):
+            print({
+                "blockNumber": block['header']['number'],
+                "timestamp": block['header']['timestamp'],
+                "deployer": tx['from'],
+                "contractAddress": tx['contractAddress'],
+                "bytecodeSize": len(tx['input']) // 2 - 1,
+                "gasUsed": tx['gasUsed'],
+                "txHash": tx['hash']
+            })
+```
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `to` | Empty array `[]` filters for transactions with null recipient (deployments) |
+| `contractAddress` | Address of the newly deployed contract |
+| `from` | Deployer address |
+| `input` | Contract creation bytecode (constructor + runtime code) |
+| `gasUsed` | Gas consumed by deployment |
+
+<Note>
+Contract creation transactions have no `to` address. The new contract address is returned in `contractAddress`.
+</Note>
+
+## Expected Output
+
+```json
+{
+  "header": {
+    "number": 18000123,
+    "timestamp": 1697544779
+  },
+  "transactions": [
+    {
+      "hash": "0x123...",
+      "from": "0xa9d1e08c7793af67e9d92fe308d5697fb81d3e43",
+      "input": "0x60806040523480156100105760...",
+      "gasUsed": "1234567",
+      "contractAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7"
+    }
+  ]
+}
+```
+
+## Filter by Deployer
+
+Track deployments from a specific address:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "transaction": {
+        "hash": true,
+        "from": true,
+        "contractAddress": true
+      }
+    },
+    "transactions": [{
+      "from": ["0x1234567890123456789012345678901234567890"],
+      "to": []
+    }]
+  }'
+```
+
+```typescript TypeScript
+const DEPLOYER = "0x1234567890123456789012345678901234567890";
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    transaction: { hash: true, from: true, contractAddress: true },
+  },
+  transactions: [
+    {
+      from: [DEPLOYER],
+      to: [],
+    },
+  ],
+});
+```
+
+```python Python
+deployer = "0x1234567890123456789012345678901234567890"
+
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "transaction": {
+            "hash": True,
+            "from": True,
+            "contractAddress": True
+        }
+    },
+    "transactions": [{
+        "from": [deployer],
+        "to": []
+    }]
+}
+```
+</CodeGroup>
+
+## Analyze Bytecode Size
+
+Group deployments by bytecode size to find patterns:
+
+<CodeGroup>
+```typescript TypeScript
+const deployments = [];
+
+for (const block of blocks) {
+  for (const tx of block.transactions) {
+    if (tx.contractAddress) {
+      const bytecodeSize = tx.input.length / 2 - 1; // Convert hex to bytes
+      
+      deployments.push({
+        address: tx.contractAddress,
+        deployer: tx.from,
+        bytecodeSize,
+        block: block.header.number,
+      });
+    }
+  }
+}
+
+// Find large contracts (>24KB, near the limit)
+const largeContracts = deployments.filter(d => d.bytecodeSize > 24000);
+console.log(`Found ${largeContracts.length} contracts near the 24KB limit`);
+```
+</CodeGroup>
+
+<Tip>
+Ethereum has a 24KB contract size limit. Contracts approaching this limit may use proxy patterns or optimizations.
+</Tip>
+
+## Detect Proxy Patterns
+
+Identify potential proxy deployments by bytecode patterns:
+
+<CodeGroup>
+```typescript TypeScript
+// Simple heuristic: small bytecode often indicates a proxy
+const MIN_PROXY_SIZE = 50;   // Minimal proxy is ~45 bytes
+const MAX_PROXY_SIZE = 500;  // Most proxies are under 500 bytes
+
+for (const block of blocks) {
+  for (const tx of block.transactions) {
+    if (tx.contractAddress) {
+      const bytecodeSize = tx.input.length / 2 - 1;
+      
+      if (bytecodeSize >= MIN_PROXY_SIZE && bytecodeSize <= MAX_PROXY_SIZE) {
+        console.log({
+          possibleProxy: tx.contractAddress,
+          bytecodeSize,
+          deployer: tx.from,
+        });
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+## Track Factory Deployments
+
+Monitor contracts deployed by factory contracts:
+
+<CodeGroup>
+```typescript TypeScript
+// Track contracts created via CREATE2 or factory patterns
+// Factory deployments appear as internal transactions (traces)
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    trace: {
+      type: true,
+      from: true,
+      createResultAddress: true,
+      createResultCode: true,
+    },
+  },
+  traces: [
+    {
+      type: ["create", "create2"],
+      callFrom: ["0xYourFactoryAddress"],
+    },
+  ],
+});
+
+for (const block of blocks) {
+  for (const trace of block.traces) {
+    if (trace.createResultAddress) {
+      console.log({
+        factory: trace.callFrom || trace.createFrom,
+        deployed: trace.createResultAddress,
+        type: trace.type, // "create" or "create2"
+      });
+    }
+  }
+}
+```
+</CodeGroup>
+
+<Warning>
+Factory-deployed contracts don't appear as regular transactions. Use trace queries with `type: ["create", "create2"]` instead.
+</Warning>
+
+## Performance Tips
+
+1. **Request minimal fields**: Omit `input` if you don't need bytecode
+2. **Use block ranges**: Process 10k-50k blocks at a time
+3. **Filter by deployer**: When tracking specific addresses
+4. **Post-process bytecode**: Analyze bytecode in your application
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Transactions" icon="arrow-right-arrow-left" href="/en/sdk/portal-evm/examples/query-transactions">
+  Monitor transaction activity
+</Card>
+
+<Card title="Query Traces" icon="diagram-project" href="/en/sdk/portal-evm/examples/query-traces">
+  Track factory deployments with traces
+</Card>
+
+<Card title="Query Event Logs" icon="file-lines" href="/en/sdk/portal-evm/examples/query-logs">
+  Monitor contract events
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/sdk/portal-evm/api-reference">
+  View complete API docs
+</Card>
+</CardGroup>
+

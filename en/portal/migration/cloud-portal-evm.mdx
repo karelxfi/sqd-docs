@@ -1,0 +1,165 @@
+---
+title: Portal for EVM+Substrate
+description: EVM/Substrate data from the permissionless SQD Network
+---
+
+# Migrate to the Cloud Portal
+
+## For users on EVM and Substrate networks
+
+<Info>
+  SQD Network portals are currently in beta. Please report any bugs or
+  suggestions to the [SQD Portal Beta chat](https://t.me/+JHrJZPz34kRjYmFk) or
+  to [Squid Devs](https://t.me/HydraDevs).
+</Info>
+
+This guide helps you migrate from the [open private version of SQD Network](subsquid-network/overview/#open-private-network) gateway to a [permissionless SQD Network](subsquid-network/overview/#permissionless-public-network) portal for your Cloud squids.
+
+### Benefits of migrating to Portal
+
+- **Reduced reliance on centralized services:** The permissionless SQD Network consists of [over 1400](https://arbiscan.io/address/0x36e2b147db67e76ab67a4d07c293670ebefcae4e#readContract#F6) nodes [ran by independent operators](subsquid-network/participate/worker)
+- **Improved stability:** With a total capacity of roughly 1.1Pb, the permissionless SQD Network provides significant redundancy
+- **Improved speed:** Portals use available bandwidth more effectively than gateways. Data fetching is 5-10 times faster in our tests, resulting in better sync performance for squids not bottlenecked by write operations
+- **Future-proof:** All future development will focus on portals and the permissionless SQD Network. The open private network will be sunset around May 2025
+
+### Available portals
+
+The SQD team operates two independent portals for Cloud users:
+
+- **Cloud Portal** - Only accessible from within the Cloud, ensuring stable performance for deployed squids
+- **Public Portal** - Accessible from anywhere for easy experimentation and local development
+
+<Info>
+  We're currently experimenting with data request complexity limits. If you see an HTTP 400 error with a message like:
+  
+  ```
+  Couldn't parse query: query contains X item requests, but only 50 is allowed
+  ```
+  
+  where `X` is above 50, or any other HTTP 400 response, please let us know.
+</Info>
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- An existing squid using the open private network gateway
+- Access to your squid's source code
+- Node.js and your preferred package manager (npm, yarn, or pnpm) installed
+
+## Migration steps
+
+<Steps>
+<Step title="Update to latest packages">
+
+Portal support requires the latest versions of SQD packages. Follow these steps to upgrade your dependencies.
+
+Navigate to your squid's folder:
+
+```bash
+cd your-squid-folder
+```
+
+Remove your lock file and `node_modules` folder to ensure a clean installation:
+
+<Tabs>
+<Tab title="NPM">
+```bash
+rm -r node_modules package-lock.json
+```
+</Tab>
+
+<Tab title="Yarn">
+```bash
+rm -r node_modules yarn.lock
+```
+</Tab>
+
+<Tab title="PNPM">
+```bash
+rm -r node_modules pnpm-lock.yaml
+```
+</Tab>
+</Tabs>
+
+Upgrade all SQD packages to the `@latest` major version:
+
+```bash
+npx --yes npm-check-updates --filter "@subsquid/*" --upgrade
+```
+
+Install the updated dependencies:
+
+<Tabs>
+<Tab title="NPM">
+```bash
+npm install
+```
+</Tab>
+
+<Tab title="Yarn">
+```bash
+yarn install
+```
+</Tab>
+
+<Tab title="PNPM">
+```bash
+pnpm install
+```
+</Tab>
+</Tabs>
+
+<Check>
+Verify that all `@subsquid/*` packages in your `package.json` have been updated to the latest versions.
+</Check>
+
+</Step>
+
+<Step title="Configure your code to use Portal">
+
+Update your squid configuration to use the Portal endpoints instead of the gateway.
+
+Navigate to the [Portal's page](https://app.subsquid.io/portal) in the Cloud console and select your network to view network-specific configuration instructions.
+
+Follow the displayed instructions to update your data source configuration. The changes typically involve:
+
+- Replacing `.setGateway()` calls with `.setPortal()` calls
+- Using the appropriate Portal endpoint URL for your network
+
+<Tip>
+Your squid will automatically use the Cloud Portal when deployed and the Public Portal for local development runs.
+</Tip>
+
+<Check>
+Verify your configuration changes compile without errors by running `npm run build` or equivalent.
+</Check>
+
+</Step>
+
+<Step title="Test your migration (recommended)">
+
+While you can simply redeploy your squid without re-syncing, we strongly recommend performing a full re-sync during this beta period. This allows you to verify everything works correctly and experience the improved data fetching performance.
+
+Follow the zero-downtime update procedure:
+
+1. Deploy your updated squid into a new slot
+2. Wait for it to complete syncing, monitoring the improved data fetching performance
+3. Assign your production tag to the new deployment to redirect GraphQL requests
+
+<Tip>
+During the sync process, you should observe significantly faster data fetching compared to the gateway.
+</Tip>
+
+<Check>
+Verify that your GraphQL API returns the same data as before and that your squid syncs successfully to the chain head.
+</Check>
+
+For detailed instructions on zero-downtime updates, see the [slots and tags documentation](/en/cloud/resources/slots-and-tags/#zero-downtime-updates).
+
+</Step>
+</Steps>
+
+## What's next?
+
+Real-time data support for EVM and Substrate networks is coming soon. Stay tuned for updates in the [SQD Portal Beta chat](https://t.me/+JHrJZPz34kRjYmFk).

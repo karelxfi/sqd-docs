@@ -1,0 +1,94 @@
+---
+title: "SDK Overview"
+description: "Architecture of squid indexers and core components for blockchain data indexing"
+---
+
+# SDK Overview
+
+A _squid_ is an indexing project built with [Squid SDK](https://github.com/subsquid/squid-sdk) to retrieve and process blockchain data from the [SQD Network](/en/network/overview). The Squid SDK is a set of open-source TypeScript libraries that retrieve, decode, transform, and persist blockchain data.
+
+<Info>
+  All stages of the indexing pipeline—from data extraction to transformation to
+  persistence—are performed on [batches of
+  blocks](/en/sdk/squid-sdk/features/batch-processing) to maximize indexing
+  speed.
+</Info>
+
+The modular architecture of the SDK makes it possible to extend indexing projects (squids) with custom plugins and data targets.
+
+## Required squid components
+
+### Processor
+
+A _processor_ is the main component of your squid. The term refers to both:
+
+1. The main Node.js process of the squid
+2. The main object (`processor`) of this process, where `processor.run()` is the entry point
+
+`processor` objects handle data retrieval and transformation; data persistence is handled by a separate object called [Store](#store).
+
+#### For EVM chains
+
+Use [`EvmBatchProcessor`](/en/sdk/squid-sdk/evm/reference/batch-processor) via the [`@subsquid/evm-processor`](https://www.npmjs.com/package/@subsquid/evm-processor) NPM package for Ethereum-compatible [networks](/en/network/overview#supported-networks).
+
+### Store
+
+A _store_ is an object that processors use to persist their data. SQD offers three store classes:
+
+#### TypeORM Store (PostgreSQL)
+
+Use [`TypeormStore`](/en/sdk/squid-sdk/features/persisting-data/typeorm) for saving data to PostgreSQL. Requires three packages:
+
+- [`@subsquid/typeorm-store`](https://www.npmjs.com/package/@subsquid/typeorm-store)
+- [`@subsquid/typeorm-codegen`](https://www.npmjs.com/package/@subsquid/typeorm-codegen) (code generator, install with `--save-dev`)
+- [`@subsquid/typeorm-migration`](https://www.npmjs.com/package/@subsquid/typeorm-migration)
+
+#### File Store
+
+Use [`file-store`](/en/sdk/squid-sdk/features/persisting-data/file) via [`@subsquid/file-store`](https://www.npmjs.com/package/@subsquid/file-store) for saving data to filesystems. This is a modular system with a variety of [extensions](/en/sdk/squid-sdk/reference/store/file) for various formats and destinations.
+
+#### BigQuery Store
+
+Use [`bigquery-store`](/en/sdk/squid-sdk/features/persisting-data/bigquery) via [`@subsquid/bigquery-store`](https://www.npmjs.com/package/@subsquid/bigquery-store) for saving data to [Google BigQuery](https://cloud.google.com/bigquery).
+
+<Tip>You can mix and match any store class with any processor class.</Tip>
+
+## Optional squid components
+
+### Typegen
+
+A _typegen_ is a tool for generating utility code for technology-specific operations such as decoding.
+
+#### For EVM chains
+
+Use [`squid-evm-typegen`](/en/sdk/squid-sdk/tools/typegen) via [`@subsquid/evm-typegen`](https://www.npmjs.com/package/@subsquid/evm-typegen) to:
+
+- Decode smart contract data
+- Handle direct calls to contract methods
+- Access useful constants such as event topics and function signature hashes
+
+The generated code depends on [`@subsquid/evm-abi`](https://www.npmjs.com/package/@subsquid/evm-abi), SQD's high-performance, open-source EVM codec.
+
+<Note>
+  Install typegen packages with `--save-dev` as they are only needed during
+  development.
+</Note>
+
+### GraphQL server
+
+Squids that store their data in PostgreSQL can make it available as a GraphQL API via a variety of supported servers. See [Serving GraphQL](/en/sdk/squid-sdk/features/serving-graphql).
+
+SQD provides its own server called [OpenReader](/en/sdk/squid-sdk/reference/openreader-server/overview) via the [`@subsquid/graphql-server`](https://www.npmjs.com/package/@subsquid/graphql-server) package. The server runs as a separate process with these features:
+
+- [Core API](/en/sdk/squid-sdk/reference/openreader-server/api/intro) automatically derived from the schema file
+- Extensible with [custom queries](/en/sdk/squid-sdk/reference/openreader-server/configuration/custom-resolvers)
+- [Basic access control](/en/sdk/squid-sdk/reference/openreader-server/configuration/authorization) support
+
+### Squid CLI
+
+[Squid CLI](/en/sdk/squid-sdk/tools/cli) is a utility for managing your squid development workflow:
+
+- Retrieve squid templates
+- Manage chains of commands commonly used in development
+- Run all squid processes at once
+- Deploy to [SQD Cloud](/en/cloud/overview)

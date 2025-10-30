@@ -1,0 +1,364 @@
+---
+title: "Query Traces"
+description: "Analyze internal transactions and call traces using Portal"
+---
+
+Track internal transactions (traces) to analyze complex contract interactions, value flows through multiple contracts, and delegatecall patterns.
+
+## Use Case
+
+Call traces help you:
+
+- Analyze DEX trades with multiple hops
+- Track value flows through proxy contracts
+- Monitor delegatecall and staticcall patterns
+- Debug complex contract interactions
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "block": {
+        "number": true
+      },
+      "trace": {
+        "type": true,
+        "callFrom": true,
+        "callTo": true,
+        "callValue": true,
+        "callInput": true,
+        "callResultOutput": true,
+        "callResultGasUsed": true,
+        "error": true
+      }
+    },
+    "traces": [{
+      "type": ["call", "delegatecall"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "ethereum-mainnet",
+});
+
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    block: { number: true },
+    trace: {
+      type: true,
+      callFrom: true,
+      callTo: true,
+      callValue: true,
+      callInput: true,
+      callResultOutput: true,
+      callResultGasUsed: true,
+      error: true,
+    },
+  },
+  traces: [
+    {
+      type: ["call", "delegatecall"],
+    },
+  ],
+});
+
+// Process traces
+for (const block of blocks) {
+  for (const trace of block.traces) {
+    if (!trace.error) {
+      console.log({
+        blockNumber: block.header.number,
+        type: trace.type,
+        from: trace.callFrom,
+        to: trace.callTo,
+        value: trace.callValue,
+        gasUsed: trace.callResultGasUsed,
+      });
+    }
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/ethereum-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "block": {
+            "number": True
+        },
+        "trace": {
+            "type": True,
+            "callFrom": True,
+            "callTo": True,
+            "callValue": True,
+            "callInput": True,
+            "callResultOutput": True,
+            "callResultGasUsed": True,
+            "error": True
+        }
+    },
+    "traces": [{
+        "type": ["call", "delegatecall"]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for trace in block.get('traces', []):
+        if not trace.get('error'):
+            print({
+                "blockNumber": block['header']['number'],
+                "type": trace['type'],
+                "from": trace['callFrom'],
+                "to": trace['callTo'],
+                "value": trace['callValue'],
+                "gasUsed": trace['callResultGasUsed']
+            })
+```
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `type` | Trace type: `call`, `delegatecall`, `staticcall`, `callcode`, `create`, `create2`, `selfdestruct` |
+| `callFrom` | Caller address |
+| `callTo` | Callee address |
+| `callValue` | ETH value transferred in the call |
+| `callInput` | Call input data |
+| `callResultOutput` | Call output data |
+| `callResultGasUsed` | Gas used by the call |
+| `error` | Error message if trace failed |
+
+## Expected Output
+
+```json
+{
+  "header": {
+    "number": 18000123
+  },
+  "traces": [
+    {
+      "type": "call",
+      "callFrom": "0x1234...",
+      "callTo": "0x5678...",
+      "callValue": "1000000000000000000",
+      "callInput": "0xa9059cbb...",
+      "callResultOutput": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "callResultGasUsed": "45123",
+      "error": null
+    }
+  ]
+}
+```
+
+## Filter by Specific Contract
+
+Track all calls to or from a specific contract:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "trace": {
+        "type": true,
+        "callFrom": true,
+        "callTo": true,
+        "callValue": true
+      }
+    },
+    "traces": [{
+      "callTo": ["0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    trace: { type: true, callFrom: true, callTo: true, callValue: true },
+  },
+  traces: [
+    {
+      callTo: ["0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45"], // Uniswap Router
+    },
+  ],
+});
+```
+
+```python Python
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "trace": {
+            "type": True,
+            "callFrom": True,
+            "callTo": True,
+            "callValue": True
+        }
+    },
+    "traces": [{
+        "callTo": ["0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45"]
+    }]
+}
+```
+</CodeGroup>
+
+## Track Delegatecalls
+
+Monitor delegatecall patterns, often used in proxy contracts:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+      "trace": {
+        "type": true,
+        "callFrom": true,
+        "callTo": true,
+        "callInput": true
+      }
+    },
+    "traces": [{
+      "type": ["delegatecall"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    trace: { type: true, callFrom: true, callTo: true, callInput: true },
+  },
+  traces: [
+    {
+      type: ["delegatecall"],
+    },
+  ],
+});
+```
+
+```python Python
+payload = {
+    "type": "evm",
+    "fromBlock": 18000000,
+    "toBlock": 18010000,
+    "fields": {
+        "trace": {
+            "type": True,
+            "callFrom": True,
+            "callTo": True,
+            "callInput": True
+        }
+    },
+    "traces": [{
+        "type": ["delegatecall"]
+    }]
+}
+```
+</CodeGroup>
+
+<Note>
+Traces include both successful and failed calls. Check the `error` field to filter failed traces.
+</Note>
+
+## Analyze Value Flows
+
+Track ETH transfers through internal calls:
+
+<CodeGroup>
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 18000000,
+  to: 18010000,
+  fields: {
+    trace: { type: true, callFrom: true, callTo: true, callValue: true },
+  },
+  traces: [
+    {
+      type: ["call"],
+    },
+  ],
+});
+
+// Filter traces with value transfers
+for (const block of blocks) {
+  for (const trace of block.traces) {
+    if (BigInt(trace.callValue) > 0n) {
+      console.log(`${trace.callFrom} → ${trace.callTo}: ${trace.callValue} wei`);
+    }
+  }
+}
+```
+</CodeGroup>
+
+## Performance Tips
+
+1. **Filter by type**: Specify trace types to reduce data volume
+2. **Use callTo/callFrom**: Filter by specific contracts
+3. **Request minimal fields**: Omit `input` and `output` if not needed
+4. **Post-filter errors**: Filter failed traces in your code if needed
+
+<Warning>
+Traces can be very numerous. Use specific filters to avoid processing millions of traces.
+</Warning>
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Transactions" icon="arrow-right-arrow-left" href="/en/sdk/portal-evm/examples/query-transactions">
+  Monitor transaction activity
+</Card>
+
+<Card title="Index DEX Swaps" icon="repeat" href="/en/sdk/portal-evm/examples/dex-swaps">
+  Track DEX trading with traces
+</Card>
+
+<Card title="Query Event Logs" icon="file-lines" href="/en/sdk/portal-evm/examples/query-logs">
+  Track smart contract events
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/sdk/portal-evm/api-reference">
+  View complete API docs
+</Card>
+</CardGroup>
+

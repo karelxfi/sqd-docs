@@ -6,13 +6,13 @@ description: "Built-in RPC endpoints"
 
 # RPC addon
 
-[List of available networks](cloud/reference/rpc-proxy-networks) and their aliases is available on the reference page.
+[List of available networks](/en/cloud/reference/rpc-proxy-networks) and their aliases is available on the reference page.
 
-SQD Cloud provides a built-in RPC service. The service is available as an addon to all squids deployed to the Cloud, although [playground](cloud/resources/organizations/#playgrounds) squids only have access to a limited number of calls.
+SQD Cloud provides a built-in RPC service. The service is available as an addon to all squids deployed to the Cloud, although [playground](/en/cloud/resources/organizations/#playgrounds) squids only have access to a limited number of calls.
 
-[Professional organizations](cloud/resources/organizations/#professional-organizations) do not have that limitation and [can access](#external-access) their RPC endpoints from outside of the Cloud.
+[Professional organizations](/en/cloud/resources/organizations/#professional-organizations) do not have that limitation and [can access](#external-access) their RPC endpoints from outside of the Cloud.
 
-Enable the RPC add-on in the [manifest](cloud/reference/manifest) like this:
+Enable the RPC add-on in the [manifest](/en/cloud/reference/manifest) like this:
 ```yaml
 deploy:
   addons:
@@ -35,7 +35,7 @@ processor.setRpcEndpoint({
 
 ## External access
 
-[Professional organizations](cloud/resources/organizations/#professional-organizations) can [access their RPC proxies from outside](https://app.subsquid.io/rpc) of the SQD Cloud.
+[Professional organizations](/en/cloud/resources/organizations/#professional-organizations) can [access their RPC proxies from outside](https://app.subsquid.io/rpc) of the SQD Cloud.
 
 Among other things, this enables a development process that uses the service for both local and Cloud runs transparently. Here an example configuration for Ethereum Mainnet:
 
@@ -72,4 +72,4 @@ Among other things, this enables a development process that uses the service for
 
 ## Pricing
 
-RPC addon requests are priced [at a flat rate](cloud/pricing/#rpc-requests), with substantial packages included for free for all [organization types](cloud/resources/organizations). Pricing does not depend on the call method.
+RPC addon requests are priced [at a flat rate](/en/cloud/pricing/#rpc-requests), with substantial packages included for free for all [organization types](/en/cloud/resources/organizations). Pricing does not depend on the call method.
