@@ -3,11 +3,11 @@
   "theme": "aspen",
   "name": "SQD Docs",
   "logo": {
-    "light": "/logos/sqd.png",
+    "light": "/logos/sqd2.png",
     "dark": "/logos/dark.png",
     "href": "https://docs1.sqd.ai/en/home"
   },
-  "favicon": "/logos/favicon.svg",
+  "favicon": "/logos/sqd2.png",
   "thumbnails": {
     "background": "/logos/thumbnail.jpg"
   },

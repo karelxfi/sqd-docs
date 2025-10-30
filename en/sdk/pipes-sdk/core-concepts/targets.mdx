@@ -22,6 +22,10 @@ const target = createTarget({
 await source.pipeTo(target);
 ```
 
+<Warning>
+Use finalized blocks or implement the `onRollback` handler to handle blockchain reorgs.
+</Warning>
+
 ## Write Function
 
 ```ts

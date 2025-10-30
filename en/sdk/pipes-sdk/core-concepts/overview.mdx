@@ -65,6 +65,10 @@ const decoder = createEvmDecoder({
 });
 ```
 
+<Tip>
+You don't need a query builder when using `createEvmDecoder` or `createSolanaInstructionDecoder` - these decoders automatically build the necessary queries for you. However, you always need a portal source.
+</Tip>
+
 ### Target
 
 Persist data to any destination.
@@ -78,6 +82,10 @@ const target = createTarget({
   },
 });
 ```
+
+<Warning>
+Use finalized blocks or implement the `onRollback` handler to handle blockchain reorgs.
+</Warning>
 
 ## Pipes vs Squid SDK
 
