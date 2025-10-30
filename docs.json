@@ -12,7 +12,7 @@
     "background": "/logos/thumbnail.jpg"
   },
   "banner": {
-    "content": "⚠️ Documentation is a work in progress. To provide feedback, use the \"Report to Linear\" button.",
+    "content": "\u26a0\ufe0f Documentation is a work in progress. To provide feedback, use the \"Report to Linear\" button.",
     "dismissible": true,
     "style": {
       "backgroundColor": "#8B0000",
@@ -146,6 +146,16 @@
                     "pages": [
                       "en/sdk/pipes-sdk/quickstart",
                       {
+                        "group": "Examples",
+                        "pages": [
+                          "en/sdk/pipes-sdk/examples/getting-started",
+                          "en/sdk/pipes-sdk/examples/event-decoding",
+                          "en/sdk/pipes-sdk/examples/data-persistence",
+                          "en/sdk/pipes-sdk/examples/factory-pattern",
+                          "en/sdk/pipes-sdk/examples/performance"
+                        ]
+                      },
+                      {
                         "group": "Core Concepts",
                         "pages": [
                           "en/sdk/pipes-sdk/core-concepts/overview",
@@ -161,16 +171,6 @@
                         "pages": [
                           "en/sdk/pipes-sdk/integration-advanced/clickhouse-integration",
                           "en/sdk/pipes-sdk/integration-advanced/advanced-patterns"
-                        ]
-                      },
-                      {
-                        "group": "Examples",
-                        "pages": [
-                          "en/sdk/pipes-sdk/examples/getting-started",
-                          "en/sdk/pipes-sdk/examples/event-decoding",
-                          "en/sdk/pipes-sdk/examples/data-persistence",
-                          "en/sdk/pipes-sdk/examples/factory-pattern",
-                          "en/sdk/pipes-sdk/examples/performance"
                         ]
                       },
                       {

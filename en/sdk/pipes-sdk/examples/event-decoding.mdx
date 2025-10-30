@@ -139,6 +139,13 @@ Decode Transfers and Approvals from same contract.
 
 **Use case**: Index multiple event types from one contract.
 
+<Tip>
+  Use `@subsquid/evm-typegen` to generate typed ABIs instead of manually finding
+  raw event signatures. This approach provides type safety and eliminates the
+  need to look up topic0 hashes. See the [Custom ABI](#custom-abi) section
+  below.
+</Tip>
+
 ```ts expandable
 import { createTarget } from "@sqd-pipes/pipes";
 import {

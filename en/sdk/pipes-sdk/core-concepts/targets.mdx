@@ -54,6 +54,54 @@ write: async ({ ctx: { logger, profiler }, read }) => {
 };
 ```
 
+Process batches with context:
+
+```ts
+write: async ({ ctx: { logger, profiler }, read }) => {
+  for await (const { data } of read()) {
+    const span = profiler.start("batch");
+    logger.info("Processing batch");
+
+    const processedBlocks = data.blocks.map((block) => {
+      // Process each block
+      return {
+        number: block.header.number,
+        timestamp: block.header.timestamp,
+        txCount: block.transactions.length,
+      };
+    });
+
+    await database.insert(processedBlocks);
+    span.end();
+  }
+};
+```
+
+### Context in Transformers
+
+Context is also available in transform functions as the second parameter:
+
+```ts
+const transformer = createTransformer({
+  transform: async (data, { ctx: { logger, profiler } }) => {
+    const span = profiler.start("batch");
+    logger.info("Processing batch");
+
+    const processedBlocks = data.blocks.map((block) => {
+      // Transform block data
+      return {
+        number: block.header.number,
+        timestamp: block.header.timestamp,
+        logCount: block.logs.length,
+      };
+    });
+
+    span.end();
+    return processedBlocks;
+  },
+});
+```
+
 ### Read Iterator
 
 Stream data batches:

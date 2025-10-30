@@ -41,9 +41,9 @@ createEvmDecoder<T>(config: EvmDecoderConfig<T>): Decoder<T>
 
 **Parameters:**
 
-- `range`: Block range `{ from: number | 'latest', to?: number }` (required)
-- `contracts`: Array of contract addresses or factory (required)
-- `events`: Map of event names to ABI objects (required)
+- `range`: Block range `{ from: number | 'latest', to?: number }`
+- `contracts`: Array of contract addresses or factory
+- `events`: Map of event names to ABI objects
 - `profiler`: Profiler config `{ id: string }` (optional)
 
 **Example:**
@@ -58,6 +58,10 @@ const decoder = createEvmDecoder({
 });
 ```
 
+<Tip>
+Use `@subsquid/evm-typegen` to generate typed ABIs for custom contracts. This provides type safety and eliminates the need to manually find event signatures. See the [Event Decoding guide](/en/sdk/pipes-sdk/core-concepts/event-decoding#custom-abis) for details on generating and using custom ABIs.
+</Tip>
+
 ### createTransformer
 
 Transform data in pipes.
@@ -68,7 +72,7 @@ createTransformer<I, O>(config: TransformerConfig<I, O>): Transformer<I, O>
 
 **Parameters:**
 
-- `transform`: Transform function `async (data: I, ctx) => O` (required)
+- `transform`: Transform function `async (data: I, ctx) => O`
 - `query`: Query callback `({queryBuilder, portal, logger}) => void` (optional)
 
 **Example:**
@@ -97,7 +101,7 @@ createTarget(config: TargetConfig): Target
 
 **Parameters:**
 
-- `write`: Write function `async ({ctx, read}) => void` (required)
+- `write`: Write function `async ({ctx, read}) => void`
 - `onRollback`: Rollback handler `async ({cursor, type}) => void` (optional)
 
 **Example:**
@@ -125,9 +129,9 @@ createClickhouseTarget(config: ClickhouseTargetConfig): Target
 
 **Parameters:**
 
-- `client`: ClickHouse client instance (required)
-- `onData`: Data handler `async ({store, data, ctx}) => void` (required)
-- `onRollback`: Rollback handler `async ({store, cursor, type}) => void` (required)
+- `client`: ClickHouse client instance
+- `onData`: Data handler `async ({store, data, ctx}) => void`
+- `onRollback`: Rollback handler `async ({store, cursor, type}) => void`
 
 **Example:**
 
@@ -160,10 +164,10 @@ createFactory(config: FactoryConfig): Factory
 
 **Parameters:**
 
-- `address`: Factory contract address (required)
-- `event`: Factory creation event ABI (required)
-- `parameter`: Extract child address `(event) => string` (required)
-- `database`: Factory database instance (required)
+- `address`: Factory contract address
+- `event`: Factory creation event ABI
+- `parameter`: Extract child address `(event) => string`
+- `database`: Factory database instance
 
 **Example:**
 
@@ -196,7 +200,7 @@ class EvmQueryBuilder {
 Select fields to return.
 
 ```ts
-addFields({
+queryBuilder.addFields({
   block: { number: true, hash: true, timestamp: true },
   log: { address: true, topics: true, data: true },
   transaction: { hash: true, from: true, to: true, value: true },
@@ -208,7 +212,7 @@ addFields({
 Filter event logs.
 
 ```ts
-addLog({
+queryBuilder.addLog({
   request: {
     address: ["0x..."],
     topic0: ["0x..."],
@@ -223,7 +227,7 @@ addLog({
 Filter transactions.
 
 ```ts
-addTransaction({
+queryBuilder.addTransaction({
   request: {
     from: ["0x..."],
     to: ["0x..."],
@@ -391,6 +395,10 @@ Connect to a target.
 ```ts
 source.pipeTo(target);
 ```
+
+<Note>
+`pipeTo` is a terminal step. You cannot continue piping after calling this method.
+</Note>
 
 ## Complete Type Example
 

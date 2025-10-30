@@ -90,6 +90,10 @@ Generate ABIs from contract JSON:
 npx @subsquid/evm-typegen src/abi abi/uniswapV3Pool.json
 ```
 
+<Tip>
+Using `@subsquid/evm-typegen` provides full type safety for your event data and eliminates the need to manually look up raw event signatures (topic0 hashes). The generated types ensure compile-time safety when accessing event fields.
+</Tip>
+
 Use generated ABIs:
 
 ```ts
@@ -105,6 +109,10 @@ const decoder = createEvmDecoder({
   },
 });
 ```
+
+<Note>
+The property names in the `events` object (like `swap`, `mint`, `burn`) are arbitrary. You can use any names you prefer—these are just labels that help you organize and access the decoded events in your code.
+</Note>
 
 ## Decoded Event Structure
 
