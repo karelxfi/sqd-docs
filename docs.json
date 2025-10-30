@@ -42,7 +42,7 @@
             { "key": "title", "value": "Fix: {{page}}" },
             {
               "key": "description",
-              "value": "Something's wrong here.\n\nPage: {{page}}\n\nDetails:\n{{selection}}"
+              "value": "Something’s wrong here.\n\nPage: {{page}}\n\nDetails:\n{{selection}}"
             }
           ]
         }
