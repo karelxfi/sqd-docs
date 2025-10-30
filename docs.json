@@ -15,9 +15,9 @@
     "drilldown": false
   },
   "styling": {
-    "eyebrows": "section",
+    "eyebrows": "breadcrumbs",
     "codeblocks": {
-       "theme": "dracula"
+       "theme": "nord"
   }
   },
   "banner": {
