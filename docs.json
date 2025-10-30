@@ -17,7 +17,7 @@
   "styling": {
     "eyebrows": "breadcrumbs",
     "codeblocks": {
-       "theme": "nord"
+       "theme": "github-light"
   }
   },
   "banner": {
