@@ -3,9 +3,9 @@
   "theme": "aspen",
   "name": "SQD Docs",
   "logo": {
-    "light": "/logos/light.png",
+    "light": "/logos/sqd.png",
     "dark": "/logos/dark.png",
-    "href": "https://sqd-2119b3c3.mintlify.app/en/home"
+    "href": "https://docs1.sqd.ai/en/home"
   },
   "favicon": "/logos/favicon.svg",
   "thumbnails": {
