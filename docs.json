@@ -34,18 +34,7 @@
         "title": "Report to Linear",
         "description": "Report an issue or feedback",
         "icon": "flag",
-        "href": {
-          "base": "https://linear.app/sqd-ai/issue/create",
-          "query": [
-            { "key": "teamId", "value": "SDKTL" },
-            { "key": "projectId", "value": "DOCS2.0" },
-            { "key": "title", "value": "Fix: {{page}}" },
-            {
-              "key": "description",
-              "value": "Something’s wrong here.\n\nPage: {{page}}\n\nDetails:\n{{selection}}"
-            }
-          ]
-        }
+        "href": "https://linear.app/sqd-ai/new?template=c2828c13-dc56-48a8-9842-6d7503bcca0f"
       },
       "copy",
       "view",
