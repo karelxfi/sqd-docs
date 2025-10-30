@@ -11,6 +11,15 @@
   "thumbnails": {
     "background": "/logos/thumbnail.jpg"
   },
+  "interaction": {
+    "drilldown": false
+  },
+  "styling": {
+    "eyebrows": "section",
+    "codeblocks": {
+       "theme": "dracula"
+  }
+  },
   "banner": {
     "content": "\u26a0\ufe0f Documentation is a work in progress. To provide feedback, use the \"Report to Linear\" button.",
     "dismissible": true,
@@ -43,14 +52,6 @@
       "perplexity",
       "cursor"
     ]
-  },
-  "fonts": {
-    "body": {
-      "family": "Inter"
-    },
-    "heading": {
-      "family": "Inter"
-    }
   },
   "navigation": {
     "global": {
