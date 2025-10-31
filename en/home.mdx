@@ -20,6 +20,13 @@ import { ProductCard } from "/snippets/product-cards.mdx";
     text-align: center !important;
   }
   
+  /* Ensure rounded corners on supported network cards */
+  .grid.grid-cols-2 a.group.block,
+  .grid.grid-cols-2 .group.block {
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+  
   /* Mobile responsive adjustments */
   @media (max-width: 1023px) {
     .section-heading-mobile {
@@ -278,11 +285,14 @@ import { ProductCard } from "/snippets/product-cards.mdx";
     Supported Networks
   </h2>
   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-    <a href="/en/sdk/squid-sdk/evm/quickstart" className="group block">
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 hover:shadow-lg">
+    <a
+      href="/en/sdk/squid-sdk/evm/quickstart"
+      className="group block rounded-xl overflow-hidden"
+    >
+      <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
         <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
           <img
-            src="/images/EVM.png"
+            src="/images/home/EVM.png"
             alt="EVM"
             loading="lazy"
             className="w-full h-full object-contain rounded-lg"
@@ -293,14 +303,14 @@ import { ProductCard } from "/snippets/product-cards.mdx";
     </a>
     <a
       href="https://docs.soldexer.dev/get-started/introduction"
-      className="group block"
+      className="group block rounded-xl overflow-hidden"
       target="_blank"
       rel="noopener noreferrer"
     >
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600 transition-all duration-200 hover:shadow-lg">
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
         <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
           <img
-            src="/images/Solana.png"
+            src="/images/home/Solana.png"
             alt="Solana"
             loading="lazy"
             className="w-full h-full object-contain rounded-lg"
@@ -309,11 +319,14 @@ import { ProductCard } from "/snippets/product-cards.mdx";
         </div>
       </div>
     </a>
-    <a href="/en/sdk/squid-sdk/substrate/quickstart" className="group block">
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:border-pink-300 dark:hover:border-pink-600 transition-all duration-200 hover:shadow-lg">
+    <a
+      href="/en/sdk/squid-sdk/substrate/quickstart"
+      className="group block rounded-xl overflow-hidden"
+    >
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
         <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
           <img
-            src="/images/Substrate.png"
+            src="/images/home/Substrate.png"
             alt="Substrate"
             loading="lazy"
             className="w-full h-full object-contain rounded-lg"
@@ -322,11 +335,14 @@ import { ProductCard } from "/snippets/product-cards.mdx";
         </div>
       </div>
     </a>
-    <a href="/en/sdk/squid-sdk/fuel/quickstart" className="group block">
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:border-orange-300 dark:hover:border-orange-600 transition-all duration-200 hover:shadow-lg">
+    <a
+      href="/en/sdk/squid-sdk/fuel/quickstart"
+      className="group block rounded-xl overflow-hidden"
+    >
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
         <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
           <img
-            src="/images/Fuel.png"
+            src="/images/home/Fuel.png"
             alt="Fuel"
             loading="lazy"
             className="w-full h-full object-contain rounded-lg"
@@ -335,8 +351,11 @@ import { ProductCard } from "/snippets/product-cards.mdx";
         </div>
       </div>
     </a>
-    <a href="/en/sdk/squid-sdk/tron/quickstart" className="group block">
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600 transition-all duration-200 hover:shadow-lg">
+    <a
+      href="/en/sdk/squid-sdk/tron/quickstart"
+      className="group block rounded-xl overflow-hidden"
+    >
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
         <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
           <img
             src="/images/Tron.png"
@@ -348,11 +367,14 @@ import { ProductCard } from "/snippets/product-cards.mdx";
         </div>
       </div>
     </a>
-    <a href="/en/sdk/squid-sdk/starknet/quickstart" className="group block">
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-600 transition-all duration-200 hover:shadow-lg">
+    <a
+      href="/en/sdk/squid-sdk/starknet/quickstart"
+      className="group block rounded-xl overflow-hidden"
+    >
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
         <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
           <img
-            src="/images/Starknet.png"
+            src="/images/home/Starknet.png"
             alt="Starknet"
             loading="lazy"
             className="w-full h-full object-contain rounded-lg"
@@ -361,11 +383,11 @@ import { ProductCard } from "/snippets/product-cards.mdx";
         </div>
       </div>
     </a>
-    <div className="group block cursor-not-allowed">
+    <div className="group block cursor-not-allowed rounded-xl overflow-hidden">
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 transition-all duration-200 opacity-60 relative">
         <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
           <img
-            src="/images/Hyperliquid.png"
+            src="/images/home/Hyperliquid.png"
             alt="Hyperliquid"
             loading="lazy"
             className="w-full h-full object-contain rounded-lg"
@@ -379,16 +401,19 @@ import { ProductCard } from "/snippets/product-cards.mdx";
         </div>
       </div>
     </div>
-    <a href="/en/data/networks/overview" className="group block">
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200 hover:shadow-lg">
+    <a
+      href="/en/data/networks/overview"
+      className="group block rounded-xl overflow-hidden"
+    >
+      <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
         <div className="w-full h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-lg flex items-center justify-center">
-          <svg
-            className="w-12 h-12 text-gray-600 dark:text-gray-300"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-          </svg>
+          <img
+            src="/images/home/All.png"
+            alt="All Networks"
+            loading="lazy"
+            className="w-full h-full object-contain rounded-lg"
+            style={{ pointerEvents: "none" }}
+          />
         </div>
       </div>
     </a>
