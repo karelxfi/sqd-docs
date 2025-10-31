@@ -14,9 +14,7 @@
   "styling": {
     "eyebrows": "breadcrumbs",
     "codeblocks": {
-      "theme": {
-        "light": "nord"
-      }
+      "theme": "nord"
   }
   },
   "banner": {
