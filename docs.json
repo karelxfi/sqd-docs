@@ -15,8 +15,8 @@
     "eyebrows": "breadcrumbs",
     "codeblocks": {
       "theme": {
-        "light": "github-dark",
-        "dark": "github-dark"
+        "light": "github-light",
+        "dark": "github-light"
       }
   }
   },
