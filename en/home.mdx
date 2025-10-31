@@ -20,13 +20,6 @@ import { ProductCard } from "/snippets/product-cards.mdx";
     text-align: center !important;
   }
   
-  /* Ensure rounded corners on supported network cards */
-  .grid.grid-cols-2 a.group.block,
-  .grid.grid-cols-2 .group.block {
-    border-radius: 0.75rem;
-    overflow: hidden;
-  }
-  
   /* Mobile responsive adjustments */
   @media (max-width: 1023px) {
     .section-heading-mobile {
@@ -40,16 +33,6 @@ import { ProductCard } from "/snippets/product-cards.mdx";
     
     .placeholder-section-mobile {
       padding: 1.5rem !important;
-    }
-    
-    .grid a > div,
-    .grid .group > div {
-      padding: 1rem !important;
-    }
-    
-    .grid a > div > div,
-    .grid .group > div > div {
-      height: 4rem !important;
     }
   }
   
@@ -284,140 +267,96 @@ import { ProductCard } from "/snippets/product-cards.mdx";
   <h2 className="text-center text-gray-900 dark:text-white text-2xl font-bold mt-16 sm:mt-24 mb-8 sm:mb-10 section-heading-mobile">
     Supported Networks
   </h2>
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-    <a
-      href="/en/sdk/squid-sdk/evm/quickstart"
-      className="group block rounded-xl overflow-hidden"
-    >
-      <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
-        <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
-          <img
-            src="/images/home/EVM.png"
-            alt="EVM"
-            loading="lazy"
-            className="w-full h-full object-contain rounded-lg"
-            style={{ pointerEvents: "none" }}
-          />
-        </div>
-      </div>
-    </a>
-    <a
+  <CardGroup cols={4}>
+    <Card href="/en/sdk/squid-sdk/evm/quickstart" arrow={false} noZoom>
+      <img
+        src="/images/home/EVM.png"
+        alt="EVM"
+        loading="lazy"
+        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+      />
+    </Card>
+    <Card
       href="https://docs.soldexer.dev/get-started/introduction"
-      className="group block rounded-xl overflow-hidden"
+      arrow={false}
+      noZoom
       target="_blank"
       rel="noopener noreferrer"
     >
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
-        <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
-          <img
-            src="/images/home/Solana.png"
-            alt="Solana"
-            loading="lazy"
-            className="w-full h-full object-contain rounded-lg"
-            style={{ pointerEvents: "none" }}
-          />
-        </div>
-      </div>
-    </a>
-    <a
-      href="/en/sdk/squid-sdk/substrate/quickstart"
-      className="group block rounded-xl overflow-hidden"
-    >
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
-        <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
-          <img
-            src="/images/home/Substrate.png"
-            alt="Substrate"
-            loading="lazy"
-            className="w-full h-full object-contain rounded-lg"
-            style={{ pointerEvents: "none" }}
-          />
-        </div>
-      </div>
-    </a>
-    <a
-      href="/en/sdk/squid-sdk/fuel/quickstart"
-      className="group block rounded-xl overflow-hidden"
-    >
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
-        <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
-          <img
-            src="/images/home/Fuel.png"
-            alt="Fuel"
-            loading="lazy"
-            className="w-full h-full object-contain rounded-lg"
-            style={{ pointerEvents: "none" }}
-          />
-        </div>
-      </div>
-    </a>
-    <a
-      href="/en/sdk/squid-sdk/tron/quickstart"
-      className="group block rounded-xl overflow-hidden"
-    >
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
-        <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
-          <img
-            src="/images/Tron.png"
-            alt="Tron"
-            loading="lazy"
-            className="w-full h-full object-contain rounded-lg"
-            style={{ pointerEvents: "none" }}
-          />
-        </div>
-      </div>
-    </a>
-    <a
-      href="/en/sdk/squid-sdk/starknet/quickstart"
-      className="group block rounded-xl overflow-hidden"
-    >
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
-        <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
-          <img
-            src="/images/home/Starknet.png"
-            alt="Starknet"
-            loading="lazy"
-            className="w-full h-full object-contain rounded-lg"
-            style={{ pointerEvents: "none" }}
-          />
-        </div>
-      </div>
-    </a>
-    <div className="group block cursor-not-allowed rounded-xl overflow-hidden">
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 transition-all duration-200 opacity-60 relative">
-        <div className="w-full h-24 rounded-lg flex items-center justify-center overflow-hidden">
-          <img
-            src="/images/home/Hyperliquid.png"
-            alt="Hyperliquid"
-            loading="lazy"
-            className="w-full h-full object-contain rounded-lg"
-            style={{ pointerEvents: "none" }}
-          />
-        </div>
-        <div className="absolute top-2 right-2">
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+      <img
+        src="/images/home/Solana.png"
+        alt="Solana"
+        loading="lazy"
+        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+      />
+    </Card>
+    <Card href="/en/sdk/squid-sdk/substrate/quickstart" arrow={false} noZoom>
+      <img
+        src="/images/home/Substrate.png"
+        alt="Substrate"
+        loading="lazy"
+        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+      />
+    </Card>
+    <Card href="/en/sdk/squid-sdk/fuel/quickstart" arrow={false} noZoom>
+      <img
+        src="/images/home/Fuel.png"
+        alt="Fuel"
+        loading="lazy"
+        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+      />
+    </Card>
+    <Card href="/en/sdk/squid-sdk/tron/quickstart" arrow={false} noZoom>
+      <img
+        src="/images/Tron.png"
+        alt="Tron"
+        loading="lazy"
+        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+      />
+    </Card>
+    <Card href="/en/sdk/squid-sdk/starknet/quickstart" arrow={false} noZoom>
+      <img
+        src="/images/home/Starknet.png"
+        alt="Starknet"
+        loading="lazy"
+        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+      />
+    </Card>
+    <div style={{ position: "relative", opacity: 0.6, pointerEvents: "none" }}>
+      <Card arrow={false} noZoom>
+        <img
+          src="/images/home/Hyperliquid.png"
+          alt="Hyperliquid"
+          loading="lazy"
+          className="w-full h-24 object-contain rounded-lg pointer-events-none"
+        />
+        <div style={{ position: "absolute", top: "0.5rem", right: "0.5rem" }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              padding: "0.25rem 0.5rem",
+              borderRadius: "9999px",
+              fontSize: "0.75rem",
+              fontWeight: "500",
+              backgroundColor: "var(--colors-gray-100, rgb(243 244 246))",
+              color: "var(--colors-gray-600, rgb(75 85 99))",
+            }}
+          >
             Soon
           </span>
         </div>
-      </div>
+      </Card>
     </div>
-    <a
-      href="/en/data/networks/overview"
-      className="group block rounded-xl overflow-hidden"
-    >
-      <div className="relative bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 group-hover:border-black dark:group-hover:border-gray-300 transition-all duration-200 hover:shadow-lg">
-        <div className="w-full h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-lg flex items-center justify-center">
-          <img
-            src="/images/home/All.png"
-            alt="All Networks"
-            loading="lazy"
-            className="w-full h-full object-contain rounded-lg"
-            style={{ pointerEvents: "none" }}
-          />
-        </div>
-      </div>
-    </a>
-  </div>
+    <Card href="/en/data/networks/overview" arrow={false} noZoom>
+      <img
+        src="/images/home/All.png"
+        alt="All Networks"
+        loading="lazy"
+        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+      />
+    </Card>
+  </CardGroup>
   <h2 className="text-center text-gray-900 dark:text-white text-2xl font-bold mt-16 sm:mt-24 mb-8 sm:mb-10 section-heading-mobile">
     Benchmarks
   </h2>
