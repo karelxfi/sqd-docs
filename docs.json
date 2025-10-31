@@ -14,7 +14,10 @@
   "styling": {
     "eyebrows": "breadcrumbs",
     "codeblocks": {
-       "theme": "github-light"
+      "themes": {
+        "light": "github-light",
+        "dark": "github-dark"
+      }
   }
   },
   "banner": {
