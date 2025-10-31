@@ -13,15 +13,14 @@
   },
   "styling": {
     "eyebrows": "breadcrumbs",
-    "codeblocks": {
-      "theme": {
-        "light": "github-light",
-        "dark": "github-light"
-      }
-    }
+    "codeblocks": "system"
+  },
+  "background": {
+    "decoration": "grid",
+    "color": "#f5f5f5"
   },
   "banner": {
-    "content": "⚠️ Documentation is a work in progress. To provide feedback, use the \"Report to Linear\" button.",
+    "content": "\u26a0\ufe0f Documentation is a work in progress. To provide feedback, use the \"Report to Linear\" button.",
     "dismissible": true,
     "style": {
       "backgroundColor": "#8B0000",
@@ -1664,6 +1663,14 @@
                 "icon": "lines-leaning",
                 "pages": [
                   "en/other/glossary/glossary"
+                ]
+              },
+              {
+                "group": "Media",
+                "icon": "video",
+                "pages": [
+                  "en/other/media/internal",
+                  "en/other/media/external"
                 ]
               },
               {
