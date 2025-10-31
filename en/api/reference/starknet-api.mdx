@@ -1,7 +1,6 @@
 ---
 title: Starknet API
 description: Access the data of Starknet
-
 ---
 
 # Starknet SQD Network API
@@ -51,13 +50,17 @@ Suppose we want data on all txs sent by `Layerswap`/`0x19252b1deef483477c4d30cfc
 
 1. Verify that the dataset has reached the required height:
 
-   ````bash
+   ```bash
    curl https://v2.archive.subsquid.io/network/starknet-mainnet/height
    ```
+
    Output
-   ````
+
+   ```
 
    632494
+
+   ```
 
    ```
 
@@ -136,11 +139,10 @@ Suppose we want data on all txs sent by `Layerswap`/`0x19252b1deef483477c4d30cfc
 
 7. Repeat steps 3 through 6 until the dataset height of 632494 is reached.
 
-
 <details>
 <summary>In Python</summary>
 
-````python
+```python
 def get_text(url: str) -> str:
     res = requests.get(url)
     res.raise_for_status()
@@ -173,6 +175,7 @@ def dump(
         for block in blocks:
             print(json.dumps(block))
 ```
+
 Full code [here](https://gist.github.com/eldargab/2e007a293ac9f82031d023f1af581a7d).
 
 </details>
@@ -214,19 +217,20 @@ The response is a JSON array of per-block data items that covers a block range s
 
 The first and the last block in the range are returned even if all data requests return no data for the range.
 
-In most cases the returned range will not contain all the range requested by the user (i.e. the last block of the range will not be `toBlock`). To continue, [retrieve a new worker URL](#router-api) for blocks starting at the end of the current range *plus one block* and repeat the query with an updated value of `fromBlock`.
+In most cases the returned range will not contain all the range requested by the user (i.e. the last block of the range will not be `toBlock`). To continue, [retrieve a new worker URL](#router-api) for blocks starting at the end of the current range _plus one block_ and repeat the query with an updated value of `fromBlock`.
 
 <details>
 <summary>
 
 ##### Example Request
+
 </summary>
 
 ```json
 {
   "type": "starknet",
-  "fromBlock":632000,
-  "toBlock":632494,
+  "fromBlock": 632000,
+  "toBlock": 632494,
   "fields": {
     "block": {
       "timestamp": true
@@ -236,7 +240,7 @@ In most cases the returned range will not contain all the range requested by the
       "data": true
     },
     "transaction": {
-      "transactionHash":true
+      "transactionHash": true
     }
   },
   "events": [
@@ -256,6 +260,7 @@ In most cases the returned range will not contain all the range requested by the
 <summary>
 
 ##### Example Response
+
 </summary>
 
 ```json
@@ -346,7 +351,6 @@ In most cases the returned range will not contain all the range requested by the
 ]
 ```
 
-
 ## Data requests
 
 ### Transactions
@@ -361,6 +365,7 @@ In most cases the returned range will not contain all the range requested by the
   events: boolean
 }
 ```
+
 A transaction will be included in the response if it matches all the requests. An empty array matches no transactions; omit all requests to match all transactions.
 
 All events emitted by the selected transactions will be included into the response if `events` is set to `true`.
@@ -379,6 +384,7 @@ See [Data fields selector](#data-fields-selector) for info on field selection.
   transaction: boolean
 }
 ```
+
 An event will be included in the response if it matches all the requests. An empty array matches no events; omit all requests to match all events.
 
 If `transaction` is set to `true`, all parent transactions will be included into the response.
@@ -408,6 +414,7 @@ A selector of fields for the returned data items. Its structure is as follows:
   "sequencerAddress": "string"
 }
 ```
+
 A valid field selector for blocks is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"status": true, "timestamp": true}`.
 
 ### Transaction fields
@@ -430,24 +437,21 @@ A valid field selector for blocks is a JSON that has a subset of these fields as
   "constructorCalldata": "string"
 }
 ```
+
 A valid field selector for transactions is a JSON that has a subset of these fields as keys and `true` as values, e.g. `{"transactionHash": true, "type": true, "calldata": true}`.
 
 ### Event fields
 
 ```typescript
 {
-  fromAddress
-  keys
-  data
+  fromAddress;
+  keys;
+  data;
 }
-````
+```
 
 A valid field selector for logs is a JSON that has a subset of these fields as keys and `true` as values, e.g. `\{"fromAddress": true, "data": true\}`.
+
 </details>
 </details>
 </details>
-
-
-
-
-

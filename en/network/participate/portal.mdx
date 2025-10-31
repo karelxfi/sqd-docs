@@ -212,7 +212,7 @@ The portals page will update to show your lockup is active.
 
 Portal serves a new version of API that's not compatible with `@latest` SDK and the old gateways. Update your packages with
 
-````bash
+```bash
 npx --yes npm-check-updates --filter "@subsquid/*" --target "@portal-api" --upgrade
 ```
 
@@ -231,7 +231,7 @@ npm i
 
 A working portal exposes its dataset-specific APIs via URLs such as this one:
 
-````
+```
 
 http://&lt;host&gt;:8000/datasets/&lt;dataset-slug&gt;
 
@@ -243,7 +243,7 @@ Here, `<dataset-slug>` is the last path segment of the network-specific gateway 
 
 http://127.0.0.1:8000/datasets/ethereum-mainnet
 
-````
+```
 
 ### On EVM
 
@@ -360,7 +360,7 @@ In principle, any valid amount of locked `SQD`s generates an infinite amount of 
 
 Currently there is no tool available for estimating the number of CUs that a query needs before actually running it. However, on EVM you can use the following formula to get an [order of magnitude](https://en.wikipedia.org/wiki/Order_of_magnitude) estimate:
 
-````
+```
 
 10^-5 _ range_length_blocks _ transactions_per_block
 
@@ -385,6 +385,7 @@ num*chunks_in_range = range_length * (eth*chunks / eth_height) * (chain_txs_per_
 ```
 
 Where:
+
 - `eth_chunks` = 3.1e4
 - `eth_height` = 2.1e7
 - `eth_txs_per_block` = 1.2e2
@@ -403,7 +404,7 @@ Now, if your queries consume `X` CUs each and you run them once per `Y` epochs, 
 
 X / (Y \* boost_factor)
 
-````
+```
 
 Here, `boost_factor` is a multiplier ranging from 1 to 3 depending on the lockup length (see the graph above).
 
@@ -437,9 +438,11 @@ If you plan to automate running your portal instances, you may find [this helm c
 <Accordion title="What are the consequences of losing my key file / getting it stolen?">
 
 **If you lose your key file:**
+
 - You won't be able to run your portal until you generate and register a new one
 
 **If your key file is stolen:**
+
 - The perpetrator can cause connectivity issues, effectively creating downtime for your portal
 
 **Recovery steps:**
@@ -462,7 +465,7 @@ For a local portal, check throttling statistics:
 
 ```bash
 curl http://127.0.0.1:8000/metrics | grep throttled
-````
+```
 
 **Interpreting results:**
 

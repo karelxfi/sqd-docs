@@ -65,7 +65,7 @@ Fetch `NewGravatar` and `UpdateGravatar` event logs from a specific contract, in
 ```typescript
 const processor = new EvmBatchProcessor()
   .setGateway("https://v2.archive.subsquid.io/network/ethereum-mainnet")
-  .setRpcEndpoint("<my_eth_rpc_url>")
+  .setRpcEndpoint("&lt;my_eth_rpc_url&gt;")
   .setFinalityConfirmation(75)
   .addLog({
     address: ["0x2e645469f354bb4f5c8a05b3b30a929361cf77ec"],
@@ -111,7 +111,7 @@ Fetch every `Transfer(address,address,uint256)` event where topic2 (destination 
 ```typescript
 const processor = new EvmBatchProcessor()
   .setGateway("https://v2.archive.subsquid.io/network/ethereum-mainnet")
-  .setRpcEndpoint("<my_eth_rpc_url>")
+  .setRpcEndpoint("&lt;my_eth_rpc_url&gt;")
   .setFinalityConfirmation(75)
   .addLog({
     topic0: [

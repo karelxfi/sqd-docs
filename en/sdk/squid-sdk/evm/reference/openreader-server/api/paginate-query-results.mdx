@@ -85,7 +85,7 @@ query FirstBatchQ {
 }
 
 query SecondBatchQ {
-  channelsConnection(after: <endCursor>, orderBy: createdAt_ASC) {
+  channelsConnection(after: &lt;endCursor&gt;, orderBy: createdAt_ASC) {
     pageInfo {
       endCursor
       hasNextPage
@@ -107,16 +107,16 @@ The field chosen to `orderBy` needs to be present in the query itself. For examp
 
 ```graphql
 query QueryName {
-  <entityName>sConnection(after: <endCursor>, orderBy: <fieldNameToOrderBy>_ASC) {
+  &lt;entityName&gt;sConnection(after: &lt;endCursor&gt;, orderBy: &lt;fieldNameToOrderBy&gt;_ASC) {
     pageInfo {
       endCursor
       hasNextPage
-      ...<any other page info fields>...
+      ...&lt;any other page info fields&gt;...
     }
     edges {
       node {
-        <fieldNameToOrderBy>
-        ...<any other fields of interest>...
+        &lt;fieldNameToOrderBy&gt;
+        ...&lt;any other fields of interest&gt;...
       }
     }
   }
@@ -160,5 +160,3 @@ query {
   }
 }
 ```
-
-

@@ -1,7 +1,6 @@
 ---
 title: Substrate API
 description: Access the data of Substrate blockchains
-
 ---
 
 # Substrate SQD Network API
@@ -36,7 +35,7 @@ Implementation example:
 <details>
 <summary>In Python</summary>
 
-````python
+```python
 def get_text(url: str) -> str:
     res = requests.get(url)
     res.raise_for_status()
@@ -227,8 +226,6 @@ Note that the last block in the range is included despite having no matching eve
 ]
 ```
 
-
-
 ## Data requests
 
 ### Events
@@ -265,7 +262,9 @@ See [`addCall()` SDK function reference](sdk/reference/processors/substrate-batc
 ### `Contracts.ContractEmitted` events
 
 <Info>
-Contract addresses supplied with this data request must be hexadecimal (i.e. decoded from SS58) and lowecased. Addresses in all responses will be in the same format.
+  Contract addresses supplied with this data request must be hexadecimal (i.e.
+  decoded from SS58) and lowecased. Addresses in all responses will be in the
+  same format.
 </Info>
 
 ```typescript
@@ -284,7 +283,8 @@ See [`addContractsContractEmitted()` SDK function reference](sdk/reference/proce
 ### `EVM.Log` events
 
 <Info>
-Contract addresses supplied with this data request must be in lowercase. Addresses in all responses will be in the same format.
+  Contract addresses supplied with this data request must be in lowercase.
+  Addresses in all responses will be in the same format.
 </Info>
 
 ```typescript
@@ -307,7 +307,8 @@ See [`addEvmLog()` SDK function reference](sdk/reference/processors/substrate-ba
 ### `Ethereum.transact` calls
 
 <Info>
-Contract addresses supplied with this data request must be in lowercase. Addresses in all responses will be in the same format.
+  Contract addresses supplied with this data request must be in lowercase.
+  Addresses in all responses will be in the same format.
 </Info>
 
 ```typescript
@@ -348,7 +349,7 @@ See [`addGearMessageQueued()` SDK function reference](sdk/reference/processors/s
   stack: boolean,
   extrinsic: boolean
 }
-````
+```
 
 A `Gear.UserMessageSent` event will be included in the response if it matches all the requests. A request with an empty array (e.g. `\{ programId: [] \}`) matches no events; omit all requests/pass an empty object to match all events.
 
@@ -357,8 +358,6 @@ See [`addGearUserMessageSent()` SDK function reference](sdk/reference/processors
 ## Data fields selector
 
 A JSON selector of fields for the returned data items. Documented in the [Field selectors](sdk/reference/processors/substrate-batch/field-selection/#data-item-types-and-field-selectors) section.
+
 </details>
 </details>
-
-
-

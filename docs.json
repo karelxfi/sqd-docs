@@ -18,10 +18,10 @@
         "light": "github-light",
         "dark": "github-light"
       }
-  }
+    }
   },
   "banner": {
-    "content": "\u26a0\ufe0f Documentation is a work in progress. To provide feedback, use the \"Report to Linear\" button.",
+    "content": "⚠️ Documentation is a work in progress. To provide feedback, use the \"Report to Linear\" button.",
     "dismissible": true,
     "style": {
       "backgroundColor": "#8B0000",
@@ -1664,6 +1664,13 @@
                 "icon": "lines-leaning",
                 "pages": [
                   "en/other/glossary/glossary"
+                ]
+              },
+              {
+                "group": "Case studies",
+                "icon": "book",
+                "pages": [
+                  "en/other/case-studies"
                 ]
               },
               {
