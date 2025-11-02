@@ -3,8 +3,8 @@
   "theme": "aspen",
   "name": "SQD Docs",
   "logo": {
-    "light": "/logos/sqd.png",
-    "dark": "/logos/dark.png",
+    "light": "/logos/sqd3.png",
+    "dark": "/logos/dark3.png",
     "href": "https://docs1.sqd.ai/en/home"
   },
   "favicon": "/logos/sqd3.png",
@@ -70,7 +70,14 @@
         }
       ]
     },
-    "languages": [
+    "versions": [
+      {
+        "version": "1.0",
+        "href": "https://docs.sqd.ai"
+      },
+      {
+        "version": "2.0",
+        "languages": [
       {
         "language": "en",
         "tabs": [
@@ -1723,6 +1730,8 @@
         "language": "fr",
         "pages": [
           "fr/404"
+        ]
+      }
         ]
       }
     ]
