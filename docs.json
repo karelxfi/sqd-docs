@@ -89,44 +89,7 @@
             ]
           },
           {
-            "tab": "Portal",
-            "icon": "square-binary",
-            "tag": "BETA",
-            "dropdowns": [
-              {
-                "dropdown": "Portal Overview",
-                "icon": "network-wired",
-                "groups": [
-                  {
-                    "group": "Getting Started",
-                    "pages": [
-                      "en/portal/overview",
-                      "en/portal/pricing",
-                      "en/portal/quickstart"
-                    ]
-                  },
-                  {
-                    "group": "Migration Guides",
-                    "pages": [
-                      "en/portal/migration/from-rpc",
-                      "en/portal/migration/cloud-portal-evm",
-                      "en/portal/migration/cloud-portal-solana"
-                    ]
-                  }
-                ]
-              },
-              {
-                "dropdown": "Portal API Reference",
-                "icon": "code",
-                "openapi": {
-                  "source": "en/api/evm/openapi.yaml",
-                  "directory": "api/evm"
-                }
-              }
-            ]
-          },
-          {
-            "tab": "SDK",
+            "tab": "Build",
             "icon": "code",
             "dropdowns": [
               {
@@ -562,7 +525,7 @@
             ]
           },
           {
-            "tab": "Cloud",
+            "tab": "Deploy",
             "icon": "cloud",
             "groups": [
               {
@@ -620,11 +583,11 @@
             ]
           },
           {
-            "tab": "Network",
+            "tab": "Participate",
             "icon": "network-wired",
             "groups": [
               {
-                "group": "SQD Network",
+                "group": "Network",
                 "icon": "globe",
                 "pages": [
                   "en/network/overview",
@@ -634,7 +597,23 @@
                 ]
               },
               {
-                "group": "Participate",
+                "group": "Portal",
+                "pages": [
+                  "en/portal/overview",
+                  "en/portal/pricing",
+                  "en/portal/quickstart"
+                ]
+              },
+              {
+                "group": "Migration Guides",
+                "pages": [
+                  "en/portal/migration/from-rpc",
+                  "en/portal/migration/cloud-portal-evm",
+                  "en/portal/migration/cloud-portal-solana"
+                ]
+              },
+              {
+                "group": "Placeholder title",
                 "icon": "handshake",
                 "pages": [
                   "en/network/participate/procuring-sqd",
@@ -658,6 +637,11 @@
                     "pages": [
                       "en/data/networks/evm"
                     ]
+                  },
+                  {
+                    "group": "API Reference",
+                    "openapi": "en/api/evm/openapi.yaml",
+                    "directory": "api/evm"
                   },
                   {
                     "group": "Supported Networks",
