@@ -90,29 +90,43 @@
           },
           {
             "tab": "Portal",
-            "icon": "network-wired",
+            "icon": "square-binary",
             "tag": "BETA",
-            "pages": [
+            "dropdowns": [
               {
-                "group": "Getting Started",
-                "pages": [
-                  "en/portal/overview",
-                  "en/portal/pricing",
-                  "en/portal/quickstart"
+                "dropdown": "Portal Overview",
+                "icon": "network-wired",
+                "groups": [
+                  {
+                    "group": "Getting Started",
+                    "pages": [
+                      "en/portal/overview",
+                      "en/portal/pricing",
+                      "en/portal/quickstart"
+                    ]
+                  },
+                  {
+                    "group": "Migration Guides",
+                    "pages": [
+                      "en/portal/migration/from-rpc",
+                      "en/portal/migration/cloud-portal-evm",
+                      "en/portal/migration/cloud-portal-solana"
+                    ]
+                  }
                 ]
               },
               {
-                "group": "Migration Guides",
-                "pages": [
-                  "en/portal/migration/from-rpc",
-                  "en/portal/migration/cloud-portal-evm",
-                  "en/portal/migration/cloud-portal-solana"
-                ]
+                "dropdown": "Portal API Reference",
+                "icon": "code",
+                "openapi": {
+                  "source": "en/api/evm/openapi.yaml",
+                  "directory": "api/evm"
+                }
               }
             ]
           },
           {
-            "tab": "Build",
+            "tab": "SDK",
             "icon": "code",
             "dropdowns": [
               {
@@ -548,7 +562,7 @@
             ]
           },
           {
-            "tab": "Deploy",
+            "tab": "Cloud",
             "icon": "cloud",
             "groups": [
               {
@@ -606,7 +620,7 @@
             ]
           },
           {
-            "tab": "Participate",
+            "tab": "Network",
             "icon": "network-wired",
             "groups": [
               {
@@ -1640,27 +1654,6 @@
                     ]
                   }
                 ]
-              }
-            ]
-          },
-          {
-            "tab": "Portal API Reference",
-            "icon": "code",
-            "dropdowns": [
-              {
-                "dropdown": "EVM",
-                "icon": "ethereum",
-                "description": "Ethereum and EVM-compatible chains",
-                "openapi": {
-                  "source": "en/api/evm/openapi.yaml",
-                  "directory": "api/evm"
-                }
-              },
-              {
-                "dropdown": "Solana",
-                "icon": "globe",
-                "description": "Solana blockchain",
-                "href": "https://docs.soldexer.dev/api-reference/introduction"
               }
             ]
           },
