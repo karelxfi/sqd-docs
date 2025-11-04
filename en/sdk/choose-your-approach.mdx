@@ -4,7 +4,11 @@ description: "Choose between raw blockchain data access via Portal or processed 
 mode: "wide"
 ---
 
-SQD provides two ways to access blockchain data: **Portal** for raw data or **SDKs** for processed data. If you choose SDKs, you'll then select between Pipes SDK (streaming library) or Squid SDK (complete framework).
+SQD provides two ways to access blockchain data: **Portal** for direct raw data access, or **SDKs** which build on top of Portal to provide data transformation, decoding, and persistence capabilities. If you choose SDKs, you'll then select between Pipes SDK (streaming library) or Squid SDK (complete framework).
+
+<Info>
+SDKs use Portal as their data source. When you use Pipes SDK or Squid SDK, they access blockchain data through Portal and add transformation, decoding, and persistence capabilities on top of it.
+</Info>
 
 <div
   style={{
@@ -87,7 +91,7 @@ SQD provides two ways to access blockchain data: **Portal** for raw data or **SD
           lineHeight: "1.5",
         }}
       >
-        TypeScript libraries for data transformation
+        TypeScript libraries that use Portal for data access and provide data transformation, decoding, and persistence
       </p>
       <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: "1rem" }}>
         <div
