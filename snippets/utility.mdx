@@ -86,47 +86,52 @@ export const ImageCard = ({ img, href, title, description }) => {
 };
 
 export const TagColorScript = () => {
-  useEffect(() => {
-    function updateTagColors() {
-      const pills = document.querySelectorAll(".nav-tag-pill");
-      console.log("Found", pills.length, "tag pills");
-      
-      pills.forEach((pill) => {
-        const text = pill.textContent.trim().toUpperCase();
-        console.log("Tag text:", text);
-        
-        if (text === "NEW") {
-          pill.classList.add("tag-new");
-          console.log("Applied tag-new class");
-        } else if (text === "BETA") {
-          pill.classList.remove("tag-new");
-        }
-      });
-    }
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          (function() {
+            'use strict';
+            
+            function updateTagColors() {
+              const pills = document.querySelectorAll('.nav-tag-pill');
+              pills.forEach(function(pill) {
+                const text = pill.textContent.trim().toUpperCase();
+                if (text === 'NEW') {
+                  pill.classList.add('tag-new');
+                } else if (text === 'BETA') {
+                  pill.classList.remove('tag-new');
+                }
+              });
+            }
 
-    // Run immediately
-    updateTagColors();
+            // Run immediately
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', updateTagColors);
+            } else {
+              updateTagColors();
+            }
 
-    // Run after a short delay to catch dynamically loaded content
-    setTimeout(updateTagColors, 100);
-    setTimeout(updateTagColors, 500);
-    setTimeout(updateTagColors, 1000);
+            // Run after delays to catch dynamically loaded content
+            setTimeout(updateTagColors, 100);
+            setTimeout(updateTagColors, 500);
+            setTimeout(updateTagColors, 1000);
 
-    // Watch for any DOM changes
-    const observer = new MutationObserver(() => {
-      updateTagColors();
-    });
+            // Watch for any DOM changes
+            const observer = new MutationObserver(function() {
+              updateTagColors();
+            });
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['class']
-    });
+            observer.observe(document.body, {
+              childList: true,
+              subtree: true,
+              attributes: true,
+              attributeFilter: ['class']
+            });
+          })();
+        `,
+      }}
+    />
 
-    return () => observer.disconnect();
-
-}, []);
-
-return null;
+);
 };

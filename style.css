@@ -80,7 +80,7 @@ button.nav-dropdown-trigger:hover {
 
 /* Navigation tags - Base styling */
 .nav-tag-pill {
-  background: #5b7dff !important; /* Default: Royal blue for BETA */
+  background: #0955FE !important; /* Default: Primary blue for BETA */
   border: none !important;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
   padding: 2px 8px !important;
@@ -89,13 +89,13 @@ button.nav-dropdown-trigger:hover {
   transition: all 0.2s ease !important;
 }
 
-/* Yellow for NEW tags */
+/* Green for NEW tags */
 .nav-tag-pill:has(
     .nav-tag-pill-text:is([data-text*="NEW"], [data-content*="NEW"])
   ),
 .nav-tag-pill[data-tag="new"],
 .nav-tag-pill[data-label="NEW"] {
-  background: #f59e0b !important;
+  background: #10b981 !important;
 }
 
 .nav-tag-pill::before,
@@ -109,18 +109,18 @@ button.nav-dropdown-trigger:hover {
 }
 
 .nav-tag-pill:hover {
-  background: #4d6fef !important;
+  background: #0744D1 !important; /* Darker shade of primary blue */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
   transform: translateY(-1px) scale(1.02) !important;
 }
 
-/* Yellow hover for NEW tags */
+/* Green hover for NEW tags */
 .nav-tag-pill:has(
     .nav-tag-pill-text:is([data-text*="NEW"], [data-content*="NEW"])
   ):hover,
 .nav-tag-pill[data-tag="new"]:hover,
 .nav-tag-pill[data-label="NEW"]:hover {
-  background: #d97706 !important;
+  background: #059669 !important; /* Darker shade of green */
 }
 
 .nav-tag-pill-text {
@@ -135,11 +135,11 @@ button.nav-dropdown-trigger:hover {
 
 /* JavaScript-added classes for tag differentiation */
 .nav-tag-pill.tag-new {
-  background: #f59e0b !important;
+  background: #10b981 !important;
 }
 
 .nav-tag-pill.tag-new:hover {
-  background: #d97706 !important;
+  background: #059669 !important;
 }
 
 /* Style Report to Linear button - simple black with white text */
