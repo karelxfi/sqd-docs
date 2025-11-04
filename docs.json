@@ -106,7 +106,7 @@
                     ]
                   },
                   {
-                    "group": "Portal",
+                    "group": "Raw Portal API",
                     "tag": "NEW",
                     "icon": "network-wired",
                     "pages": [
