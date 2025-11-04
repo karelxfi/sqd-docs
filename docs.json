@@ -15,9 +15,13 @@
     "eyebrows": "breadcrumbs",
     "codeblocks": "system"
   },
-  "background": {
-    "image": "/images/background.png"
-  },
+    "background": {
+      "decoration" : "grid",
+      "color": {
+        "light": "#f5f5f5",
+        "dark": "#111111"
+      }
+    },
   "banner": {
     "content": "\u26a0\ufe0f Documentation is a work in progress. To provide feedback, use the \"Report to Linear\" button.",
     "dismissible": true,
