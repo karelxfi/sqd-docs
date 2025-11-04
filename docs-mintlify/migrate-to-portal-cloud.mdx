@@ -6,9 +6,6 @@ pagination_next: null
 pagination_prev: null
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-
 # Migrate to the Cloud portal
 
 <Info>
@@ -47,7 +44,7 @@ Navigate to your squid's folder and install the `portal-api` version of the proc
 
 ```mdx-code-block
 <Tabs queryString="step-1-tech">
-<TabItem value="evm" label="EVM">
+<Tab value="evm" label="EVM">
 ```
 
 ```bash
@@ -55,8 +52,8 @@ npm i @subsquid/evm-processor@portal-api
 ```
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="substrate" label="Substrate">
+</Tab>
+<Tab value="substrate" label="Substrate">
 ```
 
 ```bash
@@ -64,7 +61,7 @@ npm i @subsquid/substrate-processor@portal-api
 ```
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```
 

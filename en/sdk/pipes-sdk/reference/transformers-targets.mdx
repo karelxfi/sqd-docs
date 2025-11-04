@@ -1,0 +1,118 @@
+---
+title: "Transformers & Targets"
+description: "API reference for transformers and targets"
+---
+
+## createTransformer
+
+Transform data in pipes.
+
+```ts
+createTransformer<I, O>(config: TransformerConfig<I, O>): Transformer<I, O>
+```
+
+**Parameters:**
+
+- `transform`: Transform function `async (data: I, ctx) => O` (required)
+- `query`: Query callback `({queryBuilder, portal, logger}) => void` (optional)
+
+**Example:**
+
+```ts
+const transformer = createTransformer({
+  query: ({ queryBuilder }) => {
+    queryBuilder.addLog({
+      request: { address: ["0x..."] },
+      range: { from: 20000000 },
+    });
+  },
+  transform: async (data) => {
+    return data.blocks.map((b) => b.logs);
+  },
+});
+```
+
+## createTarget
+
+Create a data sink.
+
+```ts
+createTarget(config: TargetConfig): Target
+```
+
+**Parameters:**
+
+- `write`: Write function `async ({ctx, read}) => void` (required)
+- `onRollback`: Rollback handler `async ({cursor, type}) => void` (optional)
+- `fork`: Fork handler `async (newConsensusBlocks) => BlockCursor | null` (optional)
+
+**Example:**
+
+```ts
+const target = createTarget({
+  write: async ({ ctx: { logger, profiler }, read }) => {
+    for await (const { data } of read()) {
+      await database.save(data);
+    }
+  },
+  onRollback: async ({ cursor }) => {
+    await database.deleteAfter(cursor.blockNumber);
+  },
+});
+```
+
+## createClickhouseTarget
+
+ClickHouse target with automatic cursor management.
+
+```ts
+createClickhouseTarget(config: ClickhouseTargetConfig): Target
+```
+
+**Parameters:**
+
+- `client`: ClickHouse client instance (required)
+- `onData`: Data handler `async ({store, data, ctx}) => void` (required)
+- `onRollback`: Rollback handler `async ({store, cursor, type}) => void` (required)
+
+**Example:**
+
+```ts
+const target = createClickhouseTarget({
+  client,
+  onData: async ({store, data}) => {
+    store.insert({
+      table: 'transfers',
+      values: data.transfer.map(t => ({...})),
+      format: 'JSONEachRow'
+    })
+  },
+  onRollback: async ({store, cursor}) => {
+    await store.removeAllRows({
+      tables: ['transfers'],
+      where: `block_number > ${cursor.number}`
+    })
+  }
+})
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Sources & Decoders"
+    icon="arrow-left"
+    href="/en/sdk/pipes-sdk/reference/sources-decoders"
+  >
+    Sources and decoders
+  </Card>
+
+  <Card
+    title="Query Builder"
+    icon="filter"
+    href="/en/sdk/pipes-sdk/reference/query-builder"
+  >
+    Query builder API
+  </Card>
+</CardGroup>
+

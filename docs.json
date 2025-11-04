@@ -133,39 +133,18 @@
                     "icon": "bars-staggered",
                     "pages": [
                       "en/sdk/pipes-sdk/quickstart",
-                      {
-                        "group": "Examples",
-                        "pages": [
-                          "en/sdk/pipes-sdk/examples/getting-started",
-                          "en/sdk/pipes-sdk/examples/event-decoding",
-                          "en/sdk/pipes-sdk/examples/data-persistence",
-                          "en/sdk/pipes-sdk/examples/factory-pattern",
-                          "en/sdk/pipes-sdk/examples/performance"
-                        ]
-                      },
-                      {
-                        "group": "Core Concepts",
-                        "pages": [
-                          "en/sdk/pipes-sdk/core-concepts/overview",
-                          "en/sdk/pipes-sdk/core-concepts/core-concepts",
-                          "en/sdk/pipes-sdk/core-concepts/query-builder",
-                          "en/sdk/pipes-sdk/core-concepts/transformers",
-                          "en/sdk/pipes-sdk/core-concepts/event-decoding",
-                          "en/sdk/pipes-sdk/core-concepts/targets"
-                        ]
-                      },
-                      {
-                        "group": "Integration & Advanced",
-                        "pages": [
-                          "en/sdk/pipes-sdk/integration-advanced/clickhouse-integration",
-                          "en/sdk/pipes-sdk/integration-advanced/advanced-patterns"
-                        ]
-                      },
+                      "en/sdk/pipes-sdk/basics",
+                      "en/sdk/pipes-sdk/stateful-indexing",
+                      "en/sdk/pipes-sdk/quality-of-life",
+                      "en/sdk/pipes-sdk/examples/production",
                       {
                         "group": "Reference",
                         "pages": [
-                          "en/sdk/pipes-sdk/reference/reference",
-                          "en/sdk/pipes-sdk/reference/migration-from-squid-sdk"
+                          "en/sdk/pipes-sdk/reference/sources-decoders",
+                          "en/sdk/pipes-sdk/reference/transformers-targets",
+                          "en/sdk/pipes-sdk/reference/query-builder",
+                          "en/sdk/pipes-sdk/reference/factories-utilities",
+                          "en/sdk/pipes-sdk/reference/types-methods"
                         ]
                       }
                     ]

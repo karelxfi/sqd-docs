@@ -3,9 +3,6 @@ description: >-
   Prepare for working with Squid SDK
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 # Environment set up
 
 ### Node.js
@@ -14,24 +11,24 @@ To install Node.js:
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="linux" label="Linux">
+<Tab value="linux" label="Linux">
 ```
 Use the package manager of your distro or the [official binaries](https://nodejs.org/en/download).
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="mac" label="Mac">
+</Tab>
+<Tab value="mac" label="Mac">
 ```
 Use the [official binaries](https://nodejs.org/en/download) or [Homebrew](https://nodejs.org/en/download/package-manager/#alternatives-2).
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="windows" label="Windows">
+</Tab>
+<Tab value="windows" label="Windows">
 ```
 The best bet is to leverage WSL2 and follow [this guide](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl). [Official installer](https://nodejs.org/en/download) also works.
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```
 Make sure that your Node.js installation is v16 or newer. To check an existing installation, run:
@@ -50,24 +47,24 @@ Squid CLI uses [Git](https://git-scm.com) to retrieve templates. To install it:
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="linux" label="Linux">
+<Tab value="linux" label="Linux">
 ```
 Use the package manager of your distro.
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="mac" label="Mac">
+</Tab>
+<Tab value="mac" label="Mac">
 ```
 Use the [official installer](https://sourceforge.net/projects/git-osx-installer/) or any one of the [alternative approaches](https://git-scm.com/download/mac).
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="windows" label="Windows">
+</Tab>
+<Tab value="windows" label="Windows">
 ```
 Use [Git for Windows](https://git-scm.com/download/win).
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```
 
@@ -77,24 +74,24 @@ Most squids [use a database](/sdk/resources/persisting-data/typeorm) to store th
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="linux" label="Linux">
+<Tab value="linux" label="Linux">
 ```
 * [Here’s an instruction](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) on how to install Docker on Ubuntu
 * On other distros consider using their package managers
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="mac" label="Mac">
+</Tab>
+<Tab value="mac" label="Mac">
 ```
 Install the [Desktop version](https://docs.docker.com/desktop/mac/install/).
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="windows" label="Windows">
+</Tab>
+<Tab value="windows" label="Windows">
 ```
 Install the [Desktop version](https://docs.docker.com/desktop/windows/install/).
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```

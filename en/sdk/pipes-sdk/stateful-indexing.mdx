@@ -1,0 +1,282 @@
+---
+title: "Stateful Indexing"
+description: "Handle cursors, forks, and persistent state"
+---
+
+Learn how to manage indexing state, handle blockchain forks, and persist data.
+
+## Cursor Management
+
+Resume indexing from a specific block using cursors.
+
+```ts
+import { createTarget } from '@sqd-pipes/pipes'
+import { createEvmPortalSource, createEvmDecoder } from '@sqd-pipes/pipes/evm'
+import { commonAbis } from '@sqd-pipes/pipes/evm'
+
+const source = createEvmPortalSource({
+  portal: 'https://portal.sqd.dev/datasets/ethereum-mainnet'
+})
+
+const decoder = createEvmDecoder({
+  contracts: ['0x27702a26126e0b3702af63ee09ac4d1a084ef628'], // Aleph token
+  events: {
+    transfer: commonAbis.erc20.events.Transfer
+  },
+  range: { from: 20_000_000, to: 20_000_500 }
+})
+
+async function firstRun() {
+  console.log(`Starting from the default block 20_000_000...`)
+  await source
+    .pipe(decoder)
+    .pipeTo(createTarget({
+      write: async ({ctx: {logger, profiler}, read}) => {
+        for await (const {data} of read()) {
+          console.log('data:', data)
+        }
+      },
+    }))
+}
+
+async function secondRun() {
+  console.log(`Starting from blocks following 20_000_300...`)
+  await source
+    .pipe(decoder)
+    .pipeTo(createTarget({
+      write: async ({ctx: {logger, profiler}, read}) => {
+        // Resume from block 20_000_300
+        for await (const {data} of read({ number: 20_000_300 })) {
+          console.log('data:', data)
+        }
+      },
+    }))
+}
+
+firstRun().then(() => { secondRun().then(() => { console.log('\n\ndone') }) })
+```
+
+Pass a cursor to `read()` to resume processing from a specific block. The cursor format is `{ number: blockNumber }`.
+
+## Fork Handling
+
+Handle blockchain forks by tracking unfinalized blocks and rolling back when forks occur.
+
+```ts
+import { BlockCursor, createTarget } from '@sqd-pipes/pipes'
+import { createEvmPortalSource, createEvmDecoder} from '@sqd-pipes/pipes/evm'
+import { commonAbis } from '@sqd-pipes/pipes/evm'
+
+async function main() {
+  const source = createEvmPortalSource({
+    portal: 'https://portal.sqd.dev/datasets/ethereum-mainnet'
+  })
+
+  const decoder = createEvmDecoder({
+    contracts: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'], // USDC
+    events: {
+      transfer: commonAbis.erc20.events.Transfer
+    },
+    range: { from: 'latest' }
+  })
+
+  // Track recently processed unfinalized blocks
+  let recentUnfinalizedBlocks: BlockCursor[] = []
+
+  await source
+    .pipe(decoder)
+    .pipeTo(createTarget({
+      write: async ({ctx: {logger, profiler}, read}) => {
+        // Resume from the last known block
+        for await (const {data, ctx} of read(recentUnfinalizedBlocks[recentUnfinalizedBlocks.length-1])) {
+          console.log(`Got ${data.transfer.length} transfers`)
+          
+          // Track unfinalized blocks from the batch
+          ctx.state.rollbackChain.forEach((bc) => {
+            recentUnfinalizedBlocks.push(bc)
+          })
+          
+          // Prune finalized blocks and cap queue length at 1000
+          if (ctx.head.finalized) {
+            recentUnfinalizedBlocks = recentUnfinalizedBlocks.filter(
+              b => b.number >= ctx.head.finalized!.number
+            )
+          }
+          recentUnfinalizedBlocks = recentUnfinalizedBlocks.slice(
+            recentUnfinalizedBlocks.length - 1000,
+            recentUnfinalizedBlocks.length
+          )
+
+          console.log(`Recent blocks list length is ${recentUnfinalizedBlocks.length} after processing the batch`)
+        }
+      },
+      // Handle fork events
+      fork: async (newConsensusBlocks) => {
+        console.log(`Got a fork!`)
+        const rollbackIndex = findRollbackIndex(recentUnfinalizedBlocks, newConsensusBlocks)
+        
+        if (rollbackIndex >= 0) {
+          console.log(`Rolling back: removing blocks after block ${recentUnfinalizedBlocks[rollbackIndex].number}`)
+          recentUnfinalizedBlocks.length = rollbackIndex + 1
+          return recentUnfinalizedBlocks[rollbackIndex]
+        } else {
+          // Can't recover if fork is deeper than our log
+          console.log(`Failed to process the fork - no common ancestor found`)
+          recentUnfinalizedBlocks.length = 0
+          return null
+        }
+      }
+    }))
+}
+
+function findRollbackIndex(chainA: BlockCursor[], chainB: BlockCursor[]): number {
+  let aIndex = 0
+  let bIndex = 0
+  let lastCommonIndex = -1
+
+  while (aIndex < chainA.length && bIndex < chainB.length) {
+    const blockA = chainA[aIndex]
+    const blockB = chainB[bIndex]
+
+    if (blockA.number < blockB.number) {
+        aIndex++
+        continue
+    }
+
+    if (blockA.number > blockB.number) {
+        bIndex++
+        continue
+    }
+
+    if (blockA.number === blockB.number && blockA.hash !== blockB.hash) {
+        return lastCommonIndex
+    }
+
+    lastCommonIndex = aIndex
+    aIndex++
+    bIndex++
+  }
+
+  return lastCommonIndex
+}
+
+void main()
+```
+
+When the source detects a fork, it throws a `ForkException` from `read()`. The target catches it and runs the `fork()` handler with blocks from the new consensus. The handler finds the common ancestor and returns the cursor to resume from.
+
+## ClickHouse Target
+
+Use ClickHouse for automatic cursor management and rollback handling.
+
+```ts
+import { createClient } from '@clickhouse/client'
+import { commonAbis, createEvmDecoder, createEvmPortalSource } from '@sqd-pipes/pipes/evm'
+import { createClickhouseTarget } from '@sqd-pipes/pipes/targets/clickhouse'
+
+async function main() {
+  const client = createClient({
+    username: 'default',
+    password: 'default',
+    url: 'http://localhost:10123',
+  })
+
+  // Create table for USDC transfers
+  await client.command({ query: `
+    CREATE TABLE IF NOT EXISTS usdc_transfers (
+      block_number          UInt32 CODEC (DoubleDelta, ZSTD),
+      timestamp             DateTime CODEC (DoubleDelta, ZSTD),
+      transaction_hash      String,
+      log_index             UInt16,
+      from                  LowCardinality(FixedString(42)),
+      to                    LowCardinality(FixedString(42)),
+      value                 UInt256,
+      sign                  Int8 DEFAULT 1
+    )
+    ENGINE = CollapsingMergeTree(sign)
+    ORDER BY (block_number, transaction_hash, log_index);
+  `})
+
+  await createEvmPortalSource({
+    portal: 'https://portal.sqd.dev/datasets/ethereum-mainnet',
+  })
+  .pipe(
+    createEvmDecoder({
+      range: { from: 'latest' },
+      contracts: [ '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' ], // USDC
+      events: {
+        transfers: commonAbis.erc20.events.Transfer,
+      },
+    }),
+  )
+  .pipeTo(
+    createClickhouseTarget({
+      client,
+      onRollback: async ({type, store, cursor}) => {
+        // Automatically remove rows after the fork point
+        await store.removeAllRows({
+          tables: ['usdc_transfers'],
+          where: `block_number > ${cursor.number}`,
+        })
+      },
+      onData: async ({ store, data, ctx }) => {
+        console.log(`inserting ${data.transfers.length} transfers`)
+        store.insert({
+          table: 'usdc_transfers',
+          values: data.transfers.map(t => ({
+            block_number: t.blockNumber,
+            timestamp: t.timestamp.valueOf() / 1000,
+            transaction_hash: t.rawEvent.transactionHash,
+            log_index: t.rawEvent.logIndex,
+            from: t.event.from,
+            to: t.event.to,
+            value: t.event.value.toString()
+          })),
+          format: 'JSONEachRow'
+        })
+      },
+    }),
+  )
+}
+
+void main()
+```
+
+The ClickHouse target handles cursor management and rollbacks automatically. Use `onRollback` to remove data after a fork point, and `onData` to insert new data.
+
+## Next Steps
+
+<CardGroup cols={2}>
+<Card
+  title="Quality of Life"
+  icon="wand-magic-sparkles"
+  href="/en/sdk/pipes-sdk/quality-of-life"
+>
+  Advanced patterns and optimizations
+</Card>
+
+<Card
+  title="Basics"
+  icon="book"
+  href="/en/sdk/pipes-sdk/basics"
+>
+  Fundamental concepts
+</Card>
+
+<Card
+  title="Reference"
+  icon="code"
+  href="/en/sdk/pipes-sdk/reference/transformers-targets"
+>
+  API reference
+</Card>
+
+<Card
+  title="Examples"
+  icon="lightbulb"
+  href="/en/sdk/pipes-sdk/examples/data-persistence"
+>
+  More examples
+</Card>
+</CardGroup>
+

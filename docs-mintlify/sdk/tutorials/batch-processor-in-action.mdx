@@ -4,13 +4,9 @@ description: >-
 title: Processor in action
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-
 ```mdx-code-block
 <Tabs>
-<TabItem value="evm" label="EVM">
+<Tab value="evm" label="EVM">
 ```
 
 An end-to-end idiomatic usage of `EvmBatchProcessor` can be inspected in the [gravatar template repository](https://github.com/subsquid-labs/gravatar-squid) and also learned from more elaborate [examples](/sdk/examples).
@@ -140,8 +136,8 @@ Inspect the GraphQL API at [`http://localhost:4350/graphql`](http://localhost:43
 
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="substrate" label="Substrate">
+</Tab>
+<Tab value="substrate" label="Substrate">
 ```
 
 An end-to-end idiomatic usage of `SubstrateBatchProcessor` can be inspected in the [squid-substrate-template](https://github.com/subsquid-labs/squid-substrate-template) and also learned from more elaborate [examples](/sdk/examples).
@@ -308,6 +304,6 @@ processor.run(new TypeormDatabase(), async ctx => {
 ```
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```

@@ -4,12 +4,9 @@ description: Task-specific code generation
 
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 ```mdx-code-block
 <Tabs queryString="typegen">
-<TabItem value="evm" label="squid-evm-typegen">
+<Tab value="evm" label="squid-evm-typegen">
 ```
 
 The `squid-evm-typegen(1)` tool generates TypeScript facades for EVM transactions, logs and `eth_call` queries.
@@ -101,8 +98,8 @@ The generated utility modules have three intended uses:
 3. [Direct chain state queries](sdk/resources/tools/typegen/state-queries/?typegen=evm), including [queries to multicall](sdk/resources/tools/typegen/state-queries/?typegen=evm#batch-state-queries).
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="substrate" label="squid-substrate-typegen">
+</Tab>
+<Tab value="substrate" label="squid-substrate-typegen">
 ```
 
 The substrate typegen tool is a part of Squid SDK. It generates TypeScript wrappers for interfacing Substrate events and calls.
@@ -212,8 +209,8 @@ ctx.log.info(`Balances.ExistentialDeposit (runtime version V1020): "$\{c\}`)"
    ```
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="ink" label="squid-ink-typegen">
+</Tab>
+<Tab value="ink" label="squid-ink-typegen">
 ```
 
 Use [`squid-ink-typegen`](https://github.com/subsquid/squid-sdk/tree/master/substrate/ink-typegen) to generate facade classes for decoding ink! smart contract data from JSON ABI metadata.
@@ -227,6 +224,6 @@ npx squid-ink-typegen --abi abi/erc20.json --output src/abi/erc20.ts
 The generated source code exposes the [decoding methods](sdk/resources/tools/typegen/decoding/?typegen=ink), some useful types and a class for performing [wrapped RPC queries](sdk/resources/tools/typegen/state-queries/?typegen=ink), using `@subsquid/ink-abi` under the hood
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```

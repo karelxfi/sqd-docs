@@ -1,0 +1,325 @@
+---
+title: "Basics"
+description: "Fundamental pipe concepts and patterns"
+---
+
+Learn the core concepts of Pipes SDK through practical examples.
+
+## Basic Pipe
+
+Create a source and target to stream raw blockchain data.
+
+```ts
+import { createTarget } from '@sqd-pipes/pipes'
+import { createEvmPortalSource, EvmQueryBuilder } from '@sqd-pipes/pipes/evm'
+
+// Build a query that requests Transfer event logs from USDC
+const queryBuilder = new EvmQueryBuilder()
+  .addFields({
+    block: {
+      number: true, hash: true,
+    },
+    log: {
+      address: true,
+      topics: true,
+      data: true,
+      transactionHash: true,
+    },
+  })
+  .addLog({
+    request: {
+      address: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'], // USDC
+      topic0: ['0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'], // Transfer
+    },
+    range: {
+      from: 20000000,
+      to: 20000000,
+    },
+  })
+
+async function main() {
+  const source = createEvmPortalSource({
+    portal: 'https://portal.sqd.dev/datasets/ethereum-mainnet',
+    query: queryBuilder,
+  })
+
+  const target = createTarget({
+    write: async ({ctx: {logger, profiler}, read}) => {
+      for await (const {data} of read()) {
+        logger.info(data, 'data')
+      }
+    },
+  })
+
+  await source.pipeTo(target)
+}
+
+void main()
+```
+
+The query builder shapes the query sent to the Portal API. All methods only add to the data request. Block `number` and `hash` fields are required.
+
+## Transformers
+
+Transform data between source and target.
+
+```ts
+import { createTarget, createTransformer } from '@sqd-pipes/pipes'
+import {
+  createEvmPortalSource,
+  type EvmPortalData,
+  EvmQueryBuilder
+} from '@sqd-pipes/pipes/evm'
+
+const queryBuilder = new EvmQueryBuilder()
+  .addFields({
+    block: {
+      number: true, hash: true,
+    },
+    log: {
+      address: true,
+      topics: true,
+      data: true,
+      transactionHash: true,
+    },
+  })
+  .addLog({
+    request: {
+      address: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'], // USDC
+      topic0: ['0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'], // Transfer
+    },
+    range: {
+      from: 20000000,
+      to: 20000000,
+    },
+  })
+
+async function main() {
+  const source = createEvmPortalSource({
+    portal: 'https://portal.sqd.dev/datasets/ethereum-mainnet',
+    query: queryBuilder,
+  })
+
+  // Extract transaction hashes from logs
+  const transformer = createTransformer({
+    transform: async (data: EvmPortalData<any>) => {
+      return data.blocks.map(b => b.logs.map(l => l.transactionHash))
+    }
+  })
+
+  const target = createTarget({
+    write: async ({ctx: {logger, profiler}, read}) => {
+      for await (const {data} of read()) {
+        logger.info({data}, 'data')
+      }
+    },
+  })
+
+  await source.pipe(transformer).pipeTo(target)
+}
+
+void main()
+```
+
+The transformer converts block and log data into an array of transaction hashes.
+
+## Query from Transformer
+
+Build queries dynamically within transformers.
+
+```ts
+import { createTarget, createTransformer } from '@sqd-pipes/pipes'
+import {
+  createEvmPortalSource,
+  type EvmPortalData,
+  EvmQueryBuilder
+} from '@sqd-pipes/pipes/evm'
+
+async function main() {
+  const blankQueryBuilder = new EvmQueryBuilder()
+
+  const source = createEvmPortalSource({
+    portal: 'https://portal.sqd.dev/datasets/ethereum-mainnet',
+    query: blankQueryBuilder,
+  })
+
+  // Build the query inside the transformer
+  const transformer = createTransformer({
+    transform: async (data: EvmPortalData<any>) => {
+      return data.blocks.map(b => b.logs.map(l => l.transactionHash))
+    },
+    query: ({queryBuilder, portal, logger}) => {
+      queryBuilder.addFields({
+        block: {
+          number: true, hash: true,
+        },
+        log: {
+          address: true,
+          topics: true,
+          data: true,
+          transactionHash: true,
+        },
+      })
+      .addLog({
+        request: {
+          address: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'], // USDC
+          topic0: ['0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'], // Transfer
+        },
+        range: {
+          from: 20000000,
+          to: 20000000,
+        },
+      })
+    }
+  })
+
+  const target = createTarget({
+    write: async ({ctx: {logger, profiler}, read}) => {
+      for await (const {data} of read()) {
+        logger.info({data}, 'data')
+      }
+    },
+  })
+
+  await source.pipe(transformer).pipeTo(target)
+}
+
+void main()
+```
+
+Use the `query` callback to add filters dynamically based on runtime conditions.
+
+## EVM Events Decoder
+
+Automatically decode smart contract events using ABIs.
+
+```ts
+import { createTarget } from '@sqd-pipes/pipes'
+import { createEvmPortalSource, createEvmDecoder } from '@sqd-pipes/pipes/evm'
+import { commonAbis } from '@sqd-pipes/pipes/evm'
+
+async function main() {
+  const source = createEvmPortalSource({
+    portal: 'https://portal.sqd.dev/datasets/ethereum-mainnet'
+    // Query builder is optional, decoder adds one automatically
+  })
+
+  const decoder = createEvmDecoder({
+    contracts: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'], // USDC
+    events: {
+      transfer: commonAbis.erc20.events.Transfer
+    },
+    range: { from: 20_000_000, to: 20_000_000 }
+  })
+
+  const target = createTarget({
+    write: async ({ctx: {logger, profiler}, read}) => {
+      for await (const {data} of read()) {
+        // data.transfer contains decoded Transfer events
+        logger.info({data}, 'data')
+      }
+    },
+  })
+
+  await source.pipe(decoder).pipeTo(target)
+}
+
+void main()
+```
+
+The decoder automatically handles query building and event decoding. Each decoded event includes `blockNumber`, `timestamp`, `contract`, `transactionHash`, and the decoded `event` fields.
+
+## Composite Pipes
+
+Process multiple data streams simultaneously.
+
+```ts
+import { createTarget } from '@sqd-pipes/pipes'
+import {
+  createEvmPortalSource,
+  createEvmDecoder,
+  commonAbis
+} from '@sqd-pipes/pipes/evm'
+import * as uniswapV3Pool from './abi/uniswapV3Pool'
+
+const atBlock = 20000099
+const oneBlockRange = { from: atBlock, to: atBlock }
+
+async function main() {
+  const source = createEvmPortalSource({
+    portal: 'https://portal.sqd.dev/datasets/ethereum-mainnet',
+  })
+
+  const target = createTarget({
+    write: async ({ctx: {logger, profiler}, read}) => {
+      for await (const {data} of read()) {
+        // Access data from both decoders
+        logger.info({
+          transfers: data.usdcTransfers.transfer.length,
+          swaps: data.wethUsdcSwaps.swap.length
+        }, 'data')
+      }
+    },
+  })
+
+  await source
+    .pipeComposite({
+      usdcTransfers: createEvmDecoder({
+        contracts: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'], // USDC
+        events: {
+          transfer: commonAbis.erc20.events.Transfer
+        },
+        range: oneBlockRange
+      }),
+      wethUsdcSwaps: createEvmDecoder({
+        contracts: ['0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640'], // Uniswap v3 WETH-USDC pool
+        events: {
+          swap: uniswapV3Pool.events.Swap,
+        },
+        range: oneBlockRange
+      })
+    })
+    .pipeTo(target)
+}
+
+void main()
+```
+
+Use `pipeComposite` to run multiple decoders in parallel. The data structure contains results from all decoders under their respective keys.
+
+## Next Steps
+
+<CardGroup cols={2}>
+<Card
+  title="Stateful Indexing"
+  icon="database"
+  href="/en/sdk/pipes-sdk/stateful-indexing"
+>
+  Handle cursors and forks
+</Card>
+
+<Card
+  title="Quality of Life"
+  icon="wand-magic-sparkles"
+  href="/en/sdk/pipes-sdk/quality-of-life"
+>
+  Advanced patterns and optimizations
+</Card>
+
+<Card
+  title="Core Concepts"
+  icon="book"
+  href="/en/sdk/pipes-sdk/core-concepts/core-concepts"
+>
+  Understand the architecture
+</Card>
+
+<Card
+  title="Reference"
+  icon="code"
+  href="/en/sdk/pipes-sdk/reference/sources-decoders"
+>
+  API reference
+</Card>
+</CardGroup>
+

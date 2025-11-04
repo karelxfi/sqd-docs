@@ -1,0 +1,175 @@
+---
+title: "Types & Pipe Methods"
+description: "API reference for types and pipe methods"
+---
+
+## Types
+
+### DecodedEvent
+
+```ts
+interface DecodedEvent<T, F = unknown> {
+  blockNumber: number;
+  timestamp: Date;
+  contract: string;
+  transactionHash: string;
+  logIndex: number;
+  rawEvent: {
+    address: string;
+    data: string;
+    topics: string[];
+  };
+  event: T;
+  factory?: {
+    event: F;
+  };
+}
+```
+
+### EvmPortalData
+
+```ts
+interface EvmPortalData<Q> {
+  blocks: Array<{
+    header: {
+      number: number;
+      hash: string;
+      timestamp: number;
+      // ... other fields
+    };
+    logs: Array<{
+      address: string;
+      topics: string[];
+      data: string;
+      transactionHash: string;
+      logIndex: number;
+    }>;
+    transactions: Array<{
+      hash: string;
+      from: string;
+      to: string;
+      value: bigint;
+      // ... other fields
+    }>;
+  }>;
+}
+```
+
+### Context
+
+```ts
+interface Context {
+  logger: Logger;
+  profiler: Profiler;
+}
+```
+
+### Logger
+
+```ts
+interface Logger {
+  info(message: string | object, ...args: any[]): void;
+  warn(message: string | object, ...args: any[]): void;
+  error(message: string | object, ...args: any[]): void;
+}
+```
+
+### Profiler
+
+```ts
+interface Profiler {
+  start(id: string): Span;
+}
+
+interface Span {
+  end(): void;
+}
+```
+
+### BlockCursor
+
+```ts
+interface BlockCursor {
+  number: number;
+  hash: string;
+}
+```
+
+## Pipe Methods
+
+### pipe
+
+Chain a transformer.
+
+```ts
+source.pipe(transformer);
+```
+
+### pipeComposite
+
+Chain multiple transformers.
+
+```ts
+source.pipeComposite({
+  transfers: decoder1,
+  swaps: decoder2,
+});
+```
+
+### pipeTo
+
+Connect to a target.
+
+```ts
+source.pipeTo(target);
+```
+
+<Note>
+`pipeTo` is a terminal step. You cannot continue piping after calling this method.
+</Note>
+
+## Complete Type Example
+
+```ts
+import type {
+  Source,
+  Transformer,
+  Target,
+  Context,
+  DecodedEvent,
+  BlockCursor,
+} from "@sqd-pipes/pipes";
+
+import type {
+  EvmPortalData,
+  EvmPortalSourceConfig,
+  EvmDecoderConfig,
+  EvmQueryBuilder,
+} from "@sqd-pipes/pipes/evm";
+
+import type {
+  ClickhouseTargetConfig,
+  Store,
+} from "@sqd-pipes/pipes/targets/clickhouse";
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Factories & Utilities"
+    icon="arrow-left"
+    href="/en/sdk/pipes-sdk/reference/factories-utilities"
+  >
+    Factories and utilities
+  </Card>
+
+  <Card
+    title="Sources & Decoders"
+    icon="book"
+    href="/en/sdk/pipes-sdk/reference/sources-decoders"
+  >
+    Sources and decoders
+  </Card>
+</CardGroup>
+

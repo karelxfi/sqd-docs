@@ -1,0 +1,96 @@
+---
+title: "Factories & Utilities"
+description: "API reference for factories and utility functions"
+---
+
+## createFactory
+
+Track dynamically created contracts.
+
+```ts
+createFactory(config: FactoryConfig): Factory
+```
+
+**Parameters:**
+
+- `address`: Factory contract address (required)
+- `event`: Factory creation event ABI (required)
+- `parameter`: Extract child address `(event) => string` (required)
+- `database`: Factory database instance (required)
+
+**Example:**
+
+```ts
+const factory = createFactory({
+  address: "0x1f98431c8ad98523631ae4a59f267346ea31f984",
+  event: factoryAbi.events.PoolCreated,
+  parameter: (e) => e.pool,
+  database: await sqliteFactoryDatabase({ path: "./pools.sqlite" }),
+});
+```
+
+## sqliteFactoryDatabase
+
+Create SQLite factory database.
+
+```ts
+sqliteFactoryDatabase(config: { path: string }): Promise<FactoryDatabase>
+```
+
+**Example:**
+
+```ts
+const db = await sqliteFactoryDatabase({ path: "./factories.sqlite" });
+```
+
+## sqliteCacheAdapter
+
+Create SQLite cache adapter for Portal.
+
+```ts
+sqliteCacheAdapter(config: { path: string }): Promise<CacheAdapter>
+```
+
+**Example:**
+
+```ts
+const cache = await sqliteCacheAdapter({ path: "./cache.sqlite" });
+```
+
+## commonAbis
+
+Pre-defined ABIs for standard contracts.
+
+```ts
+import { commonAbis } from "@sqd-pipes/pipes/evm";
+
+// ERC20
+commonAbis.erc20.events.Transfer;
+commonAbis.erc20.events.Approval;
+
+// ERC721
+commonAbis.erc721.events.Transfer;
+commonAbis.erc721.events.Approval;
+commonAbis.erc721.events.ApprovalForAll;
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Query Builder"
+    icon="arrow-left"
+    href="/en/sdk/pipes-sdk/reference/query-builder"
+  >
+    Query builder API
+  </Card>
+
+  <Card
+    title="Types & Pipe Methods"
+    icon="arrow-right"
+    href="/en/sdk/pipes-sdk/reference/types-methods"
+  >
+    Types and methods
+  </Card>
+</CardGroup>
+

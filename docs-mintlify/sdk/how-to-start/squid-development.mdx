@@ -3,9 +3,6 @@ title: Development flow
 description: A general approach to squid development
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 This page is a definitive end-to-end guide into practical squid development. It uses templates to simplify the process. Check out [Squid from scratch](/sdk/how-to-start/squid-from-scratch) for a more educational barebones approach.
 
 <Info>
@@ -85,7 +82,7 @@ Although it is possible to [compose a squid from individual packages](/sdk/how-t
 
 ```mdx-code-block
 <Tabs queryString="template-tech">
-<TabItem value="evm" label="EVM">
+<Tab value="evm" label="EVM">
 <details>
 <summary>Templates for the PostgreSQL+GraphQL data destination</summary>
 ```
@@ -138,8 +135,8 @@ Although it is possible to [compose a squid from individual packages](/sdk/how-t
 
 ```mdx-code-block
 </details>
-</TabItem>
-<TabItem value="substrate" label="Substrate">
+</Tab>
+<Tab value="substrate" label="Substrate">
 <details>
 <summary>Templates for the PostgreSQL+GraphQL data destination</summary>
 ```
@@ -159,7 +156,7 @@ Although it is possible to [compose a squid from individual packages](/sdk/how-t
 
 ```mdx-code-block
 </details>
-</TabItem>
+</Tab>
 </Tabs>
 ```
 
@@ -172,7 +169,7 @@ Test the template locally. The procedure varies depending on the data sink:
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="typeorm" label="PostgreSQL+GraphQL">
+<Tab value="typeorm" label="PostgreSQL+GraphQL">
 ```
 1. Launch a PostgreSQL container with
    ```bash
@@ -210,8 +207,8 @@ Test the template locally. The procedure varies depending on the data sink:
 When done, shut down and erase your database with `docker compose down`.
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="file-store" label="filesystem dataset">
+</Tab>
+<Tab value="file-store" label="filesystem dataset">
 ```
 
 1. (for the S3 template only) Set the credentials and prepare a bucket for your data as described in the [template README](https://github.com/subsquid-labs/file-store-s3-example/blob/main/README.md).
@@ -245,15 +242,15 @@ When done, shut down and erase your database with `docker compose down`.
    ```
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="bigquery-store" label="BigQuery">
+</Tab>
+<Tab value="bigquery-store" label="BigQuery">
 ```
 
 Create a dataset with your BigQuery account, then follow the [template README](https://github.com/subsquid-labs/squid-bigquery-example/blob/master/README.md).
 
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```
 
@@ -265,7 +262,7 @@ The advantage of this approach is that the code remains buildable at all times, 
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="evm" label="EVM">
+<Tab value="evm" label="EVM">
 ```
 Retrieve JSON ABIs for all contracts of interest (e.g. from Etherscan), taking care to get ABIs for implementation contracts and not [proxies](/sdk/resources/evm/proxy-contracts) where appropriate. Assuming that you saved the ABI files to `./abi`, you can then regenerate the utilities with
 ```bash
@@ -282,8 +279,8 @@ The utility classes will become available at `src/abi`.
 See also [EVM typegen code generation](/sdk/resources/tools/typegen/generation/?typegen=evm).
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="substrate" label="Substrate">
+</Tab>
+<Tab value="substrate" label="Substrate">
 ```
 Follow the respective reference configuration pages of each typegen tool:
 
@@ -305,7 +302,7 @@ npx squid-substrate-typegen ./typegen.json
 </details>
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```
 
@@ -315,7 +312,7 @@ Data requests are [customarily](/sdk/how-to-start/layout) defined at `src/proces
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="evm" label="EVM">
+<Tab value="evm" label="EVM">
 ```
 Edit the definition of `const processor` to
 
@@ -330,8 +327,8 @@ Edit the definition of `const processor` to
 See [reference documentation](/sdk/reference/processors/evm-batch) for more info and [processor configuration showcase](/sdk/examples/?tags=["Showcase"]) for a representative set of examples.
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="substrate" label="Substrate">
+</Tab>
+<Tab value="substrate" label="Substrate">
 ```
 
 Edit the definition of `const processor` to
@@ -360,7 +357,7 @@ See [reference documentation](/sdk/reference/processors/substrate-batch) for mor
 * [Frontier EVM](/sdk/tutorials/frontier-evm)
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```
 
@@ -379,7 +376,7 @@ This structure ([reference](/sdk/reference/processors/architecture/#batch-contex
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="evm" label="EVM">
+<Tab value="evm" label="EVM">
 ```
 Each item in `ctx.blocks` contains the data for the requested logs, transactions, traces and state diffs for a particular block, plus some info on the block itself. See [EVM batch context reference](/sdk/reference/processors/evm-batch/context-interfaces).
 
@@ -401,8 +398,8 @@ processor.run(db, async ctx => {
 See also the [EVM data decoding](/sdk/resources/tools/typegen/decoding/?typegen=evm).
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="substrate" label="Substrate">
+</Tab>
+<Tab value="substrate" label="Substrate">
 ```
 Each item in `ctx.blocks` contains the data for the requested events, calls and, if requested, any related extrinsics; it also has some info on the block itself. See [Substrate batch context reference](/sdk/reference/processors/substrate-batch/context-interfaces).
 
@@ -444,7 +441,7 @@ You can also decode the data of certain pallet-specific events and transactions 
  - use the [`@subsquid/frontier` utils](/sdk/reference/frontier) and the [EVM typegen](/sdk/resources/tools/typegen/decoding/?typegen=evm) to decode event logs and transactions of EVM contracts
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```
 
@@ -460,7 +457,7 @@ At `src/main.ts`, change the [`Database`](/sdk/resources/persisting-data/overvie
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="typeorm" label="PostgreSQL+GraphQL">
+<Tab value="typeorm" label="PostgreSQL+GraphQL">
 ```
 
 1. Define the schema of the database (and the [core schema of the OpenReader GraphQL API](/sdk/reference/openreader-server/api) if it is used) at [`schema.graphql`](/sdk/reference/schema-file).
@@ -501,8 +498,8 @@ You can now use the async functions [`ctx.store.upsert()`](/sdk/reference/store/
 See the `typeorm-store` [guide](/sdk/resources/persisting-data/typeorm) and [reference](/sdk/reference/store/typeorm) for more info.
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="file-store" label="filesystem dataset">
+</Tab>
+<Tab value="file-store" label="filesystem dataset">
 ```
 
 Filesystem dataset writing, as performed by the `@subsquid/file-store` package and its extensions, stores the data into one or more flat tables. The exact table definition format depends on the output file format.
@@ -545,15 +542,15 @@ The store will write the files automatically as soon as the buffer reaches the s
 See the `file-store` [guide](/sdk/resources/persisting-data/file) and the [reference pages of its extensions](/sdk/reference/store/file).
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="bigquery-store" label="BigQuery">
+</Tab>
+<Tab value="bigquery-store" label="BigQuery">
 ```
 
 Follow the [guide](/sdk/resources/persisting-data/bigquery).
 
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```
 
@@ -563,7 +560,7 @@ Once your data is [decoded](#batch-handler-decoding), optionally [enriched with 
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="typeorm" label="PostgreSQL+GraphQL">
+<Tab value="typeorm" label="PostgreSQL+GraphQL">
 ```
 
 For each batch, create all the instances of all TypeORM model classes at once, then save them with the minimal number of calls to `upsert()` or `insert()`, e.g.:
@@ -590,8 +587,8 @@ See also the [patterns](/sdk/resources/batch-processing/#patterns) and [anti-pat
 
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="file-store" label="filesystem dataset">
+</Tab>
+<Tab value="file-store" label="filesystem dataset">
 ```
 
 You can enqueue the transformed data for writing whenever convenient without any sizeable impact on performance.
@@ -600,15 +597,15 @@ At low output data rates (e.g. if your entire dataset is in tens of Mbytes or un
 
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="bigquery-store" label="BigQuery">
+</Tab>
+<Tab value="bigquery-store" label="BigQuery">
 ```
 
 You can enqueue the transformed data for writing whenever convenient without any sizeable impact on performance. The actual data writing will happen automatically at the end of each batch.
 
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```
 

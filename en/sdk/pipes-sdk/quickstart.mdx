@@ -1,20 +1,18 @@
 ---
 title: "Quickstart"
-description: "Build a pipe in 5 minutes"
+description: "Get started with Pipes SDK in minutes"
 ---
 
-Index ERC20 transfers from Ethereum mainnet.
+Index ERC20 Transfer events from Ethereum mainnet.
 
 ## Prerequisites
 
 - Node.js 18+ installed
 - TypeScript project initialized
 
-## Build Your First Pipe
-
 <Steps>
-<Step title="Install Pipes SDK">
-  Add the Pipes package to your project.
+<Step title="Download and install">
+  Install the Pipes SDK package.
 
   <CodeGroup>
   ```bash npm
@@ -34,129 +32,48 @@ bun add @sqd-pipes/pipes
 ```
 
   </CodeGroup>
-
-{" "}
-
-<Note>
-  The package name is `@sqd-pipes/pipes` and includes everything you need for
-  EVM data indexing.
-</Note>
-
-  <Check>
-  Verify installation by checking your `package.json` for `@sqd-pipes/pipes`.
-  </Check>
 </Step>
 
-<Step title="Create the data pipeline">
-  Build the complete data pipeline that streams and decodes ERC20 transfers.
+<Step title="Create the script">
+  Create a file `index.ts` with the following code:
 
-### Import and create the source
-
-Start by importing the necessary functions and creating a Portal data source.
-
-```ts index.ts focus={1,4-6}
+```ts index.ts
 import {
   commonAbis,
   createEvmDecoder,
   createEvmPortalSource,
 } from "@sqd-pipes/pipes/evm";
 
-async function cli() {
-  const stream = createEvmPortalSource({
+async function main() {
+  const source = createEvmPortalSource({
     portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
   });
-}
-```
 
-{" "}
+  const decoder = createEvmDecoder({
+    range: { from: 20000000, to: 20000100 },
+    contracts: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"], // USDC
+    events: {
+      transfer: commonAbis.erc20.events.Transfer,
+    },
+  });
 
-<Note>
-  Portal URLs are dataset endpoints that provide access to blockchain data. See
-  [all available networks](/en/data/networks/evm) for other chains.
-</Note>
-
-### Chain the decoder
-
-Use `.pipe()` to chain a decoder that automatically handles ERC20 Transfer events.
-
-```ts index.ts focus={6-12}
-import {
-  commonAbis,
-  createEvmDecoder,
-  createEvmPortalSource,
-} from "@sqd-pipes/pipes/evm";
-
-async function cli() {
-  const stream = createEvmPortalSource({
-    portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
-  }).pipe(
-    createEvmDecoder({
-      range: { from: "latest" },
-      events: {
-        transfers: commonAbis.erc20.events.Transfer,
-      },
-    })
-  );
-}
-```
-
-{" "}
-
-<Note>
-  `createEvmDecoder` automatically decodes smart contract events using ABIs. The
-  `commonAbis.erc20.events.Transfer` provides the standard ERC20 Transfer event
-  ABI.
-</Note>
-
-  <Tip>
-  The `range: { from: 'latest' }` option tells the pipe to start streaming from the latest available blocks. You may need to wait for new blocks to be produced to see data.
-  </Tip>
-
-### Process the stream
-
-Add a loop to process the decoded transfer data as it streams in.
-
-```ts index.ts focus={19-21,24}
-import {
-  commonAbis,
-  createEvmDecoder,
-  createEvmPortalSource,
-} from "@sqd-pipes/pipes/evm";
-
-async function cli() {
-  const stream = createEvmPortalSource({
-    portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
-  }).pipe(
-    createEvmDecoder({
-      range: { from: "latest" },
-      events: {
-        transfers: commonAbis.erc20.events.Transfer,
-      },
-    })
-  );
-
-  for await (const { data } of stream) {
-    console.log(data.transfers.length);
+  for await (const { data } of source.pipe(decoder)) {
+    console.log(`Transfers: ${data.transfer.length}`);
+    for (const transfer of data.transfer) {
+      console.log(
+        `  ${transfer.event.from} -> ${transfer.event.to}: ${transfer.event.value}`
+      );
+    }
   }
 }
 
-void cli();
+void main();
 ```
 
-{" "}
-
-<Tip>
-  The `for await` loop processes batches of decoded data as they stream in. Each
-  `data.transfers` contains all decoded Transfer events from the current batch.
-</Tip>
-
-  <Check>
-  Your complete `index.ts` should now have imports, the source, decoder, and processing loop all in one clean chain.
-  </Check>
 </Step>
 
-<Step title="Execute the script">
-  Run your pipe to start indexing.
+<Step title="Run the script">
+  Execute the script to start indexing Transfer events.
 
   <CodeGroup>
   ```bash tsx
@@ -173,111 +90,124 @@ bun index.ts
 
   </CodeGroup>
 
-You should see transfer counts streaming to the console as new blocks are processed:
+You should see Transfer events printed to the console:
 
 ```text
-42
-15
-87
-23
+Transfers: 42
+  0x1234...5678 -> 0xabcd...ef01: 1000000n
+  0xabcd...ef01 -> 0x5678...1234: 500000n
 ...
 ```
 
-  <AccordionGroup>
-  <Accordion title="View sample transfer data">
-  Each transfer in `data.transfers` is a decoded ERC20 Transfer event with the following structure:
-
-```json
-{
-  "from": "0x1234567890123456789012345678901234567890",
-  "to": "0x0987654321098765432109876543210987654321",
-  "value": 1000000n
-}
-```
-
-The decoder automatically extracts the `from`, `to`, and `value` fields from the raw event data. BigInt values (like `value`) are represented with the `n` suffix.
-
-  </Accordion>
-  </AccordionGroup>
-
-  <Check>
-  Your pipe is working if you see transfer counts streaming to the console. The numbers represent how many ERC20 transfers were found in each block batch.
-  </Check>
 </Step>
 </Steps>
 
 ## Complete Code
 
 <AccordionGroup>
-<Accordion title="View complete code">
+<Accordion title="View complete code with explanations">
+The complete code retrieves and decodes ERC20 Transfer events from Ethereum mainnet.
+
 ```ts index.ts
-import { commonAbis, createEvmDecoder, createEvmPortalSource } from '@sqd-pipes/pipes/evm'
+import {
+  commonAbis,
+  createEvmDecoder,
+  createEvmPortalSource,
+} from "@sqd-pipes/pipes/evm";
 
-async function cli() {
-const stream = createEvmPortalSource({
-portal: 'https://portal.sqd.dev/datasets/ethereum-mainnet',
-}).pipe(
-createEvmDecoder({
-range: { from: 'latest' },
-events: {
-transfers: commonAbis.erc20.events.Transfer,
-},
-}),
-)
+async function main() {
+  // Create a Portal source that streams blockchain data
+  const source = createEvmPortalSource({
+    portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
+  });
 
-for await (const { data } of stream) {
-console.log(data.transfers.length)
+  // Create a decoder that automatically decodes Transfer events
+  const decoder = createEvmDecoder({
+    // Process blocks 20000000 to 20000100
+    range: { from: 20000000, to: 20000100 },
+    // Monitor the USDC token contract
+    contracts: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+    // Decode Transfer events using the standard ERC20 ABI
+    events: {
+      transfer: commonAbis.erc20.events.Transfer,
+    },
+  });
+
+  // Stream and process decoded events
+  for await (const { data } of source.pipe(decoder)) {
+    console.log(`Transfers: ${data.transfer.length}`);
+    // Each transfer contains decoded event data
+    for (const transfer of data.transfer) {
+      console.log(
+        `  ${transfer.event.from} -> ${transfer.event.to}: ${transfer.event.value}`
+      );
+    }
+  }
 }
-}
 
-void cli()
-
+void main();
 ```
+
+### How it works
+
+1. **Portal source**: `createEvmPortalSource` connects to the Portal API and streams blockchain data
+2. **Decoder**: `createEvmDecoder` filters and decodes smart contract events using ABIs
+3. **Pipe**: `.pipe()` chains the decoder to the source
+4. **Stream**: The `for await` loop processes batches of decoded data as they arrive
+
+### Data structure
+
+Each decoded Transfer event contains:
+
+- `blockNumber`: Block number where the event occurred
+- `timestamp`: Block timestamp
+- `contract`: Contract address that emitted the event
+- `transactionHash`: Transaction hash
+- `event`: Decoded event fields (`from`, `to`, `value`)
+- `rawEvent`: Raw event log data
+
+### Next steps
+
+- Use `range: { from: 'latest' }` to stream from the latest blocks
+- Add multiple contracts or event types
+- Use `createTarget` to persist data to a database
+- See [Basics](/en/sdk/pipes-sdk/basics) for more examples
+
 </Accordion>
 </AccordionGroup>
-
-<Card
-  title="See code on GitHub"
-  icon="github"
-  href="https://github.com/subsquid-labs/pipes-sdk/blob/main/docs/examples/evm/01.basic-piping.example.ts"
->
-  View the complete example in the pipes-sdk repository
-</Card>
 
 ## Next Steps
 
 <CardGroup cols={2}>
 <Card
-  title="Core Concepts"
+  title="Basics"
   icon="book"
+  href="/en/sdk/pipes-sdk/basics"
+>
+  Learn fundamental concepts
+</Card>
+
+<Card
+  title="Stateful Indexing"
+  icon="database"
+  href="/en/sdk/pipes-sdk/stateful-indexing"
+>
+  Handle cursors and forks
+</Card>
+
+<Card
+  title="Core Concepts"
+  icon="lightbulb"
   href="/en/sdk/pipes-sdk/core-concepts/core-concepts"
 >
   Understand the architecture
 </Card>
 
 <Card
-  title="Query Builder"
-  icon="filter"
-  href="/en/sdk/pipes-sdk/core-concepts/query-builder"
->
-  Learn query building
-</Card>
-
-<Card
-  title="Event Decoding"
+  title="Reference"
   icon="code"
-  href="/en/sdk/pipes-sdk/core-concepts/event-decoding"
+  href="/en/sdk/pipes-sdk/reference/sources-decoders"
 >
-  Decode smart contract events
-</Card>
-
-<Card
-  title="Examples"
-  icon="lightbulb"
-  href="/en/sdk/pipes-sdk/examples/getting-started"
->
-  See more examples
+  API reference
 </Card>
 </CardGroup>
-
-```

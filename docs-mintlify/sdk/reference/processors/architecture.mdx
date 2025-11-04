@@ -3,9 +3,6 @@ title: Processor architecture
 description: Makeup of squid processors
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 The processor service is a Node.js process responsible for data ingestion, transformation and data persisting into the target database. By [convention](/sdk/how-to-start/layout), the processor entry point is at `src/main.ts`. It is run as
 ```bash
 node lib/main.js
@@ -85,7 +82,7 @@ An idiomatic use of the context API is to iterate first over blocks and then ove
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="evm" label="EVM">
+<Tab value="evm" label="EVM">
 ```
 
 ```ts
@@ -108,8 +105,8 @@ processor.run(new TypeormDatabase(), async (ctx) => {
 ```
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="substrate" label="Substrate">
+</Tab>
+<Tab value="substrate" label="Substrate">
 ```
 
 ```ts
@@ -129,7 +126,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
 ```
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```
 

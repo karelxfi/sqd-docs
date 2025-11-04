@@ -3,12 +3,9 @@ title: Generating utility modules
 description: Task-specific code generation
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 ```mdx-code-block
 <Tabs queryString="typegen">
-<TabItem value="evm" label="squid-evm-typegen">
+<Tab value="evm" label="squid-evm-typegen">
 ```
 
 The `squid-evm-typegen(1)` tool generates TypeScript facades for EVM transactions, logs and `eth_call` queries.
@@ -22,10 +19,13 @@ The tool takes a JSON ABIs as an input. Those can be specified in three ways:
    ```bash
    npx squid-evm-typegen src/abi abi/erc20.json
    ```
+
    To include all files in `./abi` and add an interface for the Multicall contract, run
+
    ```bash
    npx squid-evm-typegen ./src/abi ./abi/*.json --multicall
    ```
+
    You can get JSON ABIs for explorer (Etherscan, Bscscan etc) verified contract by visiting the contract page, going to the "Contract" tab and scrolling down to the "Contract ABI" section. _Do not use the "Export ABI" function!_ Copy the contents to the clipboard and paste them to a new JSON file.
 
 2. **(requires an Etherscan API key)** as a contract address. One can pass multiple addresses at once.
@@ -35,7 +35,8 @@ The tool takes a JSON ABIs as an input. Those can be specified in three ways:
    ```
 
 <Info>
-Please check if your contract is a proxy when using this method. If it is, consult [this page](/sdk/resources/evm/proxy-contracts) for guidance.
+  Please check if your contract is a proxy when using this method. If it is,
+  consult [this page](/sdk/resources/evm/proxy-contracts) for guidance.
 </Info>
 
 3. as an arbitrary URL:
@@ -52,26 +53,24 @@ squid-evm-typegen src/abi 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413#my-contract
 
 **Arguments:**
 
-|                        |                                                           |
-|------------------------|-----------------------------------------------------------|
-|  `output-dir`          | output directory for generated definitions                |
-|  `abi`                 | A contract address, an URL or a local path to the ABI file. Accepts multiple contracts. |
-
+|              |                                                                                         |
+| ------------ | --------------------------------------------------------------------------------------- |
+| `output-dir` | output directory for generated definitions                                              |
+| `abi`        | A contract address, an URL or a local path to the ABI file. Accepts multiple contracts. |
 
 **Options:**
 
-|                           |                                                          |
-|---------------------------|----------------------------------------------------------|
-|  `--multicall`            | generate a facade for the MakerDAO multicall contract. May significantly improve the performance of contract state calls by [batching RPC requests](/sdk/resources/tools/typegen/state-queries/?typegen=evm#batch-state-queries) |
-|  `--etherscan-api <url>`  | etherscan API to fetch contract ABI by a known address. By default, `https://api.etherscan.io/`   |
-|  `--clean`                | delete output directory before the run                   |
-|  `-h, --help`             | display help for command                                 |
+|                         |                                                                                                                                                                                                                                  |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--multicall`           | generate a facade for the MakerDAO multicall contract. May significantly improve the performance of contract state calls by [batching RPC requests](/sdk/resources/tools/typegen/state-queries/?typegen=evm#batch-state-queries) |
+| `--etherscan-api <url>` | etherscan API to fetch contract ABI by a known address. By default, `https://api.etherscan.io/`                                                                                                                                  |
+| `--clean`               | delete output directory before the run                                                                                                                                                                                           |
+| `-h, --help`            | display help for command                                                                                                                                                                                                         |
 
 <Warning>
-The generated modules depend on `@subsquid/evm-abi`. Please add it to your `package.json` as a peer dependency if it's not there already:
-```bash
-npm i @subsquid/evm-abi
-```
+  The generated modules depend on `@subsquid/evm-abi`. Please add it to your
+  `package.json` as a peer dependency if it's not there already: ```bash npm i
+  @subsquid/evm-abi ```
 </Warning>
 
 ## Usage
@@ -79,29 +78,29 @@ npm i @subsquid/evm-abi
 The generated utility modules have three intended uses:
 
 1. Constants: EVM log topic0 values and sighashes for transactions. Example:
+
    ```ts
    // generated by evm-typegen
-   import * as weth from './abi/weth'
+   import * as weth from "./abi/weth";
 
-   const CONTRACT_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'.toLowerCase()
+   const CONTRACT_ADDRESS =
+     "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2".toLowerCase();
 
    const processor = new EvmBatchProcessor()
-     .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')
+     .setGateway("https://v2.archive.subsquid.io/network/ethereum-mainnet")
      .addLog({
        address: [CONTRACT_ADDRESS],
-       topic0: [
-         weth.events.Deposit.topic,
-         weth.events.Withdrawal.topic
-       ]
-     })
+       topic0: [weth.events.Deposit.topic, weth.events.Withdrawal.topic],
+     });
    ```
+
 2. [Decoding of EVM logs and transactions](/sdk/resources/tools/typegen/decoding/?typegen=evm)
 
 3. [Direct chain state queries](/sdk/resources/tools/typegen/state-queries/?typegen=evm), including [queries to multicall](/sdk/resources/tools/typegen/state-queries/?typegen=evm#batch-state-queries).
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="substrate" label="squid-substrate-typegen">
+</Tab>
+<Tab value="substrate" label="squid-substrate-typegen">
 ```
 
 The substrate typegen tool is a part of Squid SDK. It generates TypeScript wrappers for interfacing Substrate events and calls.
@@ -111,12 +110,15 @@ Usage:
 ```bash
 npx squid-substrate-typegen typegen.json
 ```
+
 If necessary, multiple config files can be supplied:
+
 ```bash
 npx squid-substrate-typegen typegen0.json typegen1.json ...
 ```
 
 The structure of the `typegen.json` config file is best illustrated with an example:
+
 ```json
 {
   "outDir": "src/types",
@@ -132,24 +134,21 @@ The structure of the `typegen.json` config file is best illustrated with an exam
         // list of calls to generate wrappers for
         "transfer_allow_death"
       ],
-      "storage": [
-        "Account"
-      ],
-      "constants": [
-        "ExistentialDeposit"
-      ]
+      "storage": ["Account"],
+      "constants": ["ExistentialDeposit"]
     }
   }
 }
 ```
-The `specVersions` field is either
- - a metadata service endpoint URL, like
-   ```
-   https://v2.archive.subsquid.io/metadata/\{network\}
-   ```
-   or
- - a path to a [`jsonl`](https://jsonlines.org) file generated by [`substrate-metadata-explorer(1)`](https://github.com/subsquid/squid-sdk/tree/master/substrate/substrate-metadata-explorer).
 
+The `specVersions` field is either
+
+- a metadata service endpoint URL, like
+  ```
+  https://v2.archive.subsquid.io/metadata/\{network\}
+  ```
+  or
+- a path to a [`jsonl`](https://jsonlines.org) file generated by [`substrate-metadata-explorer(1)`](https://github.com/subsquid/squid-sdk/tree/master/substrate/substrate-metadata-explorer).
 
 To generate all items defined by a given pallet, set any of the `events`, `calls`, `storage` or `constants` fields to `true`, e.g.
 
@@ -181,12 +180,13 @@ In the rare cases when the typegen needs a types bundle, supply it alongside met
 ## TypeScript wrappers
 
 Wrappers generated by the typegen command can be found in the specified `outDir` (`src/types` by convention). Assuming that this folder is imported as `types` (e.g. with `import * as types from './types'`), you'll be able to find the wrappers at:
- - for events: `types.events.$\{palletName\}.$\{eventName\}`
- - for calls: `types.calls.$\{palletName\}.$\{callName\}`
- - for storage items: `types.storage.$\{palletName\}.$\{storageItemName\}`
- - for constants: `types.constants.$\{palletName\}.$\{constantName\}`
 
-All identifiers (pallet name, call name etc) are lowerCamelCased. E.g. the constant ```Balances.ExistentialDeposit``` becomes ```types.events.balances.existentialDeposit``` and the call ```Balances.set_balance``` becomes ```types.calls.setBalance```.
+- for events: `types.events.$\{palletName\}.$\{eventName\}`
+- for calls: `types.calls.$\{palletName\}.$\{callName\}`
+- for storage items: `types.storage.$\{palletName\}.$\{storageItemName\}`
+- for constants: `types.constants.$\{palletName\}.$\{constantName\}`
+
+All identifiers (pallet name, call name etc) are lowerCamelCased. E.g. the constant `Balances.ExistentialDeposit` becomes `types.events.balances.existentialDeposit` and the call `Balances.set_balance` becomes `types.calls.setBalance`.
 
 ## Usage
 
@@ -211,8 +211,8 @@ All identifiers (pallet name, call name etc) are lowerCamelCased. E.g. the const
    ```
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="ink" label="squid-ink-typegen">
+</Tab>
+<Tab value="ink" label="squid-ink-typegen">
 ```
 
 Use [`squid-ink-typegen`](https://github.com/subsquid/squid-sdk/tree/master/substrate/ink-typegen) to generate facade classes for decoding ink! smart contract data from JSON ABI metadata.
@@ -226,6 +226,6 @@ npx squid-ink-typegen --abi abi/erc20.json --output src/abi/erc20.ts
 The generated source code exposes the [decoding methods](/sdk/resources/tools/typegen/decoding/?typegen=ink), some useful types and a class for performing [wrapped RPC queries](/sdk/resources/tools/typegen/state-queries/?typegen=ink), using `@subsquid/ink-abi` under the hood
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```

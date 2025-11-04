@@ -1,0 +1,82 @@
+---
+title: "Sources & Decoders"
+description: "API reference for sources and decoders"
+---
+
+## createEvmPortalSource
+
+Create a Portal source for EVM chains.
+
+```ts
+createEvmPortalSource(config: EvmPortalSourceConfig): Source
+```
+
+**Parameters:**
+
+- `portal`: Portal API URL
+- `query`: EvmQueryBuilder instance (optional)
+- `cursor`: Resume from block `{ blockNumber: number }` (optional)
+- `cache`: Cache adapter `{ adapter: CacheAdapter }` (optional)
+
+**Example:**
+
+```ts
+const source = createEvmPortalSource({
+  portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
+  query: queryBuilder,
+  cursor: { blockNumber: 20000000 },
+  cache: { adapter: await sqliteCacheAdapter({ path: "./cache.sqlite" }) },
+});
+```
+
+## createEvmDecoder
+
+Decode smart contract events as a pipe.
+
+```ts
+createEvmDecoder<T>(config: EvmDecoderConfig<T>): Decoder<T>
+```
+
+**Parameters:**
+
+- `range`: Block range `{ from: number | 'latest', to?: number }` (required)
+- `contracts`: Array of contract addresses or factory (required)
+- `events`: Map of event names to ABI objects (required)
+- `profiler`: Profiler config `{ id: string }` (optional)
+
+**Example:**
+
+```ts
+const decoder = createEvmDecoder({
+  range: { from: 20000000, to: 20100000 },
+  contracts: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+  events: {
+    transfer: commonAbis.erc20.events.Transfer,
+  },
+});
+```
+
+<Tip>
+Use `@subsquid/evm-typegen` to generate typed ABIs for custom contracts. This provides type safety and eliminates the need to manually find event signatures. See the [Event Decoding guide](/en/sdk/pipes-sdk/core-concepts/event-decoding#custom-abis) for details on generating and using custom ABIs.
+</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Transformers & Targets"
+    icon="arrow-right"
+    href="/en/sdk/pipes-sdk/reference/transformers-targets"
+  >
+    Transformers and targets
+  </Card>
+
+  <Card
+    title="Query Builder"
+    icon="filter"
+    href="/en/sdk/pipes-sdk/reference/query-builder"
+  >
+    Query builder API
+  </Card>
+</CardGroup>
+

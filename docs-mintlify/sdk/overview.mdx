@@ -3,9 +3,6 @@ title: Overview
 description: Architecture of squid indexers
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 # Overview
 
 A _squid_ is an indexing project built with [Squid SDK](https://github.com/subsquid/squid-sdk) to retrieve and process blockchain data from the [SQD Network](/subsquid-network/overview)
@@ -48,7 +45,7 @@ A _typegen_ is a tool for generating utility code for technology-specific operat
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="evm" label="On EVM">
+<Tab value="evm" label="On EVM">
 ```
 * [`squid-evm-typegen`](/sdk/resources/tools/typegen/generation/?typegen=evm) via [`@subsquid/evm-typegen`](https://www.npmjs.com/package/@subsquid/evm-typegen):
   - decodes smart contract data
@@ -57,8 +54,8 @@ A _typegen_ is a tool for generating utility code for technology-specific operat
   The generated code depends on [`@subsquid/evm-abi`](https://www.npmjs.com/package/@subsquid/evm-abi), SQD's own high performance, open source EVM codec.
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="substrate" label="On Substrate">
+</Tab>
+<Tab value="substrate" label="On Substrate">
 ```
 * [`squid-substrate-typegen`](/sdk/resources/tools/typegen/generation/?typegen=substrate) via [`@subsquid/substrate-typegen`](https://www.npmjs.com/package/@subsquid/substrate-typegen):
   - general purpose pallet data decoding (aware of runtime versions)
@@ -66,7 +63,7 @@ A _typegen_ is a tool for generating utility code for technology-specific operat
 * [`squid-ink-typegen`](/sdk/resources/tools/typegen/generation/?typegen=ink) via [`@subsquid/ink-typegen`](https://www.npmjs.com/package/@subsquid/ink-typegen) for decoding the data of [ink!](https://use.ink) contracts
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```
 
@@ -82,19 +79,19 @@ Among other alternatives, SQD provides its own server called [OpenReader](/sdk/r
 
 ```mdx-code-block
 <Tabs>
-<TabItem value="evm" label="On EVM">
+<Tab value="evm" label="On EVM">
 ```
 * [Squid CLI](/squid-cli/installation) is a utility for [retrieving squid templates](/squid-cli/init), managing [chains of commands](https://github.com/subsquid/squid-sdk/tree/master/util/commands) commonly used in development and running [all squid processes at once](/squid-cli/run). It can also be used for deploying to [SQD Cloud](/cloud).
 
 ```mdx-code-block
-</TabItem>
-<TabItem value="substrate" label="On Substrate">
+</Tab>
+<Tab value="substrate" label="On Substrate">
 ```
 * [Squid CLI](/squid-cli/installation) is a utility for [retrieving squid templates](/squid-cli/init), managing [chains of commands](https://github.com/subsquid/squid-sdk/tree/master/util/commands) commonly used in development and running [all squid processes at once](/squid-cli/run). It can also be used for deploying to [SQD Cloud](/cloud).
 * [`@subsquid/ss58`](https://www.npmjs.com/package/@subsquid/ss58) handles encoding and decoding of SS58 addresses
 * [`@subsquid/frontier`](https://www.npmjs.com/package/@subsquid/frontier) decodes events and calls of the [Frontier EVM pallet](https://paritytech.github.io/frontier/frame/evm.html) to make them decodable with [`squid-evm-typegen`](/sdk/resources/tools/typegen/generation)
 
 ```mdx-code-block
-</TabItem>
+</Tab>
 </Tabs>
 ```

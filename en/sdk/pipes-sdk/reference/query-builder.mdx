@@ -1,0 +1,97 @@
+---
+title: "Query Builder"
+description: "API reference for EvmQueryBuilder"
+---
+
+## EvmQueryBuilder
+
+Build queries for Portal API.
+
+```ts
+class EvmQueryBuilder {
+  addFields(fields: FieldSelection): this;
+  addLog(config: LogRequest): this;
+  addTransaction(config: TransactionRequest): this;
+  addTrace(config: TraceRequest): this;
+}
+```
+
+## addFields
+
+Select fields to return.
+
+```ts
+queryBuilder.addFields({
+  block: { number: true, hash: true, timestamp: true },
+  log: { address: true, topics: true, data: true },
+  transaction: { hash: true, from: true, to: true, value: true },
+});
+```
+
+Block `number` and `hash` fields are required.
+
+## addLog
+
+Filter event logs.
+
+```ts
+queryBuilder.addLog({
+  request: {
+    address: ["0x..."],
+    topic0: ["0x..."],
+    topic1: ["0x..."], // optional
+  },
+  range: { from: 20000000, to: 20000100 },
+});
+```
+
+## addTransaction
+
+Filter transactions.
+
+```ts
+queryBuilder.addTransaction({
+  request: {
+    from: ["0x..."],
+    to: ["0x..."],
+    sighash: ["0xa9059cbb"],
+  },
+  range: { from: 20000000 },
+});
+```
+
+## addTrace
+
+Filter traces.
+
+```ts
+queryBuilder.addTrace({
+  request: {
+    from: ["0x..."],
+    to: ["0x..."],
+    callType: ["call", "staticcall"],
+  },
+  range: { from: 20000000 },
+});
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Factories & Utilities"
+    icon="arrow-right"
+    href="/en/sdk/pipes-sdk/reference/factories-utilities"
+  >
+    Factories and utilities
+  </Card>
+
+  <Card
+    title="Types & Pipe Methods"
+    icon="code"
+    href="/en/sdk/pipes-sdk/reference/types-methods"
+  >
+    Types and methods
+  </Card>
+</CardGroup>
+
