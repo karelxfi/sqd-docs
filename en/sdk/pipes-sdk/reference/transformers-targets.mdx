@@ -3,7 +3,48 @@ title: "Transformers & Targets"
 description: "API reference for transformers and targets"
 ---
 
-## createTransformer
+## Event Decoder Transformers
+
+### createEvmDecoder
+
+Create a transformer that decodes smart contract events.
+
+```ts
+createEvmDecoder<T>(config: EvmDecoderConfig<T>): Transformer
+```
+
+**Returns:** A `Transformer` that transforms `EvmPortalData` into decoded events.
+
+**Parameters:**
+
+- `range`: Block range `{ from: number | 'latest', to?: number }` (required)
+- `contracts`: Array of contract addresses or factory (required)
+- `events`: Map of event names to ABI objects (required)
+- `profiler`: Profiler config `{ id: string }` (optional)
+
+**Example:**
+
+```ts
+const transformer = createEvmDecoder({
+  range: { from: 20000000, to: 20100000 },
+  contracts: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+  events: {
+    transfer: commonAbis.erc20.events.Transfer,
+  },
+});
+```
+
+<Tip>
+Use `@subsquid/evm-typegen` to generate typed ABIs for custom contracts. This provides type safety and eliminates the need to manually find event signatures. See the [Event Decoding guide](/en/sdk/pipes-sdk/core-concepts/event-decoding#custom-abis) for details on generating and using custom ABIs.
+</Tip>
+
+<Note>
+`createEvmDecoder` returns a `Transformer` that automatically builds the necessary queries for event decoding. You don't need a query builder when using this transformer - it handles query construction internally. However, you still need a portal source.
+</Note>
+
+## Generic Transformers
+
+### createTransformer
 
 Transform data in pipes.
 
@@ -100,11 +141,11 @@ const target = createClickhouseTarget({
 
 <CardGroup cols={2}>
   <Card
-    title="Sources & Decoders"
+    title="Sources"
     icon="arrow-left"
-    href="/en/sdk/pipes-sdk/reference/sources-decoders"
+    href="/en/sdk/pipes-sdk/reference/sources"
   >
-    Sources and decoders
+    Sources
   </Card>
 
   <Card
