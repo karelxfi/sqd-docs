@@ -16,11 +16,7 @@
     "codeblocks": "system"
   },
   "background": {
-    "decoration": "grid",
-    "color": {
-      "light": "#f5f5f5",
-      "dark": "#111111"
-    }
+    "image": "/images/background.png"
   },
   "banner": {
     "content": "\u26a0\ufe0f Documentation is a work in progress. To provide feedback, use the \"Report to Linear\" button.",
@@ -598,12 +594,24 @@
                 "icon": "globe",
                 "pages": [
                   "en/network/overview",
-                  "en/network/faq",
-                  "en/network/tokenomics",
-                  "en/network/whitepaper",
-                  "en/network/participate/procuring-sqd",
-                  "en/network/participate/delegate",
-                  "en/network/participate/worker"
+                  {
+                    "group": "Participate",
+                    "expanded": true,
+                    "pages": [
+                      "en/network/worker",
+                      "en/network/delegate",
+                      "en/network/portal"
+                    ]
+                  },
+                  {
+                    "group": "Reference",
+                    "expanded": true,
+                    "pages": [
+                      "en/network/tokenomics",
+                      "en/network/whitepaper",
+                      "en/network/procuring-sqd"
+                    ]
+                  }
                 ]
               },
               {
@@ -1671,32 +1679,25 @@
             "groups": [
               {
                 "group": "Documentation",
-                "icon": "lines-leaning",
+                "icon": "book",
                 "pages": [
                   "en/other/glossary/glossary"
                 ]
               },
               {
-                "group": "Media",
+                "group": "Case Studies & Examples",
+                "icon": "chart-line",
+                "pages": [
+                  "en/other/case-studies",
+                  "en/other/showcase/showcase"
+                ]
+              },
+              {
+                "group": "Media & Resources",
                 "icon": "video",
                 "pages": [
                   "en/other/media/internal",
                   "en/other/media/external"
-                ]
-              },
-              {
-                "group": "Case studies",
-                "icon": "book",
-                "pages": [
-                  "en/other/case-studies"
-                ]
-              },
-              {
-                "group": "Showcase",
-                "tag": "EXPERIMENTAL",
-                "icon": "lightbulb",
-                "pages": [
-                  "en/other/showcase/showcase"
                 ]
               }
             ]

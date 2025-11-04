@@ -5,37 +5,16 @@ mode: "wide"
 
 ---
 
-<Info>
-  Starting today (2025-02-23) all open private network gateways are rate limited
-  at 50 requests per 10 seconds per IP. Higher bandwidths will soon become
-  available via the public network.
-</Info>
+<Warning>
+**Portal Migration**: We're migrating from v2 archives to Portal. V2 archives will be sunset soon. [Migration Guide →](/en/portal/migration/cloud-portal-solana)
 
-This section lists public gateways of the [open private network](en/subsquid-network/overview/#open-private-network) that serve data of Solana and compatible networks. Gateway URLs should be used with the [`setGateway()`](en/solana-indexing/sdk/solana-batch/general/#set-gateway) `SolanaDataSource` configuration method, for example:
+</Warning>
 
-```typescript
-const dataSource = new SolanaDataSource().setGateway(
-  "https://v2.archive.subsquid.io/network/solana-mainnet"
-);
-```
-
-Read more about Solana indexing in the [dedicated section](en/solana-indexing).
-
-See [Solana API](en/solana-indexing/network-api/solana-api) if you're looking to interface with one of these gateways directly.
-
-|        Network         |                      Gateway URL                       |
-| :--------------------: | :----------------------------------------------------: |
-|      Solana (\*)       | https://v2.archive.subsquid.io/network/solana-mainnet  |
-| Eclipse Mainnet (\*\*) | https://v2.archive.subsquid.io/network/eclipse-mainnet |
-|    Eclipse Testnet     | https://v2.archive.subsquid.io/network/eclipse-testnet |
-|      Soon Mainnet      |  https://v2.archive.subsquid.io/network/soon-mainnet   |
-| Soon Testnet (\*\*\*)  |  https://v2.archive.subsquid.io/network/soon-testnet   |
-| Soon Devnet (\*\*\*\*) |   https://v2.archive.subsquid.io/network/soon-devnet   |
-
-(\*) Solana data is available starting from block (_not slot!_) 269_828_500.
-
-(\*\*) The first block for Eclipse Mainnet is 24_641_070.
-
-(\*\*\*) The first block for Soon Testnet is 30_255.
-
-(\*\*\*\*) Soon Devnet data is available starting from block 2_471_639.
+| Network | <Tooltip tip="Available on Portal infrastructure">Portal</Tooltip> | <Tooltip tip="Supports real-time streaming">Real-time</Tooltip> | <Tooltip tip="Dataset identifier for use with Portal endpoints">Slug</Tooltip> | Details |
+| :-----: | :-----------------------------------------------------------------: | :--------------------------------------------------------------: | :----------------------------------------------------------------------------: | :-----: |
+| <Tooltip tip="Solana data is available starting from block (not slot!) 269_828_500">Solana</Tooltip> | <Icon icon="circle-check" iconType="solid" /> | <Icon icon="circle-check" iconType="solid" /> | `solana-mainnet` | [View →](/en/data/catalog/solana/solana-mainnet/overview) |
+| <Tooltip tip="The first block for Eclipse Mainnet is 24_641_070">Eclipse Mainnet</Tooltip> | <Icon icon="circle-check" iconType="solid" /> | <Icon icon="circle-check" iconType="solid" /> | `eclipse-mainnet` | [View →](/en/data/catalog/solana/eclipse-mainnet/overview) |
+| Eclipse Testnet | <Icon icon="circle-check" iconType="solid" /> | <Icon icon="circle-check" iconType="solid" /> | `eclipse-testnet` | [View →](/en/data/catalog/solana/eclipse-testnet/overview) |
+| Soon Mainnet | <Icon icon="circle-check" iconType="solid" /> | <Icon icon="circle-check" iconType="solid" /> | `soon-mainnet` | [View →](/en/data/catalog/solana/soon-mainnet/overview) |
+| <Tooltip tip="The first block for Soon Testnet is 30_255">Soon Testnet</Tooltip> | <Icon icon="circle-check" iconType="solid" /> | <Icon icon="circle-check" iconType="solid" /> | `soon-testnet` | [View →](/en/data/catalog/solana/soon-testnet/overview) |
+| <Tooltip tip="Soon Devnet data is available starting from block 2_471_639">Soon Devnet</Tooltip> | <Icon icon="circle-check" iconType="solid" /> | <Icon icon="circle-check" iconType="solid" /> | `soon-devnet` | [View →](/en/data/catalog/solana/soon-devnet/overview) |

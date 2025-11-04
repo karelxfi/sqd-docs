@@ -5,112 +5,97 @@ mode: "wide"
 
 ---
 
-<Info>
-  Starting today (2025-02-23) all open private network gateways are rate limited
-  at 50 requests per 10 seconds per IP. Higher bandwidths will soon become
-  available via the public network.
-</Info>
+<Warning>
+**Portal Migration**: We're migrating from v2 archives to Portal. V2 archives will be sunset soon. [Migration Guide →](/en/portal/migration/cloud-portal-evm)
 
-This section lists public Substrate gateways of the [open private network](en/subsquid-network/overview/#open-private-network). Gateway URLs should be used with the [`setGateway()`](en/sdk/reference/processors/substrate-batch/general/#set-gateway) `SubstrateBatchProcessor` configuration method, for example:
+</Warning>
 
-```typescript
-const processor = new SubstrateBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/phala")
-  .setRpcEndpoint("https://api.phala.network/rpc"); // required on Substrate
-```
-
-See [Substrate API](en/subsquid-network/reference/substrate-api) if you're looking to interface with one of these gateways directly.
-
-| Network | Gateway URL | Details |
-| :-------------------------: | :-----------------------------------------------------------: | :-----: |
-|            Acala            |         https://v2.archive.subsquid.io/network/acala           | [View →](/en/data/catalog/substrate/acala/overview) |
-|       Acurast Canary        |     https://v2.archive.subsquid.io/network/acurast-canary      | [View →](/en/data/catalog/substrate/acurast-canary/overview) |
-|            Agung            |         https://v2.archive.subsquid.io/network/agung           | [View →](/en/data/catalog/substrate/agung/overview) |
-|         Aleph Zero          |       https://v2.archive.subsquid.io/network/aleph-zero        | [View →](/en/data/catalog/substrate/aleph-zero/overview) |
-|     Aleph Zero Testnet      |   https://v2.archive.subsquid.io/network/aleph-zero-testnet    | [View →](/en/data/catalog/substrate/aleph-zero-testnet/overview) |
-|          Amplitude          |       https://v2.archive.subsquid.io/network/amplitude         | [View →](/en/data/catalog/substrate/amplitude/overview) |
-|    Asset Hub Kusama (\*)    |    https://v2.archive.subsquid.io/network/asset-hub-kusama     | [View →](/en/data/catalog/substrate/asset-hub-kusama/overview) |
-|   Asset Hub Polkadot (\*)   |   https://v2.archive.subsquid.io/network/asset-hub-polkadot    | [View →](/en/data/catalog/substrate/asset-hub-polkadot/overview) |
-|      Asset Hub Rococo       |    https://v2.archive.subsquid.io/network/asset-hub-rococo     | [View →](/en/data/catalog/substrate/asset-hub-rococo/overview) |
-|      Asset Hub Westend      |   https://v2.archive.subsquid.io/network/asset-hub-westend     | [View →](/en/data/catalog/substrate/asset-hub-westend/overview) |
-|   Asset Hub Westend Next    | https://v2.archive.subsquid.io/network/asset-hub-westend-next | [View →](/en/data/catalog/substrate/asset-hub-westend-next/overview) |
-|            Astar            |    https://v2.archive.subsquid.io/network/astar-substrate      | [View →](/en/data/catalog/substrate/astar-substrate/overview) |
-|    Avail Mainnet (\*\*)     |         https://v2.archive.subsquid.io/network/avail           | [View →](/en/data/catalog/substrate/avail/overview) |
-|          Basilisk           |        https://v2.archive.subsquid.io/network/basilisk         | [View →](/en/data/catalog/substrate/basilisk/overview) |
-|       Bifrost Kusama        |     https://v2.archive.subsquid.io/network/bifrost-kusama      | [View →](/en/data/catalog/substrate/bifrost-kusama/overview) |
-|      Bifrost Polkadot       |    https://v2.archive.subsquid.io/network/bifrost-polkadot     | [View →](/en/data/catalog/substrate/bifrost-polkadot/overview) |
-|          Bittensor          |       https://v2.archive.subsquid.io/network/bittensor         | [View →](/en/data/catalog/substrate/bittensor/overview) |
-|      Bittensor Testnet      |   https://v2.archive.subsquid.io/network/bittensor-testnet     | [View →](/en/data/catalog/substrate/bittensor-testnet/overview) |
-|      Bridge Hub Kusama      |   https://v2.archive.subsquid.io/network/bridge-hub-kusama     | [View →](/en/data/catalog/substrate/bridge-hub-kusama/overview) |
-|     Bridge Hub Polkadot     |  https://v2.archive.subsquid.io/network/bridge-hub-polkadot    | [View →](/en/data/catalog/substrate/bridge-hub-polkadot/overview) |
-|      Bridge Hub Rococo      |   https://v2.archive.subsquid.io/network/bridge-hub-rococo     | [View →](/en/data/catalog/substrate/bridge-hub-rococo/overview) |
-|     Bridge Hub Westend      |   https://v2.archive.subsquid.io/network/bridge-hub-westend    | [View →](/en/data/catalog/substrate/bridge-hub-westend/overview) |
-|         Centrifuge          |       https://v2.archive.subsquid.io/network/centrifuge        | [View →](/en/data/catalog/substrate/centrifuge/overview) |
-|            Cere             |          https://v2.archive.subsquid.io/network/cere           | [View →](/en/data/catalog/substrate/cere/overview) |
-|         Chainfliip          |       https://v2.archive.subsquid.io/network/chainflip         | [View →](/en/data/catalog/substrate/chainflip/overview) |
-|           Clover            |         https://v2.archive.subsquid.io/network/clover          | [View →](/en/data/catalog/substrate/clover/overview) |
-|    Collectives Polkadot     |  https://v2.archive.subsquid.io/network/collectives-polkadot   | [View →](/en/data/catalog/substrate/collectives-polkadot/overview) |
-|     Collectives Westend     |  https://v2.archive.subsquid.io/network/collectives-westend    | [View →](/en/data/catalog/substrate/collectives-westend/overview) |
-|        Darwinia Crab        |     https://v2.archive.subsquid.io/network/darwinia-crab       | [View →](/en/data/catalog/substrate/darwinia-crab/overview) |
-|            Crust            |         https://v2.archive.subsquid.io/network/crust           | [View →](/en/data/catalog/substrate/crust/overview) |
-|          Dancebox           |        https://v2.archive.subsquid.io/network/dancebox         | [View →](/en/data/catalog/substrate/dancebox/overview) |
-|         Dancelight          |       https://v2.archive.subsquid.io/network/dancelight        | [View →](/en/data/catalog/substrate/dancelight/overview) |
-|          Darwinia           |        https://v2.archive.subsquid.io/network/darwinia         | [View →](/en/data/catalog/substrate/darwinia/overview) |
-| Data Avail (Avail Goldberg) |       https://v2.archive.subsquid.io/network/data-avail        | [View →](/en/data/catalog/substrate/data-avail/overview) |
-|            Eden             |          https://v2.archive.subsquid.io/network/eden           | [View →](/en/data/catalog/substrate/eden/overview) |
-|     Enjin Canary Matrix     |  https://v2.archive.subsquid.io/network/enjin-canary-matrix    | [View →](/en/data/catalog/substrate/enjin-canary-matrix/overview) |
-|        Enjin Matrix         |      https://v2.archive.subsquid.io/network/enjin-matrix       | [View →](/en/data/catalog/substrate/enjin-matrix/overview) |
-|         Enjin Relay         |      https://v2.archive.subsquid.io/network/enjin-relay        | [View →](/en/data/catalog/substrate/enjin-relay/overview) |
-|         Equilibrium         |      https://v2.archive.subsquid.io/network/equilibrium        | [View →](/en/data/catalog/substrate/equilibrium/overview) |
-|           Foucoco           |        https://v2.archive.subsquid.io/network/foucoco          | [View →](/en/data/catalog/substrate/foucoco/overview) |
-|          Frequency          |       https://v2.archive.subsquid.io/network/frequency         | [View →](/en/data/catalog/substrate/frequency/overview) |
-|          Gemini 3h          |       https://v2.archive.subsquid.io/network/gemini-3h         | [View →](/en/data/catalog/substrate/gemini-3h/overview) |
-|           HydraDX           |        https://v2.archive.subsquid.io/network/hydradx          | [View →](/en/data/catalog/substrate/hydradx/overview) |
-|     Integritee Network      |       https://v2.archive.subsquid.io/network/integritee        | [View →](/en/data/catalog/substrate/integritee/overview) |
-|          Interlay           |        https://v2.archive.subsquid.io/network/interlay         | [View →](/en/data/catalog/substrate/interlay/overview) |
-|      Invarch Parachain      |   https://v2.archive.subsquid.io/network/invarch-parachain     | [View →](/en/data/catalog/substrate/invarch-parachain/overview) |
-|      Invarch Tinkernet      |   https://v2.archive.subsquid.io/network/invarch-tinkernet     | [View →](/en/data/catalog/substrate/invarch-tinkernet/overview) |
-|          Joystream          |       https://v2.archive.subsquid.io/network/joystream         | [View →](/en/data/catalog/substrate/joystream/overview) |
-|           Karura            |         https://v2.archive.subsquid.io/network/karura          | [View →](/en/data/catalog/substrate/karura/overview) |
-|            Khala            |         https://v2.archive.subsquid.io/network/khala           | [View →](/en/data/catalog/substrate/khala/overview) |
-|            Kilt             |          https://v2.archive.subsquid.io/network/kilt           | [View →](/en/data/catalog/substrate/kilt/overview) |
-|          Kintsugi           |        https://v2.archive.subsquid.io/network/kintsugi         | [View →](/en/data/catalog/substrate/kintsugi/overview) |
-|           Kusama            |         https://v2.archive.subsquid.io/network/kusama          | [View →](/en/data/catalog/substrate/kusama/overview) |
-|          Litentry           |        https://v2.archive.subsquid.io/network/litentry         | [View →](/en/data/catalog/substrate/litentry/overview) |
-|          Moonbase           |   https://v2.archive.subsquid.io/network/moonbase-substrate    | [View →](/en/data/catalog/substrate/moonbase-substrate/overview) |
-|          Moonbeam           |   https://v2.archive.subsquid.io/network/moonbeam-substrate    | [View →](/en/data/catalog/substrate/moonbeam-substrate/overview) |
-|          Moonriver          |  https://v2.archive.subsquid.io/network/moonriver-substrate    | [View →](/en/data/catalog/substrate/moonriver-substrate/overview) |
-|            Paseo            |         https://v2.archive.subsquid.io/network/paseo           | [View →](/en/data/catalog/substrate/paseo/overview) |
-|            Peaq             | https://v2.archive.subsquid.io/network/peaq-mainnet-substrate | [View →](/en/data/catalog/substrate/peaq-mainnet-substrate/overview) |
-|          Pendulum           |        https://v2.archive.subsquid.io/network/pendulum         | [View →](/en/data/catalog/substrate/pendulum/overview) |
-|        People Chain         |      https://v2.archive.subsquid.io/network/people-chain       | [View →](/en/data/catalog/substrate/people-chain/overview) |
-|            Phala            |         https://v2.archive.subsquid.io/network/phala           | [View →](/en/data/catalog/substrate/phala/overview) |
-|        Phala Testnet        |     https://v2.archive.subsquid.io/network/phala-testnet       | [View →](/en/data/catalog/substrate/phala-testnet/overview) |
-|           Picasso           |        https://v2.archive.subsquid.io/network/picasso          | [View →](/en/data/catalog/substrate/picasso/overview) |
-|           Polimec           |        https://v2.archive.subsquid.io/network/polimec          | [View →](/en/data/catalog/substrate/polimec/overview) |
-|          Polkadex           |        https://v2.archive.subsquid.io/network/polkadex         | [View →](/en/data/catalog/substrate/polkadex/overview) |
-|          Polkadot           |        https://v2.archive.subsquid.io/network/polkadot         | [View →](/en/data/catalog/substrate/polkadot/overview) |
-|          Polymesh           |        https://v2.archive.subsquid.io/network/polymesh         | [View →](/en/data/catalog/substrate/polymesh/overview) |
-|            Reef             |          https://v2.archive.subsquid.io/network/reef           | [View →](/en/data/catalog/substrate/reef/overview) |
-|        Reef Testnet         |      https://v2.archive.subsquid.io/network/reef-testnet       | [View →](/en/data/catalog/substrate/reef-testnet/overview) |
-|         Robonomics          |       https://v2.archive.subsquid.io/network/robonomics        | [View →](/en/data/catalog/substrate/robonomics/overview) |
-|           Rococo            |         https://v2.archive.subsquid.io/network/rococo          | [View →](/en/data/catalog/substrate/rococo/overview) |
-|           Rolimec           |        https://v2.archive.subsquid.io/network/rolimec          | [View →](/en/data/catalog/substrate/rolimec/overview) |
-|           Shibuya           |   https://v2.archive.subsquid.io/network/shibuya-substrate     | [View →](/en/data/catalog/substrate/shibuya-substrate/overview) |
-|           Shiden            |    https://v2.archive.subsquid.io/network/shiden-substrate     | [View →](/en/data/catalog/substrate/shiden-substrate/overview) |
-|            Sora             |      https://v2.archive.subsquid.io/network/sora-mainnet       | [View →](/en/data/catalog/substrate/sora-mainnet/overview) |
-|     Subsocial Parachain     |  https://v2.archive.subsquid.io/network/subsocial-parachain    | [View →](/en/data/catalog/substrate/subsocial-parachain/overview) |
-|           Tanssi            |    https://v2.archive.subsquid.io/network/tanssi-substrate     | [View →](/en/data/catalog/substrate/tanssi-substrate/overview) |
-|           Ternoa            |         https://v2.archive.subsquid.io/network/ternoa          | [View →](/en/data/catalog/substrate/ternoa/overview) |
-|           Turing            |     https://v2.archive.subsquid.io/network/turing-mainnet      | [View →](/en/data/catalog/substrate/turing-mainnet/overview) |
-|        Turing Avail         |      https://v2.archive.subsquid.io/network/turing-avail       | [View →](/en/data/catalog/substrate/turing-avail/overview) |
-|            Vara             |          https://v2.archive.subsquid.io/network/vara           | [View →](/en/data/catalog/substrate/vara/overview) |
-|        Vara Testnet         |      https://v2.archive.subsquid.io/network/vara-testnet       | [View →](/en/data/catalog/substrate/vara-testnet/overview) |
-|           Westend           |        https://v2.archive.subsquid.io/network/westend          | [View →](/en/data/catalog/substrate/westend/overview) |
-|          Zeitgeist          |       https://v2.archive.subsquid.io/network/zeitgeist         | [View →](/en/data/catalog/substrate/zeitgeist/overview) |
-|      Zeitgeist Testnet      |   https://v2.archive.subsquid.io/network/zeitgeist-testnet     | [View →](/en/data/catalog/substrate/zeitgeist-testnet/overview) |
-|      zkVerify Testnet       |    https://v2.archive.subsquid.io/network/zkverify-testnet     | [View →](/en/data/catalog/substrate/zkverify-testnet/overview) |
-
-(\*) Asset Hub networks for Polkadot and Kusama were formerly known as Statemint and Statemine, respectively
-
-(\*\*) The Avail Mainnet dataset starts at block 1
+| Network | <Tooltip tip="Available on Portal infrastructure">Portal</Tooltip> | <Tooltip tip="Dataset identifier for use with Portal endpoints">Slug</Tooltip> | Details |
+| :-------------------------: | :-----------------------------------------------------------------: | :-----------------------------------------------------------------------------: | :-----: |
+|            Acala            | <Icon icon="circle-xmark" iconType="solid" /> | `acala` | [View →](/en/data/catalog/substrate/acala/overview) |
+|       Acurast Canary        | <Icon icon="circle-xmark" iconType="solid" /> | `acurast-canary` | [View →](/en/data/catalog/substrate/acurast-canary/overview) |
+|            Agung            | <Icon icon="circle-xmark" iconType="solid" /> | `agung` | [View →](/en/data/catalog/substrate/agung/overview) |
+|         Aleph Zero          | <Icon icon="circle-xmark" iconType="solid" /> | `aleph-zero` | [View →](/en/data/catalog/substrate/aleph-zero/overview) |
+|     Aleph Zero Testnet      | <Icon icon="circle-xmark" iconType="solid" /> | `aleph-zero-testnet` | [View →](/en/data/catalog/substrate/aleph-zero-testnet/overview) |
+|          Amplitude          | <Icon icon="circle-xmark" iconType="solid" /> | `amplitude` | [View →](/en/data/catalog/substrate/amplitude/overview) |
+| <Tooltip tip="Asset Hub networks for Polkadot and Kusama were formerly known as Statemint and Statemine, respectively">Asset Hub Kusama</Tooltip> | <Icon icon="circle-xmark" iconType="solid" /> | `asset-hub-kusama` | [View →](/en/data/catalog/substrate/asset-hub-kusama/overview) |
+| <Tooltip tip="Asset Hub networks for Polkadot and Kusama were formerly known as Statemint and Statemine, respectively">Asset Hub Polkadot</Tooltip> | <Icon icon="circle-xmark" iconType="solid" /> | `asset-hub-polkadot` | [View →](/en/data/catalog/substrate/asset-hub-polkadot/overview) |
+|      Asset Hub Rococo       | <Icon icon="circle-xmark" iconType="solid" /> | `asset-hub-rococo` | [View →](/en/data/catalog/substrate/asset-hub-rococo/overview) |
+|      Asset Hub Westend      | <Icon icon="circle-xmark" iconType="solid" /> | `asset-hub-westend` | [View →](/en/data/catalog/substrate/asset-hub-westend/overview) |
+|   Asset Hub Westend Next    | <Icon icon="circle-xmark" iconType="solid" /> | `asset-hub-westend-next` | [View →](/en/data/catalog/substrate/asset-hub-westend-next/overview) |
+|            Astar            | <Icon icon="circle-xmark" iconType="solid" /> | `astar-substrate` | [View →](/en/data/catalog/substrate/astar-substrate/overview) |
+| <Tooltip tip="The Avail Mainnet dataset starts at block 1">Avail Mainnet</Tooltip> | <Icon icon="circle-xmark" iconType="solid" /> | `avail` | [View →](/en/data/catalog/substrate/avail/overview) |
+|          Basilisk           | <Icon icon="circle-xmark" iconType="solid" /> | `basilisk` | [View →](/en/data/catalog/substrate/basilisk/overview) |
+|       Bifrost Kusama        | <Icon icon="circle-xmark" iconType="solid" /> | `bifrost-kusama` | [View →](/en/data/catalog/substrate/bifrost-kusama/overview) |
+|      Bifrost Polkadot       | <Icon icon="circle-xmark" iconType="solid" /> | `bifrost-polkadot` | [View →](/en/data/catalog/substrate/bifrost-polkadot/overview) |
+|          Bittensor          | <Icon icon="circle-xmark" iconType="solid" /> | `bittensor` | [View →](/en/data/catalog/substrate/bittensor/overview) |
+|      Bittensor Testnet      | <Icon icon="circle-xmark" iconType="solid" /> | `bittensor-testnet` | [View →](/en/data/catalog/substrate/bittensor-testnet/overview) |
+|      Bridge Hub Kusama      | <Icon icon="circle-xmark" iconType="solid" /> | `bridge-hub-kusama` | [View →](/en/data/catalog/substrate/bridge-hub-kusama/overview) |
+|     Bridge Hub Polkadot     | <Icon icon="circle-xmark" iconType="solid" /> | `bridge-hub-polkadot` | [View →](/en/data/catalog/substrate/bridge-hub-polkadot/overview) |
+|      Bridge Hub Rococo      | <Icon icon="circle-xmark" iconType="solid" /> | `bridge-hub-rococo` | [View →](/en/data/catalog/substrate/bridge-hub-rococo/overview) |
+|     Bridge Hub Westend      | <Icon icon="circle-xmark" iconType="solid" /> | `bridge-hub-westend` | [View →](/en/data/catalog/substrate/bridge-hub-westend/overview) |
+|         Centrifuge          | <Icon icon="circle-xmark" iconType="solid" /> | `centrifuge` | [View →](/en/data/catalog/substrate/centrifuge/overview) |
+|            Cere             | <Icon icon="circle-xmark" iconType="solid" /> | `cere` | [View →](/en/data/catalog/substrate/cere/overview) |
+|         Chainfliip          | <Icon icon="circle-xmark" iconType="solid" /> | `chainflip` | [View →](/en/data/catalog/substrate/chainflip/overview) |
+|           Clover            | <Icon icon="circle-xmark" iconType="solid" /> | `clover` | [View →](/en/data/catalog/substrate/clover/overview) |
+|    Collectives Polkadot     | <Icon icon="circle-xmark" iconType="solid" /> | `collectives-polkadot` | [View →](/en/data/catalog/substrate/collectives-polkadot/overview) |
+|     Collectives Westend     | <Icon icon="circle-xmark" iconType="solid" /> | `collectives-westend` | [View →](/en/data/catalog/substrate/collectives-westend/overview) |
+|        Darwinia Crab        | <Icon icon="circle-xmark" iconType="solid" /> | `darwinia-crab` | [View →](/en/data/catalog/substrate/darwinia-crab/overview) |
+|            Crust            | <Icon icon="circle-xmark" iconType="solid" /> | `crust` | [View →](/en/data/catalog/substrate/crust/overview) |
+|          Dancebox           | <Icon icon="circle-xmark" iconType="solid" /> | `dancebox` | [View →](/en/data/catalog/substrate/dancebox/overview) |
+|         Dancelight          | <Icon icon="circle-xmark" iconType="solid" /> | `dancelight` | [View →](/en/data/catalog/substrate/dancelight/overview) |
+|          Darwinia           | <Icon icon="circle-xmark" iconType="solid" /> | `darwinia` | [View →](/en/data/catalog/substrate/darwinia/overview) |
+| Data Avail (Avail Goldberg) | <Icon icon="circle-xmark" iconType="solid" /> | `data-avail` | [View →](/en/data/catalog/substrate/data-avail/overview) |
+|            Eden             | <Icon icon="circle-xmark" iconType="solid" /> | `eden` | [View →](/en/data/catalog/substrate/eden/overview) |
+|     Enjin Canary Matrix     | <Icon icon="circle-xmark" iconType="solid" /> | `enjin-canary-matrix` | [View →](/en/data/catalog/substrate/enjin-canary-matrix/overview) |
+|        Enjin Matrix         | <Icon icon="circle-xmark" iconType="solid" /> | `enjin-matrix` | [View →](/en/data/catalog/substrate/enjin-matrix/overview) |
+|         Enjin Relay         | <Icon icon="circle-xmark" iconType="solid" /> | `enjin-relay` | [View →](/en/data/catalog/substrate/enjin-relay/overview) |
+|         Equilibrium         | <Icon icon="circle-xmark" iconType="solid" /> | `equilibrium` | [View →](/en/data/catalog/substrate/equilibrium/overview) |
+|           Foucoco           | <Icon icon="circle-xmark" iconType="solid" /> | `foucoco` | [View →](/en/data/catalog/substrate/foucoco/overview) |
+|          Frequency          | <Icon icon="circle-xmark" iconType="solid" /> | `frequency` | [View →](/en/data/catalog/substrate/frequency/overview) |
+|          Gemini 3h          | <Icon icon="circle-xmark" iconType="solid" /> | `gemini-3h` | [View →](/en/data/catalog/substrate/gemini-3h/overview) |
+|           HydraDX           | <Icon icon="circle-xmark" iconType="solid" /> | `hydradx` | [View →](/en/data/catalog/substrate/hydradx/overview) |
+|     Integritee Network      | <Icon icon="circle-xmark" iconType="solid" /> | `integritee` | [View →](/en/data/catalog/substrate/integritee/overview) |
+|          Interlay           | <Icon icon="circle-xmark" iconType="solid" /> | `interlay` | [View →](/en/data/catalog/substrate/interlay/overview) |
+|      Invarch Parachain      | <Icon icon="circle-xmark" iconType="solid" /> | `invarch-parachain` | [View →](/en/data/catalog/substrate/invarch-parachain/overview) |
+|      Invarch Tinkernet      | <Icon icon="circle-xmark" iconType="solid" /> | `invarch-tinkernet` | [View →](/en/data/catalog/substrate/invarch-tinkernet/overview) |
+|          Joystream          | <Icon icon="circle-xmark" iconType="solid" /> | `joystream` | [View →](/en/data/catalog/substrate/joystream/overview) |
+|           Karura            | <Icon icon="circle-xmark" iconType="solid" /> | `karura` | [View →](/en/data/catalog/substrate/karura/overview) |
+|            Khala            | <Icon icon="circle-xmark" iconType="solid" /> | `khala` | [View →](/en/data/catalog/substrate/khala/overview) |
+|            Kilt             | <Icon icon="circle-xmark" iconType="solid" /> | `kilt` | [View →](/en/data/catalog/substrate/kilt/overview) |
+|          Kintsugi           | <Icon icon="circle-xmark" iconType="solid" /> | `kintsugi` | [View →](/en/data/catalog/substrate/kintsugi/overview) |
+|           Kusama            | <Icon icon="circle-xmark" iconType="solid" /> | `kusama` | [View →](/en/data/catalog/substrate/kusama/overview) |
+|          Litentry           | <Icon icon="circle-xmark" iconType="solid" /> | `litentry` | [View →](/en/data/catalog/substrate/litentry/overview) |
+|          Moonbase           | <Icon icon="circle-xmark" iconType="solid" /> | `moonbase-substrate` | [View →](/en/data/catalog/substrate/moonbase-substrate/overview) |
+|          Moonbeam           | <Icon icon="circle-xmark" iconType="solid" /> | `moonbeam-substrate` | [View →](/en/data/catalog/substrate/moonbeam-substrate/overview) |
+|          Moonriver          | <Icon icon="circle-xmark" iconType="solid" /> | `moonriver-substrate` | [View →](/en/data/catalog/substrate/moonriver-substrate/overview) |
+|            Paseo            | <Icon icon="circle-xmark" iconType="solid" /> | `paseo` | [View →](/en/data/catalog/substrate/paseo/overview) |
+|            Peaq             | <Icon icon="circle-xmark" iconType="solid" /> | `peaq-mainnet-substrate` | [View →](/en/data/catalog/substrate/peaq-mainnet-substrate/overview) |
+|          Pendulum           | <Icon icon="circle-xmark" iconType="solid" /> | `pendulum` | [View →](/en/data/catalog/substrate/pendulum/overview) |
+|        People Chain         | <Icon icon="circle-xmark" iconType="solid" /> | `people-chain` | [View →](/en/data/catalog/substrate/people-chain/overview) |
+|            Phala            | <Icon icon="circle-xmark" iconType="solid" /> | `phala` | [View →](/en/data/catalog/substrate/phala/overview) |
+|        Phala Testnet        | <Icon icon="circle-xmark" iconType="solid" /> | `phala-testnet` | [View →](/en/data/catalog/substrate/phala-testnet/overview) |
+|           Picasso           | <Icon icon="circle-xmark" iconType="solid" /> | `picasso` | [View →](/en/data/catalog/substrate/picasso/overview) |
+|           Polimec           | <Icon icon="circle-xmark" iconType="solid" /> | `polimec` | [View →](/en/data/catalog/substrate/polimec/overview) |
+|          Polkadex           | <Icon icon="circle-xmark" iconType="solid" /> | `polkadex` | [View →](/en/data/catalog/substrate/polkadex/overview) |
+|          Polkadot           | <Icon icon="circle-xmark" iconType="solid" /> | `polkadot` | [View →](/en/data/catalog/substrate/polkadot/overview) |
+|          Polymesh           | <Icon icon="circle-xmark" iconType="solid" /> | `polymesh` | [View →](/en/data/catalog/substrate/polymesh/overview) |
+|            Reef             | <Icon icon="circle-xmark" iconType="solid" /> | `reef` | [View →](/en/data/catalog/substrate/reef/overview) |
+|        Reef Testnet         | <Icon icon="circle-xmark" iconType="solid" /> | `reef-testnet` | [View →](/en/data/catalog/substrate/reef-testnet/overview) |
+|         Robonomics          | <Icon icon="circle-xmark" iconType="solid" /> | `robonomics` | [View →](/en/data/catalog/substrate/robonomics/overview) |
+|           Rococo            | <Icon icon="circle-xmark" iconType="solid" /> | `rococo` | [View →](/en/data/catalog/substrate/rococo/overview) |
+|           Rolimec           | <Icon icon="circle-xmark" iconType="solid" /> | `rolimec` | [View →](/en/data/catalog/substrate/rolimec/overview) |
+|           Shibuya           | <Icon icon="circle-xmark" iconType="solid" /> | `shibuya-substrate` | [View →](/en/data/catalog/substrate/shibuya-substrate/overview) |
+|           Shiden            | <Icon icon="circle-xmark" iconType="solid" /> | `shiden-substrate` | [View →](/en/data/catalog/substrate/shiden-substrate/overview) |
+|            Sora             | <Icon icon="circle-xmark" iconType="solid" /> | `sora-mainnet` | [View →](/en/data/catalog/substrate/sora-mainnet/overview) |
+|     Subsocial Parachain     | <Icon icon="circle-xmark" iconType="solid" /> | `subsocial-parachain` | [View →](/en/data/catalog/substrate/subsocial-parachain/overview) |
+|           Tanssi            | <Icon icon="circle-xmark" iconType="solid" /> | `tanssi-substrate` | [View →](/en/data/catalog/substrate/tanssi-substrate/overview) |
+|           Ternoa            | <Icon icon="circle-xmark" iconType="solid" /> | `ternoa` | [View →](/en/data/catalog/substrate/ternoa/overview) |
+|           Turing            | <Icon icon="circle-xmark" iconType="solid" /> | `turing-mainnet` | [View →](/en/data/catalog/substrate/turing-mainnet/overview) |
+|        Turing Avail         | <Icon icon="circle-xmark" iconType="solid" /> | `turing-avail` | [View →](/en/data/catalog/substrate/turing-avail/overview) |
+|            Vara             | <Icon icon="circle-xmark" iconType="solid" /> | `vara` | [View →](/en/data/catalog/substrate/vara/overview) |
+|        Vara Testnet         | <Icon icon="circle-xmark" iconType="solid" /> | `vara-testnet` | [View →](/en/data/catalog/substrate/vara-testnet/overview) |
+|           Westend           | <Icon icon="circle-xmark" iconType="solid" /> | `westend` | [View →](/en/data/catalog/substrate/westend/overview) |
+|          Zeitgeist          | <Icon icon="circle-xmark" iconType="solid" /> | `zeitgeist` | [View →](/en/data/catalog/substrate/zeitgeist/overview) |
+|      Zeitgeist Testnet      | <Icon icon="circle-xmark" iconType="solid" /> | `zeitgeist-testnet` | [View →](/en/data/catalog/substrate/zeitgeist-testnet/overview) |
+|      zkVerify Testnet       | <Icon icon="circle-xmark" iconType="solid" /> | `zkverify-testnet` | [View →](/en/data/catalog/substrate/zkverify-testnet/overview) |

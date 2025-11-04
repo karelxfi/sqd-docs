@@ -1,0 +1,67 @@
+---
+title: "Overview"
+description: "Eclipse Testnet data indexing and API access"
+---
+
+<Info>
+  Starting today (2025-02-23) all open private network gateways are rate limited
+  at 50 requests per 10 seconds per IP. Higher bandwidths will soon become
+  available via the public network.
+</Info>
+
+## Network Information
+
+- **Network ID**: `eclipse-testnet`
+- **Gateway**: Open Private Network
+
+## Endpoints
+
+### Gateway Endpoint
+
+```
+https://v2.archive.subsquid.io/network/eclipse-testnet
+```
+
+### Usage
+
+```typescript
+import { SolanaDataSource } from '@subsquid/solana-stream'
+
+const dataSource = new SolanaDataSource()
+  .setGateway("https://v2.archive.subsquid.io/network/eclipse-testnet")
+  .setBlockRange({ from: 0 });
+```
+
+## Quick Start
+
+Get started indexing Eclipse Testnet data:
+
+<Card
+  title="Quick Start"
+  icon="terminal"
+  href="/en/solana-indexing/how-to-start/cli-cheatsheet"
+>
+  Quick reference for building your indexer
+</Card>
+
+## Schema Reference
+
+<Card
+  title="View Schema"
+  icon="database"
+  href="/en/data/catalog/solana/eclipse-testnet/schema"
+>
+  See complete field definitions for all data types
+</Card>
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="code" href="/en/solana-indexing/network-api/solana-api">
+    Complete API documentation
+  </Card>
+  <Card title="Network Overview" icon="network-wired" href="/en/subsquid-network/overview">
+    Learn about the Subsquid Network
+  </Card>
+</CardGroup>
+

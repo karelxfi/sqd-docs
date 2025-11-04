@@ -1,0 +1,578 @@
+---
+ptitle: "Run a Worker"
+description: "Set up and operate a worker node to serve network data and earn rewards"
+---
+
+<Warning>
+  We strongly advise against using Hetzner for running SQD Network worker nodes
+  due to reliability concerns.
+</Warning>
+
+Running a worker node allows you to contribute storage and compute resources to SQD Network and earn `SQD` token rewards.
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+### Hardware Requirements
+
+- **CPU:** 4 vCPU
+- **RAM:** 16GB
+- **Storage:** 1TB SSD
+- **Network:** Stable 24/7 Internet connection (minimum 1Gbit)
+
+### Network Configuration
+
+- Public IP address
+- Two ports open for incoming traffic:
+  - **UDP port** for P2P communication (default: 12345)
+  - **TCP port** for Prometheus metrics (default: 9090)
+
+### Software Requirements
+
+- Docker
+- Docker Compose
+
+### Financial Requirements
+
+- **100,000 `SQD` tokens** (in your wallet or vesting contract)
+- **Arbitrum ETH** for gas fees
+
+<Info>
+  The `SQD` tokens should be available in your Primary Wallet—either directly or
+  through a vesting contract. With sufficient funds, one Primary Wallet can
+  register multiple workers.
+</Info>
+
+<Tip>
+  Use a browser-compatible wallet like MetaMask for your Primary Wallet.
+</Tip>
+
+### Setup Options
+
+You can run a worker using either:
+
+- Pre-built Docker image (recommended)
+- Build from source code
+
+<Note>
+  Docker is required for both options as the configuration script uses it.
+</Note>
+
+## Setup Instructions
+
+<Steps>
+<Step title="Choose data and key storage locations" icon="folder">
+
+Choose your storage locations:
+
+1. **Data directory** - Select a location that can accommodate at least 1TB
+2. **Key file location** - Must be outside the data directory
+
+<Warning>
+  Protect your key file! Ensure it won't be deleted accidentally and cannot be
+  accessed by unauthorized parties. See [consequences of losing your
+  key](#what-are-the-consequences-of-losing-my-key-file--getting-it-stolen).
+</Warning>
+
+<Note>
+  Do not create the data folder manually—the setup script will create it.
+</Note>
+
+</Step>
+
+<Step title="Download the setup script" icon="download">
+
+Create a new directory for installation files and download the setup script:
+
+```bash
+curl -fO https://cdn.subsquid.io/worker/setup_worker.sh
+```
+
+Make the script executable:
+
+```bash
+chmod +x ./setup_worker.sh
+```
+
+<Check>Setup script is ready to run.</Check>
+
+</Step>
+
+<Step title="Run the setup script" icon="terminal">
+
+Execute the setup script with your chosen paths:
+
+```bash
+./setup_worker.sh <DATA_DIR_PATH> <KEY_PATH>
+```
+
+The script will:
+
+- Prompt you for a UDP port for P2P communication
+- Ask if you want to set your public IP address statically
+
+<Tip>
+  Most users should not set the IP address manually—automatic IP discovery is
+  more robust.
+</Tip>
+
+**What the script creates:**
+
+- Data directory at `<DATA_DIR_PATH>`
+- Key file at `<KEY_PATH>`
+- `.env` file with default configuration
+- `.mainnet.env` file
+- `docker-compose.yaml` file for running the worker
+
+<Info>
+  View all files the script downloads on
+  [GitHub](https://github.com/subsquid/cdn/tree/main/src/worker).
+</Info>
+
+</Step>
+
+<Step title="Copy your peer ID" icon="id-card">
+
+The script's output will end with a line like this:
+
+```
+Your peer ID is: 12D3KooWPfotj6qQapKeWg4RZysUjEeswLEpiSjgv16LgNTyYFTW. Now you can register it on chain.
+```
+
+**Copy your peer ID**—you'll need it for on-chain worker registration.
+
+<Check>Setup complete! You're ready to register your worker.</Check>
+
+</Step>
+
+<Step title="Optional: Customize configuration" icon="gear">
+
+If needed, edit the generated `.env` and `.mainnet.env` files to:
+
+- Set a custom Prometheus port
+- Use your own RPC provider
+- Adjust other configuration parameters
+
+<Note>Most users can skip this step and use the default configuration.</Note>
+
+</Step>
+</Steps>
+
+## Worker Registration
+
+<Info>
+  By registering a worker, you commit your tokens for approximately 7 days
+  (50,000 Ethereum blocks) plus the time until the end of the current
+  [epoch](subsquid-network/faq/#epoch) (up to 20 minutes). Withdrawal is not
+  possible during this period.
+</Info>
+
+Before running your worker node, you must register it on-chain.
+
+<Steps>
+<Step title="Connect your wallet" icon="wallet">
+
+1. Go to [network.subsquid.io](https://network.subsquid.io)
+2. Connect your Primary Wallet (the one holding your 100,000 `SQD` tokens)
+
+<Check>Your wallet address should appear in the interface.</Check>
+
+</Step>
+
+<Step title="Access worker registration" icon="plus">
+
+Navigate to the "Workers" tab and click the "Add Worker" button.
+
+The worker registration form will appear.
+
+</Step>
+
+<Step title="Fill the registration form" icon="pen-to-square">
+
+Complete the registration form:
+
+1. **Funding source:** Choose either:
+
+   - "Wallet" - Use `SQD` tokens directly from your wallet
+   - "Vesting contract" - Use `SQD` tokens from a vesting contract
+
+2. **Peer ID:** Enter the peer ID you copied during [setup](#setup-instructions)
+
+3. Submit the form by confirming the transaction in your wallet
+
+<Warning>
+  Double-check your peer ID before submitting—incorrect IDs will prevent your
+  worker from functioning properly.
+</Warning>
+
+</Step>
+
+<Step title="Wait for activation" icon="hourglass">
+
+1. Go to the "Workers" tab
+2. Monitor your worker's status
+
+Your worker will change to "Offline" or "Active" status at the beginning of the next [epoch](subsquid-network/faq/#epoch) (within approximately 20 minutes).
+
+<Check>
+  Worker registered! Proceed to running your worker once the status updates.
+</Check>
+
+</Step>
+</Steps>
+
+## Running Your Worker
+
+<Note>
+  Ensure you're in the folder where you executed `setup_worker.sh` during the
+  setup process.
+</Note>
+
+<Tabs>
+<Tab title="Docker (Recommended)">
+
+### Run with Docker Compose
+
+Start your worker in detached mode:
+
+```bash
+docker compose up -d
+```
+
+### Monitor Logs
+
+Check the worker container logs:
+
+```bash
+docker compose logs
+```
+
+<Check>
+  After a few minutes, the worker should begin outputting information about
+  downloaded data chunks.
+</Check>
+
+<Tip>Use `docker compose logs -f` to follow logs in real-time.</Tip>
+
+</Tab>
+
+<Tab title="Build from Source">
+
+### Install Prerequisites
+
+Install required dependencies (Rust, Git, Protobuf, etc.):
+
+```bash
+apt install curl git build-essential pkg-config protobuf-compiler libssl-dev libsqlite3-dev
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+### Load Configuration
+
+Load the configuration files generated during setup:
+
+```bash
+source .mainnet.env
+source .env
+```
+
+### Clone the Worker Repository
+
+Clone the worker repository (this may take a few minutes):
+
+```bash
+git clone --depth 1 --branch v1.0.0 https://github.com/subsquid/worker-rs.git
+```
+
+### Build the Worker
+
+Navigate to the repository and build:
+
+```bash
+cd worker-rs
+cargo build --release
+```
+
+### Run the Worker
+
+Start the worker using `nohup`:
+
+```bash
+nohup cargo run --release -- --port $PROMETHEUS_PORT p2p
+```
+
+<Tip>
+  Consider daemonizing with `systemd` or `openrc` to ensure the worker restarts
+  automatically after server reboots.
+</Tip>
+
+<Check>
+  After some time, the worker will start downloading data and serving queries.
+</Check>
+
+</Tab>
+</Tabs>
+
+## Updating Your Worker
+
+Periodically, you'll need to update your worker to the latest version. Follow these steps:
+
+<Warning>Always back up your key file before updating.</Warning>
+
+<Tabs>
+<Tab title="Docker Update">
+
+1. Navigate to your installation files folder
+2. Fetch the updated `docker-compose.yaml`:
+
+```bash
+curl -fO https://cdn.subsquid.io/worker/docker-compose.yaml
+```
+
+3. Apply the update:
+
+```bash
+docker compose up -d
+```
+
+<Check>Update complete! Your worker is now running the latest version.</Check>
+
+</Tab>
+
+<Tab title="Source Build Update">
+
+1. Note the new worker version from the announcement
+2. Navigate to your installation files folder
+3. Enter the `worker-rs` subfolder
+4. Fetch new commits:
+
+```bash
+git fetch --unshallow
+```
+
+5. Check out the new version:
+
+```bash
+git checkout <new_version_tag>
+```
+
+6. Rebuild the worker:
+
+```bash
+cargo build --release
+```
+
+7. Restart the worker process
+
+<Check>Update complete! Your worker is now running the latest version.</Check>
+
+</Tab>
+</Tabs>
+
+<Info>
+  You don't need to erase the data folder or re-register your worker during
+  updates.
+</Info>
+
+<Note>
+  Some releases may require deviations from this procedure. Always read release
+  notes carefully.
+</Note>
+
+## Understanding Worker Jailing
+
+Jailing is a scheduler-side mechanism that ensures data chunk availability across the network. The scheduler identifies potentially unreliable workers and guarantees that each chunk exists on multiple reliable nodes.
+
+<Info>
+  Jailed workers continue serving queries from downloaded chunks and earning
+  rewards. Jailing is temporary—workers are automatically unjailed within
+  approximately 3 hours.
+</Info>
+
+### Impact on Rewards
+
+While occasional jailing is normal, frequent jailing may reduce your rewards. Monitor your worker's status and address any underlying issues.
+
+### Common Jailing Reasons
+
+Check your worker logs to identify which issue applies:
+
+**Stale Worker** - Worker didn't download assigned chunks in the last 900 seconds
+
+- Most common jailing reason
+- Check worker logs for the root cause
+- Often related to [download timeouts](#i-see-failed-to-download-chunk--operation-timed-out-in-the-worker-logs)
+
+**Inactive Worker** - Worker didn't send pings for over 600 seconds
+
+- May occur after extended downtime
+- Scheduler considers the worker offline and stops assigning chunks
+
+**Unreachable Worker** (Currently disabled)
+
+- Was used to detect P2P network connectivity issues
+- Implementation challenges led to this check being disabled
+
+<Tip>
+  If your worker stays online consistently and maintains good connectivity, it's
+  unlikely to be jailed frequently.
+</Tip>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="Where do I find my peer ID?">
+
+Your peer ID can be found in several places:
+
+1. **Setup script output** - Printed when you run `setup_worker.sh` (see [Setup Instructions](#setup-instructions))
+
+2. **Worker logs:**
+   - **Docker setup:** Run `docker compose logs`
+   - **Source build:** Check the `network.log` file
+
+Look for a log line like this:
+
+```
+2024-05-28T07:43:55.591440Z  INFO subsquid_worker::transport::p2p: Local peer ID: <PEER_ID>
+```
+
+</Accordion>
+
+<Accordion title='I see "Failed to download chunk ... operation timed out" in the worker logs'>
+
+This error indicates connection issues. Adjust timeout settings based on your connection quality:
+
+**If you encounter this frequently:**
+
+1. Set `S3_TIMEOUT` to `180` in your `.env` file
+2. If the issue persists, also set:
+   - `CONCURRENT_DOWNLOADS` to `1`
+   - `S3_READ_TIMEOUT` to `30`
+
+These adjustments reduce concurrent downloads and increase timeout thresholds, helping with slower or less stable connections.
+
+</Accordion>
+
+<Accordion title='I see "Unable to get assignment: deadline has elapsed" in the worker logs'>
+
+This is a known issue in version 2.0.2.
+
+**Solution:**
+
+Set `ASSIGNMENT_FETCH_TIMEOUT_SEC=90` in your `.env` file and restart the worker.
+
+</Accordion>
+
+<Accordion title='I see an "Insufficient peers..." error in the worker logs'>
+
+This error can be safely ignored. It doesn't affect worker functionality or rewards.
+
+</Accordion>
+
+<Accordion title="Can I move my worker to another server?">
+
+Yes! You can migrate your worker to a new server:
+
+1. Copy the key file (at `<KEY_PATH>`) to the new server
+2. Set up the new data directory
+3. Start the worker on the new server
+
+<Info>
+  You don't need to re-register your worker when moving to a new server.
+</Info>
+
+</Accordion>
+
+<Accordion title="I have just started my worker but see no logs">
+
+This is normal behavior. Wait a few minutes—the logs will start showing data download activity once the worker begins syncing.
+
+</Accordion>
+
+<Accordion title="Should I build from source or run with Docker?">
+
+**Docker (Recommended)** - Easier setup, suitable for most users
+
+**Build from Source** - Suitable for experienced Linux/Unix users who need more control or customization
+
+<Tip>
+  Choose Docker unless you have specific requirements that necessitate building
+  from source.
+</Tip>
+
+</Accordion>
+
+<Accordion title="How do I check that my worker is updated to the latest version?">
+
+Check the [pings endpoint](https://scheduler.mainnet.subsquid.io/workers/pings) and search for your peer ID to view the current version.
+
+</Accordion>
+
+<Accordion title="Which Linux distro is recommended?">
+
+We recommend **Ubuntu 22.04 LTS** for optimal compatibility and stability.
+
+</Accordion>
+
+<Accordion title='I see "error from daemon in stream: Error grabbing logs"'>
+
+This is a Docker issue, not a worker problem.
+
+**Resources for resolution:**
+
+- [GitHub issue discussion](https://github.com/docker/for-linux/issues/140)
+- [Stack Overflow thread](https://stackoverflow.com/questions/46843711/docker-error-grabbing-logs-invalid-character-x00-looking-for-beginning-of-v)
+
+</Accordion>
+
+<Accordion title="How do I check if my worker is up-to-date and running?">
+
+1. Copy your peer ID
+2. Visit the [pings page](https://scheduler.mainnet.subsquid.io/workers/pings)
+3. Search for your peer ID
+
+**Your worker is healthy if:**
+
+- Last ping timestamp is within 1 minute
+- Listed version matches the most recent release
+
+<Check>If both conditions are met, your worker is running properly.</Check>
+
+</Accordion>
+
+<Accordion title="I'm getting 'Clone succeeded, but checkout failed' when cloning the worker repo">
+
+Manually check out the correct version:
+
+```bash
+cd worker-rs
+git checkout v1.0.0
+```
+
+</Accordion>
+
+<Accordion title="What are the consequences of losing my key file / getting it stolen?">
+
+**If you lose your key file:**
+
+- You won't be able to run your worker until you generate and register a new one
+
+**If your key file is stolen:**
+
+- The perpetrator can cause connectivity issues for your worker
+
+**Recovery steps:**
+
+1. Unregister your worker on the ["Workers" tab](https://network.subsquid.io/workers)
+2. [Generate](#setup-instructions) a new key file
+3. [Register](#worker-registration) your new peer ID
+
+<Warning>
+  Protect your key file! Store it securely and restrict access to prevent these
+  issues.
+</Warning>
+
+</Accordion>
+</AccordionGroup>
