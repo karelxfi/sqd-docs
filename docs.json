@@ -99,6 +99,7 @@
                 "groups": [
                   {
                     "group": "Overview",
+                    "icon": "circle-info",
                     "pages": [
                       "en/sdk/choose-your-approach",
                       "en/sdk/comparison"
@@ -109,21 +110,21 @@
                     "tag": "NEW",
                     "icon": "network-wired",
                     "pages": [
-                      "en/sdk/portal-evm/overview",
-                      "en/sdk/portal-evm/quickstart",
+                      "en/portal/evm/overview",
+                      "en/portal/evm/quickstart",
                       {
                         "group": "Examples",
                         "pages": [
-                          "en/sdk/portal-evm/examples/query-logs",
-                          "en/sdk/portal-evm/examples/query-transactions",
-                          "en/sdk/portal-evm/examples/query-traces",
-                          "en/sdk/portal-evm/examples/nft-transfers",
-                          "en/sdk/portal-evm/examples/dex-swaps",
-                          "en/sdk/portal-evm/examples/contract-deployments",
-                          "en/sdk/portal-evm/examples/state-diffs"
+                          "en/portal/evm/use-portal/query-logs",
+                          "en/portal/evm/use-portal/query-transactions",
+                          "en/portal/evm/use-portal/query-traces",
+                          "en/portal/evm/use-portal/nft-transfers",
+                          "en/portal/evm/use-portal/dex-swaps",
+                          "en/portal/evm/use-portal/contract-deployments",
+                          "en/portal/evm/use-portal/state-diffs"
                         ]
                       },
-                      "en/sdk/portal-evm/api-reference"
+                      "en/portal/evm/api-reference"
                     ]
                   },
                   {
@@ -362,6 +363,7 @@
                 "groups": [
                   {
                     "group": "Substrate",
+                    "icon": "link",
                     "pages": [
                       "en/sdk/squid-sdk/substrate/quickstart",
                       {
@@ -473,6 +475,7 @@
                 "groups": [
                   {
                     "group": "Fuel Network",
+                    "icon": "fire",
                     "pages": [
                       "en/sdk/squid-sdk/fuel/quickstart",
                       "en/sdk/squid-sdk/fuel/fuel-datasource",
@@ -495,6 +498,7 @@
                   },
                   {
                     "group": "Tron",
+                    "icon": "globe",
                     "pages": [
                       "en/sdk/squid-sdk/tron/quickstart",
                       "en/sdk/squid-sdk/tron/indexing-usdt-transfers",
@@ -516,6 +520,7 @@
                   },
                   {
                     "group": "Starknet",
+                    "icon": "globe",
                     "pages": [
                       "en/sdk/squid-sdk/starknet/quickstart"
                     ]
@@ -530,6 +535,7 @@
             "groups": [
               {
                 "group": "Cloud",
+                "icon": "cloud",
                 "pages": [
                   "en/cloud/overview",
                   "en/cloud/pricing",
@@ -576,6 +582,7 @@
               },
               {
                 "group": "Self-Hosting",
+                "icon": "server",
                 "pages": [
                   "en/sdk/squid-sdk/features/self-hosting"
                 ]
@@ -593,32 +600,19 @@
                   "en/network/overview",
                   "en/network/faq",
                   "en/network/tokenomics",
-                  "en/network/whitepaper"
+                  "en/network/whitepaper",
+                  "en/network/participate/procuring-sqd",
+                  "en/network/participate/delegate",
+                  "en/network/participate/worker"
                 ]
               },
               {
                 "group": "Portal",
+                "icon": "square-binary",
                 "pages": [
                   "en/portal/overview",
                   "en/portal/pricing",
                   "en/portal/quickstart"
-                ]
-              },
-              {
-                "group": "Migration Guides",
-                "pages": [
-                  "en/portal/migration/from-rpc",
-                  "en/portal/migration/cloud-portal-evm",
-                  "en/portal/migration/cloud-portal-solana"
-                ]
-              },
-              {
-                "group": "Placeholder title",
-                "icon": "handshake",
-                "pages": [
-                  "en/network/participate/procuring-sqd",
-                  "en/network/participate/delegate",
-                  "en/network/participate/worker"
                 ]
               }
             ]
@@ -634,17 +628,27 @@
                 "groups": [
                   {
                     "group": "Overview",
+                    "icon": "circle-info",
                     "pages": [
                       "en/data/networks/evm"
                     ]
                   },
                   {
-                    "group": "API Reference",
+                    "group": "Portal API Reference",
+                    "icon": "code",
                     "openapi": "en/api/evm/openapi.yaml",
-                    "directory": "api/evm"
+                    "directory": "api/evm",
+                    "pages": [
+                      "GET /metadata",
+                      "POST /stream",
+                      "POST /finalized-stream",
+                      "GET /head",
+                      "GET /finalized-head"
+                    ]
                   },
                   {
                     "group": "Supported Networks",
+                    "icon": "globe",
                     "pages": [
                       {
                         "group": "Abstract Mainnet",
@@ -917,18 +921,74 @@
                 ]
               },
               {
+                "dropdown": "Solana Data",
+                "description": "Solana and SVM-compatible chains",
+                "icon": "globe",
+                "groups": [
+                  {
+                    "group": "Overview",
+                    "icon": "circle-info",
+                    "pages": [
+                      "en/data/networks/solana"
+                    ]
+                  },
+                  {
+                    "group": "Portal API Reference",
+                    "icon": "code",
+                    "openapi": "en/api/solana/openapi.yaml",
+                    "directory": "api/solana",
+                    "pages": [
+                      "GET /metadata",
+                      "POST /stream",
+                      "POST /finalized-stream",
+                      "GET /head",
+                      "GET /finalized-head"
+                    ]
+                  },
+                  {
+                    "group": "Networks",
+                    "icon": "globe",
+                    "pages": [
+                      {
+                        "group": "Solana Mainnet",
+                        "pages": [
+                          "en/data/catalog/solana/solana-mainnet/overview",
+                          "en/data/catalog/solana/solana-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Eclipse Mainnet",
+                        "pages": [
+                          "en/data/catalog/solana/eclipse-mainnet/overview",
+                          "en/data/catalog/solana/eclipse-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Soon Mainnet",
+                        "pages": [
+                          "en/data/catalog/solana/soon-mainnet/overview",
+                          "en/data/catalog/solana/soon-mainnet/schema"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
                 "dropdown": "Substrate Data",
                 "description": "Polkadot and Substrate-based chains",
                 "icon": "link",
                 "groups": [
                   {
                     "group": "Overview",
+                    "icon": "circle-info",
                     "pages": [
                       "en/data/networks/substrate"
                     ]
                   },
                   {
                     "group": "Networks",
+                    "icon": "globe",
                     "pages": [
                       {
                         "group": "Acala",
@@ -1544,51 +1604,13 @@
                 ]
               },
               {
-                "dropdown": "Solana Data",
-                "description": "Solana and SVM-compatible chains",
-                "icon": "globe",
-                "groups": [
-                  {
-                    "group": "Overview",
-                    "pages": [
-                      "en/data/networks/solana"
-                    ]
-                  },
-                  {
-                    "group": "Networks",
-                    "pages": [
-                      {
-                        "group": "Solana Mainnet",
-                        "pages": [
-                          "en/data/catalog/solana/solana-mainnet/overview",
-                          "en/data/catalog/solana/solana-mainnet/schema"
-                        ]
-                      },
-                      {
-                        "group": "Eclipse Mainnet",
-                        "pages": [
-                          "en/data/catalog/solana/eclipse-mainnet/overview",
-                          "en/data/catalog/solana/eclipse-mainnet/schema"
-                        ]
-                      },
-                      {
-                        "group": "Soon Mainnet",
-                        "pages": [
-                          "en/data/catalog/solana/soon-mainnet/overview",
-                          "en/data/catalog/solana/soon-mainnet/schema"
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
                 "dropdown": "Other Chains",
                 "description": "Fuel, Tron, and Starknet",
                 "icon": "fire",
                 "groups": [
                   {
                     "group": "Fuel",
+                    "icon": "fire",
                     "pages": [
                       {
                         "group": "Fuel Mainnet",
@@ -1608,6 +1630,7 @@
                   },
                   {
                     "group": "Tron",
+                    "icon": "globe",
                     "pages": [
                       {
                         "group": "Tron Mainnet",
@@ -1620,6 +1643,7 @@
                   },
                   {
                     "group": "Starknet",
+                    "icon": "globe",
                     "pages": [
                       {
                         "group": "Starknet Mainnet",
