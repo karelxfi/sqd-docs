@@ -101,7 +101,6 @@
                     "group": "Overview",
                     "icon": "circle-info",
                     "pages": [
-                      "en/sdk/choose-your-approach",
                       "en/sdk/comparison"
                     ]
                   },
