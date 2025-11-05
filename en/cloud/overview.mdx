@@ -10,15 +10,38 @@ description: "Deploy and scale your squids on SQD Cloud with enterprise-grade in
   />
 </Frame>
 
-# SQD Cloud Overview
+# SQD Cloud
 
-SQD Cloud provides enterprise-grade infrastructure for deploying, managing, and scaling your blockchain indexers. This guide shows you how to deploy a production-ready indexer ("squid") to SQD Cloud.
+**Enterprise-grade deployment platform for blockchain data indexers**
+
+SQD Cloud is a managed infrastructure platform that handles the complexity of deploying, scaling, and monitoring your blockchain indexers. Focus on building your data pipelines while we handle the DevOps.
+
+## Key Benefits
+
+- **Zero DevOps Required** - Deploy with a single command, no infrastructure management
+- **Built-in Monitoring** - Real-time logs, metrics, and health status for all components
+- **Automatic Scaling** - Configure resources and replicas to match your workload
+- **Production-Ready** - Dedicated deployment, managed databases, and high availability
+- **Cost-Effective** - Pay only for resources you use with transparent pricing
+
+## When to Use SQD Cloud
+
+SQD Cloud is ideal for:
+
+- **Production deployments** requiring reliability and uptime
+- **Teams** that want to focus on building, not operations
+- **Projects** that need monitoring and observability built-in
+- **Applications** requiring managed PostgreSQL, RPC access, or GraphQL APIs
 
 <Info>
-  Before deploying to SQD Cloud, ensure you have a working squid locally. See
+  Before deploying to SQD Cloud, ensure you have a working indexer locally. See
   [Development flow](sdk/how-to-start/squid-development) and the [Indexing
   SDK](sdk) section for development guidance.
 </Info>
+
+## Deployment Guide
+
+This guide shows you how to deploy a production-ready indexer ("squid") to SQD Cloud.
 
 ## Prerequisites
 
@@ -68,8 +91,8 @@ Set up your organization for production use:
 
 <Note>
   You can skip this step, but you'll only be able to deploy to your account's
-  [playground](/en/cloud/resources/organizations/#playgrounds). Playground squids
-  are trial/development solutions with limited functionality and are not
+  [playground](/en/cloud/resources/organizations/#playgrounds). Playground
+  squids are trial/development solutions with limited functionality and are not
   suitable for production use.
 </Note>
 

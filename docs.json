@@ -596,6 +596,7 @@
               {
                 "group": "Portal",
                 "icon": "square-binary",
+                "tag": "NEW",
                 "pages": [
                   "en/portal/overview",
                   "en/portal/pricing",

@@ -1,14 +1,314 @@
 ---
-title: "Welcome to Portal"
+title: "SQD Portal"
 sidebarTitle: "Overview"
-description: "The new standard for blockchain data - access raw, unprocessed blockchain data through a decentralized network"
+description: "HTTP API for blockchain data that scales beyond RPC limitations"
 ---
 
-<Frame>
-  <img
-    src="/images/home/portal.png"
-    alt="SQD Portal - The New Standard for Blockchain Data"
-  />
-</Frame>
+<div className="relative rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden my-8">
+  <div className="relative z-10 bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 dark:from-gray-900 dark:via-gray-900 dark:to-slate-900 p-8 sm:p-10 lg:p-12">
+    <div className="max-w-4xl mx-auto text-center">
+      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-5 leading-tight">
+        The first meaningful innovation in on-chain data access since RPC
+      </h1>
+      <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 mb-8 leading-relaxed">
+        RPC was built for transactions, not data extraction—it doesn't scale for
+        high-throughput chains or deep history. Even extracting a single
+        wallet's history can be infeasible with vanilla RPC. SQD Portal is an
+        HTTP interface designed for data pipelines that scales where RPC fails.
+      </p>
+      <div className="grid sm:grid-cols-2 gap-4 text-left">
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-white/60 dark:bg-gray-800/60 border border-slate-200 dark:border-slate-700">
+          <svg
+            className="w-6 h-6 text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2.5}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <div>
+            <div className="font-bold text-base text-gray-900 dark:text-white mb-1">
+              Arbitrary block ranges
+            </div>
+            <div className="text-sm text-gray-700 dark:text-gray-400">
+              Query any range in one request—no more manual per-block pagination
+              that breaks on high-TPS chains
+            </div>
+          </div>
+        </div>
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-white/60 dark:bg-gray-800/60 border border-slate-200 dark:border-slate-700">
+          <svg
+            className="w-6 h-6 text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2.5}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <div>
+            <div className="font-bold text-base text-gray-900 dark:text-white mb-1">
+              Native finalization
+            </div>
+            <div className="text-sm text-gray-700 dark:text-gray-400">
+              Built-in reorg handling with chain-specific finality—no DIY
+              rollback logic
+            </div>
+          </div>
+        </div>
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-white/60 dark:bg-gray-800/60 border border-slate-200 dark:border-slate-700">
+          <svg
+            className="w-6 h-6 text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2.5}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <div>
+            <div className="font-bold text-base text-gray-900 dark:text-white mb-1">
+              Streaming responses
+            </div>
+            <div className="text-sm text-gray-700 dark:text-gray-400">
+              High-throughput data ingestion with constant memory footprint
+            </div>
+          </div>
+        </div>
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-white/60 dark:bg-gray-800/60 border border-slate-200 dark:border-slate-700">
+          <svg
+            className="w-6 h-6 text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
+            />
+          </svg>
+          <div>
+            <div className="font-bold text-base text-gray-900 dark:text-white mb-1">
+              No vendor lock-in
+            </div>
+            <div className="text-sm text-gray-700 dark:text-gray-400">
+              Self-host, use decentralized network, or managed—same code
+              everywhere
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-SQD Portal is a decentralized, streaming-based data retrieval solution that provides direct access to raw blockchain data. Built on the SQD Network with 1,900+ independent worker nodes, Portal delivers unprocessed blockchain data with 10-50x faster performance than traditional centralized gateways.
+<div className="flex gap-4 my-8">
+  <a
+    href="/en/portal/quickstart"
+    className="inline-flex items-center px-8 py-4 bg-slate-700 hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+  >
+    Get Started
+    <svg
+      className="w-5 h-5 ml-2"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 5l7 7-7 7"
+      />
+    </svg>
+  </a>
+  <a
+    href="/api-reference/dataset-metadata"
+    className="inline-flex items-center px-8 py-4 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+  >
+    API Reference
+  </a>
+</div>
+
+## Why Portal vs Traditional Approaches
+
+Built for the realities of modern blockchain data engineering
+
+<div className="grid md:grid-cols-3 gap-6 max-w-6xl my-12">
+  <div className="p-6 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-900">
+    <div className="text-red-600 dark:text-red-400 font-bold text-lg mb-4">
+      RPC Nodes
+    </div>
+    <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-400">
+      <li className="flex items-start gap-2">
+        <span className="text-red-500 flex-shrink-0 mt-0.5">✗</span>
+        <span>Manual per-block pagination</span>
+      </li>
+      <li className="flex items-start gap-2">
+        <span className="text-red-500 flex-shrink-0 mt-0.5">✗</span>
+        <span>No reorg handling</span>
+      </li>
+      <li className="flex items-start gap-2">
+        <span className="text-red-500 flex-shrink-0 mt-0.5">✗</span>
+        <span>Breaks on high-TPS chains</span>
+      </li>
+    </ul>
+  </div>
+
+{" "}
+
+<div className="p-6 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-gray-900">
+  <div className="text-yellow-600 dark:text-yellow-400 font-bold text-lg mb-4">
+    Centralized Data Warehouses
+  </div>
+  <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-400">
+    <li className="flex items-start gap-2">
+      <span className="text-yellow-500 flex-shrink-0 mt-0.5">⚠</span>
+      <span>Vendor lock-in</span>
+    </li>
+    <li className="flex items-start gap-2">
+      <span className="text-yellow-500 flex-shrink-0 mt-0.5">⚠</span>
+      <span>Proprietary query layers</span>
+    </li>
+    <li className="flex items-start gap-2">
+      <span className="text-yellow-500 flex-shrink-0 mt-0.5">⚠</span>
+      <span>No sovereignty</span>
+    </li>
+  </ul>
+</div>
+
+  <div className="p-6 rounded-xl border-2 border-slate-600 dark:border-slate-500 bg-slate-50 dark:bg-slate-900/70">
+    <div className="text-slate-800 dark:text-slate-200 font-bold text-lg mb-4">
+      SQD Portal
+    </div>
+    <ul className="space-y-3 text-sm text-gray-800 dark:text-gray-300">
+      <li className="flex items-start gap-2">
+        <span className="text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5">✓</span>
+        <span>Native block ranges</span>
+      </li>
+      <li className="flex items-start gap-2">
+        <span className="text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5">✓</span>
+        <span>Built-in finality</span>
+      </li>
+      <li className="flex items-start gap-2">
+        <span className="text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5">✓</span>
+        <span>Self-host or decentralized</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+## Built for Real Data Engineering Challenges
+
+Portal solves the problems that break traditional tools
+
+<div className="grid md:grid-cols-2 gap-6 max-w-5xl my-12">
+  <div className="p-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-700">
+    <h3 className="font-bold text-xl mb-3 text-gray-900 dark:text-white">
+      High-TPS Chain Backfills
+    </h3>
+    <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
+      Process millions of blocks from chains like BSC or Solana without memory
+      spikes or retry loops. Stream data with constant memory footprint.
+    </p>
+  </div>
+  <div className="p-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-700">
+    <h3 className="font-bold text-xl mb-3 text-gray-900 dark:text-white">
+      Complete Wallet History
+    </h3>
+    <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
+      Extract full transaction history for any address—even on high-activity
+      chains—in minutes, not hours. Query arbitrary ranges in one request.
+    </p>
+  </div>
+</div>
+
+## How It Works
+
+SQD Portal provides a simple HTTP API for querying blockchain data:
+
+1. **Make HTTP POST requests** with your desired block range and filters
+2. **Receive streaming responses** with newline-delimited JSON
+3. **Handle reorgs automatically** with built-in finality tracking
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/en/portal/quickstart">
+    Get started with Portal in 5 minutes
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/dataset-metadata"
+  >
+    Complete API documentation
+  </Card>
+  <Card title="EVM Guide" icon="ethereum" href="/en/portal/evm/overview">
+    EVM-specific usage and examples
+  </Card>
+  <Card title="Solana Guide" icon="solana" href="https://docs.soldexer.dev">
+    Solana Portal documentation
+  </Card>
+</CardGroup>
+
+## Deployment Options
+
+Portal offers three deployment modes to fit your needs:
+
+<AccordionGroup>
+  <Accordion title="Managed Endpoints (Easiest)" icon="cloud">
+    Use SQD-hosted Portal endpoints for instant access:
+    - No setup required
+    - Production-ready infrastructure
+    - 200+ networks supported
+    - Free tier available
+    
+    Perfect for: Getting started, development, production apps
+  </Accordion>
+
+{" "}
+
+<Accordion title="Self-Hosted Sidecar" icon="server">
+  Run Portal alongside your own node: - Full control over infrastructure - No
+  external dependencies - Open-source implementation - Use any data source
+  Perfect for: Private networks, custom chains, maximum sovereignty
+</Accordion>
+
+  <Accordion title="SQD Network" icon="network-wired">
+    Connect to the decentralized data lake:
+    - Decentralized architecture
+    - No vendor lock-in
+    - Stake SQD tokens for access
+    - Self-host your portal
+    
+    Perfect for: Sovereignty + scalability, no centralized provider
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Try Portal Now" icon="play" href="/en/portal/quickstart">
+    Make your first Portal request in minutes
+  </Card>
+  <Card title="Build with SDK" icon="code" href="/en/sdk/overview">
+    Use Portal with TypeScript SDKs for data transformation
+  </Card>
+  <Card title="Deploy to Cloud" icon="cloud-upload" href="/en/cloud/overview">
+    Ship to production with managed infrastructure
+  </Card>
+</CardGroup>

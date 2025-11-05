@@ -1,0 +1,271 @@
+---
+title: "SQD SDK"
+sidebarTitle: "Overview"
+description: "TypeScript libraries for building blockchain data pipelines with transformation, decoding, and persistence"
+---
+
+# SQD SDK
+
+**TypeScript libraries that transform raw Portal data into actionable insights**
+
+SQD SDK provides type-safe TypeScript libraries for building blockchain data pipelines. While Portal gives you raw blockchain data, the SDK adds data transformation, decoding, and persistence capabilities on top of it.
+
+## How SDK Relates to Portal
+
+```
+Portal (Raw Data) → SDK (Transform & Process) → Your Database/System
+```
+
+- **Portal** provides the raw blockchain data through HTTP API
+- **SDK** uses Portal as its data source and adds:
+  - Event and transaction decoding
+  - Type-safe data transformation
+  - Batch processing capabilities
+  - Database persistence
+  - Real-time data ingestion
+
+<Info>
+  SDK uses Portal under the hood. When you use SDK, you're still accessing
+  blockchain data through Portal—the SDK just makes it easier to work with.
+</Info>
+
+## Key Benefits
+
+- **Type Safety** - Full TypeScript support with auto-generated types from ABIs
+- **Automatic Decoding** - Decode logs, transactions, and state changes automatically
+- **Flexible Persistence** - Write to PostgreSQL, ClickHouse, files, or custom targets
+- **High Performance** - Optimized batch processing with backpressure handling
+- **Developer Experience** - Hot reload, local development, comprehensive tooling
+
+## Two SDK Options
+
+SQD offers two SDKs to match your needs:
+
+<CardGroup cols={2}>
+  <Card title="Pipes SDK" icon="pipe" href="/en/sdk/pipes-sdk/quickstart">
+    **Streaming library for custom pipelines** - Lightweight and flexible -
+    Stream data to any target - Full control over data flow - Perfect for ETL
+    pipelines Best for: Custom data pipelines, analytics, non-PostgreSQL targets
+  </Card>
+
+  <Card title="Squid SDK" icon="squid" href="/en/sdk/squid-sdk/evm/quickstart">
+    **Complete framework with GraphQL** - Full-featured indexer framework -
+    Built-in PostgreSQL + GraphQL - Schema-driven development - Cloud deployment
+    ready Best for: Full-stack indexers, GraphQL APIs, traditional web apps
+  </Card>
+</CardGroup>
+
+<Tip>
+  Not sure which to choose? Check out our [detailed
+  comparison](/en/sdk/choose-your-approach) to find the best fit for your
+  project.
+</Tip>
+
+## When to Use SDK vs Portal Directly
+
+**Use SDK when you need:**
+
+- Automatic ABI decoding
+- Data transformation logic
+- Database persistence
+- Type-safe development
+- Batch processing optimization
+
+**Use Portal directly when:**
+
+- Building in non-TypeScript languages
+- Need maximum control over HTTP requests
+- Simple data extraction without transformation
+- Integrating with existing systems
+
+## Quick Start
+
+<Steps>
+  <Step title="Choose your SDK">
+    Decide between Pipes SDK (streaming) or Squid SDK (framework) based on your
+    needs
+  </Step>
+
+{" "}
+
+<Step title="Follow the quickstart">
+  - [Pipes SDK Quickstart](/en/sdk/pipes-sdk/quickstart) - [Squid SDK
+  Quickstart](/en/sdk/squid-sdk/evm/quickstart)
+</Step>
+
+  <Step title="Deploy to production">
+    Use [SQD Cloud](/en/cloud/overview) for managed deployment with zero DevOps
+  </Step>
+</Steps>
+
+## SDK Features
+
+### Data Access
+
+- Uses Portal API for data ingestion
+- Supports 200+ networks through Portal
+- Real-time and historical data
+- Automatic finality handling
+
+### Data Processing
+
+- ABI-based type generation
+- Event and transaction decoding
+- State diff processing
+- Custom data transformations
+
+### Data Storage
+
+- PostgreSQL (built-in for Squid SDK)
+- ClickHouse
+- File-based storage
+- Custom targets
+- BigQuery integration
+
+### Developer Tools
+
+- Local development environment
+- Hot reload during development
+- Comprehensive CLI
+- TypeScript support
+- Testing utilities
+
+## Architecture
+
+<Tabs>
+  <Tab title="Pipes SDK">
+    ```typescript
+    import { EvmPortalClient } from '@subsquid/portal-evm'
+    import { run } from '@subsquid/portal-pipes'
+    
+    // Connect to Portal
+    const portal = new EvmPortalClient({
+      url: 'https://portal.sqd.dev/datasets/ethereum-mainnet'
+    })
+    
+    // Stream and transform data
+    run(portal, async function* (source) {
+      for await (const batch of source) {
+        // Transform and yield processed data
+        yield processBlocks(batch)
+      }
+    })
+    ```
+  </Tab>
+  
+  <Tab title="Squid SDK">
+    ```typescript
+    import { EvmBatchProcessor } from '@subsquid/evm-processor'
+    
+    // Configure processor (uses Portal internally)
+    const processor = new EvmBatchProcessor()
+      .setGateway('https://v2.archive.subsquid.io/network/ethereum-mainnet')
+      .setBlockRange({ from: 18_000_000 })
+      .addLog({ address: ['0x...'], topic0: ['0x...'] })
+    
+    // Process batches
+    processor.run(new TypeormDatabase(), async ctx => {
+      // Decode and persist to PostgreSQL
+      for (let block of ctx.blocks) {
+        for (let log of block.logs) {
+          // Access decoded data
+        }
+      }
+    })
+    ```
+  </Tab>
+</Tabs>
+
+## Comparison: Pipes SDK vs Squid SDK
+
+| Feature             | Pipes SDK                       | Squid SDK                       |
+| ------------------- | ------------------------------- | ------------------------------- |
+| **Data Source**     | Portal API                      | Portal API (via gateways)       |
+| **Complexity**      | Lightweight library             | Full framework                  |
+| **Storage**         | Any (ClickHouse, files, custom) | PostgreSQL-first                |
+| **GraphQL**         | Bring your own                  | Built-in with schema generation |
+| **Type Generation** | Manual or custom                | Automatic from ABIs             |
+| **Learning Curve**  | Lower                           | Higher                          |
+| **Flexibility**     | Maximum                         | Structured                      |
+| **Best For**        | Custom pipelines, analytics     | Web apps, GraphQL APIs          |
+
+## Common Use Cases
+
+<AccordionGroup>
+  <Accordion title="Token Transfer Analytics" icon="chart-line">
+    Track all ERC-20 transfers to ClickHouse for analytics: - Use **Pipes SDK**
+    for direct streaming to ClickHouse - Decode transfer events automatically -
+    Aggregate and analyze token flows Perfect for: Analytics dashboards, data
+    science
+  </Accordion>
+
+{" "}
+
+<Accordion title="NFT Marketplace Indexer" icon="images">
+  Index NFT marketplace events with GraphQL API: - Use **Squid SDK** for
+  PostgreSQL + GraphQL - Track mints, transfers, and sales - Expose data via
+  auto-generated GraphQL Perfect for: NFT frontends, marketplace apps
+</Accordion>
+
+{" "}
+
+<Accordion title="DeFi Protocol Monitor" icon="coins">
+  Monitor DeFi protocol state in real-time: - Use either SDK based on storage
+  needs - Track liquidations, swaps, and positions - Set up alerts and
+  notifications Perfect for: Trading bots, monitoring systems
+</Accordion>
+
+  <Accordion title="Multi-chain Data Aggregation" icon="network-wired">
+    Aggregate data across multiple chains: - Both SDKs support multi-chain
+    indexing - Unified data model across chains - Single deployment, multiple
+    networks Perfect for: Cross-chain analytics, aggregators
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Choose Your SDK" icon="fork" href="/en/sdk/choose-your-approach">
+    Compare Pipes SDK and Squid SDK in detail
+  </Card>
+
+{" "}
+
+<Card title="Pipes Quickstart" icon="pipe" href="/en/sdk/pipes-sdk/quickstart">
+  Build your first data pipeline with Pipes SDK
+</Card>
+
+{" "}
+
+<Card
+  title="Squid Quickstart"
+  icon="squid"
+  href="/en/sdk/squid-sdk/evm/quickstart"
+>
+  Create a full-stack indexer with Squid SDK
+</Card>
+
+{" "}
+
+<Card title="Deploy to Cloud" icon="cloud" href="/en/cloud/overview">
+  Ship to production with managed infrastructure
+</Card>
+
+{" "}
+
+<Card
+  title="Examples & Tutorials"
+  icon="book"
+  href="/en/sdk/squid-sdk/evm/tutorials"
+>
+  Browse real-world examples and guides
+</Card>
+
+  <Card
+    title="API Reference"
+    icon="code"
+    href="/en/sdk/squid-sdk/evm/reference/batch-processor"
+  >
+    Explore complete API documentation
+  </Card>
+</CardGroup>

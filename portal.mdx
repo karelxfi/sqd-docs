@@ -1,0 +1,566 @@
+# SQD Portal: The first meaningful innovation in on‑chain data access since the RPC node
+
+**Audience:** protocol / infra engineers, data engineers, indexers, hackathon builders
+**Length:** 15–20 minutes + 5 minutes Q&A
+**Speaker:** You
+
+---
+
+## Slide 1 — Title
+
+**SQD Portal**
+_The first meaningful innovation for on‑chain data access since the RPC node interface_
+
+Speaker notes:
+
+- Set the tone: we’re not replacing RPC—Portal is the missing interface above it.
+- Position this as a builder‑first primitive.
+
+---
+
+## Slide 2 — Why this matters (developer pain)
+
+- RPC was built for _transactions_, not _data extraction_ — it **does not scale** for high‑TPS chains or deep history
+- Even a **single wallet history** can be infeasible to extract reliably with vanilla RPC/subgraphs
+- Backfills on chains with **massive history** (e.g., BSC) routinely break legacy tooling
+- Next‑gen throughput chains (Solana, Monad, MegaETH, …) push RPC‑centric designs past their limits
+- Teams end up forced into **centralized data warehouses** just to keep pipelines alive
+
+Speaker notes:
+
+- Set the thesis: this is _not_ QoL; it’s a **survival necessity** for data engineering on modern chains.
+
+---
+
+## Slide 3 — A 15‑year arc of node I/O (history)
+
+- 2009: Satoshi exposes JSON‑RPC on Bitcoin Core (transaction‑centric I/O)
+- 2015–2016: EVM JSON‑RPC becomes de‑facto standard (per‑block/tx queries)
+- 2018–2022: Subgraphs & bespoke indexers (helpful, but schema‑coupled)
+- 2023+: Data lakes & ETL pipelines emerge (ClickHouse/Postgres/S3 targets)
+- **2025: SQD Portal** — pipeline‑optimized, finality‑aware, stream‑native interface that scales with high‑TPS, deep‑history chains
+
+Speaker notes:
+
+- Emphasize inevitability: throughput & history growth outpaced RPC‑centric designs.
+
+---
+
+## Slide 4 — Core idea
+
+**Portal is an HTTP interface purposely designed for data extraction and pipelines that scales where RPC fails.**
+
+- Arbitrary **block ranges** (not one‑block pagination)
+- Native **finalization & reorg‑handling** (consensus‑agnostic)
+- **Streaming** responses for high‑throughput ingestion
+- Deploy over a **decentralized data lake (SQD Network)** or self‑hosted sidecar
+
+Speaker notes:
+
+- Portal addresses the scalability gap without surrendering sovereignty.
+
+---
+
+## Slide 5 — What Portal is _not_
+
+- Not a query language or domain DSL
+- Not a monolithic indexer
+- Not a centralized analytics SaaS
+- Not a lock‑in gateway — runs next to any node or via SQD Network
+
+Speaker notes:
+
+- Keep scope sharp; this is an interface & ecosystem of implementations.
+
+---
+
+## Slide 6 — Interface at a glance
+
+- **Base URL**: `https://portal.sqd.dev/datasets/{dataset}` (e.g., `ethereum-mainnet`, `solana-mainnet`, `solana-beta`)
+- **Core**: `POST /stream` — streams newline‑separated JSON **grouped by block**
+- **Finalized**: `POST /finalized-stream` — only finalized blocks
+- **Aux**: `GET /metadata`, `GET /head`, `GET /finalized-head`
+- **Schema‑aware payload**: `{ type: "evm" | "solana", fromBlock, toBlock?, fields, filters }`
+
+Speaker notes:
+
+- Emphasize single streaming endpoint with typed payloads per family (EVM/Solana). Deterministic order + resumable semantics are handled at client level.
+
+---
+
+## Slide 7 — Minimal dev ergonomics (curl)
+
+```bash
+# EVM: stream ERC‑20 Transfer logs over a range
+curl -s \
+  -H 'Content-Type: application/json' \
+  -X POST \
+  https://portal.sqd.dev/datasets/ethereum-mainnet/stream \
+  -d '{
+    "type": "evm",
+    "fromBlock": 18500000,
+    "toBlock": 18501000,
+    "fields": {"log": {"topics": true}, "transaction": {"hash": true}},
+    "logs": [{
+      "topic0": ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
+    }]
+  }'
+```
+
+```bash
+# Solana (Soldexer): stream instructions for a program
+curl -s \
+  -H 'Content-Type: application/json' \
+  -X POST \
+  https://portal.sqd.dev/datasets/solana-mainnet/stream \
+  -d '{
+    "type": "solana",
+    "fromBlock": 325000000,
+    "toBlock": 325000100,
+    "fields": {"block": {"number": true}, "instruction": {"data": true}},
+    "instructions": [{"programId": ["MoonCVVNZFSYkqNXP6bxHLPL6QQJiMagDL3qcqUQTrG"]}]
+  }'
+```
+
+```bash
+# Only finalized data
+curl -s -H 'Content-Type: application/json' -X POST \
+  https://portal.sqd.dev/datasets/ethereum-mainnet/finalized-stream \
+  -d '{"type":"evm","fromBlock": 18500000, "fields": {"block": {"hash": true}}}'
+```
+
+Speaker notes:
+
+- Show `POST /stream` pattern; newline‑separated JSON by block. Point to `/finalized-stream` for simpler correctness.
+
+---
+
+## Slide 8 — SDK for pipelines (TypeScript)
+
+```ts
+import { PortalClient } from "@subsquid/portal-sdk";
+import { ClickHouseClient } from "@clickhouse/client";
+
+const portal = new PortalClient({ baseUrl: process.env.PORTAL_URL });
+const ch = new ClickHouseClient({ url: process.env.CLICKHOUSE_URL });
+
+await ch.exec({
+  query: `CREATE TABLE IF NOT EXISTS erc20_transfers (
+    block UInt32, tx String, logIndex UInt16, from String, to String, value String
+  ) ENGINE = MergeTree ORDER BY (block, tx, logIndex)`,
+});
+
+for await (const log of portal.stream.logs({
+  from: 18_500_000,
+  to: 18_600_000,
+  topics: ["0xddf252ad..."],
+  finalized: true,
+})) {
+  await ch.insert({
+    table: "erc20_transfers",
+    values: [
+      {
+        block: log.blockNumber,
+        tx: log.transactionHash,
+        logIndex: log.logIndex,
+        from: log.args.from,
+        to: log.args.to,
+        value: log.args.value.toString(),
+      },
+    ],
+  });
+}
+```
+
+Speaker notes:
+
+- Show `for await` streaming consumption with backpressure guided by the DB.
+
+---
+
+## Slide 9 — Reorgs & finality
+
+- `finalized=true` resolves to chain‑specific finality (EVM/SVM/…)
+- `finalityLag` option for aggressive near‑tip ETL
+- Clean **reorg events**:
+
+  - `{"type":"reorg","from":18559990,"to":18559980}`
+
+- Deterministic compensation sequence on the wire
+
+Speaker notes:
+
+- Demo will simulate a short reorg and show idempotent compensation.
+
+---
+
+## Slide 10 — Implementations
+
+- **Standalone sidecar** (open‑source): drop‑in next to any EVM/SVM node
+
+  - Perfect for devnets, small L1/L2s, and local testing
+
+- **SQD Network integration**: decentralized data lakehouse
+
+  - Access to **200+ EVM** networks, **Solana (via Soldexer Portal)**, more to come
+  - Horizontally sharded archives; trust‑minimized via on‑chain commitments
+
+- **Managed endpoints** via Subsquid Cloud & upcoming infra partners
+
+Speaker notes:
+
+- Choice: self‑host vs decentralized network vs managed. For Solana, the **Soldexer Portal** implements the same Portal interface semantics.
+
+---
+
+## Slide 10.1 — Sovereignty & decentralization by design
+
+- **Self‑hosted sidecar** → run next to _your_ RPC; keep data plane + control plane in your infra
+- **Decentralized SQD Network** → scale to big chains while preserving sovereignty (no single operator)
+- **Same interface, portable deployments** → move between modes without code changes
+- **Open spec + open‑source impls** → auditability and community governance
+
+Speaker notes:
+
+- Emphasize that the deployment model is a _choice knob_; sovereignty is preserved in every mode.
+
+---
+
+## Slide 10.2 — No vendor lock‑in (vs centralized providers)
+
+- **Open API**: stable HTTP/NDJSON + OSS SDK → no proprietary query DSL lock‑in
+- **Multiple interchangeable backends**: sidecar ↔ SQD Network ↔ managed
+- **Data egress freedom**: write to Postgres/ClickHouse/S3/Kafka — your storage, your keys
+- **Contrast**: centralized gateways (e.g., Alchemy/Helius) or analytics SaaS (e.g., Dune) bind you to their infra, pricing, and query layers
+
+Speaker notes:
+
+- The portability story is the product: same code runs everywhere; you can exit to self‑host anytime.
+
+---
+
+## Slide 11 — Compare: RPC vs Subgraphs vs Portal vs Centralized SaaS
+
+| Capability                            | RPC                 | Subgraph‑style        | **Portal**                         | Centralized SaaS (e.g., Dune/Alchemy/Helius) |
+| ------------------------------------- | ------------------- | --------------------- | ---------------------------------- | -------------------------------------------- |
+| Block‑range queries                   | ⚠️ manual per‑block | abstracted, DSL‑bound | **Native**                         | varies / proprietary                         |
+| Finality & reorgs                     | DIY                 | often hidden          | **Explicit & clean**               | opaque / provider‑specific                   |
+| Streaming                             | limited             | framework‑specific    | **HTTP streams (NDJSON)**          | limited / custom                             |
+| Targets (CH/PG/S3)                    | DIY                 | plugin dependent      | **SDK adapters**                   | **to their storage**                         |
+| Deterministic paging                  | no                  | sometimes             | **Yes**                            | provider‑specific                            |
+| Coupling                              | low                 | high to schema        | **Low (interface)**                | **High (vendor)**                            |
+| Sovereignty                           | high (self‑run)     | medium                | **High in all modes**              | low                                          |
+| **Scales on high‑TPS + deep history** | **No**              | partial               | **Yes (via Portal + SQD Network)** | Yes, but **vendor‑locked**                   |
+
+Speaker notes:
+
+- The key delta: scalability _and_ sovereignty together only exist with Portal + SQD Network.
+
+---|---|---|---|---|
+| Block‑range queries | ⚠️ manual per‑block | abstracted, DSL‑bound | **Native** | varies / proprietary |
+| Finality & reorgs | DIY | often hidden | **Explicit & clean** | opaque / provider‑specific |
+| Streaming | limited | framework‑specific | **HTTP streams (NDJSON)** | limited / custom |
+| Targets (CH/PG/S3) | DIY | plugin dependent | **SDK adapters** | **to their storage** |
+| Deterministic paging | no | sometimes | **Yes** | provider‑specific |
+| Coupling | low | high to schema | **Low (interface)** | **High (vendor)** |
+| Sovereignty | high (self‑run) | medium | **High in all modes** | low |
+
+Speaker notes:
+
+- Portal keeps RPC’s sovereignty while adding data‑pipeline ergonomics and portability.
+
+---
+
+## Slide 12 — Live demo plan (happy path)
+
+**Goal:** Ingest ERC‑20 transfers for a token into ClickHouse in <60s.
+
+1. Start standalone Portal sidecar against `anvil` or remote L2.
+2. Create `erc20_transfers` table.
+3. Run `portal‑ingest.ts` (shown earlier).
+4. `SELECT count()` and a sample query by address.
+5. Show resume from cursor after intentional interruption.
+6. (If venue bandwidth allows) briefly point a second terminal at a **high‑TPS chain** range to show constant‑memory streaming.
+
+Speaker notes:
+
+- Keep env deterministic (seeded Anvil or fixed L2 range). Have a pre‑cut high‑TPS clip if Wi‑Fi is flaky.
+
+---
+
+## Slide 13 — Live demo: reorg handling (optional)
+
+1. Flip `finalityLag=0` and stream near head.
+2. Trigger a synthetic reorg (Anvil/Hardhat for EVM; fork reset).
+3. Observe `reorg` event; Portal issues compensation sequence.
+4. Verify CH table contains corrected state (idempotent upserts by `(block, tx, logIndex)`).
+
+Speaker notes:
+
+- If time squeezed, keep this as a recorded snippet.
+
+---
+
+## Slide 14 — Fallback demo (offline‑safe)
+
+- Pre‑cut `demo.tar.gz` with:
+
+  - small ClickHouse data dir + `demo.db` (or DuckDB)
+  - `portal‑ingest.ts` and `.env.example`
+  - `dataset.ndjson` (10k logs)
+
+- If Wi‑Fi is flaky: run ingestion from local NDJSON stream (same SDK call with `file://`).
+
+Speaker notes:
+
+- Never depend on venue Wi‑Fi for the wow‑moment.
+
+---
+
+## Slide 15 — Operating modes & ecosystem
+
+- **Dev**: sidecar next to Anvil/Hardhat/Geth/Erigon, local CH/PG
+- **Prod**: SQD Network endpoints → VPC CH/S3; managed by Subsquid Cloud
+- **SDK**: adapters for Postgres, ClickHouse; add your own in 30 lines
+
+Speaker notes:
+
+- Emphasize easy migration path Dev → Prod.
+
+---
+
+## Slide 16 — Safety, cost, reliability
+
+- Finality‑aware ingestion reduces rollbacks & double‑work
+- Stream‑native lowers memory spikes and retries
+- Decentralized archives amortize cold‑scan costs across the network
+
+Speaker notes:
+
+- Talk TCO qualitatively; avoid unverifiable benchmarks on stage.
+
+---
+
+## Slide 17 — How to try it
+
+- `docker run subsquid/portal-sidecar:latest`
+- `npx @subsquid/portal-sdk init`
+- SQD Network endpoints: `https://portal.sqd.network/{chain}/...` (examples)
+- Managed endpoints: Subsquid Cloud
+
+Speaker notes:
+
+- Give a single command for each persona.
+
+---
+
+## Slide 18 — Call to action (for hackers)
+
+- Ship a data‑heavy hack without writing an indexer
+- Targets: ClickHouse, Postgres, S3, BigQuery (via FDW)
+- Bounties for the best Portal pipelines this weekend
+
+Speaker notes:
+
+- Make it immediately actionable at the hackathon.
+
+---
+
+## Slide 19 — Roadmap & contributions
+
+- Traces across more clients; Merkle proofs on wire; Solana accounts diffs
+- More SDK adapters (Kafka, Parquet/S3, Delta Lake)
+- PRs welcome: sidecar, SDK, network adapters
+
+Speaker notes:
+
+- Invite contributors at the right abstraction layer.
+
+---
+
+## Slide 20 — Thank you & links
+
+- **EVM Portal docs**: [https://docs1.sqd.ai/en/home](https://docs1.sqd.ai/en/home)
+- **Solana Portal (Soldexer) docs**: [https://docs.soldexer.dev/get-started/introduction](https://docs.soldexer.dev/get-started/introduction)
+- **Pipes SDK (data pipelines)**: [https://github.com/subsquid-labs/pipes-sdk-docs](https://github.com/subsquid-labs/pipes-sdk-docs)
+- **Sidecar / SDK repos**: see docs above for direct GitHub links
+
+Speaker notes:
+
+- Keep QR codes to these three docs ready (EVM, Soldexer, Pipes SDK).
+
+---
+
+# Live demo script (step‑by‑step)
+
+### 0. Prep (do this before going on stage)
+
+- `docker pull subsquid/portal-sidecar:latest`
+- Clone `portal-demo` repo with scripts:
+
+  - `portal-ingest.ts` (ClickHouse) and `env.example`
+  - `schema.sql` for CH
+
+- Start local ClickHouse: `docker compose up -d` (or use DuckDB offline fallback)
+- Verify sidecar connects to your Anvil/Geth or SQD Network endpoint.
+
+### 1. Start sidecar (visible on stage)
+
+```bash
+PORTAL_UPSTREAM_RPC=$RPC \
+PORTAL_NETWORK=evm:mainnet \
+docker run --rm -p 8080:8080 subsquid/portal-sidecar:latest
+```
+
+- Show logs printing: listening on :8080; upstream healthy.
+
+### 2. Create table
+
+```bash
+clickhouse-client --query "CREATE TABLE IF NOT EXISTS erc20_transfers (block UInt32, tx String, logIndex UInt16, from String, to String, value String) ENGINE=MergeTree ORDER BY (block, tx, logIndex)"
+```
+
+### 3. Run ingestion
+
+```bash
+bun run portal-ingest.ts
+```
+
+- Terminal prints rows/sec and current block.
+
+### 4. Show data
+
+```bash
+clickhouse-client --query "SELECT count() FROM erc20_transfers"
+clickhouse-client --query "SELECT * FROM erc20_transfers ORDER BY block DESC LIMIT 5"
+```
+
+### 5. Interrupt & resume
+
+- `Ctrl+C` the ingest script.
+- Re‑run with `--cursor $LAST_CURSOR` or rely on SDK’s persisted cursor file.
+
+### 6. (Optional) Reorg demo
+
+- With Anvil: `anvil --block-time 1 --hardfork cancun` and trigger a short fork.
+- Observe `reorg` event in the stream and table correction.
+
+---
+
+# API sketch (reference)
+
+### Base
+
+- `https://portal.sqd.dev/datasets/{dataset}`
+
+### Core endpoints
+
+- `POST /stream` — emits NDJSON **per block** (unfinalized included unless you use `finalized-stream`)
+- `POST /finalized-stream` — emits only finalized blocks
+- `GET /metadata` — dataset metadata (start height, aliases, realtime)
+- `GET /head` — latest block (may be unfinalized)
+- `GET /finalized-head` — latest finalized block
+
+### EVM request (excerpt)
+
+```json
+{
+  "type": "evm",
+  "fromBlock": 18500000,
+  "toBlock": 18501000,
+  "fields": { "log": { "topics": true }, "transaction": { "hash": true } },
+  "logs": [{ "topic0": ["0xddf252ad…"] }]
+}
+```
+
+### Solana request (excerpt)
+
+```json
+{
+  "type": "solana",
+  "fromBlock": 325000000,
+  "toBlock": 325000100,
+  "fields": { "block": { "number": true }, "instruction": { "data": true } },
+  "instructions": [{ "programId": ["MoonCVV…TrG"] }]
+}
+```
+
+### Error model (selected)
+
+- `204 No Content` — requested range is entirely above dataset range
+- `409 Conflict` — reorg/orphan handling guidance with `previousBlocks`
+
+---
+
+# Engineering deep‑dive (backup slides)
+
+## Finality and reorg semantics
+
+- `finalized=true` maps to client‑reported finalized blocks when available
+- `finalityLag=N` lets you trade latency for safety at the tip
+- Reorg protocol on the wire: emit rollback events and replay corrected range
+
+## Ordering & idempotency
+
+- Total ordering by `(block, txIndex, logIndex)`; stable across retries
+- SDK provides idempotent upserts for CH/PG templates
+
+## Performance knobs
+
+- `chunkSize`, `parallel`, `backpressure` hooks to the sink
+- Streaming avoids giant arrays; constant memory footprint
+
+---
+
+# FAQ / Q&A prep
+
+**Q: How is this different from running an RPC and a custom scraper?**
+_A:_ Portal standardizes the tricky parts—block‑range semantics, finality/reorg handling, streaming, and resumable cursors—so you don’t rebuild brittle glue every time.
+
+**Q: Is Portal vendor‑locked?**
+_A:_ No. Run the open‑source sidecar next to any node, or use SQD Network, or managed endpoints. Same interface.
+
+**Q: What about decentralization and data integrity?**
+_A:_ In SQD Network mode, archives are independently operated shards with on‑chain commitments; clients can cross‑verify and fail over.
+
+**Q: How many chains?**
+_A:_ 200+ EVM networks today plus Solana accounts/history via the same Portal interface; more coming.
+
+**Q: Can I target Kafka/S3/BigQuery?**
+_A:_ Yes via SDK adapters. Postgres/ClickHouse are built‑ins; others are easy to add.
+
+**Q: Near‑real‑time vs backfills?**
+_A:_ Both. Use `finalityLag` for near‑tip streaming; use large `from–to` ranges for deterministic backfills.
+
+**Q: Cost & performance numbers?**
+_A:_ Vary by upstream and sink; Portal reduces retries and rewinds, improving TCO without magic claims.
+
+---
+
+# One‑pager (handout / tweet‑length angle)
+
+- **RPC → for wallets. Portal → for pipelines.**
+- RPC/subgraphs **don’t scale** for high‑TPS chains with massive history (BSC today; Solana/Monad/MegaETH tomorrow).
+- **Portal + SQD Network**: sovereign, decentralized, **no vendor lock‑in**; similar decentralization properties to running your own node — with an interface that actually fits data pipelines.
+- Arbitrary ranges, finality‑aware, HTTP streams.
+- Open‑source sidecar • Decentralized via SQD Network • Managed endpoints.
+- TS SDK to ClickHouse/Postgres/S3. Build data apps fast.
+
+---
+
+# Checklist for show day
+
+- [ ] Laptop power + HDMI/USB‑C dongle
+- [ ] Local ClickHouse or DuckDB fallback tested
+- [ ] Pre‑pulled Docker images (sidecar, CH)
+- [ ] `.env` with stable RPC or local Anvil
+- [ ] Demo dataset `.ndjson` cached
+- [ ] QR codes to repos/docs
+
+---
+
+# Post‑talk resources
+
+- **EVM Portal docs**: [https://docs1.sqd.ai/en/home](https://docs1.sqd.ai/en/home)
+- **Solana Portal (Soldexer) docs**: [https://docs.soldexer.dev/get-started/introduction](https://docs.soldexer.dev/get-started/introduction)
+- **Pipes SDK docs**: [https://github.com/subsquid-labs/pipes-sdk-docs](https://github.com/subsquid-labs/pipes-sdk-docs)

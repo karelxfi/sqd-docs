@@ -7,6 +7,7 @@ import { Container, Title, TagColorScript } from "/snippets/utility.mdx";
 import { ProductTiles } from "/snippets/product-tiles.mdx";
 import { appCategories } from "/snippets/data.mdx";
 import { ProductCard } from "/snippets/product-cards.mdx";
+import { QueryInterface } from "/snippets/query-interface.mdx";
 
 export function openSearch() {
   document.getElementById("search-bar-entry").click();
@@ -131,138 +132,277 @@ export function openSearch() {
   }}
 />
 
-<div
-  className="relative w-full flex items-center justify-center min-h-[20rem] sm:min-h-[24rem] lg:h-[26rem]"
-  style={{ overflow: "hidden" }}
->
-  <div className="absolute inset-0 z-0">
-    <img
-      src="/images/home-page/Hero.png"
-      alt="SQD Background"
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        objectPosition: "center 100%",
-      }}
-    />
-    <div
-      className="absolute inset-0"
-      style={{
-        backgroundColor: "rgba(10, 12, 33, 0.5)",
-        backdropFilter: "brightness(0.9)",
-      }}
-    />
-  </div>
-  <div
-    className="relative z-10 px-4 py-8 sm:px-6 sm:py-10"
-    style={{
-      position: "absolute",
-      textAlign: "center",
-      maxWidth: "100%",
-    }}
-  >
-    <div
-      className="text-white"
-      style={{
-        fontWeight: "500",
-        fontSize: "clamp(24px, 6vw, 42px)",
-        margin: "0",
-        marginBottom: "1.5rem",
-      }}
-    >
-      Build with SQD
+<div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+  <div className="max-w-4xl mx-auto text-center">
+    <div className="inline-flex items-center px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 mb-6">
+      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+        Build with SQD
+      </span>
     </div>
-    <p
-      className="text-white text-opacity-90"
-      style={{
-        margin: "0 auto",
-        marginBottom: "2rem",
-        fontWeight: "400",
-        fontSize: "clamp(14px, 3.5vw, 20px)",
-        maxWidth: "42rem",
-        textAlign: "center",
-      }}
-    >
-      Access raw blockchain data through a decentralized network, build indexers
-      with powerful SDKs, and deploy with managed cloud infrastructure.
+    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+      Modern blockchain data access for data engineers
+    </h1>
+    <p className="text-xl sm:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed mb-8">
+      Build production-grade data pipelines with our complete stack: from HTTP
+      APIs that scale beyond RPC limitations, to SDKs for type-safe indexing, to
+      managed cloud deployment.
     </p>
-    <div className="flex flex-col items-center justify-center gap-4">
-      <button
-        type="button"
-        className="hidden w-full lg:flex items-center text-sm leading-6 rounded-lg py-1.5 pl-2.5 pr-3 shadow-sm text-gray-400 dark:text-white/50 bg-background-light dark:bg-background-dark dark:brightness-[1.1] dark:ring-1 dark:hover:brightness-[1.25] ring-1 ring-gray-400/20 hover:ring-gray-600/25 dark:ring-gray-600/30 dark:hover:ring-gray-500/30 focus:outline-primary"
-        id="home-search-entry"
-        aria-label="Search documentation"
-        style={{
-          maxWidth: "28rem",
-        }}
-        onClick={openSearch}
+    <div className="flex flex-wrap items-center justify-center gap-4">
+      <a
+        href="/en/portal/quickstart"
+        className="inline-flex items-center px-8 py-4 bg-slate-700 hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
       >
+        Get Started
         <svg
-          className="h-4 w-4 ml-1.5 flex-none bg-gray-500 hover:bg-gray-600 dark:bg-white/50 dark:hover:bg-white/70"
-          style={{
-            marginRight: "0.5rem",
-            maskImage:
-              'url("https://mintlify.b-cdn.net/v6.5.1/solid/magnifying-glass.svg")',
-            maskRepeat: "no-repeat",
-            maskPosition: "center center",
-          }}
-        />
-        Search documentation or ask a question
-      </button>
+          className="w-5 h-5 ml-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </a>
+      <a
+        href="#portal-intro"
+        className="inline-flex items-center px-8 py-4 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+      >
+        Learn More
+      </a>
     </div>
   </div>
 </div>
-<div className="main-container-mobile mt-6 sm:mt-8 mb-16 sm:mb-32 max-w-7xl mx-auto px-4 sm:px-5">
-  <CardGroup cols={4} className="card-group-centered">
-    <Card href="/en/portal/overview" arrow={false} noZoom>
+
+<div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-24">
+  <div className="text-center mb-12">
+    <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+      The Complete Data Stack
+    </h2>
+    <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-8">
+      Four integrated products that work together to power your blockchain data
+      infrastructure
+    </p>
+    <div className="inline-flex items-center gap-3 px-6 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl">
+      <span className="font-semibold text-slate-700 dark:text-slate-300">
+        Portal
+      </span>
+      <svg
+        className="w-5 h-5 text-slate-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 5l7 7-7 7"
+        />
+      </svg>
+      <span className="font-semibold text-slate-700 dark:text-slate-300">
+        SDK
+      </span>
+      <svg
+        className="w-5 h-5 text-slate-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 5l7 7-7 7"
+        />
+      </svg>
+      <span className="font-semibold text-slate-700 dark:text-slate-300">
+        Cloud
+      </span>
+      <svg
+        className="w-5 h-5 text-slate-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 5l7 7-7 7"
+        />
+      </svg>
+      <span className="font-semibold text-slate-700 dark:text-slate-300">
+        Network
+      </span>
+    </div>
+  </div>
+  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <a
+      href="/en/portal/quickstart"
+      className="group block bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 overflow-hidden"
+    >
       <img
         src="/images/home/portal.png"
-        alt="SQD Portal"
-        className="w-full h-32 object-cover rounded-lg pointer-events-none"
+        alt="Portal"
+        className="w-full h-48 object-cover pointer-events-none"
       />
-    </Card>
-    <Card href="/en/sdk/choose-your-approach" arrow={false} noZoom>
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+          Portal
+        </h3>
+        <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
+          HTTP API for raw blockchain data with arbitrary ranges, streaming, and
+          finality handling
+        </p>
+        <span className="text-sm font-medium text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300">
+          Learn more →
+        </span>
+      </div>
+    </a>
+    <a
+      href="/en/sdk/overview"
+      className="group block bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 overflow-hidden"
+    >
       <img
         src="/images/home/sdk.png"
-        alt="TypeScript SDK"
-        className="w-full h-32 object-cover rounded-lg pointer-events-none"
+        alt="SDK"
+        className="w-full h-48 object-cover pointer-events-none"
       />
-    </Card>
-    <Card href="/en/cloud/overview" arrow={false} noZoom>
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+          SDK
+        </h3>
+        <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
+          TypeScript libraries for data transformation, decoding, and
+          persistence to any database
+        </p>
+        <span className="text-sm font-medium text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300">
+          Learn more →
+        </span>
+      </div>
+    </a>
+    <a
+      href="/en/cloud/overview"
+      className="group block bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 overflow-hidden"
+    >
       <img
         src="/images/home/cloud.png"
-        alt="SQD Cloud"
-        className="w-full h-32 object-cover rounded-lg pointer-events-none"
+        alt="Cloud"
+        className="w-full h-48 object-cover pointer-events-none"
       />
-    </Card>
-    <Card href="/en/network/overview" arrow={false} noZoom>
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+          Cloud
+        </h3>
+        <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
+          Managed deployment platform with monitoring, scaling, and zero DevOps
+          required
+        </p>
+        <span className="text-sm font-medium text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300">
+          Learn more →
+        </span>
+      </div>
+    </a>
+    <a
+      href="/en/network/overview"
+      className="group block bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 overflow-hidden"
+    >
       <img
         src="/images/home/network.png"
-        alt="SQD Network"
-        className="w-full h-32 object-cover rounded-lg pointer-events-none"
+        alt="Network"
+        className="w-full h-48 object-cover pointer-events-none"
       />
-    </Card>
-  </CardGroup>
-  <h2 className="text-center text-gray-900 dark:text-white text-2xl font-bold mt-16 sm:mt-24 mb-8 sm:mb-10 section-heading-mobile">
-    Features
-  </h2>
-  <CardGroup cols={3} className="card-group-centered">
-    <Card title="Future 1" arrow={false}></Card>
-    <Card title="Future 2" arrow={false}></Card>
-    <Card title="Future 3" arrow={false}></Card>
-  </CardGroup>
+      <div className="p-6">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+          Network
+        </h3>
+        <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
+          Decentralized data lake powering Portal with 200+ networks and
+          self-hosting options
+        </p>
+        <span className="text-sm font-medium text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300">
+          Learn more →
+        </span>
+      </div>
+    </a>
+  </div>
+</div>
 
-  <h2 className="text-center text-gray-900 dark:text-white text-2xl font-bold mt-16 sm:mt-24 mb-8 sm:mb-10 section-heading-mobile">
-    Supported Networks
+<div className="bg-slate-50/50 dark:bg-slate-900/30 py-20 sm:py-24">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="text-center mb-16">
+      <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+        Query the blockchain instantly
+      </h2>
+      <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+        SQD Portal provides an HTTP API for extracting blockchain data with
+        arbitrary block ranges, streaming, and reorg handling
+      </p>
+    </div>
+    <QueryInterface />
+    <div className="text-center mt-12 flex flex-wrap items-center justify-center gap-6">
+      <a
+        href="/api-reference/dataset-metadata"
+        className="inline-flex items-center px-8 py-4 bg-slate-700 hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+      >
+        Try Portal API
+        <svg
+          className="w-5 h-5 ml-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </a>
+      <a
+        href="/en/data/overview"
+        className="inline-flex items-center px-8 py-4 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+      >
+        Learn about Portal
+        <svg
+          className="w-5 h-5 ml-2"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div className="main-container-mobile py-20 sm:py-24 pb-32 sm:pb-40 max-w-7xl mx-auto px-4 sm:px-6 bg-white dark:bg-gray-950">
+  <h2 className="text-center text-gray-900 dark:text-white text-4xl sm:text-5xl font-bold mb-6 section-heading-mobile">
+    200+ Networks Supported
   </h2>
+  <p className="text-center text-gray-700 dark:text-gray-300 text-xl mb-16 max-w-3xl mx-auto">
+    Access data from all major blockchains through Portal with full deployment
+    flexibility—run a self-hosted sidecar next to any node, use the
+    decentralized SQD Network, or choose managed endpoints
+  </p>
   <CardGroup cols={4}>
     <Card href="/en/sdk/squid-sdk/evm/quickstart" arrow={false} noZoom>
       <img
-        src="/images/home-page/Hero.png"
+        src="/images/home/ethereum copy.png"
         alt="EVM"
         loading="lazy"
-        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+        className="w-full h-24 object-contain rounded-xl pointer-events-none"
       />
     </Card>
     <Card
@@ -273,51 +413,51 @@ export function openSearch() {
       rel="noopener noreferrer"
     >
       <img
-        src="/images/home-page/Hero.png"
+        src="/images/home/solana.png"
         alt="Solana"
         loading="lazy"
-        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+        className="w-full h-24 object-contain rounded-xl pointer-events-none"
       />
     </Card>
     <Card href="/en/sdk/squid-sdk/substrate/quickstart" arrow={false} noZoom>
       <img
-        src="/images/home-page/Hero.png"
+        src="/images/home/polkadot.png"
         alt="Substrate"
         loading="lazy"
-        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+        className="w-full h-24 object-contain rounded-xl pointer-events-none"
       />
     </Card>
     <Card href="/en/sdk/squid-sdk/fuel/quickstart" arrow={false} noZoom>
       <img
-        src="/images/home-page/Hero.png"
+        src="/images/home/fuel.png"
         alt="Fuel"
         loading="lazy"
-        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+        className="w-full h-24 object-contain rounded-xl pointer-events-none"
       />
     </Card>
     <Card href="/en/sdk/squid-sdk/tron/quickstart" arrow={false} noZoom>
       <img
-        src="/images/home-page/Hero.png"
+        src="/images/home/tron.png"
         alt="Tron"
         loading="lazy"
-        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+        className="w-full h-24 object-contain rounded-xl pointer-events-none"
       />
     </Card>
     <Card href="/en/sdk/squid-sdk/starknet/quickstart" arrow={false} noZoom>
       <img
-        src="/images/home-page/Hero.png"
+        src="/images/home/starknet.png"
         alt="Starknet"
         loading="lazy"
-        className="w-full h-24 object-contain rounded-lg pointer-events-none"
+        className="w-full h-24 object-contain rounded-xl pointer-events-none"
       />
     </Card>
     <div style={{ position: "relative", opacity: 0.6, pointerEvents: "none" }}>
       <Card arrow={false} noZoom>
         <img
-          src="/images/home-page/Hero.png"
+          src="/images/home/hyperliquid.png"
           alt="Hyperliquid"
           loading="lazy"
-          className="w-full h-24 object-contain rounded-lg pointer-events-none"
+          className="w-full h-24 object-contain rounded-xl pointer-events-none"
         />
         <div style={{ position: "absolute", top: "0.5rem", right: "0.5rem" }}>
           <span
@@ -338,37 +478,250 @@ export function openSearch() {
       </Card>
     </div>
     <Card href="/en/data/networks/overview" arrow={false} noZoom>
-      <img
-        src="/images/home-page/Hero.png"
-        alt="All Networks"
-        loading="lazy"
-        className="w-full h-24 object-contain rounded-lg pointer-events-none"
-      />
+      <div className="w-full h-24 rounded-xl bg-gradient-to-br from-slate-100 to-gray-200 dark:from-gray-800 dark:to-slate-800 flex items-center justify-center">
+        <span className="text-2xl font-bold text-slate-700 dark:text-slate-300">
+          All Networks
+        </span>
+      </div>
     </Card>
   </CardGroup>
-  <h2 className="text-center text-gray-900 dark:text-white text-2xl font-bold mt-16 sm:mt-24 mb-8 sm:mb-10 section-heading-mobile">
-    Learn More
-  </h2>
-  <CardGroup cols={3} className="card-group-centered">
-    <Card
-      title="Community"
-      icon="users"
-      href="https://t.me/hydradevs"
-      arrow={false}
+
+  <div className="relative mt-32 sm:mt-40">
+    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-800 to-transparent"></div>
+    <div className="pt-16 sm:pt-20">
+      <h2 className="text-center text-gray-900 dark:text-white text-4xl sm:text-5xl font-bold mb-6 section-heading-mobile">
+        Get Started
+      </h2>
+      <p className="text-center text-gray-700 dark:text-gray-300 text-xl mb-12 max-w-3xl mx-auto">
+        Choose your path based on your needs—from quick data queries to full
+        production deployments
+      </p>
+    </div>
+  </div>
+  <div className="grid md:grid-cols-2 gap-6 mt-8">
+    <a
+      href="/en/portal/quickstart"
+      className="group block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200"
     >
-      Join our Telegram community for support and discussions.
-    </Card>
-    <Card
-      title="API Reference"
-      icon="code"
-      href="/api/evm/dataset-metadata"
-      arrow={false}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+            <svg
+              className="w-5 h-5 text-slate-700 dark:text-slate-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+            Query with Portal
+          </h3>
+        </div>
+        <svg
+          className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </div>
+      <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-3">
+        Extract blockchain data in minutes using Portal's HTTP API—no setup
+        required, just HTTP requests
+      </p>
+      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-500">
+        <span>5 min</span>
+        <span>•</span>
+        <span>Beginner</span>
+      </div>
+    </a>
+
+    <a
+      href="/en/sdk/quickstart"
+      className="group block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200"
     >
-      Complete API documentation for all supported networks.
-    </Card>
-    <Card title="FAQ" icon="question" href="/en/network/faq" arrow={false}>
-      Frequently asked questions about SQD and blockchain indexing.
-    </Card>
-  </CardGroup>
-  <div style={{ height: "10rem", minHeight: "10rem" }}></div>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+            <svg
+              className="w-5 h-5 text-slate-700 dark:text-slate-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+            Build an Indexer
+          </h3>
+        </div>
+        <svg
+          className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </div>
+      <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-3">
+        Create type-safe indexers with TypeScript SDK and stream data to any
+        database
+      </p>
+      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-500">
+        <span>30 min</span>
+        <span>•</span>
+        <span>Intermediate</span>
+      </div>
+    </a>
+
+    <a
+      href="/en/cloud/overview"
+      className="group block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+            <svg
+              className="w-5 h-5 text-slate-700 dark:text-slate-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+            Deploy to Production
+          </h3>
+        </div>
+        <svg
+          className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </div>
+      <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-3">
+        Ship to SQD Cloud with managed infrastructure, monitoring, and zero
+        DevOps
+      </p>
+      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-500">
+        <span>1 hour</span>
+        <span>•</span>
+        <span>Intermediate</span>
+      </div>
+    </a>
+
+    <a
+      href="/en/sdk/tutorials"
+      className="group block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+            <svg
+              className="w-5 h-5 text-slate-700 dark:text-slate-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+            Complete Tutorial
+          </h3>
+        </div>
+        <svg
+          className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </div>
+      <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-3">
+        Follow our end-to-end guide from Portal to SDK to ClickHouse for token
+        analytics
+      </p>
+      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-500">
+        <span>2 hours</span>
+        <span>•</span>
+        <span>Advanced</span>
+      </div>
+    </a>
+  </div>
+
+  <div className="mt-20 text-center">
+    <p className="text-gray-600 dark:text-gray-400 mb-4">
+      Need help choosing? Check out our documentation or join our community
+    </p>
+    <div className="flex flex-wrap items-center justify-center gap-4">
+      <a
+        href="/en/sdk/overview"
+        className="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-medium rounded-xl transition-all duration-200 hover:shadow-md"
+      >
+        View Documentation
+      </a>
+      <a
+        href="https://t.me/subsquid"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-medium rounded-xl transition-all duration-200 hover:shadow-md"
+      >
+        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+        </svg>
+        Join Telegram
+      </a>
+    </div>
+  </div>
 </div>
