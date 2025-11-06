@@ -605,11 +605,12 @@ export function openSearch() {
       </Card>
     </div>
     <Card href="/en/data/networks/overview" arrow={false} noZoom>
-      <div className="w-full h-24 rounded-xl bg-gradient-to-br from-slate-100 to-gray-200 dark:from-gray-800 dark:to-slate-800 flex items-center justify-center">
-        <span className="text-2xl font-bold text-slate-700 dark:text-slate-300">
-          All Networks
-        </span>
-      </div>
+      <img
+        src="/images/home/all-networks.png"
+        alt="All Networks"
+        loading="lazy"
+        className="w-full h-24 object-contain rounded-xl pointer-events-none"
+      />
     </Card>
   </CardGroup>
 
@@ -909,14 +910,14 @@ export function openSearch() {
 
   <div className="mt-20 text-center">
     <p className="text-gray-600 dark:text-gray-400 mb-4">
-      Need help choosing? Check out our documentation or join our community
+      Need help choosing? Check out our FAQ or join our community
     </p>
     <div className="flex flex-wrap items-center justify-center gap-4">
       <a
-        href="/en/sdk/overview"
+        href="/en/network/faq"
         className="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-medium rounded-xl transition-all duration-200 hover:shadow-md"
       >
-        View Documentation
+        View FAQ
       </a>
       <a
         href="https://t.me/subsquid"

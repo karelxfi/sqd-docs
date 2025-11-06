@@ -95,7 +95,6 @@
                     "icon": "circle-info",
                     "pages": [
                       "en/sdk/overview",
-                      "en/sdk/choose-your-approach",
                       "en/sdk/comparison"
                     ]
                   },
@@ -1643,7 +1642,8 @@
                 "group": "Documentation",
                 "icon": "book",
                 "pages": [
-                  "en/other/glossary/glossary"
+                  "en/other/glossary/glossary",
+                  "en/network/faq"
                 ]
               },
               {
