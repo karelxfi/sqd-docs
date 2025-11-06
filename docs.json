@@ -606,7 +606,7 @@
                     "group": "Portal API Reference",
                     "icon": "code",
                     "openapi": "en/api/evm/openapi.yaml",
-                    "directory": "en/portal/api/evm",
+                    "directory": "api",
                     "pages": [
                       "GET /metadata",
                       "POST /stream",

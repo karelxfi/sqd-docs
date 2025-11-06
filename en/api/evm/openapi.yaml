@@ -15,6 +15,8 @@ paths:
   /metadata:
     get:
       summary: Dataset Metadata
+      x-mint:
+        href: "/api/evm/metadata"
       description: Retrieves metadata describing the dataset, including its name, aliases, start block, and real-time status.
       responses:
         "200":
@@ -26,6 +28,8 @@ paths:
   /stream:
     post:
       summary: Stream Blocks
+      x-mint:
+        href: "/api/evm/stream"
       description: >
         Streams a list of blocks matching the provided data query, potentially including real-time data. Required request headers: `Content-Type: application/json`; optional request headers: `Accept-Encoding: gzip`, `Content-Encoding: gzip`.
       requestBody:
@@ -124,6 +128,8 @@ paths:
   /finalized-stream:
     post:
       summary: Stream Finalized Blocks
+      x-mint:
+        href: "/api/evm/finalized-stream"
       description: >
         Streams only finalized blocks matching the provided data query. Query structure is identical to that of the /stream endpoint. Required request headers: `Content-Type: application/json`; optional request headers: `Accept-Encoding: gzip`, `Content-Encoding: gzip`.
       requestBody:
@@ -198,6 +204,8 @@ paths:
   /head:
     get:
       summary: Latest Block
+      x-mint:
+        href: "/api/evm/head"
       description: Returns the block number and hash of the highest block available in the dataset, or null if no blocks are available. Takes real-time data into account. Useful for diagnostics.
       responses:
         "200":
@@ -209,6 +217,8 @@ paths:
   /finalized-head:
     get:
       summary: Latest Finalized Block
+      x-mint:
+        href: "/api/evm/finalized-head"
       description: Returns the block number and hash of the highest finalized block available in the dataset, or null if no blocks are available. Useful for diagnostics.
       responses:
         "200":

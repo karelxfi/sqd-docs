@@ -13,6 +13,8 @@ servers:
 paths:
   /metadata:
     get:
+      x-mint:
+        href: "/api/solana/metadata"
       description: Retrieves metadata describing the dataset, including its name, aliases, start block, and real-time status.
       responses:
         "200":
@@ -23,6 +25,8 @@ paths:
                 $ref: "#/components/schemas/DatasetMetadata"
   /stream:
     post:
+      x-mint:
+        href: "/api/solana/stream"
       description: >
         Streams a list of blocks matching the provided data query, potentially including real-time data. Required request headers: `Content-Type: application/json`; optional request headers: `Accept-Encoding: gzip` `Content-Encoding: gzip`
       requestBody:
@@ -120,6 +124,8 @@ paths:
               description: Seconds to wait before retrying
   /finalized-stream:
     post:
+      x-mint:
+        href: "/api/solana/finalized-stream"
       description: >
         Streams only finalized blocks matching the provided data query. Query structure is identical to that of the /stream endpoint. Required request headers: `Content-Type: application/json`; optional request headers: `Accept-Encoding: gzip` `Content-Encoding: gzip`
       requestBody:
@@ -193,6 +199,8 @@ paths:
               description: Seconds to wait before retrying
   /head:
     get:
+      x-mint:
+        href: "/api/solana/head"
       description: Returns the slot number and hash of the highest block available in the dataset, or null if no blocks are available. Takes real-time data into account. Useful for diagnotics.
       responses:
         "200":
@@ -203,6 +211,8 @@ paths:
                 $ref: "#/components/schemas/BlockHead"
   /finalized-head:
     get:
+      x-mint:
+        href: "/api/solana/finalized-head"
       description: Returns the slot number and hash of the highest finalized block available in the dataset, or null if no blocks are available. Useful for diagnotics.
       responses:
         "200":
