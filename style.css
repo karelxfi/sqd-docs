@@ -1,3 +1,20 @@
+/* ============================================
+   SQD Brand Colors - Color Palette Constants
+   ============================================ */
+:root {
+  /* Main Blue Gradient Scale */
+  --sqd-blue-90: #060834;  /* Very dark navy */
+  --sqd-blue-84: #0E0E5A;  /* Dark navy */
+  --sqd-blue-78: #1118CC;  /* Royal blue */
+  --sqd-blue-72: #2121EE;  /* Bright electric blue */
+  --sqd-blue-66: #3485FF;  /* Cyan blue */
+  
+  /* Additional Gradient Versions */
+  --sqd-blue-dark-1: #040413;  /* Almost black navy */
+  --sqd-blue-dark-2: #030312;  /* Deep black navy */
+  --sqd-blue-medium: #294496;  /* Medium blue */
+}
+
 /* Center tables in wide mode pages */
 [data-mode="wide"] table {
   margin-left: auto;
@@ -47,28 +64,28 @@ aside a[href^="https://product"]
   color: #111827 !important;
 }
 
-/* Dropdown styling - balanced vibrancy */
+/* Dropdown styling - SQD brand colors */
 button.nav-dropdown-trigger {
   background: linear-gradient(
     135deg,
-    rgba(59, 130, 246, 0.14) 0%,
-    rgba(96, 165, 250, 0.18) 50%,
-    rgba(147, 197, 253, 0.14) 100%
+    rgba(17, 24, 204, 0.12) 0%,
+    rgba(33, 33, 238, 0.15) 50%,
+    rgba(52, 133, 255, 0.12) 100%
   ) !important;
-  border: 1px solid rgba(59, 130, 246, 0.3) !important;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.08) !important;
+  border: 1px solid rgba(17, 24, 204, 0.25) !important;
+  box-shadow: 0 2px 4px rgba(6, 8, 52, 0.08) !important;
   transition: all 0.2s ease !important;
 }
 
 button.nav-dropdown-trigger:hover {
   background: linear-gradient(
     135deg,
-    rgba(59, 130, 246, 0.2) 0%,
-    rgba(96, 165, 250, 0.25) 50%,
-    rgba(147, 197, 253, 0.2) 100%
+    rgba(17, 24, 204, 0.18) 0%,
+    rgba(33, 33, 238, 0.22) 50%,
+    rgba(52, 133, 255, 0.18) 100%
   ) !important;
-  border-color: rgba(59, 130, 246, 0.45) !important;
-  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.15) !important;
+  border-color: rgba(17, 24, 204, 0.4) !important;
+  box-shadow: 0 4px 8px rgba(6, 8, 52, 0.15) !important;
   transform: translateY(-1px) !important;
 }
 
@@ -78,9 +95,9 @@ button.nav-dropdown-trigger:hover {
   color: #111827 !important; /* Very dark - more prominent than section headers */
 }
 
-/* Navigation tags - Base styling */
+/* Navigation tags - Base styling with SQD brand colors */
 .nav-tag-pill {
-  background: #0955FE !important; /* Default: Primary blue for BETA */
+  background: var(--sqd-blue-72) !important; /* Default: SQD bright electric blue for BETA */
   border: none !important;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
   padding: 2px 8px !important;
@@ -109,7 +126,7 @@ button.nav-dropdown-trigger:hover {
 }
 
 .nav-tag-pill:hover {
-  background: #0744D1 !important; /* Darker shade of primary blue */
+  background: var(--sqd-blue-78) !important; /* SQD royal blue hover */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
   transform: translateY(-1px) scale(1.02) !important;
 }

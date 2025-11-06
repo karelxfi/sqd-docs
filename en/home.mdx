@@ -151,7 +151,10 @@ export function openSearch() {
     <div className="flex flex-wrap items-center justify-center gap-4">
       <a
         href="/en/portal/quickstart"
-        className="inline-flex items-center px-8 py-4 bg-slate-700 hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+        className="inline-flex items-center px-8 py-4 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+        style={{ backgroundColor: "#1118CC" }}
+        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#2121EE")}
+        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#1118CC")}
       >
         Get Started
         <svg
@@ -170,7 +173,14 @@ export function openSearch() {
       </a>
       <a
         href="#portal-intro"
-        className="inline-flex items-center px-8 py-4 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+        className="inline-flex items-center px-8 py-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+        style={{
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderColor: "#294496",
+        }}
+        onMouseOver={(e) => (e.currentTarget.style.borderColor = "#1118CC")}
+        onMouseOut={(e) => (e.currentTarget.style.borderColor = "#294496")}
       >
         Learn More
       </a>
@@ -244,7 +254,18 @@ export function openSearch() {
   <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
     <a
       href="/en/portal/quickstart"
-      className="group block bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 overflow-hidden"
+      className="group block bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
+      style={{
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "rgb(226 232 240)",
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.borderColor = "#294496";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.borderColor = "rgb(226 232 240)";
+      }}
     >
       <img
         src="/images/home/portal.png"
@@ -260,14 +281,34 @@ export function openSearch() {
           HTTP API for raw blockchain data with arbitrary ranges, streaming, and
           finality handling
         </p>
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300">
+        <span
+          className="text-sm font-medium transition-colors duration-200"
+          style={{ color: "#64748b" }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.color = "#1118CC";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.color = "#64748b";
+          }}
+        >
           Learn more →
         </span>
       </div>
     </a>
     <a
       href="/en/sdk/overview"
-      className="group block bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 overflow-hidden"
+      className="group block bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
+      style={{
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "rgb(226 232 240)",
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.borderColor = "#294496";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.borderColor = "rgb(226 232 240)";
+      }}
     >
       <img
         src="/images/home/sdk.png"
@@ -283,14 +324,34 @@ export function openSearch() {
           TypeScript libraries for data transformation, decoding, and
           persistence to any database
         </p>
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300">
+        <span
+          className="text-sm font-medium transition-colors duration-200"
+          style={{ color: "#64748b" }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.color = "#1118CC";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.color = "#64748b";
+          }}
+        >
           Learn more →
         </span>
       </div>
     </a>
     <a
       href="/en/cloud/overview"
-      className="group block bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 overflow-hidden"
+      className="group block bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
+      style={{
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "rgb(226 232 240)",
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.borderColor = "#294496";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.borderColor = "rgb(226 232 240)";
+      }}
     >
       <img
         src="/images/home/cloud.png"
@@ -306,14 +367,34 @@ export function openSearch() {
           Managed deployment platform with monitoring, scaling, and zero DevOps
           required
         </p>
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300">
+        <span
+          className="text-sm font-medium transition-colors duration-200"
+          style={{ color: "#64748b" }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.color = "#1118CC";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.color = "#64748b";
+          }}
+        >
           Learn more →
         </span>
       </div>
     </a>
     <a
       href="/en/network/overview"
-      className="group block bg-white dark:bg-gray-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 overflow-hidden"
+      className="group block bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
+      style={{
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "rgb(226 232 240)",
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.borderColor = "#294496";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.borderColor = "rgb(226 232 240)";
+      }}
     >
       <img
         src="/images/home/network.png"
@@ -329,7 +410,16 @@ export function openSearch() {
           Decentralized data lake powering Portal with 200+ networks and
           self-hosting options
         </p>
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300">
+        <span
+          className="text-sm font-medium transition-colors duration-200"
+          style={{ color: "#64748b" }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.color = "#1118CC";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.color = "#64748b";
+          }}
+        >
           Learn more →
         </span>
       </div>
@@ -355,7 +445,10 @@ export function openSearch() {
     <div className="text-center mt-12 flex flex-wrap items-center justify-center gap-6">
       <a
         href="/api-reference/dataset-metadata"
-        className="inline-flex items-center px-8 py-4 bg-slate-700 hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+        className="inline-flex items-center px-8 py-4 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+        style={{ backgroundColor: "#1118CC" }}
+        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#2121EE")}
+        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#1118CC")}
       >
         Try Portal API
         <svg
@@ -374,7 +467,14 @@ export function openSearch() {
       </a>
       <a
         href="/en/portal/overview"
-        className="inline-flex items-center px-8 py-4 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+        className="inline-flex items-center px-8 py-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+        style={{
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderColor: "#294496",
+        }}
+        onMouseOver={(e) => (e.currentTarget.style.borderColor = "#1118CC")}
+        onMouseOut={(e) => (e.currentTarget.style.borderColor = "#294496")}
       >
         Learn about Portal
         <svg
@@ -509,7 +609,18 @@ export function openSearch() {
   <div className="grid md:grid-cols-2 gap-6 mt-8">
     <a
       href="/en/portal/quickstart"
-      className="group block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200"
+      className="group block bg-white dark:bg-gray-900 rounded-xl p-8 hover:shadow-lg transition-all duration-200"
+      style={{
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "rgb(229 231 235)",
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.borderColor = "#294496";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.borderColor = "rgb(229 231 235)";
+      }}
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -533,10 +644,19 @@ export function openSearch() {
           </h3>
         </div>
         <svg
-          className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform"
+          className="w-5 h-5 transition-all duration-200"
+          style={{ color: "#9ca3af" }}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          onMouseOver={(e) => {
+            e.currentTarget.style.color = "#1118CC";
+            e.currentTarget.style.transform = "translateX(4px)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.color = "#9ca3af";
+            e.currentTarget.style.transform = "translateX(0)";
+          }}
         >
           <path
             strokeLinecap="round"
@@ -559,7 +679,18 @@ export function openSearch() {
 
     <a
       href="/en/sdk/quickstart"
-      className="group block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200"
+      className="group block bg-white dark:bg-gray-900 rounded-xl p-8 hover:shadow-lg transition-all duration-200"
+      style={{
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "rgb(229 231 235)",
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.borderColor = "#294496";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.borderColor = "rgb(229 231 235)";
+      }}
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -583,10 +714,19 @@ export function openSearch() {
           </h3>
         </div>
         <svg
-          className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform"
+          className="w-5 h-5 transition-all duration-200"
+          style={{ color: "#9ca3af" }}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          onMouseOver={(e) => {
+            e.currentTarget.style.color = "#1118CC";
+            e.currentTarget.style.transform = "translateX(4px)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.color = "#9ca3af";
+            e.currentTarget.style.transform = "translateX(0)";
+          }}
         >
           <path
             strokeLinecap="round"
@@ -609,7 +749,18 @@ export function openSearch() {
 
     <a
       href="/en/cloud/overview"
-      className="group block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200"
+      className="group block bg-white dark:bg-gray-900 rounded-xl p-8 hover:shadow-lg transition-all duration-200"
+      style={{
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "rgb(229 231 235)",
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.borderColor = "#294496";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.borderColor = "rgb(229 231 235)";
+      }}
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -633,10 +784,19 @@ export function openSearch() {
           </h3>
         </div>
         <svg
-          className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform"
+          className="w-5 h-5 transition-all duration-200"
+          style={{ color: "#9ca3af" }}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          onMouseOver={(e) => {
+            e.currentTarget.style.color = "#1118CC";
+            e.currentTarget.style.transform = "translateX(4px)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.color = "#9ca3af";
+            e.currentTarget.style.transform = "translateX(0)";
+          }}
         >
           <path
             strokeLinecap="round"
@@ -659,7 +819,18 @@ export function openSearch() {
 
     <a
       href="/en/sdk/tutorials"
-      className="group block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8 hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200"
+      className="group block bg-white dark:bg-gray-900 rounded-xl p-8 hover:shadow-lg transition-all duration-200"
+      style={{
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "rgb(229 231 235)",
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.borderColor = "#294496";
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.borderColor = "rgb(229 231 235)";
+      }}
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -683,10 +854,19 @@ export function openSearch() {
           </h3>
         </div>
         <svg
-          className="w-5 h-5 text-gray-400 group-hover:translate-x-1 transition-transform"
+          className="w-5 h-5 transition-all duration-200"
+          style={{ color: "#9ca3af" }}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          onMouseOver={(e) => {
+            e.currentTarget.style.color = "#1118CC";
+            e.currentTarget.style.transform = "translateX(4px)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.color = "#9ca3af";
+            e.currentTarget.style.transform = "translateX(0)";
+          }}
         >
           <path
             strokeLinecap="round"
