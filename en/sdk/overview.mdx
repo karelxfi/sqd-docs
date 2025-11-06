@@ -5,7 +5,7 @@ description: "TypeScript libraries for building blockchain data pipelines with t
 mode: "wide"
 ---
 
-# Our SDKs
+# SDK overview
 
 **TypeScript libraries that transform raw Portal data into actionable insights**
 
@@ -13,9 +13,12 @@ Our SDK provides type-safe TypeScript libraries for building blockchain data pip
 
 ## How SDK Relates to Portal
 
-```
-Portal (Raw Data) → SDK (Transform & Process) → Your Database/System
-```
+<Frame>
+  <img
+    src="/images/portal-overview.gif"
+    alt="Portal data flow showing raw blockchain data being transformed by SDK and stored in your database"
+  />
+</Frame>
 
 - **Portal** provides the raw blockchain data through HTTP API
 - **SDK** uses Portal as its data source and adds:
