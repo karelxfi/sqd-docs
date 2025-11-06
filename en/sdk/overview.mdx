@@ -43,15 +43,35 @@ SQD offers two SDKs to match your needs:
 
 <CardGroup cols={2}>
   <Card title="Pipes SDK" icon="pipe" href="/en/sdk/pipes-sdk/quickstart">
-    **Streaming library for custom pipelines** - Lightweight and flexible -
-    Stream data to any target - Full control over data flow - Perfect for ETL
-    pipelines Best for: Custom data pipelines, analytics, non-PostgreSQL targets
+    <strong>Streaming library for custom pipelines</strong>
+
+    <ul>
+      <li>Lightweight and flexible</li>
+      <li>Stream data to any target</li>
+      <li>Maintain full control over data flow</li>
+      <li>Ideal for ETL pipelines</li>
+    </ul>
+
+    <p>
+      <strong>Best for:</strong> Custom data pipelines, analytics, non-PostgreSQL targets
+    </p>
+
   </Card>
 
   <Card title="Squid SDK" icon="squid" href="/en/sdk/squid-sdk/evm/quickstart">
-    **Complete framework with GraphQL** - Full-featured indexer framework -
-    Built-in PostgreSQL + GraphQL - Schema-driven development - Cloud deployment
-    ready Best for: Full-stack indexers, GraphQL APIs, traditional web apps
+    <strong>Complete framework with GraphQL</strong>
+
+    <ul>
+      <li>Full-featured indexer framework</li>
+      <li>Built-in PostgreSQL + GraphQL</li>
+      <li>Schema-driven development workflow</li>
+      <li>Cloud deployment ready</li>
+    </ul>
+
+    <p>
+      <strong>Best for:</strong> Full-stack indexers, GraphQL APIs, traditional web apps
+    </p>
+
   </Card>
 </CardGroup>
 
@@ -83,18 +103,21 @@ SQD offers two SDKs to match your needs:
 <Steps>
   <Step title="Choose your SDK">
     Decide between Pipes SDK (streaming) or Squid SDK (framework) based on your
-    needs
+    needs.
   </Step>
 
-{" "}
+  <Step title="Follow the quickstart">
+    Choose the guide that matches your project:
 
-<Step title="Follow the quickstart">
-  - [Pipes SDK Quickstart](/en/sdk/pipes-sdk/quickstart) - [Squid SDK
-  Quickstart](/en/sdk/squid-sdk/evm/quickstart)
-</Step>
+    <ul>
+      <li><a href="/en/sdk/pipes-sdk/quickstart">Pipes SDK Quickstart</a></li>
+      <li><a href="/en/sdk/squid-sdk/evm/quickstart">Squid SDK Quickstart</a></li>
+    </ul>
+
+  </Step>
 
   <Step title="Deploy to production">
-    Use [SQD Cloud](/en/cloud/overview) for managed deployment with zero DevOps
+    Use <a href="/en/cloud/overview">SQD Cloud</a> for managed deployment with zero DevOps.
   </Step>
 </Steps>
 
@@ -193,32 +216,54 @@ SQD offers two SDKs to match your needs:
 
 <AccordionGroup>
   <Accordion title="Token Transfer Analytics" icon="chart-line">
-    Track all ERC-20 transfers to ClickHouse for analytics: - Use **Pipes SDK**
-    for direct streaming to ClickHouse - Decode transfer events automatically -
-    Aggregate and analyze token flows Perfect for: Analytics dashboards, data
-    science
+    <p>Track all ERC-20 transfers to ClickHouse for analytics.</p>
+
+    <ul>
+      <li>Use <strong>Pipes SDK</strong> for direct streaming to ClickHouse.</li>
+      <li>Decode transfer events automatically.</li>
+      <li>Aggregate and analyze token flows in real time.</li>
+    </ul>
+
+    <p><strong>Perfect for:</strong> Analytics dashboards, data science teams.</p>
+
+  </Accordion>
+  <Accordion title="NFT Marketplace Indexer" icon="images">
+    <p>Index NFT marketplace events and expose them through a GraphQL API.</p>
+
+    <ul>
+      <li>Use <strong>Squid SDK</strong> for PostgreSQL plus GraphQL tooling.</li>
+      <li>Track mints, transfers, and sales end to end.</li>
+      <li>Serve data through auto-generated GraphQL resolvers.</li>
+    </ul>
+
+    <p><strong>Perfect for:</strong> NFT frontends and marketplace apps.</p>
+
   </Accordion>
 
-{" "}
+  <Accordion title="DeFi Protocol Monitor" icon="coins">
+    <p>Monitor DeFi protocol state in real time.</p>
 
-<Accordion title="NFT Marketplace Indexer" icon="images">
-  Index NFT marketplace events with GraphQL API: - Use **Squid SDK** for
-  PostgreSQL + GraphQL - Track mints, transfers, and sales - Expose data via
-  auto-generated GraphQL Perfect for: NFT frontends, marketplace apps
-</Accordion>
+    <ul>
+      <li>Pick the SDK that matches your storage targets.</li>
+      <li>Track liquidations, swaps, and position changes.</li>
+      <li>Set up alerts and downstream notifications.</li>
+    </ul>
 
-{" "}
+    <p><strong>Perfect for:</strong> Trading bots and monitoring systems.</p>
 
-<Accordion title="DeFi Protocol Monitor" icon="coins">
-  Monitor DeFi protocol state in real-time: - Use either SDK based on storage
-  needs - Track liquidations, swaps, and positions - Set up alerts and
-  notifications Perfect for: Trading bots, monitoring systems
-</Accordion>
+  </Accordion>
 
   <Accordion title="Multi-chain Data Aggregation" icon="network-wired">
-    Aggregate data across multiple chains: - Both SDKs support multi-chain
-    indexing - Unified data model across chains - Single deployment, multiple
-    networks Perfect for: Cross-chain analytics, aggregators
+    <p>Aggregate data across multiple chains with one deployment.</p>
+
+    <ul>
+      <li>Leverage multi-chain support in both SDKs.</li>
+      <li>Model a unified schema across networks.</li>
+      <li>Operate a single pipeline that spans every chain.</li>
+    </ul>
+
+    <p><strong>Perfect for:</strong> Cross-chain analytics and aggregators.</p>
+
   </Accordion>
 </AccordionGroup>
 
@@ -226,39 +271,35 @@ SQD offers two SDKs to match your needs:
 
 <CardGroup cols={3}>
   <Card title="Choose Your SDK" icon="fork" href="/en/sdk/choose-your-approach">
-    Compare Pipes SDK and Squid SDK in detail
+    Compare Pipes SDK and Squid SDK in detail.
   </Card>
 
 {" "}
-
 <Card title="Pipes Quickstart" icon="pipe" href="/en/sdk/pipes-sdk/quickstart">
-  Build your first data pipeline with Pipes SDK
+  Build your first data pipeline with Pipes SDK.
 </Card>
 
 {" "}
-
 <Card
   title="Squid Quickstart"
   icon="squid"
   href="/en/sdk/squid-sdk/evm/quickstart"
 >
-  Create a full-stack indexer with Squid SDK
+  Create a full-stack indexer with Squid SDK.
 </Card>
 
 {" "}
-
 <Card title="Deploy to Cloud" icon="cloud" href="/en/cloud/overview">
-  Ship to production with managed infrastructure
+  Ship to production with managed infrastructure.
 </Card>
 
 {" "}
-
 <Card
   title="Examples & Tutorials"
   icon="book"
   href="/en/sdk/squid-sdk/evm/tutorials"
 >
-  Browse real-world examples and guides
+  Browse real-world examples and guides.
 </Card>
 
   <Card
@@ -266,6 +307,6 @@ SQD offers two SDKs to match your needs:
     icon="code"
     href="/en/sdk/squid-sdk/evm/reference/batch-processor"
   >
-    Explore complete API documentation
+    Explore complete API documentation.
   </Card>
 </CardGroup>

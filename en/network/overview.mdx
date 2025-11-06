@@ -24,9 +24,9 @@ SQD Network is a distributed query engine and data lake that powers the SQD ecos
 SQD Network operates in two independent configurations:
 
 1. **Decentralized permissionless network** - A fully decentralized network where anyone can participate
-2. **Private network** - A permissioned network operated by Subsquid Labs GmbH, trusted by 400+ production indexers. See the [list of supported networks](subsquid-network/reference/networks)
+2. **Private network** - A permissioned network operated by Subsquid Labs GmbH, trusted by 400+ production indexers. See the [list of supported networks](/en/data/networks/overview)
 
-Both variants are freely accessible and use the same [API](subsquid-network/reference).
+Both variants are freely accessible and use the same API.
 
 <Tip>
   Network developers: Want to see your chain supported by SQD? Fill out our
@@ -36,7 +36,7 @@ Both variants are freely accessible and use the same [API](subsquid-network/refe
 
 ## Permissionless Public Network
 
-The decentralized version of SQD Network is now in mainnet. It serves data for almost [all networks](subsquid-network/reference/networks) supported by the [private cluster](#open-private-network), with the temporary exception of Solana.
+The decentralized version of SQD Network is now in mainnet. It serves data for almost [all networks](/en/data/networks/overview) supported by the [private cluster](#open-private-network), with the temporary exception of Solana.
 
 The latest data access node—SQD Portal—fetches data chunks from multiple worker nodes in parallel and exposes a streaming API. It is currently in closed beta.
 
@@ -44,17 +44,17 @@ The latest data access node—SQD Portal—fetches data chunks from multiple wor
 
 You can participate in the public network in two ways:
 
-- **[Run a worker node](subsquid-network/worker)** - Contribute storage and compute resources to the network and earn SQD tokens
-- **[Delegate SQD tokens](subsquid-network/delegate)** - Reward high-performing workers and share in their profits
+- **[Run a worker node](/en/network/worker)** - Contribute storage and compute resources to the network and earn SQD tokens
+- **[Delegate SQD tokens](/en/network/delegate)** - Reward high-performing workers and share in their profits
 
 ## Open Private Network
 
-SQD's private data lake (formerly known as Archives) is a production-ready fork of early SQD Network running on SQD infrastructure. It provides reliable data access while the permissionless network matures. Its [API](subsquid-network/reference) shares many similarities with the SQD Portal API.
+SQD's private data lake (formerly known as Archives) is a production-ready fork of early SQD Network running on SQD infrastructure. It provides reliable data access while the permissionless network matures.
 
 <Info>
   The gateway of this private network is public and free to query. Access
-  gateway URLs via [`sqd gateways list`](squid-cli/gateways) or browse the
-  [complete gateways list](subsquid-network/reference/networks).
+  gateway URLs via [`sqd gateways list`](/en/sdk/squid-sdk/tools/cli/gateways)
+  or browse the [complete gateways list](/en/data/networks/overview).
 </Info>
 
 ### Using Gateways in Your Indexer
@@ -68,7 +68,7 @@ List all supported EVM networks:
 sqd gateways list -t evm
 ```
 
-Configure your [squid's](sdk) [`EvmBatchProcessor`](sdk/reference/processors/evm-batch/general/#set-gateway):
+Configure your [squid's](/en/sdk/overview) [`EvmBatchProcessor`](/en/sdk/squid-sdk/evm/reference/batch-processor):
 
 ```typescript processor.ts
 const processor = new EvmBatchProcessor().setGateway(
@@ -76,7 +76,7 @@ const processor = new EvmBatchProcessor().setGateway(
 );
 ```
 
-Browse [EVM gateways](subsquid-network/reference/networks/#evm--ethereum-compatible).
+Browse [EVM gateways](/en/data/networks/evm).
 
 </Tab>
 <Tab title="Substrate">
@@ -87,7 +87,7 @@ List all supported Substrate networks:
 sqd gateways list -t substrate
 ```
 
-Configure your [squid's](sdk) [`SubstrateBatchProcessor`](sdk/reference/processors/substrate-batch/general):
+Configure your [squid's](/en/sdk/overview) [`SubstrateBatchProcessor`](/en/sdk/squid-sdk/substrate/reference/general):
 
 ```typescript processor.ts
 const processor = new SubstrateBatchProcessor().setGateway(
@@ -95,7 +95,7 @@ const processor = new SubstrateBatchProcessor().setGateway(
 );
 ```
 
-Browse [Substrate gateways](subsquid-network/reference/networks/#substrate-based).
+Browse [Substrate gateways](/en/data/networks/substrate).
 
 </Tab>
 </Tabs>

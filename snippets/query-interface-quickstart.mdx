@@ -1,117 +1,25 @@
-export const QueryInterface = () => {
+export const QueryInterfaceQuickstart = () => {
   const useCasesConfig = [
     {
-      id: "ethereum-usdt",
-      name: "Track USDT transfers on Ethereum",
+      id: "ethereum-blocks",
+      name: "Query Ethereum blocks",
       network: "ethereum-mainnet",
       payload: {
         type: "evm",
         fromBlock: 18000000,
-        toBlock: 18000001,
-        fields: {
-          log: {
-            address: true,
-            topics: true,
-            data: true,
-            transactionHash: true
-          }
-        },
-        logs: [{
-          address: ["0xdAC17F958D2ee523a2206206994597C13D831ec7"],
-          topic0: ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
-        }]
-      }
-    },
-    {
-      id: "solana-token",
-      name: "Query token transfers on Solana",
-      network: "solana-mainnet",
-      payload: {
-        type: "solana",
-        fromBlock: 269828500,
-        toBlock: 269828510,
-        fields: {
-          instruction: {
-            programId: true,
-            data: true
-          },
-          block: {
-            number: true,
-            hash: true
-          }
-        },
-        instructions: [{
-          programId: ["TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"]
-        }]
-      }
-    },
-    {
-      id: "base-mainnet",
-      name: "Query recent blocks on Base",
-      network: "base-mainnet",
-      payload: {
-        type: "evm",
-        fromBlock: 10000000,
-        toBlock: 10000010,
+        toBlock: 18001000,
         fields: {
           block: {
             number: true,
-            hash: true,
             timestamp: true,
             gasUsed: true
           }
         }
       }
-    },
-    {
-      id: "arbitrum-mainnet",
-      name: "Track USDC transfers on Arbitrum",
-      network: "arbitrum-one",
-      payload: {
-        type: "evm",
-        fromBlock: 200000000,
-        toBlock: 200000010,
-        fields: {
-          log: {
-            address: true,
-            topics: true,
-            data: true,
-            transactionHash: true
-          }
-        },
-        logs: [{
-          address: ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831"],
-          topic0: ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
-        }]
-      }
-    },
-    {
-      id: "hyperliquid-mainnet",
-      name: "Query logs on Hyperliquid",
-      network: "hyperliquid-mainnet",
-      payload: {
-        type: "evm",
-        fromBlock: 10000000,
-        toBlock: 10000010,
-        fields: {
-          block: {
-            number: true,
-            hash: true
-          },
-          log: {
-            address: true,
-            topics: true,
-            data: true
-          }
-        },
-        logs: [{
-          address: ["0x0000000000000000000000000000000000000000"]
-        }]
-      }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("ethereum-usdt");
+  const [useCase, setUseCase] = useState("ethereum-blocks");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -407,3 +315,4 @@ return (
 
 );
 };
+

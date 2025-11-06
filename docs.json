@@ -84,9 +84,6 @@
           {
             "tab": "Build",
             "icon": "code",
-            "pages": [
-              "en/sdk/overview"
-            ],
             "dropdowns": [
               {
                 "dropdown": "EVM",
@@ -97,6 +94,7 @@
                     "group": "Overview",
                     "icon": "circle-info",
                     "pages": [
+                      "en/sdk/overview",
                       "en/sdk/choose-your-approach",
                       "en/sdk/comparison"
                     ]
@@ -120,7 +118,7 @@
                           "en/portal/evm/examples/state-diffs"
                         ]
                       },
-                      "en/portal/evm/api-reference"
+                      "en/portal/evm/api"
                     ]
                   },
                   {
@@ -573,23 +571,8 @@
                 "icon": "globe",
                 "pages": [
                   "en/network/overview",
-                  {
-                    "group": "Participate",
-                    "expanded": true,
-                    "pages": [
-                      "en/network/worker",
-                      "en/network/delegate"
-                    ]
-                  },
-                  {
-                    "group": "Reference",
-                    "expanded": true,
-                    "pages": [
-                      "en/network/tokenomics",
-                      "en/network/whitepaper",
-                      "en/network/procuring-sqd"
-                    ]
-                  }
+                  "en/network/worker",
+                  "en/network/delegate"
                 ]
               },
               {
@@ -1664,6 +1647,15 @@
                 ]
               },
               {
+                "group": "Reference",
+                "icon": "book-open",
+                "pages": [
+                  "en/network/tokenomics",
+                  "en/network/whitepaper",
+                  "en/network/procuring-sqd"
+                ]
+              },
+              {
                 "group": "Case Studies & Examples",
                 "icon": "chart-line",
                 "pages": [
@@ -1713,7 +1705,7 @@
           "fr/404"
         ]
       }
-        ]
+    ]
       }
     ]
   },

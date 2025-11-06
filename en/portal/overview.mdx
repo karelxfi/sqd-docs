@@ -155,61 +155,22 @@ description: "The first meaningful innovation in on-chain data access since RPC"
 
 Modern blockchain data engineering faces a fundamental problem: RPC was designed for wallets and transactions, not for data extraction at scale.
 
-<div className="grid md:grid-cols-2 gap-6 my-8">
-  <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
-    <h3 className="font-bold text-lg mb-3 text-gray-900 dark:text-white flex items-center gap-2">
-      <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      The Problem
-    </h3>
-    <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
-      <li className="flex items-start gap-2">
-        <span className="text-red-500 mt-1">•</span>
-        <span>Single wallet history queries can timeout on RPC</span>
-      </li>
-      <li className="flex items-start gap-2">
-        <span className="text-red-500 mt-1">•</span>
-        <span>Backfills on chains with massive history (BSC, Solana) routinely break</span>
-      </li>
-      <li className="flex items-start gap-2">
-        <span className="text-red-500 mt-1">•</span>
-        <span>High-TPS chains push RPC-centric designs past their limits</span>
-      </li>
-      <li className="flex items-start gap-2">
-        <span className="text-red-500 mt-1">•</span>
-        <span>Teams resort to centralized data warehouses with vendor lock-in</span>
-      </li>
-    </ul>
-  </div>
+### The problem
 
-  <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
-    <h3 className="font-bold text-lg mb-3 text-gray-900 dark:text-white flex items-center gap-2">
-      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      Portal's Solution
-    </h3>
-    <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
-    <li className="flex items-start gap-2">
-        <span className="text-green-600 mt-1">•</span>
-        <span>Query arbitrary block ranges in a single HTTP request</span>
-    </li>
-      <li className="flex items-start gap-2">
-        <span className="text-green-600 mt-1">•</span>
-        <span>Native streaming for constant memory usage</span>
-      </li>
-      <li className="flex items-start gap-2">
-        <span className="text-green-600 mt-1">•</span>
-        <span>Built-in finality handling and reorg compensation</span>
-      </li>
-      <li className="flex items-start gap-2">
-        <span className="text-green-600 mt-1">•</span>
-        <span>Deploy anywhere: managed, self-hosted, or decentralized</span>
-      </li>
-    </ul>
-  </div>
-</div>
+<Warning>
+  - Single wallet history queries can timeout on RPC. - Backfills on
+  high-history chains (BSC, Solana) routinely break. - High-TPS chains push
+  RPC-centric designs past their limits. - Teams resort to centralized data
+  warehouses with vendor lock-in.
+</Warning>
+
+### Portal's solution
+
+<Check>
+  - Query arbitrary block ranges in a single HTTP request. - Use native
+  streaming for constant memory usage. - Rely on built-in finality handling and
+  reorg compensation. - Deploy anywhere: managed, self-hosted, or decentralized.
+</Check>
 
 ## What Portal Is (and Isn't)
 
@@ -263,73 +224,33 @@ Portal is an **HTTP interface designed for data extraction** that scales where R
 
 ## Core Capabilities
 
-Portal provides four key features that make it ideal for data pipelines:
+Portal provides four key features that make it ideal for data pipelines.
 
-<div className="space-y-6 my-8">
-  <div className="p-6 rounded-xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-slate-700">
-    <h3 className="font-bold text-xl mb-3 text-gray-900 dark:text-white">
-      1. Arbitrary Block Ranges
-    </h3>
-    <p className="text-gray-700 dark:text-gray-400 mb-3">
-      Request any block range in a single HTTP POST—no manual pagination through 
-      individual blocks. Essential for backfills and historical analysis.
-    </p>
-    <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
-      <code className="text-sm">
-        POST /stream with fromBlock: 18000000, toBlock: 18100000
-      </code>
-    </div>
-  </div>
+### 1. Arbitrary block ranges
 
-{" "}
+Request any block range in a single HTTP POST—no manual pagination through individual blocks. Essential for backfills and historical analysis.
 
-<div className="p-6 rounded-xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-slate-700">
-  <h3 className="font-bold text-xl mb-3 text-gray-900 dark:text-white">
-    2. Native Finalization
-  </h3>
-  <p className="text-gray-700 dark:text-gray-400 mb-3">
-    Built-in reorg handling with chain-specific finality rules. Cleanly
-    communicates rollbacks as structured events in the stream.
-  </p>
-  <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
-    <code className="text-sm">
-      Use /finalized-stream for production-safe data ingestion
-    </code>
-  </div>
-</div>
+```http
+POST /stream
+fromBlock: 18000000
+toBlock: 18100000
+```
 
-{" "}
+### 2. Native finalization
 
-<div className="p-6 rounded-xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-slate-700">
-  <h3 className="font-bold text-xl mb-3 text-gray-900 dark:text-white">
-    3. HTTP Streaming
-  </h3>
-  <p className="text-gray-700 dark:text-gray-400 mb-3">
-    Newline-delimited JSON (NDJSON) responses enable constant-memory processing
-    of massive ranges. Process terabytes without loading everything into RAM.
-  </p>
-  <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
-    <code className="text-sm">
-      Stream millions of blocks with constant memory footprint
-    </code>
-  </div>
-</div>
+Built-in reorg handling with chain-specific finality rules. Portal communicates rollbacks as structured events in the stream so you can replay safely.
 
-  <div className="p-6 rounded-xl bg-white dark:bg-gray-900 border border-slate-200 dark:border-slate-700">
-    <h3 className="font-bold text-xl mb-3 text-gray-900 dark:text-white">
-      4. Flexible Deployment
-    </h3>
-    <p className="text-gray-700 dark:text-gray-400 mb-3">
-      Same interface, multiple backends: managed endpoints, self-hosted instances, 
-      or decentralized SQD Network. Move between them without code changes.
-    </p>
-    <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg">
-      <code className="text-sm">
-        Deploy anywhere, preserve sovereignty, avoid lock-in
-      </code>
-    </div>
-  </div>
-</div>
+<Tip>Use `/finalized-stream` when you need production-safe data ingestion.</Tip>
+
+### 3. HTTP streaming
+
+Newline-delimited JSON (NDJSON) responses enable constant-memory processing of massive ranges. Process terabytes without loading everything into RAM.
+
+### 4. Flexible deployment
+
+Use the same interface across managed endpoints, self-hosted instances, or the decentralized SQD Network. Swap backends without code changes.
+
+<Note>Deploy anywhere, preserve sovereignty, and avoid lock-in.</Note>
 
 ## How Portal Compares
 
@@ -408,31 +329,35 @@ Portal offers three deployment modes, all using the same interface:
 <AccordionGroup>
   <Accordion title="Managed Endpoints" icon="cloud">
     Use SQD-hosted Portal endpoints for instant access:
-    
+
     - **No setup required** - start making requests immediately
     - **Production-ready infrastructure** - managed by SQD
     - **200+ networks supported** - EVM, Solana, and more
     - **Free tier available** - get started without payment
-    
+
     Perfect for: Getting started, development, production apps without infrastructure overhead
-    
+
     <Card title="Start Building" icon="rocket" href="/en/portal/evm/quickstart">
       Make your first Portal request in 5 minutes
     </Card>
+
   </Accordion>
 
-{" "}
+  <Accordion title="Self-Hosted Portal" icon="server">
+    Run Portal alongside your own infrastructure:
 
-<Accordion title="Self-Hosted Portal" icon="server">
-  Run Portal alongside your own infrastructure: - **Full control** - complete
-  sovereignty over data access - **No external dependencies** - runs next to any
-  node - **Open-source implementation** - audit and modify as needed - **Custom
-  chains supported** - works with any EVM/Solana chain Perfect for: Private
-  networks, custom chains, maximum sovereignty
-  <Card title="Self-Hosting Guide" icon="server" href="/en/portal/self-hosting">
-    Learn how to run your own Portal instance
-  </Card>
-</Accordion>
+    - **Full control** - complete sovereignty over data access
+    - **No external dependencies** - runs next to any node
+    - **Open-source implementation** - audit and modify as needed
+    - **Custom chains supported** - works with any EVM/Solana chain
+
+    Perfect for: Private networks, custom chains, maximum sovereignty
+
+    <Card title="Self-Hosting Guide" icon="server" href="/en/portal/self-hosting">
+      Learn how to run your own Portal instance
+    </Card>
+
+  </Accordion>
 
   <Accordion title="SQD Network" icon="network-wired">
     Connect to the decentralized data lake:
@@ -454,51 +379,21 @@ Portal offers three deployment modes, all using the same interface:
 
 Portal excels at data engineering challenges that break traditional tools:
 
-<div className="grid md:grid-cols-2 gap-6 my-8">
-  <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
-    <h3 className="font-bold text-xl mb-3 text-gray-900 dark:text-white">
-      High-TPS Chain Backfills
-    </h3>
-    <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
-      Process millions of blocks from chains like BSC or Solana without memory
-      spikes or retry loops. Stream data with constant memory footprint.
-    </p>
-  </div>
+### High-TPS chain backfills
 
-{" "}
+Process millions of blocks from chains like BSC or Solana without memory spikes or retry loops. Stream data with a constant memory footprint.
 
-<div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
-  <h3 className="font-bold text-xl mb-3 text-gray-900 dark:text-white">
-    Complete Wallet History
-  </h3>
-  <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
-    Extract full transaction history for any address—even on high-activity
-    chains—in minutes, not hours. Query arbitrary ranges in one request.
-  </p>
-</div>
+### Complete wallet history
 
-{" "}
+Extract full transaction history for any address—even on high-activity chains—in minutes, not hours. Query arbitrary ranges in one request.
 
-<div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
-  <h3 className="font-bold text-xl mb-3 text-gray-900 dark:text-white">
-    Analytics Pipelines
-  </h3>
-  <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
-    Build data pipelines to ClickHouse, Postgres, or S3. Process and analyze
-    blockchain data at scale with your choice of database.
-  </p>
-</div>
+### Analytics pipelines
 
-  <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
-    <h3 className="font-bold text-xl mb-3 text-gray-900 dark:text-white">
-      Real-time Indexing
-    </h3>
-    <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
-      Stream new blocks as they arrive with finality handling. Build production
-      indexers that handle reorgs gracefully.
-    </p>
-  </div>
-</div>
+Build data pipelines to ClickHouse, Postgres, or S3. Process and analyze blockchain data at scale with your choice of database.
+
+### Real-time indexing
+
+Stream new blocks as they arrive with finality handling. Build production indexers that handle reorgs gracefully.
 
 ## Next Steps
 

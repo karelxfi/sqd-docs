@@ -1,7 +1,10 @@
 ---
 title: "Portal Quickstart"
+sidebarTitle: "Quickstart"
 description: "Make your first Portal request in 5 minutes"
 ---
+
+import { QueryInterfaceQuickstart } from "/snippets/query-interface-quickstart.mdx";
 
 Make your first Portal request to access raw EVM blockchain data in under 5 minutes. No setup required—just HTTP requests.
 
@@ -42,8 +45,13 @@ curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
 ```
 
 <Check>
-You should see a stream of JSON objects, one per block, showing block numbers, timestamps, and gas usage.
+  You should see a stream of JSON objects, one per block, showing block numbers,
+  timestamps, and gas usage.
 </Check>
+
+<Info>Try it yourself with the interactive query interface below:</Info>
+
+<QueryInterfaceQuickstart />
 </Tab>
 
 <Tab title="TypeScript">
@@ -150,9 +158,34 @@ Let's break down what you just sent:
 Portal returns **newline-delimited JSON (NDJSON)**. Each line is a complete JSON object representing one block:
 
 ```json
-{"header": {"number": 18000000, "timestamp": 1697544779, "gasUsed": "12534567"}, "transactions": [], "logs": []}
-{"header": {"number": 18000001, "timestamp": 1697544791, "gasUsed": "14234891"}, "transactions": [], "logs": []}
-{"header": {"number": 18000002, "timestamp": 1697544803, "gasUsed": "13891234"}, "transactions": [], "logs": []}
+{
+  "header": {
+    "number": 18000000,
+    "timestamp": 1693066895,
+    "gasUsed": "0xf7e9ab"
+  }
+}
+{
+  "header": {
+    "number": 18000439,
+    "timestamp": 1693072175,
+    "gasUsed": "0xd314ec"
+  }
+}
+{
+  "header": {
+    "number": 18000440,
+    "timestamp": 1693072187,
+    "gasUsed": "0x10fad02"
+  }
+}
+{
+  "header": {
+    "number": 18001000,
+    "timestamp": 1693078967,
+    "gasUsed": "0xae0606"
+  }
+}
 ```
 
 <Note>
@@ -294,13 +327,15 @@ The Public Portal is rate-limited:
     Complete reference with all fields and filters
   </Card>
 
-  <Card
-    title="View Examples"
-    icon="code"
-    href="/en/portal/evm/examples/query-logs"
-  >
-    Practical examples for common use cases
-  </Card>
+{" "}
+
+<Card
+  title="View Examples"
+  icon="code"
+  href="/en/portal/evm/examples/query-logs"
+>
+  Practical examples for common use cases
+</Card>
 
   <Card title="Use with SDK" icon="brackets-curly" href="/en/sdk/overview">
     Build type-safe indexers with Portal as the data source
@@ -315,6 +350,7 @@ The Public Portal is rate-limited:
   </Card>
 
 {" "}
+
 <Card
   title="Query Transactions"
   icon="arrow-right-arrow-left"
@@ -324,6 +360,7 @@ The Public Portal is rate-limited:
 </Card>
 
 {" "}
+
 <Card
   title="Track NFT Transfers"
   icon="image"

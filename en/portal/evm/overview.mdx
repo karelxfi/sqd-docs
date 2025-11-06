@@ -1,5 +1,6 @@
 ---
-title: "EVM Portal"
+title: "Portal Overview"
+sidebarTitle: "Overview"
 description: "Access raw EVM blockchain data through Portal's HTTP API"
 ---
 
@@ -21,15 +22,19 @@ Portal supports the full range of EVM data types:
     NFT mints, and custom events.
   </Card>
 
-  <Card title="Transactions" icon="arrow-right-arrow-left">
-    Access transaction details including input data, gas usage, and execution
-    status. Filter by sender, recipient, or function signature.
-  </Card>
+{" "}
 
-  <Card title="Call Traces" icon="diagram-project">
-    Deep inspection of internal calls, contract creations, and execution paths.
-    Essential for DeFi analytics.
-  </Card>
+<Card title="Transactions" icon="arrow-right-arrow-left">
+  Access transaction details including input data, gas usage, and execution
+  status. Filter by sender, recipient, or function signature.
+</Card>
+
+{" "}
+
+<Card title="Call Traces" icon="diagram-project">
+  Deep inspection of internal calls, contract creations, and execution paths.
+  Essential for DeFi analytics.
+</Card>
 
   <Card title="State Diffs" icon="code-compare">
     Track storage changes at the contract level. Monitor state transitions and
@@ -107,15 +112,17 @@ Portal supports 100+ EVM networks including:
     </ul>
   </div>
 
-  <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-    <h3 className="font-semibold mb-2">Layer 2s</h3>
-    <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
-      <li>• Arbitrum One</li>
-      <li>• Optimism</li>
-      <li>• Base</li>
-      <li>• Polygon</li>
-    </ul>
-  </div>
+{" "}
+
+<div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+  <h3 className="font-semibold mb-2">Layer 2s</h3>
+  <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
+    <li>• Arbitrum One</li>
+    <li>• Optimism</li>
+    <li>• Base</li>
+    <li>• Polygon</li>
+  </ul>
+</div>
 
   <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700">
     <h3 className="font-semibold mb-2">Other EVM Chains</h3>
@@ -146,6 +153,7 @@ Portal supports 100+ EVM networks including:
   </div>
 
 {" "}
+
 <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
   <h3 className="font-bold text-xl mb-3">NFT Indexing</h3>
   <p className="text-gray-700 dark:text-gray-400 mb-3">
@@ -161,6 +169,7 @@ Portal supports 100+ EVM networks including:
 </div>
 
 {" "}
+
 <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
   <h3 className="font-bold text-xl mb-3">Wallet & Transaction Monitoring</h3>
   <p className="text-gray-700 dark:text-gray-400 mb-3">
@@ -202,6 +211,7 @@ Choose how you want to access Portal:
   </Accordion>
 
 {" "}
+
 <Accordion title="Cloud Portal" icon="cloud">
   **Best for:** Production applications - Higher rate limits - Integrated with
   SQD Cloud deployment - Pay-as-you-go pricing - Production-ready infrastructure
@@ -231,9 +241,11 @@ Choose how you want to access Portal:
     Make your first Portal request in 5 minutes
   </Card>
 
-  <Card title="API Reference" icon="book" href="/en/portal/evm/api-reference">
-    Complete API reference with all fields and filters
-  </Card>
+{" "}
+
+<Card title="API Reference" icon="book" href="/en/portal/evm/api-reference">
+  Complete API reference with all fields and filters
+</Card>
 
   <Card title="Examples" icon="code" href="/en/portal/evm/examples/query-logs">
     Practical examples for common use cases
