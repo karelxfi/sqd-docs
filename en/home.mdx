@@ -135,8 +135,16 @@ export function openSearch() {
 
 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
   <div className="max-w-4xl mx-auto text-center">
-    <div className="inline-flex items-center px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 mb-6">
-      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+    <div
+      className="inline-flex items-center px-4 py-2 rounded-full mb-6"
+      style={{
+        backgroundColor: "rgba(17, 24, 204, 0.08)",
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "rgba(17, 24, 204, 0.2)",
+      }}
+    >
+      <span className="text-sm font-medium" style={{ color: "#1118CC" }}>
         Build with SQD
       </span>
     </div>
@@ -197,12 +205,21 @@ export function openSearch() {
       Four integrated products that work together to power your blockchain data
       infrastructure
     </p>
-    <div className="inline-flex items-center gap-3 px-6 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl">
-      <span className="font-semibold text-slate-700 dark:text-slate-300">
+    <div
+      className="inline-flex items-center gap-3 px-6 py-3 rounded-xl"
+      style={{
+        backgroundColor: "rgba(17, 24, 204, 0.06)",
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderColor: "rgba(17, 24, 204, 0.15)",
+      }}
+    >
+      <span className="font-semibold" style={{ color: "#1118CC" }}>
         Portal
       </span>
       <svg
-        className="w-5 h-5 text-slate-400"
+        className="w-5 h-5"
+        style={{ color: "#294496" }}
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -214,11 +231,12 @@ export function openSearch() {
           d="M9 5l7 7-7 7"
         />
       </svg>
-      <span className="font-semibold text-slate-700 dark:text-slate-300">
+      <span className="font-semibold" style={{ color: "#1118CC" }}>
         SDK
       </span>
       <svg
-        className="w-5 h-5 text-slate-400"
+        className="w-5 h-5"
+        style={{ color: "#294496" }}
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -230,11 +248,12 @@ export function openSearch() {
           d="M9 5l7 7-7 7"
         />
       </svg>
-      <span className="font-semibold text-slate-700 dark:text-slate-300">
+      <span className="font-semibold" style={{ color: "#1118CC" }}>
         Cloud
       </span>
       <svg
-        className="w-5 h-5 text-slate-400"
+        className="w-5 h-5"
+        style={{ color: "#294496" }}
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -246,7 +265,7 @@ export function openSearch() {
           d="M9 5l7 7-7 7"
         />
       </svg>
-      <span className="font-semibold text-slate-700 dark:text-slate-300">
+      <span className="font-semibold" style={{ color: "#1118CC" }}>
         Network
       </span>
     </div>
