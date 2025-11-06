@@ -111,13 +111,13 @@
                       {
                         "group": "Examples",
                         "pages": [
-                          "en/portal/evm/use-portal/query-logs",
-                          "en/portal/evm/use-portal/query-transactions",
-                          "en/portal/evm/use-portal/query-traces",
-                          "en/portal/evm/use-portal/nft-transfers",
-                          "en/portal/evm/use-portal/dex-swaps",
-                          "en/portal/evm/use-portal/contract-deployments",
-                          "en/portal/evm/use-portal/state-diffs"
+                          "en/portal/evm/examples/query-logs",
+                          "en/portal/evm/examples/query-transactions",
+                          "en/portal/evm/examples/query-traces",
+                          "en/portal/evm/examples/nft-transfers",
+                          "en/portal/evm/examples/dex-swaps",
+                          "en/portal/evm/examples/contract-deployments",
+                          "en/portal/evm/examples/state-diffs"
                         ]
                       },
                       "en/portal/evm/api-reference"
@@ -578,8 +578,7 @@
                     "expanded": true,
                     "pages": [
                       "en/network/worker",
-                      "en/network/delegate",
-                      "en/network/portal"
+                      "en/network/delegate"
                     ]
                   },
                   {
@@ -600,7 +599,7 @@
                 "pages": [
                   "en/portal/overview",
                   "en/portal/pricing",
-                  "en/portal/quickstart"
+                  "en/portal/self-hosting"
                 ]
               }
             ]
@@ -625,7 +624,7 @@
                     "group": "Portal API Reference",
                     "icon": "code",
                     "openapi": "en/api/evm/openapi.yaml",
-                    "directory": "api/evm",
+                    "directory": "en/portal/api/evm",
                     "pages": [
                       "GET /metadata",
                       "POST /stream",

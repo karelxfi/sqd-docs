@@ -1,6 +1,6 @@
 ---
 title: "Self-Host a Portal"
-description: "Run your own SQD Portal to access decentralized network data without relying on centralized services"
+description: "Run your own SQD Portal instance to access decentralized network data without relying on centralized services"
 ---
 
 <Info>
@@ -13,7 +13,7 @@ description: "Run your own SQD Portal to access decentralized network data witho
   On Solana](#on-solana) section before committing tokens.
 </Warning>
 
-Running your own portal enables you to access the [permissionless SQD Network](subsquid-network/overview) data without relying on centralized services. You can operate a private portal for personal use or deploy a high-throughput public portal.
+Running your own Portal instance enables you to access the [permissionless SQD Network](subsquid-network/overview) data without relying on centralized services. You can operate a private Portal instance for personal use or deploy a high-throughput public Portal.
 
 ## Prerequisites
 
@@ -26,7 +26,7 @@ Before you begin, ensure you have:
 ### Financial Requirements
 
 - **Minimum 10,000 `SQD` tokens**
-  - Tokens remain locked while your portal is active
+  - Tokens remain locked while your Portal instance is active
   - More tokens = more bandwidth
   - Tokens can be in your wallet or SQD-issued vesting contract
 - **Arbitrum ETH** for gas fees
@@ -41,8 +41,8 @@ Before you begin, ensure you have:
 
 - **Minimum 25GB unused RAM** (we're working to reduce this requirement)
 - Additional hardware depends on your use case:
-  - Private single-user portals can run on a laptop with sufficient RAM
-  - Public or high-throughput portals require more robust infrastructure
+  - Private single-user Portal instances can run on a laptop with sufficient RAM
+  - Public or high-throughput Portal instances require more robust infrastructure
 
 <Note>Hardware requirements scale with your expected usage patterns.</Note>
 
@@ -72,8 +72,8 @@ Before you begin, ensure you have:
 ### Enable Auto-Extension (Optional)
 
 <Tip>
-  By default, your portal stops working when the lock period ends. Enable
-  auto-extension to keep your portal running continuously.
+  By default, your Portal instance stops working when the lock period ends.
+  Enable auto-extension to keep your Portal instance running continuously.
 </Tip>
 
 Click the "Auto Extension" switch and confirm the transaction. This automatically relocks your `SQD` when the current period ends.
@@ -87,7 +87,7 @@ Click the "Auto Extension" switch and confirm the transaction. This automaticall
 
 <Step title="Generate a peer ID" icon="id-card">
 
-SQD Network operates as a decentralized peer-to-peer system. Your portal needs a private key and public peer ID to participate.
+SQD Network operates as a decentralized peer-to-peer system. Your Portal instance needs a private key and public peer ID to participate.
 
 Generate your peer ID:
 
@@ -118,11 +118,11 @@ Your peer ID: THIS IS WHAT YOU NEED TO COPY
 3. Fill the portal registration form:
 
    - Enter your peer ID from the previous step
-   - If making your portal public, enable "Publicly available" and complete additional fields
+   - If making your Portal instance public, enable "Publicly available" and complete additional fields
 
 4. Click "Confirm" and approve the transaction in your wallet
 
-<Check>Your portal is now registered on-chain.</Check>
+<Check>Your Portal instance is now registered on-chain.</Check>
 
 </Step>
 
@@ -151,8 +151,8 @@ echo KEY_PATH=<KEY_FILE_PATH> >> .env
 
 <Warning>
   Double-check the key path! An incorrect path will cause the system to generate
-  a new random key, resulting in your portal attempting to operate with an
-  unregistered peer ID.
+  a new random key, resulting in your Portal instance attempting to operate with
+  an unregistered peer ID.
 </Warning>
 
 ### Start the Portal
@@ -193,7 +193,7 @@ apt-get install protobuf-compiler
 </Tab>
 </Tabs>
 
-<Check>Your portal is now running!</Check>
+<Check>Your Portal instance is now running!</Check>
 
 </Step>
 
@@ -229,7 +229,7 @@ rm -r node_modules package-lock.json
 npm i
 ```
 
-A working portal exposes its dataset-specific APIs via URLs such as this one:
+A working Portal instance exposes its dataset-specific APIs via URLs such as this one:
 
 ```
 
@@ -237,7 +237,7 @@ http://&lt;host&gt;:8000/datasets/&lt;dataset-slug&gt;
 
 ```
 
-Here, `<dataset-slug>` is the last path segment of the network-specific gateway URL found on [this page](subsquid-network/reference/networks). For example, a local portal will expose its Ethereum dataset API at
+Here, `<dataset-slug>` is the last path segment of the network-specific gateway URL found on [this page](subsquid-network/reference/networks). For example, a local Portal instance will expose its Ethereum dataset API at
 
 ```
 
@@ -258,7 +258,7 @@ If your squid [uses RPC to ingest unfinalized blocks](sdk/resources/unfinalized-
 
 ### On Solana
 
-Solana SDK in its `@portal-api` version is capable of ingesting real-time data from portal, but is no longer capable of ingesting it from RPC. Since real-time Solana data is not yet available for private portals, that means that _at the moment it is not possible to get real-time Solana data if the private portal is used as the main data source_. This will be fixed soon, but as of 2025-03-04 this is one limitation we have.
+Solana SDK in its `@portal-api` version is capable of ingesting real-time data from Portal, but is no longer capable of ingesting it from RPC. Since real-time Solana data is not yet available for private Portal instances, that means that _at the moment it is not possible to get real-time Solana data if the private Portal instance is used as the main data source_. This will be fixed soon, but as of 2025-03-04 this is one limitation we have.
 
 If you just want to try ingesting historical Solana data you can take a look at the `portal-api` branch of our Solana template:
 
@@ -279,7 +279,7 @@ If the last command fails due to an HTTP 400 response, try raising the lowest bl
 
 <Accordion title="Full migration instructions">
 
-**A.** Replace all existing data sources with the portal:
+**A.** Replace all existing data sources with the Portal instance:
 
 ```diff
 +  .setPortal('https://portal.tethys.sqd.dev/datasets/solana-beta')
@@ -332,23 +332,23 @@ SLOT_NUMBER=320276063 curl --request POST --url https: "//api.mainnet-beta.solan
 
 ## Token Requirements and Compute Units
 
-The minimum token locking requirement for a portal is 10000 `SQD`. This should be enough for simple user cases like running 2-3 squid or grabbing some data for analytics. If you expect heavier workloads, read on.
+The minimum token locking requirement for a Portal instance is 10000 `SQD`. This should be enough for simple user cases like running 2-3 squid or grabbing some data for analytics. If you expect heavier workloads, read on.
 
-The rate limiting mechanism of SQD Network relies on the concept of a _compute unit_, or CU for short. CUs do not map directly to the amount of data fetched by a portal; instead, they (roughly) represent the amount of work that the network does internally while serving the portal's requests.
+The rate limiting mechanism of SQD Network relies on the concept of a _compute unit_, or CU for short. CUs do not map directly to the amount of data fetched by a Portal instance; instead, they (roughly) represent the amount of work that the network does internally while serving the Portal instance's requests.
 
 <Accordion title="Understanding compute units (CU)">
 
 SQD Network datasets are partitioned by block number. Dataset chunks are randomly distributed among [worker nodes](subsquid-network/worker).
 
-When an SQD portal receives a data request, the following happens:
+When an SQD Portal instance receives a data request, the following happens:
 
-1. The portal forwards the request to several workers that hold the chunks of the relevant dataset
+1. The Portal instance forwards the request to several workers that hold the chunks of the relevant dataset
 
 2. The workers execute the request separately on each chunk
 
-3. Workers send the results back to the portal. For lightweight queries, they send one response for each dataset chunk; however, if any response exceeds 100 Mbytes, it's split into several parts
+3. Workers send the results back to the Portal instance. For lightweight queries, they send one response for each dataset chunk; however, if any response exceeds 100 Mbytes, it's split into several parts
 
-4. The portal concatenates the workers' replies and serves a continuous stream of data to the user
+4. The Portal instance concatenates the workers' replies and serves a continuous stream of data to the user
 
 Each response made by any of the workers in step 3 spends exactly 1 CU.
 
@@ -422,15 +422,15 @@ Suppose your query traverses the last 1M blocks of the Binance Smart Chain and y
 
 ## High throughput portals
 
-The recommended way to make a portal that can serve a large number of requests is deploy multiple portals associated with a single wallet:
+The recommended way to make a Portal instance that can serve a large number of requests is deploy multiple Portal instances associated with a single wallet:
 
-1. Use a single wallet to register as many peer IDs as you need portal instances.
+1. Use a single wallet to register as many peer IDs as you need Portal instances.
 
-2. Make one `SQD` lockup for all your portal instances. See [Token requirements and compute units](#token-requirements-and-compute-units) to get an idea of how large your stake should be.
+2. Make one `SQD` lockup for all your Portal instances. See [Token requirements and compute units](#token-requirements-and-compute-units) to get an idea of how large your stake should be.
 
-3. Run portals in parallel, balancing traffic between the instances.
+3. Run Portal instances in parallel, balancing traffic between the instances.
 
-If you plan to automate running your portal instances, you may find [this helm chart](https://github.com/subsquid/sqd-portal/tree/master/chart) useful.
+If you plan to automate running your Portal instances, you may find [this helm chart](https://github.com/subsquid/sqd-portal/tree/master/chart) useful.
 
 ## Troubleshooting
 
@@ -439,15 +439,15 @@ If you plan to automate running your portal instances, you may find [this helm c
 
 **If you lose your key file:**
 
-- You won't be able to run your portal until you generate and register a new one
+- You won't be able to run your Portal instance until you generate and register a new one
 
 **If your key file is stolen:**
 
-- The perpetrator can cause connectivity issues, effectively creating downtime for your portal
+- The perpetrator can cause connectivity issues, effectively creating downtime for your Portal instance
 
 **Recovery steps:**
 
-1. Unregister your portal on the ["Portals" tab](https://network.subsquid.io/portals)
+1. Unregister your Portal instance on the ["Portals" tab](https://network.subsquid.io/portals)
 2. Generate a new key file
 3. Register the new portal peer ID
 
@@ -461,7 +461,7 @@ If you plan to automate running your portal instances, you may find [this helm c
 
 Portal performance metrics are exposed at the `/metrics` endpoint.
 
-For a local portal, check throttling statistics:
+For a local Portal instance, check throttling statistics:
 
 ```bash
 curl http://127.0.0.1:8000/metrics | grep throttled

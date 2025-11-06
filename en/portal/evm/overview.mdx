@@ -1,11 +1,45 @@
 ---
-title: "Overview"
-description: "Access raw EVM blockchain data through SQD Portal's decentralized network"
+title: "EVM Portal"
+description: "Access raw EVM blockchain data through Portal's HTTP API"
 ---
 
-Portal provides direct access to raw EVM blockchain data through a decentralized network of 2000+ worker nodes. Query blocks, transactions, logs, traces, and state diffs with 10-50x faster performance than traditional RPC nodes.
+Portal provides direct access to raw EVM blockchain data across 100+ networks. Query blocks, transactions, logs, traces, and state diffs with performance that scales beyond traditional RPC limitations.
+
+<Info>
+  Looking for the main Portal overview? See [Portal
+  Overview](/en/portal/overview) for concepts, deployment options, and
+  comparisons.
+</Info>
+
+## EVM-Specific Features
+
+Portal supports the full range of EVM data types:
+
+<CardGroup cols={2}>
+  <Card title="Event Logs" icon="file-lines">
+    Query smart contract events with topic filtering. Track ERC-20 transfers,
+    NFT mints, and custom events.
+  </Card>
+
+  <Card title="Transactions" icon="arrow-right-arrow-left">
+    Access transaction details including input data, gas usage, and execution
+    status. Filter by sender, recipient, or function signature.
+  </Card>
+
+  <Card title="Call Traces" icon="diagram-project">
+    Deep inspection of internal calls, contract creations, and execution paths.
+    Essential for DeFi analytics.
+  </Card>
+
+  <Card title="State Diffs" icon="code-compare">
+    Track storage changes at the contract level. Monitor state transitions and
+    storage slot modifications.
+  </Card>
+</CardGroup>
 
 ## Quick Start
+
+Get started with Portal in 5 minutes:
 
 <CodeGroup>
 ```bash curl
@@ -59,50 +93,149 @@ response = requests.post(url, headers=headers, json=payload)
 
 </CodeGroup>
 
+## Supported Networks
+
+Portal supports 100+ EVM networks including:
+
+<div className="grid md:grid-cols-3 gap-4 my-6">
+  <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+    <h3 className="font-semibold mb-2">Ethereum</h3>
+    <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
+      <li>• Mainnet</li>
+      <li>• Sepolia</li>
+      <li>• Holesky</li>
+    </ul>
+  </div>
+
+  <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+    <h3 className="font-semibold mb-2">Layer 2s</h3>
+    <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
+      <li>• Arbitrum One</li>
+      <li>• Optimism</li>
+      <li>• Base</li>
+      <li>• Polygon</li>
+    </ul>
+  </div>
+
+  <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+    <h3 className="font-semibold mb-2">Other EVM Chains</h3>
+    <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
+      <li>• BNB Smart Chain</li>
+      <li>• Avalanche</li>
+      <li>• Fantom</li>
+      <li>• + 90 more</li>
+    </ul>
+  </div>
+</div>
+
+<Card title="View All Networks" icon="database" href="/en/data/networks/evm">
+  See complete list of supported EVM networks
+</Card>
+
+## Common Use Cases
+
+<div className="space-y-6 my-8">
+  <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
+    <h3 className="font-bold text-xl mb-3">DeFi Analytics</h3>
+    <p className="text-gray-700 dark:text-gray-400 mb-3">
+      Track DEX swaps, lending protocol events, and liquidity changes. Use call traces to analyze complex DeFi interactions.
+    </p>
+    <a href="/en/portal/evm/examples/dex-swaps" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
+      View DEX Example →
+    </a>
+  </div>
+
+{" "}
+<div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
+  <h3 className="font-bold text-xl mb-3">NFT Indexing</h3>
+  <p className="text-gray-700 dark:text-gray-400 mb-3">
+    Monitor NFT mints, transfers, and marketplace activity. Track ERC-721 and
+    ERC-1155 events across collections.
+  </p>
+  <a
+    href="/en/portal/evm/examples/nft-transfers"
+    className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+  >
+    View NFT Example →
+  </a>
+</div>
+
+{" "}
+<div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
+  <h3 className="font-bold text-xl mb-3">Wallet & Transaction Monitoring</h3>
+  <p className="text-gray-700 dark:text-gray-400 mb-3">
+    Track wallet activity, monitor specific addresses, and analyze transaction
+    patterns. Essential for compliance and security.
+  </p>
+  <a
+    href="/en/portal/evm/examples/query-transactions"
+    className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+  >
+    View Transaction Example →
+  </a>
+</div>
+
+  <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
+    <h3 className="font-bold text-xl mb-3">Contract Deployment Tracking</h3>
+    <p className="text-gray-700 dark:text-gray-400 mb-3">
+      Monitor new contract deployments, track factory patterns, and analyze deployment trends across networks.
+    </p>
+    <a href="/en/portal/evm/examples/contract-deployments" className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
+      View Deployment Example →
+    </a>
+  </div>
+</div>
+
 ## Access Methods
 
-Portal offers three ways to access blockchain data:
+Choose how you want to access Portal:
 
-### Cloud Portal
+<AccordionGroup>
+  <Accordion title="Public Portal (Free)" icon="globe">
+    **Best for:** Development and testing
+    
+    - Free access with rate limits (20 requests per 10 seconds)
+    - No setup required
+    - Access to all supported networks
+    
+    **Endpoint:** `https://portal.sqd.dev`
+  </Accordion>
 
-Managed Portal access through SQD Cloud with no setup required.
+{" "}
+<Accordion title="Cloud Portal" icon="cloud">
+  **Best for:** Production applications - Higher rate limits - Integrated with
+  SQD Cloud deployment - Pay-as-you-go pricing - Production-ready infrastructure
+  <Card title="Learn More" icon="cloud" href="/en/cloud/overview">
+    Explore Cloud Portal
+  </Card>
+</Accordion>
 
-- No token requirements or infrastructure setup
-- Integrated with SQD Cloud deployment platform
-- Pay-as-you-go pricing
-- Ideal for production applications
+  <Accordion title="Self-Hosted Portal" icon="server">
+    **Best for:** Maximum sovereignty
+    
+    - No rate limits
+    - Full control over infrastructure
+    - Run next to your own node
+    - Open-source implementation
+    
+    <Card title="Self-Hosting Guide" icon="server" href="/en/portal/self-hosting">
+      Set up your Portal instance
+    </Card>
+  </Accordion>
+</AccordionGroup>
 
-**Endpoint:** Provided via SQD Cloud environment
+## Next Steps
 
-<Card title="Cloud Portal Guide" icon="cloud" href="/en/cloud/overview">
-  Deploy with Cloud Portal
-</Card>
+<CardGroup cols={3}>
+  <Card title="Quickstart" icon="rocket" href="/en/portal/evm/quickstart">
+    Make your first Portal request in 5 minutes
+  </Card>
 
-### Self-Hosted Portal
+  <Card title="API Reference" icon="book" href="/en/portal/evm/api-reference">
+    Complete API reference with all fields and filters
+  </Card>
 
-Run your own Portal instance with complete control over infrastructure.
-
-**Requirements:**
-
-- TBD
-
-**Benefits:**
-
-- No usage or rate limits
-- Direct network participation
-- TBD
-
-<Card title="Self-Hosting Guide" icon="server" href="/en/portal/self-hosting">
-  Set up your Portal instance
-</Card>
-
-### Public Portal
-
-Free access for development and testing with rate limits.
-
-- Free access to all SQD datasets
-- Rate limited: 20 requests per 10 seconds
-- Ideal for development and prototyping
-- No account required
-
-**Endpoint:** `https://portal.sqd.dev`
+  <Card title="Examples" icon="code" href="/en/portal/evm/examples/query-logs">
+    Practical examples for common use cases
+  </Card>
+</CardGroup>
