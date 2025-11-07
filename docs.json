@@ -19,7 +19,7 @@
     "content": "\u26a0\ufe0f Documentation is a work in progress. To provide feedback, use the \"Report to Linear\" button.",
     "dismissible": true,
     "style": {
-      "backgroundColor": "#8B0000",
+      "backgroundColor": "#111111",
       "textColor": "#FFFFFF"
     }
   },
@@ -1715,10 +1715,6 @@
       "href": "https://github.com/subsquid/squid-sdk"
     },
     "links": [
-      {
-        "label": "For LLMs",
-        "href": "https://sqd-2119b3c3.mintlify.app/llms-full.txt"
-      },
       {
         "label": "Get help",
         "href": "https://t.me/hydradevs",
