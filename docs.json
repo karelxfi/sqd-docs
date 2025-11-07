@@ -147,176 +147,131 @@
                     "icon": "server",
                     "pages": [
                       "en/sdk/squid-sdk/evm/quickstart",
-                      {
-                        "group": "Getting Started",
-                        "pages": [
-                          "en/sdk/squid-sdk/evm/getting-started/overview",
-                          "en/sdk/squid-sdk/evm/getting-started/layout",
-                          "en/sdk/squid-sdk/evm/getting-started/development-environment-set-up",
-                          "en/sdk/squid-sdk/evm/getting-started/squid-development",
-                          "en/sdk/squid-sdk/evm/getting-started/squid-from-scratch",
-                          "en/sdk/squid-sdk/evm/getting-started/cli-cheatsheet"
-                        ]
-                      },
+                      "en/sdk/squid-sdk/evm/design",
+                      "en/sdk/squid-sdk/evm/how-it-works",
+                      "en/sdk/squid-sdk/evm/faq-troubleshooting",
                       {
                         "group": "Guides",
                         "pages": [
-                          "en/sdk/squid-sdk/evm/concepts/architecture",
-                          "en/sdk/squid-sdk/evm/guides/indexing-logs",
-                          "en/sdk/squid-sdk/evm/guides/indexing-transactions",
-                          "en/sdk/squid-sdk/evm/guides/indexing-traces",
-                          "en/sdk/squid-sdk/evm/guides/indexing-state-diffs",
-                          "en/sdk/squid-sdk/evm/guides/proxy-contracts",
-                          "en/sdk/squid-sdk/evm/guides/factory-contracts",
-                          "en/sdk/squid-sdk/evm/guides/local-development"
+                          "en/sdk/squid-sdk/evm/guides/make-an-indexer",
+                          "en/sdk/squid-sdk/evm/guides/writing-to-postgres",
+                          "en/sdk/squid-sdk/evm/guides/serving-graphql",
+                          "en/sdk/squid-sdk/evm/guides/other-data-destinations",
+                          {
+                            "group": "Migration",
+                            "pages": [
+                              "en/sdk/squid-sdk/evm/guides/migration/migrate-from-thegraph"
+                            ]
+                          },
+                          "en/sdk/squid-sdk/evm/guides/best-practices",
+                          {
+                            "group": "Advanced",
+                            "pages": [
+                              "en/sdk/squid-sdk/evm/guides/advanced/development-environment-setup",
+                              "en/sdk/squid-sdk/evm/guides/advanced/cli-cheatsheet",
+                              "en/sdk/squid-sdk/evm/guides/advanced/proxy-contracts",
+                              "en/sdk/squid-sdk/evm/guides/advanced/factory-contracts",
+                              "en/sdk/squid-sdk/evm/guides/advanced/multichain-indexing",
+                              "en/sdk/squid-sdk/evm/guides/advanced/external-apis-ipfs",
+                              "en/sdk/squid-sdk/evm/guides/advanced/firesquid-release"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "group": "Examples & tutorials",
+                        "pages": [
+                          "en/sdk/squid-sdk/evm/examples-tutorials/build-indexer-from-scratch",
+                          "en/sdk/squid-sdk/evm/examples-tutorials/use-with-ganache-hardhat",
+                          "en/sdk/squid-sdk/evm/examples-tutorials/auto-generate-indexer",
+                          "en/sdk/squid-sdk/evm/examples-tutorials/examples-widget"
                         ]
                       },
                       {
                         "group": "Reference",
                         "pages": [
-                          "en/sdk/squid-sdk/evm/reference/batch-processor",
-                          "en/sdk/squid-sdk/evm/reference/field-selection",
-                          "en/sdk/squid-sdk/evm/reference/context-interfaces",
+                          "en/sdk/squid-sdk/evm/reference/packages-overview",
+                          "en/sdk/squid-sdk/evm/reference/project-structure",
+                          {
+                            "group": "evm-processor package",
+                            "pages": [
+                              "en/sdk/squid-sdk/evm/reference/evm-processor/architecture",
+                              "en/sdk/squid-sdk/evm/reference/evm-processor/general-settings",
+                              "en/sdk/squid-sdk/evm/reference/evm-processor/requesting-data",
+                              "en/sdk/squid-sdk/evm/reference/evm-processor/field-selection"
+                            ]
+                          },
+                          {
+                            "group": "Data stores",
+                            "pages": [
+                              "en/sdk/squid-sdk/evm/reference/data-stores/store-interface",
+                              "en/sdk/squid-sdk/evm/reference/data-stores/typeorm-store",
+                              "en/sdk/squid-sdk/evm/reference/data-stores/bigquery-store",
+                              "en/sdk/squid-sdk/evm/reference/data-stores/file-store"
+                            ]
+                          },
+                          {
+                            "group": "Schema files",
+                            "pages": [
+                              "en/sdk/squid-sdk/evm/reference/schema-files/schema-files-codegen",
+                              "en/sdk/squid-sdk/evm/reference/schema-files/entities",
+                              "en/sdk/squid-sdk/evm/reference/schema-files/entity-relations",
+                              "en/sdk/squid-sdk/evm/reference/schema-files/indexes-constraints",
+                              "en/sdk/squid-sdk/evm/reference/schema-files/interfaces",
+                              "en/sdk/squid-sdk/evm/reference/schema-files/unions-typed-json"
+                            ]
+                          },
+                          "en/sdk/squid-sdk/evm/reference/typeorm-codegen",
+                          "en/sdk/squid-sdk/evm/reference/typeorm-migration",
+                          {
+                            "group": "OpenReader",
+                            "pages": [
+                              "en/sdk/squid-sdk/evm/reference/openreader/overview",
+                              {
+                                "group": "API reference",
+                                "pages": [
+                                  "en/sdk/squid-sdk/evm/reference/openreader/api/intro",
+                                  "en/sdk/squid-sdk/evm/reference/openreader/api/queries",
+                                  "en/sdk/squid-sdk/evm/reference/openreader/api/and-or-filters",
+                                  "en/sdk/squid-sdk/evm/reference/openreader/api/sorting",
+                                  "en/sdk/squid-sdk/evm/reference/openreader/api/paginate-query-results",
+                                  "en/sdk/squid-sdk/evm/reference/openreader/api/nested-field-queries",
+                                  "en/sdk/squid-sdk/evm/reference/openreader/api/cross-relation-field-queries",
+                                  "en/sdk/squid-sdk/evm/reference/openreader/api/json-queries",
+                                  "en/sdk/squid-sdk/evm/reference/openreader/api/resolve-union-types-interfaces"
+                                ]
+                              },
+                              {
+                                "group": "Server configuration",
+                                "pages": [
+                                  "en/sdk/squid-sdk/evm/reference/openreader/configuration/custom-resolvers",
+                                  "en/sdk/squid-sdk/evm/reference/openreader/configuration/authorization",
+                                  "en/sdk/squid-sdk/evm/reference/openreader/configuration/caching",
+                                  "en/sdk/squid-sdk/evm/reference/openreader/configuration/subscriptions",
+                                  "en/sdk/squid-sdk/evm/reference/openreader/configuration/dos-protection"
+                                ]
+                              }
+                            ]
+                          },
+                          "en/sdk/squid-sdk/evm/reference/hasura-configuration",
+                          {
+                            "group": "evm-typegen package",
+                            "pages": [
+                              "en/sdk/squid-sdk/evm/reference/evm-typegen/generating-utility-modules",
+                              "en/sdk/squid-sdk/evm/reference/evm-typegen/data-decoding",
+                              "en/sdk/squid-sdk/evm/reference/evm-typegen/direct-rpc-queries"
+                            ]
+                          },
+                          "en/sdk/squid-sdk/evm/reference/create-squid",
                           "en/sdk/squid-sdk/evm/reference/logger"
                         ]
                       },
                       {
-                        "group": "Schema & Data",
+                        "group": "Alternative clients",
                         "pages": [
-                          "en/sdk/squid-sdk/evm/features/persisting-data/overview",
-                          {
-                            "group": "Schema Files",
-                            "pages": [
-                              "en/sdk/squid-sdk/evm/reference/schema-file/intro",
-                              "en/sdk/squid-sdk/evm/reference/schema-file/entities",
-                              "en/sdk/squid-sdk/evm/reference/schema-file/entity-relations",
-                              "en/sdk/squid-sdk/evm/reference/schema-file/indexes-and-constraints",
-                              "en/sdk/squid-sdk/evm/reference/schema-file/interfaces",
-                              "en/sdk/squid-sdk/evm/reference/schema-file/unions-and-typed-json"
-                            ]
-                          },
-                          {
-                            "group": "Data Storage",
-                            "pages": [
-                              "en/sdk/squid-sdk/evm/reference/store/typeorm",
-                              "en/sdk/squid-sdk/evm/features/persisting-data/typeorm",
-                              "en/sdk/squid-sdk/evm/reference/store/bigquery",
-                              "en/sdk/squid-sdk/evm/features/persisting-data/bigquery",
-                              {
-                                "group": "File Storage",
-                                "pages": [
-                                  "en/sdk/squid-sdk/evm/reference/store/file/csv",
-                                  "en/sdk/squid-sdk/evm/reference/store/file/json",
-                                  "en/sdk/squid-sdk/evm/reference/store/file/parquet",
-                                  "en/sdk/squid-sdk/evm/reference/store/file/s3-dest",
-                                  "en/sdk/squid-sdk/evm/features/persisting-data/file"
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "group": "GraphQL API",
-                        "pages": [
-                          "en/sdk/squid-sdk/evm/reference/openreader-server/overview",
-                          "en/sdk/squid-sdk/evm/features/serving-graphql",
-                          {
-                            "group": "API Reference",
-                            "pages": [
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/intro",
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/queries",
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/and-or-filters",
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/sorting",
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/paginate-query-results",
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/nested-field-queries",
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/cross-relation-field-queries",
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/json-queries",
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/api/resolve-union-types-interfaces"
-                            ]
-                          },
-                          {
-                            "group": "Configuration",
-                            "pages": [
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/custom-resolvers",
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/authorization",
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/caching",
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/subscriptions",
-                              "en/sdk/squid-sdk/evm/reference/openreader-server/configuration/dos-protection",
-                              "en/sdk/squid-sdk/evm/tools/hasura-configuration"
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "group": "CLI & Tools",
-                        "pages": [
-                          {
-                            "group": "CLI",
-                            "pages": [
-                              "en/sdk/squid-sdk/evm/tools/cli",
-                              "en/sdk/squid-sdk/evm/tools/cli/installation",
-                              "en/sdk/squid-sdk/evm/tools/cli/init",
-                              "en/sdk/squid-sdk/evm/tools/cli/run",
-                              "en/sdk/squid-sdk/evm/tools/cli/deploy",
-                              "en/sdk/squid-sdk/evm/tools/cli/logs",
-                              "en/sdk/squid-sdk/evm/tools/cli/explorer",
-                              "en/sdk/squid-sdk/evm/tools/cli/list",
-                              "en/sdk/squid-sdk/evm/tools/cli/prod",
-                              "en/sdk/squid-sdk/evm/tools/cli/restart",
-                              "en/sdk/squid-sdk/evm/tools/cli/remove",
-                              "en/sdk/squid-sdk/evm/tools/cli/secrets",
-                              "en/sdk/squid-sdk/evm/tools/cli/tags",
-                              "en/sdk/squid-sdk/evm/tools/cli/gateways",
-                              "en/sdk/squid-sdk/evm/tools/cli/auth",
-                              "en/sdk/squid-sdk/evm/tools/cli/whoami",
-                              "en/sdk/squid-sdk/evm/tools/cli/autocomplete",
-                              "en/sdk/squid-sdk/evm/tools/cli/commands-json"
-                            ]
-                          },
-                          {
-                            "group": "Code Generation",
-                            "pages": [
-                              "en/sdk/squid-sdk/evm/tools/typegen/generation",
-                              "en/sdk/squid-sdk/evm/tools/typegen/decoding",
-                              "en/sdk/squid-sdk/evm/tools/typegen/state-queries",
-                              "en/sdk/squid-sdk/evm/tools/model-gen",
-                              "en/sdk/squid-sdk/evm/tools/squid-gen",
-                              "en/sdk/squid-sdk/evm/tools/migrations-gen"
-                            ]
-                          },
-                          "en/sdk/squid-sdk/evm/tools/external-tools/external-tools-overview",
-                          "en/sdk/squid-sdk/evm/features/sdk-resources",
-                          "en/sdk/squid-sdk/evm/tools/faq",
-                          "en/sdk/squid-sdk/evm/tools/troubleshooting"
-                        ]
-                      },
-                      {
-                        "group": "Advanced",
-                        "pages": [
-                          "en/sdk/squid-sdk/evm/features/batch-processing",
-                          "en/sdk/squid-sdk/evm/features/multichain",
-                          "en/sdk/squid-sdk/evm/features/external-api",
-                          "en/sdk/squid-sdk/evm/features/unfinalized-blocks"
-                        ]
-                      },
-                      {
-                        "group": "Learn More",
-                        "pages": [
-                          "en/sdk/squid-sdk/evm/tutorials",
-                          "en/sdk/squid-sdk/evm/examples"
-                        ]
-                      },
-                      {
-                        "group": "Migration & Help",
-                        "pages": [
-                          "en/sdk/squid-sdk/evm/migration/migrate-to-arrowsquid",
-                          "en/sdk/squid-sdk/evm/migration/migrate-to-arrowsquid-on-substrate",
-                          "en/sdk/squid-sdk/evm/migration/migrate-subgraph",
-                          "en/sdk/squid-sdk/evm/migration/subsquid-vs-thegraph",
-                          "en/sdk/squid-sdk/evm/migration/subgraphs-support/subgraphs-support",
-                          "en/sdk/squid-sdk/evm/migration/migrate-to-hasura-configuration-tool-v2",
-                          "en/sdk/squid-sdk/evm/migration/firesquid/firesquid-migration"
+                          "en/sdk/squid-sdk/evm/alternative-clients/dipdUp",
+                          "en/sdk/squid-sdk/evm/alternative-clients/run-subgraphs",
+                          "en/sdk/squid-sdk/evm/alternative-clients/cherry"
                         ]
                       }
                     ]
@@ -520,6 +475,28 @@
                       "en/cloud/reference/hasura",
                       "en/cloud/reference/rpc-proxy-networks",
                       "en/cloud/reference/squidignore"
+                    ]
+                  },
+                  {
+                    "group": "CLI",
+                    "pages": [
+                      "en/cloud/reference/cli/installation",
+                      "en/cloud/reference/cli/init",
+                      "en/cloud/reference/cli/run",
+                      "en/cloud/reference/cli/deploy",
+                      "en/cloud/reference/cli/logs",
+                      "en/cloud/reference/cli/explorer",
+                      "en/cloud/reference/cli/list",
+                      "en/cloud/reference/cli/prod",
+                      "en/cloud/reference/cli/restart",
+                      "en/cloud/reference/cli/remove",
+                      "en/cloud/reference/cli/secrets",
+                      "en/cloud/reference/cli/tags",
+                      "en/cloud/reference/cli/gateways",
+                      "en/cloud/reference/cli/auth",
+                      "en/cloud/reference/cli/whoami",
+                      "en/cloud/reference/cli/autocomplete",
+                      "en/cloud/reference/cli/commands-json"
                     ]
                   },
                   {
