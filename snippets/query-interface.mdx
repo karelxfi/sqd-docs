@@ -186,7 +186,7 @@ return (
 
 <div className="not-prose w-full max-w-7xl mx-auto px-4 sm:px-6 my-6 sm:my-8">
 
-      <div className="bg-white dark:bg-gray-900 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-800 shadow-sm">
+      <div className="bg-white dark:bg-gray-950 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-800 shadow-sm">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-4">
           <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap">
             Response
@@ -197,7 +197,7 @@ return (
               <select
                 value={queryFormat}
                 onChange={(e) => setQueryFormat(e.target.value)}
-                className="appearance-none bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 cursor-pointer transition-all"
+                className="appearance-none bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#150671] dark:focus:ring-[#150671] cursor-pointer transition-all"
               >
                 <option value="curl">curl</option>
               </select>
@@ -212,7 +212,7 @@ return (
               <select
                 value={useCase}
                 onChange={(e) => setUseCase(e.target.value)}
-                className="appearance-none w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 cursor-pointer transition-all"
+                className="appearance-none w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#150671] dark:focus:ring-[#150671] cursor-pointer transition-all"
               >
                 {useCasesConfig.map((uc) => (
                   <option key={uc.id} value={uc.id}>
@@ -231,7 +231,7 @@ return (
               onClick={handleRun}
               type="button"
               disabled={loading}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold px-6 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 whitespace-nowrap shadow-sm hover:shadow-md"
+              className="flex items-center gap-2 bg-[#150671] hover:bg-[#1a0a8a] dark:bg-[#150671] dark:hover:bg-[#1a0a8a] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold px-6 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#150671] focus:ring-offset-2 dark:focus:ring-offset-gray-950 whitespace-nowrap shadow-sm hover:shadow-md"
             >
               {loading ? (
                 <>
@@ -259,7 +259,7 @@ return (
           </div>
         )}
 
-        <div className="mt-4 bg-gray-50 dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden h-[450px] flex flex-col">
+        <div className="mt-4 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden h-[450px] flex flex-col">
           <div className="bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-2.5 flex items-center justify-between">
             <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
               {viewMode === "code" ? "Request" : "Response"}
@@ -275,8 +275,8 @@ return (
               }}
               className={`flex items-center gap-1.5 transition-colors ${
                 copied
-                  ? "text-green-600 dark:text-green-400"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  ? "text-[#150671] dark:text-[#b19cd9]"
+                  : "text-gray-500 hover:text-[#150671] dark:text-gray-400 dark:hover:text-[#b19cd9]"
               }`}
               title={copied ? "Copied!" : "Copy to clipboard"}
             >
@@ -313,11 +313,13 @@ return (
                   color: '#24292f'
                 }}>
                   <code key={`curl-code-${useCase}`} style={{ counterReset: 'line' }}>
-                    {generateCurlCommand(useCasesConfig.find(uc => uc.id === useCase)).split('\n').map((line, i) => (
+                    {generateCurlCommand(useCasesConfig.find(uc => uc.id === useCase)).trim().split('\n').map((line, i) => (
                       <div key={`curl-line-${i}`} style={{
                         display: 'flex',
                         position: 'relative',
-                        paddingLeft: '3.5em'
+                        paddingLeft: '3.5em',
+                        minHeight: '1.5em',
+                        lineHeight: '1.5'
                       }}>
                         <span style={{
                           position: 'absolute',
@@ -326,13 +328,14 @@ return (
                           textAlign: 'right',
                           color: '#6e7781',
                           userSelect: 'none',
-                          paddingRight: '1em'
+                          paddingRight: '1em',
+                          lineHeight: '1.5'
                         }}>{i + 1}</span>
-                        <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: '#24292f' }}>
+                        <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: '#24292f', lineHeight: '1.5' }}>
                           {line.includes('curl') && <span style={{ color: '#8250df' }}>{line}</span>}
                           {!line.includes('curl') && line.match(/^\s*-[XHd]/) && (
                             <>
-                              <span style={{ color: '#8250df' }}>{line.match(/^\s*-[XHd]/)[0]}</span>
+                              <span style={{ color: '#150671' }}>{line.match(/^\s*-[XHd]/)[0]}</span>
                               <span style={{ color: '#24292f' }}>{line.substring(line.match(/^\s*-[XHd]/)[0].length)}</span>
                             </>
                           )}
@@ -364,11 +367,13 @@ return (
                   color: '#24292f'
                 }}>
                   <code key={`response-code-${useCase}-${response.length}`}>
-                    {response.split('\n').map((line, i) => (
+                    {response.trim().split('\n').map((line, i) => (
                       <div key={`response-line-${i}`} style={{
                         display: 'flex',
                         position: 'relative',
-                        paddingLeft: '3.5em'
+                        paddingLeft: '3.5em',
+                        minHeight: '1.5em',
+                        lineHeight: '1.5'
                       }}>
                         <span style={{
                           position: 'absolute',
@@ -377,13 +382,14 @@ return (
                           textAlign: 'right',
                           color: '#6e7781',
                           userSelect: 'none',
-                          paddingRight: '1em'
+                          paddingRight: '1em',
+                          lineHeight: '1.5'
                         }}>{i + 1}</span>
-                        <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: '#24292f' }}>
+                        <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: '#24292f', lineHeight: '1.5' }}>
                           {line.match(/"[^"]+":/) ? (
                             <>
                               {line.split(/("[^"]+":)/).map((part, j) =>
-                                part.match(/^"[^"]+":$/) ? <span key={`resp-part-${i}-${j}`} style={{ color: '#0550ae' }}>{part}</span> :
+                                part.match(/^"[^"]+":$/) ? <span key={`resp-part-${i}-${j}`} style={{ color: '#150671' }}>{part}</span> :
                                 part.match(/^"[^"]+"$/) ? <span key={`resp-part-${i}-${j}`} style={{ color: '#0a3069' }}>{part}</span> :
                                 <span key={`resp-part-${i}-${j}`} style={{ color: '#24292f' }}>{part}</span>
                               )}
