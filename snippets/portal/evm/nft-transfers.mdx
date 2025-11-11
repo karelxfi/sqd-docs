@@ -1,36 +1,37 @@
-export const QueryInterfaceSolanaTokenTransfers = () => {
+export const QueryInterfaceNftTransfers = () => {
   const useCasesConfig = [
     {
-      id: "usdc-token-transfers",
-      name: "Track USDC token transfers",
-      network: "solana-mainnet",
+      id: "nft-transfers",
+      name: "Track NFT transfers",
+      network: "ethereum-mainnet",
       payload: {
-        type: "solana",
-        fromBlock: 259984950,
-        toBlock: 259984953,
+        type: "evm",
+        fromBlock: 18000000,
+        toBlock: 18000001,
         fields: {
           block: {
             number: true,
             timestamp: true
           },
-          tokenBalance: {
-            account: true,
-            preMint: true,
-            postMint: true,
-            preAmount: true,
-            postAmount: true,
-            preOwner: true,
-            postOwner: true
+          log: {
+            address: true,
+            topics: true,
+            transactionHash: true
           }
         },
-        tokenBalances: [{
-          preMint: ["EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"]
+        logs: [{
+          address: [
+            "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D",
+            "0x60E4d786628Fea6478F785A6d7e704777c86a7c6",
+            "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB"
+          ],
+          topic0: ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
         }]
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("usdc-token-transfers");
+  const [useCase, setUseCase] = useState("nft-transfers");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -332,4 +333,3 @@ return (
 
 );
 };
-

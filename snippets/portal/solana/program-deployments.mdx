@@ -1,33 +1,35 @@
-export const QueryInterfaceDexSwaps = () => {
+export const QueryInterfaceSolanaProgramDeployments = () => {
   const useCasesConfig = [
     {
-      id: "uniswap-v3-swaps",
-      name: "Track Uniswap V3 Swap events",
-      network: "ethereum-mainnet",
+      id: "program-deployments",
+      name: "Track program deployments",
+      network: "solana-mainnet",
       payload: {
-        type: "evm",
-        fromBlock: 12369621,
-        toBlock: 12369624,
+        type: "solana",
+        fromBlock: 259984950,
+        toBlock: 260000000,
         fields: {
           block: {
             number: true,
             timestamp: true
           },
-          log: {
-            address: true,
-            topics: true,
-            data: true,
-            transactionHash: true
+          transaction: {
+            signatures: true,
+            feePayer: true
+          },
+          instruction: {
+            programId: true,
+            accounts: true
           }
         },
-        logs: [{
-          topic0: ["0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67"]
+        instructions: [{
+          programId: ["BPFLoaderUpgradeab1e11111111111111111111111"]
         }]
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("uniswap-v3-swaps");
+  const [useCase, setUseCase] = useState("program-deployments");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -329,4 +331,3 @@ return (
 
 );
 };
-

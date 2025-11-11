@@ -3,7 +3,7 @@ title: "Query Transactions"
 description: "Monitor wallet activity and transaction flows using Portal"
 ---
 
-import { QueryInterfaceSolanaQueryTransactions } from "/snippets/query-interface-solana-query-transactions.mdx";
+import { QueryInterfaceSolanaQueryTransactions } from "/snippets/portal/solana/query-transactions.mdx";
 
 Retrieve all transactions sent by or to a specific address to track wallet activity, exchange flows, or program interactions.
 
@@ -38,7 +38,7 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
       }
     },
     "transactions": [{
-      "feePayer": ["YourWalletAddressHere"]
+      "feePayer": ["9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"]
     }]
   }'
 ```
@@ -50,7 +50,7 @@ const dataSource = new DataSource({
   network: "solana-mainnet",
 });
 
-const TARGET_ADDRESS = "YourWalletAddressHere";
+const TARGET_ADDRESS = "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM";
 
 const blocks = await dataSource.getBlocks({
   from: 259984950,
@@ -90,7 +90,7 @@ import json
 url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
 headers = {"Content-Type": "application/json"}
 
-target_address = "YourWalletAddressHere"
+target_address = "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"
 
 payload = {
     "type": "solana",
@@ -149,7 +149,7 @@ for line in response.text.strip().split('\n'):
   "transactions": [
     {
       "signatures": ["5j7s8K9L..."],
-      "feePayer": "YourWalletAddressHere",
+      "feePayer": "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM",
       "err": null
     }
   ]
@@ -175,7 +175,7 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
       }
     },
     "transactions": [{
-      "feePayer": ["YourWalletAddressHere"]
+      "feePayer": ["9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"]
     }]
   }'
 ```
@@ -189,7 +189,7 @@ const blocks = await dataSource.getBlocks({
   },
   transactions: [
     {
-      feePayer: ["YourWalletAddressHere"],
+      feePayer: ["9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"],
     },
   ],
 });
@@ -207,7 +207,7 @@ payload = {
         }
     },
     "transactions": [{
-        "feePayer": ["YourWalletAddressHere"]
+        "feePayer": ["9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"]
     }]
 }
 ```

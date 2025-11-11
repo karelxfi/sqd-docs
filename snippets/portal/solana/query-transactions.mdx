@@ -1,33 +1,32 @@
-export const QueryInterfaceSolanaQueryLogs = () => {
+export const QueryInterfaceSolanaQueryTransactions = () => {
   const useCasesConfig = [
     {
-      id: "whirlpool-logs",
-      name: "Query Orca Whirlpool logs",
+      id: "solana-transactions",
+      name: "Query Solana transactions",
       network: "solana-mainnet",
       payload: {
         type: "solana",
         fromBlock: 259984950,
-        toBlock: 259984953,
+        toBlock: 260000000,
         fields: {
           block: {
             number: true,
             timestamp: true
           },
-          log: {
-            programId: true,
-            message: true,
-            kind: true,
-            transactionIndex: true
+          transaction: {
+            signatures: true,
+            feePayer: true,
+            err: true
           }
         },
-        logs: [{
-          programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"]
+        transactions: [{
+          feePayer: ["9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"]
         }]
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("whirlpool-logs");
+  const [useCase, setUseCase] = useState("solana-transactions");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -329,4 +328,3 @@ return (
 
 );
 };
-

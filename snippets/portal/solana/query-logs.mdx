@@ -1,30 +1,33 @@
-export const QueryInterfaceStateDiffs = () => {
+export const QueryInterfaceSolanaQueryLogs = () => {
   const useCasesConfig = [
     {
-      id: "state-diffs",
-      name: "Query state diffs",
-      network: "ethereum-mainnet",
+      id: "whirlpool-logs",
+      name: "Query Orca Whirlpool logs",
+      network: "solana-mainnet",
       payload: {
-        type: "evm",
-        fromBlock: 18000000,
-        toBlock: 18000003,
+        type: "solana",
+        fromBlock: 259984950,
+        toBlock: 259984951,
         fields: {
           block: {
-            number: true
+            number: true,
+            timestamp: true
           },
-          stateDiff: {
-            address: true,
-            key: true,
+          log: {
+            programId: true,
+            message: true,
             kind: true,
-            prev: true,
-            next: true
+            transactionIndex: true
           }
-        }
+        },
+        logs: [{
+          programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"]
+        }]
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("state-diffs");
+  const [useCase, setUseCase] = useState("whirlpool-logs");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -326,4 +329,3 @@ return (
 
 );
 };
-

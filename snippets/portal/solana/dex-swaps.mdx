@@ -1,34 +1,34 @@
-export const QueryInterfaceContractDeployments = () => {
+export const QueryInterfaceSolanaDexSwaps = () => {
   const useCasesConfig = [
     {
-      id: "contract-deployments",
-      name: "Track contract deployments",
-      network: "ethereum-mainnet",
+      id: "orca-whirlpool-swaps",
+      name: "Track Orca Whirlpool swaps",
+      network: "solana-mainnet",
       payload: {
-        type: "evm",
-        fromBlock: 18000000,
-        toBlock: 18000003,
+        type: "solana",
+        fromBlock: 259984950,
+        toBlock: 259984951,
         fields: {
           block: {
             number: true,
             timestamp: true
           },
-          transaction: {
-            hash: true,
-            from: true,
-            input: true,
-            gasUsed: true,
-            contractAddress: true
+          instruction: {
+            programId: true,
+            accounts: true,
+            data: true,
+            transactionIndex: true
           }
         },
-        transactions: [{
-          to: []
+        instructions: [{
+          programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+          d8: ["0xf8c69e91e17587c8"]
         }]
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("contract-deployments");
+  const [useCase, setUseCase] = useState("orca-whirlpool-swaps");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -330,4 +330,3 @@ return (
 
 );
 };
-

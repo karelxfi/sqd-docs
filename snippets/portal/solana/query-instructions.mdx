@@ -1,13 +1,13 @@
-export const QueryInterfaceSolanaDexSwaps = () => {
+export const QueryInterfaceSolanaQueryInstructions = () => {
   const useCasesConfig = [
     {
-      id: "orca-whirlpool-swaps",
-      name: "Track Orca Whirlpool swaps",
+      id: "whirlpool-instructions",
+      name: "Query Orca Whirlpool instructions",
       network: "solana-mainnet",
       payload: {
         type: "solana",
         fromBlock: 259984950,
-        toBlock: 259984953,
+        toBlock: 259984951,
         fields: {
           block: {
             number: true,
@@ -21,14 +21,13 @@ export const QueryInterfaceSolanaDexSwaps = () => {
           }
         },
         instructions: [{
-          programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
-          d8: ["0xf8c69e91e17587c8"]
+          programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"]
         }]
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("orca-whirlpool-swaps");
+  const [useCase, setUseCase] = useState("whirlpool-instructions");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -330,4 +329,3 @@ return (
 
 );
 };
-

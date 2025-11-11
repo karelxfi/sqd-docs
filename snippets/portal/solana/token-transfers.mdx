@@ -1,32 +1,36 @@
-export const QueryInterfaceSolanaQueryTransactions = () => {
+export const QueryInterfaceSolanaTokenTransfers = () => {
   const useCasesConfig = [
     {
-      id: "solana-transactions",
-      name: "Query Solana transactions",
+      id: "usdc-token-transfers",
+      name: "Track USDC token transfers",
       network: "solana-mainnet",
       payload: {
         type: "solana",
         fromBlock: 259984950,
-        toBlock: 259984953,
+        toBlock: 259984951,
         fields: {
           block: {
             number: true,
             timestamp: true
           },
-          transaction: {
-            signatures: true,
-            feePayer: true,
-            err: true
+          tokenBalance: {
+            account: true,
+            preMint: true,
+            postMint: true,
+            preAmount: true,
+            postAmount: true,
+            preOwner: true,
+            postOwner: true
           }
         },
-        transactions: [{
-          feePayer: ["YourWalletAddressHere"]
+        tokenBalances: [{
+          preMint: ["EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"]
         }]
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("solana-transactions");
+  const [useCase, setUseCase] = useState("usdc-token-transfers");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -328,4 +332,3 @@ return (
 
 );
 };
-

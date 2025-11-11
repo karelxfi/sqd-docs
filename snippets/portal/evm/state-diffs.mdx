@@ -1,36 +1,30 @@
-export const QueryInterfaceQueryTraces = () => {
+export const QueryInterfaceStateDiffs = () => {
   const useCasesConfig = [
     {
-      id: "call-traces",
-      name: "Query call traces",
+      id: "state-diffs",
+      name: "Query state diffs",
       network: "ethereum-mainnet",
       payload: {
         type: "evm",
         fromBlock: 18000000,
-        toBlock: 18000003,
+        toBlock: 18010000,
         fields: {
           block: {
             number: true
           },
-          trace: {
-            type: true,
-            callFrom: true,
-            callTo: true,
-            callValue: true,
-            callInput: true,
-            callResultOutput: true,
-            callResultGasUsed: true,
-            error: true
+          stateDiff: {
+            address: true,
+            key: true,
+            kind: true,
+            prev: true,
+            next: true
           }
-        },
-        traces: [{
-          type: ["call", "delegatecall"]
-        }]
+        }
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("call-traces");
+  const [useCase, setUseCase] = useState("state-diffs");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -332,4 +326,3 @@ return (
 
 );
 };
-
