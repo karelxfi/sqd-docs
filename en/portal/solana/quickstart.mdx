@@ -23,7 +23,7 @@ In this quickstart, you'll:
 
 ## Step 1: Your First Request
 
-Let's query 50 slots from Solana mainnet. Copy and paste this command:
+Let's query 200 slots from Solana mainnet and get block data with transaction counts. Copy and paste this command:
 
 <Tabs>
 <Tab title="curl">
@@ -32,21 +32,34 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
   -H 'Content-Type: application/json' \
   -d '{
     "type": "solana",
-    "fromBlock": 259984950,
+    "fromBlock": 259984800,
     "toBlock": 259985000,
     "fields": {
       "block": {
         "number": true,
         "timestamp": true
+      },
+      "transaction": {
+        "signatures": true,
+        "feePayer": true,
+        "err": true
       }
     }
   }'
 ```
 
 <Check>
-  You should see a stream of JSON objects, one per block, showing slot numbers
-  and timestamps.
+  You should see a stream of JSON objects, one per block, showing slot numbers,
+  timestamps, and transaction data including signatures, fee payers, and success
+  status.
 </Check>
+
+<Note>
+  **Solana block production**: Not every slot produces a block. Solana uses a
+  leader schedule where only certain validators produce blocks in their assigned
+  slots. You'll typically see blocks in about 50-80% of slots, which is why we
+  query a larger range to get meaningful results.
+</Note>
 
 <Info>Try it yourself with the interactive query interface below:</Info>
 
@@ -70,19 +83,30 @@ const dataSource = new DataSource({
 });
 
 const blocks = await dataSource.getBlocks({
-  from: 259984950,
+  from: 259984800,
   to: 259985000,
   fields: {
     block: {
       number: true,
       timestamp: true,
     },
+    transaction: {
+      signatures: true,
+      feePayer: true,
+      err: true,
+    },
   },
 });
 
 console.log(`Retrieved ${blocks.length} blocks`);
 blocks.forEach((block) => {
-  console.log(`Slot ${block.header.number}: ${new Date(block.header.timestamp * 1000).toISOString()}`);
+  const successCount = block.transactions.filter(
+    (tx) => tx.err === null
+  ).length;
+  const failedCount = block.transactions.length - successCount;
+  console.log(
+    `Slot ${block.header.number}: ${block.transactions.length} transactions (${successCount} succeeded, ${failedCount} failed)`
+  );
 });
 ```
 
@@ -105,12 +129,17 @@ url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
 headers = {"Content-Type": "application/json"}
 payload = {
     "type": "solana",
-    "fromBlock": 259984950,
+    "fromBlock": 259984800,
     "toBlock": 259985000,
     "fields": {
         "block": {
             "number": True,
             "timestamp": True
+        },
+        "transaction": {
+            "signatures": True,
+            "feePayer": True,
+            "err": True
         }
     }
 }
@@ -121,7 +150,10 @@ response = requests.post(url, headers=headers, json=payload)
 for line in response.text.strip().split('\n'):
     if line.strip():  # Skip empty lines
         block = json.loads(line)
-        print(f"Slot {block['header']['number']}: {block['header']['timestamp']}")
+        tx_count = len(block.get('transactions', []))
+        success_count = sum(1 for tx in block.get('transactions', []) if tx.get('err') is None)
+        failed_count = tx_count - success_count
+        print(f"Slot {block['header']['number']}: {tx_count} transactions ({success_count} succeeded, {failed_count} failed)")
 ```
 
 </Tab>
@@ -134,12 +166,17 @@ Let's break down what you just sent:
 ```typescript
 {
   "type": "solana",              // Chain type (Solana)
-  "fromBlock": 259984950,         // Starting slot number (inclusive, field name: fromBlock)
+  "fromBlock": 259984800,         // Starting slot number (inclusive, field name: fromBlock)
   "toBlock": 259985000,           // Ending slot number (inclusive, field name: toBlock)
   "fields": {                    // What data to return
     "block": {
       "number": true,             // Slot number (field name: number)
       "timestamp": true          // Block timestamp
+    },
+    "transaction": {
+      "signatures": true,         // Transaction signatures
+      "feePayer": true,          // Fee payer address
+      "err": true                // Error status (null if successful)
     }
   }
 }
@@ -152,26 +189,41 @@ Let's break down what you just sent:
 
 ## Step 3: Understanding the Response
 
-Portal returns **newline-delimited JSON (NDJSON)**. Each line is a complete JSON object representing one block:
+Portal returns **newline-delimited JSON (NDJSON)**. Each line is a complete JSON object representing one block. Note that not every slot produces a block, so you'll see gaps in the slot numbers:
 
 ```json
 {
   "header": {
-    "number": 259984950,
-    "timestamp": 1697544779
-  }
+    "number": 259984800,
+    "timestamp": 1713053593
+  },
+  "transactions": [
+    {
+      "signatures": ["5j7s8K9LmN2pQrS3tUvW4xYz5aB6cD7eF8gH9iJ0kL1mN2oP3qR4sT5uV6wX"],
+      "feePayer": "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM",
+      "err": null
+    }
+  ]
 }
 {
   "header": {
-    "number": 259984951,
-    "timestamp": 1697544779
-  }
+    "number": 259984837,
+    "timestamp": 1713053611
+  },
+  "transactions": [
+    {
+      "signatures": ["3kL4mN5oP6qR7sT8uV9wX0yZ1aB2cD3eF4gH5iJ6kL7mN8oP9qR0sT"],
+      "feePayer": "7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm",
+      "err": null
+    }
+  ]
 }
 {
   "header": {
-    "number": 259984952,
-    "timestamp": 1697544780
-  }
+    "number": 259984838,
+    "timestamp": 1713053612
+  },
+  "transactions": []
 }
 ```
 
@@ -190,7 +242,7 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
   -H 'Content-Type: application/json' \
   -d '{
     "type": "solana",
-    "fromBlock": 259984950,
+    "fromBlock": 259984800,
     "toBlock": 259985000,
     "fields": {
       "block": {
@@ -218,7 +270,7 @@ const dataSource = new DataSource({
 });
 
 const blocks = await dataSource.getBlocks({
-  from: 259984950,
+  from: 259984800,
   to: 259985000,
   fields: {
     block: {
@@ -241,9 +293,13 @@ const blocks = await dataSource.getBlocks({
 
 for (const block of blocks) {
   if (block.instructions.length > 0) {
-    console.log(`Slot ${block.header.number}: Found ${block.instructions.length} Whirlpool instructions`);
+    console.log(
+      `Slot ${block.header.number}: Found ${block.instructions.length} Whirlpool instructions`
+    );
     for (const instruction of block.instructions) {
-      console.log(`  Instruction from ${instruction.programId} at tx index ${instruction.transactionIndex}`);
+      console.log(
+        `  Instruction from ${instruction.programId} at tx index ${instruction.transactionIndex}`
+      );
     }
   }
 }
@@ -257,7 +313,7 @@ url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
 headers = {"Content-Type": "application/json"}
 payload = {
     "type": "solana",
-    "fromBlock": 259984950,
+    "fromBlock": 259984800,
     "toBlock": 259985000,
     "fields": {
         "block": {
@@ -290,8 +346,8 @@ for line in response.text.strip().split('\n'):
 </CodeGroup>
 
 <Check>
-  You should see instructions from the Orca Whirlpool program. Portal filtered the
-  data before sending, saving bandwidth.
+  You should see instructions from the Orca Whirlpool program. Portal filtered
+  the data before sending, saving bandwidth.
 </Check>
 
 ## What You Learned
@@ -329,13 +385,15 @@ The Public Portal is rate-limited:
 
 {" "}
 
-  <Card
-    title="View Examples"
-    icon="code"
-    href="/en/portal/solana/examples/query-instructions"
-  >
-    Practical examples for common use cases
-  </Card>
+{" "}
+
+<Card
+  title="View Examples"
+  icon="code"
+  href="/en/portal/solana/examples/query-instructions"
+>
+  Practical examples for common use cases
+</Card>
 
   <Card title="Use with SDK" icon="brackets-curly" href="/en/sdk/overview">
     Build type-safe indexers with Portal as the data source
@@ -351,26 +409,29 @@ The Public Portal is rate-limited:
 
 {" "}
 
-  <Card
-    title="Query Transactions"
-    icon="arrow-right-arrow-left"
-    href="/en/portal/solana/examples/query-transactions"
-  >
-    Monitor wallet activity
-  </Card>
+{" "}
+
+<Card
+  title="Query Transactions"
+  icon="arrow-right-arrow-left"
+  href="/en/portal/solana/examples/query-transactions"
+>
+  Monitor wallet activity
+</Card>
 
 {" "}
 
-  <Card
-    title="Track Token Transfers"
-    icon="coins"
-    href="/en/portal/solana/examples/token-transfers"
-  >
-    Index SPL token activity
-  </Card>
+{" "}
+
+<Card
+  title="Track Token Transfers"
+  icon="coins"
+  href="/en/portal/solana/examples/token-transfers"
+>
+  Index SPL token activity
+</Card>
 
   <Card title="Index DEX Swaps" icon="repeat" href="/en/portal/solana/examples/dex-swaps">
     Build DEX analytics
   </Card>
 </CardGroup>
-

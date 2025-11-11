@@ -12,15 +12,18 @@ mode: "wide"
         The first meaningful innovation in on-chain data access since RPC
       </h1>
       <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 mb-8 leading-relaxed">
-        RPC was built for transactions, not data extraction—it doesn't scale for
-        high-throughput chains or deep history. Even extracting a single
-        wallet's history can be infeasible with vanilla RPC. SQD Portal is an
-        HTTP interface designed for data pipelines that scales where RPC fails.
+        RPC was built for transactions, not data extraction. SQD Portal is an
+        HTTP interface designed for data pipelines—query arbitrary block ranges,
+        handle reorgs natively, and stream terabytes with constant memory usage.
       </p>
-      <div className="grid sm:grid-cols-2 gap-4 text-left">
-        <div className="flex items-start gap-3 p-4 rounded-lg bg-white/60 dark:bg-gray-800/60 border border-slate-200 dark:border-slate-700">
+      <div className="flex gap-4 justify-center flex-wrap">
+        <a
+          href="/en/portal/evm/quickstart"
+          className="inline-flex items-center px-8 py-4 bg-slate-700 hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+        >
+          Build with Portal API
           <svg
-            className="w-6 h-6 text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5"
+            className="w-5 h-5 ml-2"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -28,129 +31,40 @@ mode: "wide"
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M5 13l4 4L19 7"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
             />
           </svg>
-          <div>
-            <div className="font-bold text-base text-gray-900 dark:text-white mb-1">
-              Arbitrary block ranges
-            </div>
-            <div className="text-sm text-gray-700 dark:text-gray-400">
-              Query any range in one request—no more manual per-block pagination
-              that breaks on high-TPS chains
-            </div>
-          </div>
-        </div>
-        <div className="flex items-start gap-3 p-4 rounded-lg bg-white/60 dark:bg-gray-800/60 border border-slate-200 dark:border-slate-700">
-          <svg
-            className="w-6 h-6 text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-          <div>
-            <div className="font-bold text-base text-gray-900 dark:text-white mb-1">
-              Native finalization
-            </div>
-            <div className="text-sm text-gray-700 dark:text-gray-400">
-              Built-in reorg handling with chain-specific finality—no DIY
-              rollback logic
-            </div>
-          </div>
-        </div>
-        <div className="flex items-start gap-3 p-4 rounded-lg bg-white/60 dark:bg-gray-800/60 border border-slate-200 dark:border-slate-700">
-          <svg
-            className="w-6 h-6 text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-          <div>
-            <div className="font-bold text-base text-gray-900 dark:text-white mb-1">
-              Streaming responses
-            </div>
-            <div className="text-sm text-gray-700 dark:text-gray-400">
-              High-throughput data ingestion with constant memory footprint
-            </div>
-          </div>
-        </div>
-        <div className="flex items-start gap-3 p-4 rounded-lg bg-white/60 dark:bg-gray-800/60 border border-slate-200 dark:border-slate-700">
-          <svg
-            className="w-6 h-6 text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
-            />
-          </svg>
-          <div>
-            <div className="font-bold text-base text-gray-900 dark:text-white mb-1">
-              No vendor lock-in
-            </div>
-            <div className="text-sm text-gray-700 dark:text-gray-400">
-              Self-host, use decentralized network, or managed—same code
-              everywhere
-            </div>
-          </div>
-        </div>
+        </a>
+        <a
+          href="/en/sdk/overview"
+          className="inline-flex items-center px-8 py-4 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+        >
+          Use with SDK
+        </a>
+        <a
+          href="/en/portal/self-hosting"
+          className="inline-flex items-center px-8 py-4 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+        >
+          Self-host Portal
+        </a>
       </div>
     </div>
   </div>
 </div>
 
-<div className="flex gap-4 my-8 flex-wrap">
-  <a
-    href="/en/portal/evm/quickstart"
-    className="inline-flex items-center px-8 py-4 bg-slate-700 hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
-  >
-    Build with Portal API
-    <svg
-      className="w-5 h-5 ml-2"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M9 5l7 7-7 7"
-      />
-    </svg>
-  </a>
-  <a
-    href="/en/sdk/overview"
-    className="inline-flex items-center px-8 py-4 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
-  >
-    Use with SDK
-  </a>
-  <a
-    href="/en/portal/self-hosting"
-    className="inline-flex items-center px-8 py-4 border border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
-  >
-    Self-host Portal
-  </a>
-</div>
+## The Problem with RPC
+
+Modern blockchain data engineering faces a fundamental challenge: RPC was designed for wallets and transaction submission, not for extracting and processing large volumes of historical data.
+
+Traditional RPC-based approaches struggle with:
+
+- **Backfill failures**: Extracting even a single wallet's history can timeout on high-history chains like BSC or Solana
+- **Manual pagination**: Block-by-block iteration breaks down on high-TPS chains where throughput exceeds what sequential requests can handle
+- **DIY reorg handling**: You're responsible for detecting and compensating for chain reorganizations
+- **Limited scalability**: Teams resort to centralized data warehouses with vendor lock-in just to query their own data
+
+Portal solves these problems with an HTTP interface purpose-built for data extraction at scale.
 
 ## How Portal Works
 
@@ -161,84 +75,13 @@ mode: "wide"
   />
 </Frame>
 
-## Why Portal Matters
-
-Modern blockchain data engineering faces a fundamental problem: RPC was designed for wallets and transactions, not for data extraction at scale.
-
-### The problem
-
-<Warning>
-  - Single wallet history queries can timeout on RPC - Backfills on high-history
-  chains (BSC, Solana) routinely break - High-TPS chains push RPC-centric
-  designs past their limits - Teams resort to centralized data warehouses with
-  vendor lock-in
-</Warning>
-
-### Portal's solution
-
-<Check>
-  - Query arbitrary block ranges in a single HTTP request - Use native streaming
-  for constant memory usage - Rely on built-in finality handling and reorg
-  compensation - Deploy anywhere: managed, self-hosted, or decentralized
-</Check>
-
-## What Portal Is (and Isn't)
-
-Portal is an **HTTP interface designed for data extraction** that scales where RPC fails.
-
-<div className="grid md:grid-cols-2 gap-6 my-8">
-  <div className="space-y-3">
-    <h3 className="font-bold text-lg text-gray-900 dark:text-white">Portal Is</h3>
-    <div className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
-      <div className="flex items-start gap-2">
-        <span className="text-green-600 font-bold mt-0.5">✓</span>
-        <span>An HTTP API for raw blockchain data</span>
-      </div>
-      <div className="flex items-start gap-2">
-        <span className="text-green-600 font-bold mt-0.5">✓</span>
-        <span>Designed for data pipelines and ETL</span>
-      </div>
-      <div className="flex items-start gap-2">
-        <span className="text-green-600 font-bold mt-0.5">✓</span>
-        <span>Interface-first with multiple implementations</span>
-      </div>
-      <div className="flex items-start gap-2">
-        <span className="text-green-600 font-bold mt-0.5">✓</span>
-        <span>Portable across deployment modes</span>
-      </div>
-    </div>
-  </div>
-
-  <div className="space-y-3">
-    <h3 className="font-bold text-lg text-gray-900 dark:text-white">Portal Is Not</h3>
-    <div className="space-y-2 text-sm text-gray-700 dark:text-gray-400">
-      <div className="flex items-start gap-2">
-        <span className="text-slate-400 font-bold mt-0.5">✗</span>
-        <span>A query language or domain DSL</span>
-      </div>
-      <div className="flex items-start gap-2">
-        <span className="text-slate-400 font-bold mt-0.5">✗</span>
-        <span>A monolithic indexer framework</span>
-      </div>
-      <div className="flex items-start gap-2">
-        <span className="text-slate-400 font-bold mt-0.5">✗</span>
-        <span>A centralized analytics SaaS</span>
-      </div>
-      <div className="flex items-start gap-2">
-        <span className="text-slate-400 font-bold mt-0.5">✗</span>
-        <span>A vendor lock-in gateway</span>
-      </div>
-    </div>
-  </div>
-</div>
+Portal sits between blockchain nodes and your data pipeline, providing an HTTP API optimized for high-throughput data extraction. It handles the complexity of pagination, finality tracking, and reorg compensation so you don't have to.
 
 ## Core Capabilities
 
-Portal provides four key features that make it ideal for data pipelines.
+### Arbitrary block ranges
 
-### 1. Arbitrary block ranges
-
-Request any block range in a single HTTP POST—no manual pagination through individual blocks. Essential for backfills and historical analysis.
+Query any block range in a single HTTP request—no manual pagination or block-by-block iteration. Essential for backfills and historical analysis on any chain.
 
 ```http
 POST /stream
@@ -246,23 +89,36 @@ fromBlock: 18000000
 toBlock: 18100000
 ```
 
-### 2. Native finalization
+Portal handles the pagination internally and streams results back to you efficiently, even for ranges spanning millions of blocks.
 
-Built-in reorg handling with chain-specific finality rules. Portal communicates rollbacks as structured events in the stream so you can replay safely.
+### Native finalization awareness
 
-<Tip>Use `/finalized-stream` when you need production-safe data ingestion.</Tip>
+Portal tracks chain-specific finality rules and communicates reorgs as structured rollback events in the stream. Use `/finalized-stream` for production-safe ingestion that automatically handles chain reorganizations.
 
-### 3. HTTP streaming
+<Tip>
+  Portal handles reorg detection and compensation automatically—no need to
+  implement your own rollback logic.
+</Tip>
 
-Newline-delimited JSON (NDJSON) responses enable constant-memory processing of massive ranges. Process terabytes without loading everything into RAM.
+### HTTP streaming responses
 
-### 4. Flexible deployment
+All Portal endpoints return newline-delimited JSON (NDJSON), enabling constant-memory processing of massive block ranges. Process terabytes of data without loading everything into RAM.
 
-Use the same interface across managed endpoints, self-hosted instances, or the decentralized SQD Network. Swap backends without code changes.
+```bash
+curl -X POST https://v2.archive.subsquid.io/network/ethereum-mainnet/stream \
+  -H "Content-Type: application/json" \
+  -d '{"fromBlock": 18000000, "toBlock": 18001000}' \
+  | while IFS= read -r line; do
+      # Process each block as it arrives
+      echo "$line" | jq '.header.number'
+    done
+```
 
-<Note>Deploy anywhere, preserve sovereignty, and avoid lock-in.</Note>
+### Deployment flexibility
 
-## How Portal Compares
+Portal is an interface specification, not a single implementation. Use managed SQD endpoints, self-host alongside your own nodes, or connect to the decentralized SQD Network—your code stays the same.
+
+## Portal vs Alternatives
 
 <div className="overflow-x-auto my-8">
   <table className="w-full text-sm border-collapse">
@@ -315,14 +171,14 @@ Use the same interface across managed endpoints, self-hosted instances, or the d
         <td className="p-3 font-semibold text-green-600">✓ None</td>
       </tr>
       <tr className="border-b border-slate-200 dark:border-slate-700">
-        <td className="p-3">Sovereignty</td>
-        <td className="p-3 text-green-600">✓ High</td>
-        <td className="p-3">⚠️ Medium</td>
-        <td className="p-3 text-red-600">✗ Low</td>
-        <td className="p-3 font-semibold text-green-600">✓ High</td>
+        <td className="p-3">Self-hostable</td>
+        <td className="p-3 text-green-600">✓ Yes</td>
+        <td className="p-3">⚠️ Complex</td>
+        <td className="p-3 text-red-600">✗ No</td>
+        <td className="p-3 font-semibold text-green-600">✓ Yes</td>
       </tr>
       <tr>
-        <td className="p-3">Scales on high-TPS + deep history</td>
+        <td className="p-3">Scales on high-TPS chains</td>
         <td className="p-3 text-red-600">✗ No</td>
         <td className="p-3">⚠️ Partial</td>
         <td className="p-3">⚠️ Vendor-locked</td>
@@ -332,20 +188,22 @@ Use the same interface across managed endpoints, self-hosted instances, or the d
   </table>
 </div>
 
+Portal provides the raw data extraction layer that works with any processing framework or storage backend, giving you complete control over your data pipeline.
+
 ## Deployment Options
 
-Portal offers three deployment modes, all using the same interface:
+Choose how you want to run Portal based on your requirements—all options use the same API interface.
 
 <AccordionGroup>
   <Accordion title="Managed Endpoints" icon="cloud">
-    Use SQD-hosted Portal endpoints for instant access:
+    SQD-hosted Portal endpoints provide instant access to 200+ networks with zero setup.
 
-    - **No setup required** - start making requests immediately
-    - **Production-ready infrastructure** - managed by SQD
-    - **200+ networks supported** - EVM, Solana, and more
-    - **Free tier available** - get started without payment
+    **Best for**: Getting started quickly, production apps without infrastructure overhead, and teams who want to focus on building rather than operations.
 
-    Perfect for: Getting started, development, production apps without infrastructure overhead
+    **Key benefits**:
+    - Instant access—no infrastructure to manage
+    - Production-ready with high availability
+    - Free tier available for development
 
     <Card title="Start Building" icon="rocket" href="/en/portal/evm/quickstart">
       Make your first Portal request in 5 minutes
@@ -354,33 +212,48 @@ Portal offers three deployment modes, all using the same interface:
   </Accordion>
 
   <Accordion title="Self-Hosted Portal" icon="server">
-    Run Portal alongside your own infrastructure:
+    Run Portal alongside your own nodes for complete sovereignty over your data access.
 
-    - **Full control** - complete sovereignty over data access
-    - **No external dependencies** - runs next to any node
-    - **Open-source implementation** - audit and modify as needed
-    - **Custom chains supported** - works with any EVM/Solana chain
+    **Best for**: Private or custom networks, teams with strict data sovereignty requirements, and maximum control over infrastructure.
 
-    Perfect for: Private networks, custom chains, maximum sovereignty
+    **Key benefits**:
+    - Complete control over data access
+    - No external dependencies
+    - Works with any EVM or Solana chain
+    - Open-source implementation you can audit and modify
 
     <Card title="Self-Hosting Guide" icon="server" href="/en/portal/self-hosting">
-      Learn how to run your own Portal instance
+      Learn how to deploy your own Portal instance
     </Card>
 
   </Accordion>
 
 </AccordionGroup>
 
+## Use Cases
+
+Portal excels at scenarios where RPC falls short:
+
+- **Full contract history extraction**: Query all events for a contract across its entire lifetime
+- **Wallet transaction history**: Retrieve complete transaction history for any address, even on high-volume chains
+- **Historical backfills**: Synchronize years of blockchain history without timeouts or rate limits
+- **High-TPS monitoring**: Keep up with fast chains like Solana where block-by-block RPC polling can't keep pace
+- **Multi-chain indexing**: Build data pipelines that span multiple networks using a consistent interface
+
 ## Next Steps
 
 <CardGroup cols={3}>
-  <Card title="Try Portal Now" icon="play" href="/en/portal/evm/quickstart">
-    Make your first Portal request in 5 minutes
+  <Card title="EVM Quickstart" icon="play" href="/en/portal/evm/quickstart">
+    Query Ethereum and EVM chains in 5 minutes
   </Card>
-  <Card title="Build with SDK" icon="code" href="/en/sdk/overview">
-    Use Portal with TypeScript SDKs for data transformation
+  <Card
+    title="Solana Quickstart"
+    icon="play"
+    href="/en/portal/solana/quickstart"
+  >
+    Access Solana data with Portal
   </Card>
-  <Card title="Self-host Portal" icon="server" href="/en/portal/self-hosting">
-    Run your own Portal instance for maximum sovereignty
+  <Card title="Use with SDK" icon="code" href="/en/sdk/overview">
+    Build production data pipelines with TypeScript SDKs
   </Card>
 </CardGroup>

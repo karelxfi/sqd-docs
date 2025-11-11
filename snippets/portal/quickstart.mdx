@@ -333,12 +333,17 @@ export const QueryInterfaceSolanaQuickstart = () => {
       network: "solana-mainnet",
       payload: {
         type: "solana",
-        fromBlock: 280000000,
-        toBlock: 280000003,
+        fromBlock: 259984800,
+        toBlock: 259985000,
         fields: {
           block: {
             number: true,
             timestamp: true
+          },
+          transaction: {
+            signatures: true,
+            feePayer: true,
+            err: true
           }
         }
       }
