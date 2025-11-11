@@ -23,7 +23,7 @@ In this quickstart, you'll:
 
 ## Step 1: Your First Request
 
-Let's query the last 50 slots from Solana mainnet. Copy and paste this command:
+Let's query 50 slots from Solana mainnet. Copy and paste this command:
 
 <Tabs>
 <Tab title="curl">
@@ -32,8 +32,8 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
   -H 'Content-Type: application/json' \
   -d '{
     "type": "solana",
-    "fromBlock": 280000000,
-    "toBlock": 280000003,
+    "fromBlock": 259984950,
+    "toBlock": 259985000,
     "fields": {
       "block": {
         "number": true,
@@ -70,8 +70,8 @@ const dataSource = new DataSource({
 });
 
 const blocks = await dataSource.getBlocks({
-  from: 280000000,
-  to: 280000003,
+  from: 259984950,
+  to: 259985000,
   fields: {
     block: {
       number: true,
@@ -105,8 +105,8 @@ url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
 headers = {"Content-Type": "application/json"}
 payload = {
     "type": "solana",
-    "fromBlock": 280000000,
-    "toBlock": 280000003,
+    "fromBlock": 259984950,
+    "toBlock": 259985000,
     "fields": {
         "block": {
             "number": True,
@@ -119,8 +119,9 @@ response = requests.post(url, headers=headers, json=payload)
 
 # Response is newline-delimited JSON
 for line in response.text.strip().split('\n'):
-    block = json.loads(line)
-    print(f"Slot {block['header']['number']}: {block['header']['timestamp']}")
+    if line.strip():  # Skip empty lines
+        block = json.loads(line)
+        print(f"Slot {block['header']['number']}: {block['header']['timestamp']}")
 ```
 
 </Tab>
@@ -133,8 +134,8 @@ Let's break down what you just sent:
 ```typescript
 {
   "type": "solana",              // Chain type (Solana)
-  "fromBlock": 280000000,         // Starting slot number (inclusive, field name: fromBlock)
-  "toBlock": 280000003,           // Ending slot number (inclusive, field name: toBlock)
+  "fromBlock": 259984950,         // Starting slot number (inclusive, field name: fromBlock)
+  "toBlock": 259985000,           // Ending slot number (inclusive, field name: toBlock)
   "fields": {                    // What data to return
     "block": {
       "number": true,             // Slot number (field name: number)
@@ -156,20 +157,20 @@ Portal returns **newline-delimited JSON (NDJSON)**. Each line is a complete JSON
 ```json
 {
   "header": {
-    "number": 280000000,
-    "timestamp": 1722098996
+    "number": 259984950,
+    "timestamp": 1697544779
   }
 }
 {
   "header": {
-    "number": 280000001,
-    "timestamp": 1722098996
+    "number": 259984951,
+    "timestamp": 1697544779
   }
 }
 {
   "header": {
-    "number": 280000002,
-    "timestamp": 1722098996
+    "number": 259984952,
+    "timestamp": 1697544780
   }
 }
 ```
@@ -181,7 +182,7 @@ Portal returns **newline-delimited JSON (NDJSON)**. Each line is a complete JSON
 
 ## Step 4: Filter Instructions
 
-Track instructions from the Orca Whirlpool program:
+Track instructions from the Orca Whirlpool program. This example queries a larger range to find actual instructions:
 
 <CodeGroup>
 ```bash curl
@@ -189,9 +190,13 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
   -H 'Content-Type: application/json' \
   -d '{
     "type": "solana",
-    "fromBlock": 280000000,
-    "toBlock": 280000003,
+    "fromBlock": 259984950,
+    "toBlock": 259985000,
     "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
       "instruction": {
         "programId": true,
         "accounts": true,
@@ -213,9 +218,13 @@ const dataSource = new DataSource({
 });
 
 const blocks = await dataSource.getBlocks({
-  from: 280000000,
-  to: 280000003,
+  from: 259984950,
+  to: 259985000,
   fields: {
+    block: {
+      number: true,
+      timestamp: true,
+    },
     instruction: {
       programId: true,
       accounts: true,
@@ -231,8 +240,11 @@ const blocks = await dataSource.getBlocks({
 });
 
 for (const block of blocks) {
-  for (const instruction of block.instructions) {
-    console.log(`Instruction from ${instruction.programId} at tx index ${instruction.transactionIndex}`);
+  if (block.instructions.length > 0) {
+    console.log(`Slot ${block.header.number}: Found ${block.instructions.length} Whirlpool instructions`);
+    for (const instruction of block.instructions) {
+      console.log(`  Instruction from ${instruction.programId} at tx index ${instruction.transactionIndex}`);
+    }
   }
 }
 ```
@@ -245,9 +257,13 @@ url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
 headers = {"Content-Type": "application/json"}
 payload = {
     "type": "solana",
-    "fromBlock": 280000000,
-    "toBlock": 280000003,
+    "fromBlock": 259984950,
+    "toBlock": 259985000,
     "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        },
         "instruction": {
             "programId": True,
             "accounts": True,
@@ -263,9 +279,12 @@ payload = {
 response = requests.post(url, headers=headers, json=payload)
 
 for line in response.text.strip().split('\n'):
-    block = json.loads(line)
-    for instruction in block.get('instructions', []):
-        print(f"Instruction from {instruction['programId']} at tx index {instruction['transactionIndex']}")
+    if line.strip():  # Skip empty lines
+        block = json.loads(line)
+        if block.get('instructions'):
+            print(f"Slot {block['header']['number']}: Found {len(block['instructions'])} Whirlpool instructions")
+            for instruction in block['instructions']:
+                print(f"  Instruction from {instruction['programId']} at tx index {instruction['transactionIndex']}")
 ```
 
 </CodeGroup>
