@@ -24,23 +24,21 @@ curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
   -H 'Content-Type: application/json' \
   -d '{
     "type": "evm",
-    "fromBlock": 18000000,
-    "toBlock": 18010000,
+    "fromBlock": 20000000,
+    "toBlock": 20000003,
     "fields": {
       "block": {
         "number": true,
         "timestamp": true
       },
-      "transaction": {
-        "hash": true,
-        "from": true,
-        "input": true,
-        "gasUsed": true,
-        "contractAddress": true
+      "trace": {
+        "type": true,
+        "createFrom": true,
+        "createResultAddress": true
       }
     },
-    "transactions": [{
-      "to": []
+    "traces": [{
+      "type": ["create", "create2"]
     }]
   }'
 ```
@@ -53,37 +51,34 @@ const dataSource = new DataSource({
 });
 
 const blocks = await dataSource.getBlocks({
-  from: 18000000,
-  to: 18010000,
+  from: 20000000,
+  to: 20000003,
   fields: {
     block: { number: true, timestamp: true },
-    transaction: {
-      hash: true,
-      from: true,
-      input: true,
-      gasUsed: true,
-      contractAddress: true,
+    trace: {
+      type: true,
+      createFrom: true,
+      createResultAddress: true,
     },
   },
-  transactions: [
+  traces: [
     {
-      to: [], // Empty array = null recipient (contract creation)
+      type: ["create", "create2"],
     },
   ],
 });
 
-// Process deployments
+// Process deployments from traces
+// Traces with type "create" or "create2" indicate contract deployments
 for (const block of blocks) {
-  for (const tx of block.transactions) {
-    if (tx.contractAddress) {
+  for (const trace of block.traces) {
+    if (trace.type === "create" || trace.type === "create2") {
       console.log({
         blockNumber: block.header.number,
         timestamp: block.header.timestamp,
-        deployer: tx.from,
-        contractAddress: tx.contractAddress,
-        bytecodeSize: tx.input.length / 2 - 1,
-        gasUsed: tx.gasUsed,
-        txHash: tx.hash,
+        deployer: trace.createFrom,
+        contractAddress: trace.result?.address || trace.createResultAddress,
+        type: trace.type,
       });
     }
   }
@@ -99,40 +94,38 @@ headers = {"Content-Type": "application/json"}
 
 payload = {
     "type": "evm",
-    "fromBlock": 18000000,
-    "toBlock": 18010000,
+    "fromBlock": 20000000,
+    "toBlock": 20000003,
     "fields": {
         "block": {
             "number": True,
             "timestamp": True
         },
-        "transaction": {
-            "hash": True,
-            "from": True,
-            "input": True,
-            "gasUsed": True,
-            "contractAddress": True
+        "trace": {
+            "type": True,
+            "createFrom": True,
+            "createResultAddress": True
         }
     },
-    "transactions": [{
-        "to": []  # Empty list = null recipient (contract creation)
+    "traces": [{
+        "type": ["create", "create2"]
     }]
 }
 
 response = requests.post(url, headers=headers, json=payload)
 
+# Process deployments from traces
+# Traces with type "create" or "create2" indicate contract deployments
 for line in response.text.strip().split('\n'):
     block = json.loads(line)
-    for tx in block.get('transactions', []):
-        if tx.get('contractAddress'):
+    for trace in block.get('traces', []):
+        if trace.get('type') in ['create', 'create2']:
             print({
                 "blockNumber": block['header']['number'],
                 "timestamp": block['header']['timestamp'],
-                "deployer": tx['from'],
-                "contractAddress": tx['contractAddress'],
-                "bytecodeSize": len(tx['input']) // 2 - 1,
-                "gasUsed": tx['gasUsed'],
-                "txHash": tx['hash']
+                "deployer": trace.get('createFrom'),
+                "contractAddress": (trace.get('result') or {}).get('address') or trace.get('createResultAddress'),
+                "type": trace.get('type')
             })
 ```
 </CodeGroup>
@@ -145,14 +138,13 @@ for line in response.text.strip().split('\n'):
 
 | Parameter | Description |
 |-----------|-------------|
-| `to` | Empty array `[]` filters for transactions with null recipient (deployments) |
-| `contractAddress` | Address of the newly deployed contract |
-| `from` | Deployer address |
-| `input` | Contract creation bytecode (constructor + runtime code) |
-| `gasUsed` | Gas consumed by deployment |
+| `type` | Trace type: `"create"` or `"create2"` for contract deployments |
+| `createResultAddress` | Address of the newly deployed contract |
+| `createFrom` | Deployer address (caller of CREATE/CREATE2) |
+| `trace` | Internal transaction trace showing contract creation |
 
 <Note>
-Contract creation transactions have no `to` address. The new contract address is returned in `contractAddress`.
+Use traces with `type: ["create", "create2"]` to filter for contract deployments. The `createResultAddress` field contains the newly deployed contract address.
 </Note>
 
 ## Expected Output
@@ -160,16 +152,16 @@ Contract creation transactions have no `to` address. The new contract address is
 ```json
 {
   "header": {
-    "number": 18000123,
-    "timestamp": 1697544779
+    "number": 20000001,
+    "timestamp": 1705173443
   },
-  "transactions": [
+  "traces": [
     {
-      "hash": "0x123...",
-      "from": "0xa9d1e08c7793af67e9d92fe308d5697fb81d3e43",
-      "input": "0x60806040523480156100105760...",
-      "gasUsed": "1234567",
-      "contractAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7"
+      "type": "create",
+      "createFrom": "0xa9d1e08c7793af67e9d92fe308d5697fb81d3e43",
+      "result": {
+        "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb7"
+      }
     }
   ]
 }
@@ -185,8 +177,8 @@ curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
   -H 'Content-Type: application/json' \
   -d '{
     "type": "evm",
-    "fromBlock": 18000000,
-    "toBlock": 18010000,
+    "fromBlock": 20000000,
+    "toBlock": 20000003,
     "fields": {
       "transaction": {
         "hash": true,
@@ -195,8 +187,7 @@ curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
       }
     },
     "transactions": [{
-      "from": ["0x1234567890123456789012345678901234567890"],
-      "to": []
+      "from": ["0x1234567890123456789012345678901234567890"]
     }]
   }'
 ```
@@ -205,18 +196,30 @@ curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
 const DEPLOYER = "0x1234567890123456789012345678901234567890";
 
 const blocks = await dataSource.getBlocks({
-  from: 18000000,
-  to: 18010000,
+  from: 20000000,
+  to: 20000003,
   fields: {
     transaction: { hash: true, from: true, contractAddress: true },
   },
   transactions: [
     {
       from: [DEPLOYER],
-      to: [],
     },
   ],
 });
+
+// Filter for deployments (contractAddress is populated)
+for (const block of blocks) {
+  for (const tx of block.transactions) {
+    if (tx.contractAddress) {
+      console.log({
+        deployer: tx.from,
+        contractAddress: tx.contractAddress,
+        txHash: tx.hash,
+      });
+    }
+  }
+}
 ```
 
 ```python Python
@@ -224,8 +227,8 @@ deployer = "0x1234567890123456789012345678901234567890"
 
 payload = {
     "type": "evm",
-    "fromBlock": 18000000,
-    "toBlock": 18010000,
+    "fromBlock": 20000000,
+    "toBlock": 20000003,
     "fields": {
         "transaction": {
             "hash": True,
@@ -234,10 +237,22 @@ payload = {
         }
     },
     "transactions": [{
-        "from": [deployer],
-        "to": []
+        "from": [deployer]
     }]
 }
+
+response = requests.post(url, headers=headers, json=payload)
+
+# Filter for deployments (contractAddress is populated)
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for tx in block.get('transactions', []):
+        if tx.get('contractAddress'):
+            print({
+                "deployer": tx['from'],
+                "contractAddress": tx['contractAddress'],
+                "txHash": tx['hash']
+            })
 ```
 </CodeGroup>
 
@@ -312,8 +327,8 @@ Monitor contracts deployed by factory contracts:
 // Factory deployments appear as internal transactions (traces)
 
 const blocks = await dataSource.getBlocks({
-  from: 18000000,
-  to: 18010000,
+  from: 20000000,
+  to: 20000003,
   fields: {
     trace: {
       type: true,

@@ -24,8 +24,8 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
   -H 'Content-Type: application/json' \
   -d '{
     "type": "solana",
-    "fromBlock": 259984950,
-    "toBlock": 260000000,
+    "fromBlock": 280000000,
+    "toBlock": 280000003,
     "fields": {
       "block": {
         "number": true,
@@ -58,8 +58,8 @@ const WHIRLPOOL_PROGRAM = "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc";
 const SWAP_D8 = "0xf8c69e91e17587c8";
 
 const blocks = await dataSource.getBlocks({
-  from: 259984950,
-  to: 260000000,
+  from: 280000000,
+  to: 280000003,
   fields: {
     block: { number: true, timestamp: true },
     instruction: {
@@ -105,8 +105,8 @@ swap_d8 = "0xf8c69e91e17587c8"
 
 payload = {
     "type": "solana",
-    "fromBlock": 259984950,
-    "toBlock": 260000000,
+    "fromBlock": 280000000,
+    "toBlock": 280000003,
     "fields": {
         "block": {
             "number": True,
@@ -187,8 +187,8 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
   -H 'Content-Type: application/json' \
   -d '{
     "type": "solana",
-    "fromBlock": 259984950,
-    "toBlock": 260000000,
+    "fromBlock": 280000000,
+    "toBlock": 280000003,
     "fields": {
       "instruction": {
         "programId": true,
@@ -208,8 +208,8 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
 const USDC_SOL_POOL = "7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm"; // USDC/SOL pool
 
 const blocks = await dataSource.getBlocks({
-  from: 259984950,
-  to: 260000000,
+  from: 280000000,
+  to: 280000003,
   fields: {
     instruction: { programId: true, accounts: true, data: true },
   },
@@ -228,8 +228,8 @@ usdc_sol_pool = "7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm"
 
 payload = {
     "type": "solana",
-    "fromBlock": 259984950,
-    "toBlock": 260000000,
+    "fromBlock": 280000000,
+    "toBlock": 280000003,
     "fields": {
         "instruction": {
             "programId": True,

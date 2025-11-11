@@ -6,11 +6,12 @@ export const QueryInterfaceStateDiffs = () => {
       network: "ethereum-mainnet",
       payload: {
         type: "evm",
-        fromBlock: 18000000,
-        toBlock: 18010000,
+        fromBlock: 19000000,
+        toBlock: 19000003,
         fields: {
           block: {
-            number: true
+            number: true,
+            timestamp: true
           },
           stateDiff: {
             address: true,
@@ -19,7 +20,10 @@ export const QueryInterfaceStateDiffs = () => {
             prev: true,
             next: true
           }
-        }
+        },
+        stateDiffs: [{
+          address: ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]
+        }]
       }
     }
   ];

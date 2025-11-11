@@ -6,23 +6,21 @@ export const QueryInterfaceContractDeployments = () => {
       network: "ethereum-mainnet",
       payload: {
         type: "evm",
-        fromBlock: 18000000,
-        toBlock: 18010000,
+        fromBlock: 20000000,
+        toBlock: 20000003,
         fields: {
           block: {
             number: true,
             timestamp: true
           },
-          transaction: {
-            hash: true,
-            from: true,
-            input: true,
-            gasUsed: true,
-            contractAddress: true
+          trace: {
+            type: true,
+            createFrom: true,
+            createResultAddress: true
           }
         },
-        transactions: [{
-          to: []
+        traces: [{
+          type: ["create", "create2"]
         }]
       }
     }

@@ -24,11 +24,12 @@ curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
   -H 'Content-Type: application/json' \
   -d '{
     "type": "evm",
-    "fromBlock": 18000000,
-    "toBlock": 18010000,
+    "fromBlock": 19000000,
+    "toBlock": 19000003,
     "fields": {
       "block": {
-        "number": true
+        "number": true,
+        "timestamp": true
       },
       "stateDiff": {
         "address": true,
@@ -37,7 +38,10 @@ curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
         "prev": true,
         "next": true
       }
-    }
+    },
+    "stateDiffs": [{
+      "address": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]
+    }]
   }'
 ```
 
@@ -49,10 +53,10 @@ const dataSource = new DataSource({
 });
 
 const blocks = await dataSource.getBlocks({
-  from: 18000000,
-  to: 18010000,
+  from: 19000000,
+  to: 19000003,
   fields: {
-    block: { number: true },
+    block: { number: true, timestamp: true },
     stateDiff: {
       address: true,
       key: true,
@@ -61,6 +65,11 @@ const blocks = await dataSource.getBlocks({
       next: true,
     },
   },
+  stateDiffs: [
+    {
+      address: ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"], // USDC
+    },
+  ],
 });
 
 // Process state changes
@@ -89,11 +98,12 @@ headers = {"Content-Type": "application/json"}
 
 payload = {
     "type": "evm",
-    "fromBlock": 18000000,
-    "toBlock": 18010000,
+    "fromBlock": 19000000,
+    "toBlock": 19000003,
     "fields": {
         "block": {
-            "number": True
+            "number": True,
+            "timestamp": True
         },
         "stateDiff": {
             "address": True,
@@ -102,7 +112,10 @@ payload = {
             "prev": True,
             "next": True
         }
-    }
+    },
+    "stateDiffs": [{
+        "address": ["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]  # USDC
+    }]
 }
 
 response = requests.post(url, headers=headers, json=payload)
@@ -169,8 +182,8 @@ curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
   -H 'Content-Type: application/json' \
   -d '{
     "type": "evm",
-    "fromBlock": 18000000,
-    "toBlock": 18010000,
+    "fromBlock": 19000000,
+    "toBlock": 19000003,
     "fields": {
       "stateDiff": {
         "address": true,
@@ -190,8 +203,8 @@ curl -X POST 'https://portal.sqd.dev/datasets/ethereum-mainnet/stream' \
 const USDC_CONTRACT = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
 
 const blocks = await dataSource.getBlocks({
-  from: 18000000,
-  to: 18010000,
+  from: 19000000,
+  to: 19000003,
   fields: {
     stateDiff: {
       address: true,
@@ -214,8 +227,8 @@ usdc_contract = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
 
 payload = {
     "type": "evm",
-    "fromBlock": 18000000,
-    "toBlock": 18010000,
+    "fromBlock": 19000000,
+    "toBlock": 19000003,
     "fields": {
         "stateDiff": {
             "address": True,
@@ -270,8 +283,8 @@ Monitor a specific storage slot (e.g., owner variable):
 const OWNER_SLOT = "0x0000000000000000000000000000000000000000000000000000000000000000";
 
 const blocks = await dataSource.getBlocks({
-  from: 18000000,
-  to: 18010000,
+  from: 19000000,
+  to: 19000003,
   fields: {
     block: { number: true, timestamp: true },
     stateDiff: {
@@ -336,8 +349,8 @@ const balanceKey = getBalanceSlot(WALLET, BALANCE_SLOT);
 
 // Query state diffs and filter for this specific key
 const blocks = await dataSource.getBlocks({
-  from: 18000000,
-  to: 18010000,
+  from: 19000000,
+  to: 19000003,
   fields: {
     stateDiff: { address: true, key: true, prev: true, next: true },
   },

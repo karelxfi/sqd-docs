@@ -6,8 +6,8 @@ export const QueryInterfaceSolanaProgramDeployments = () => {
       network: "solana-mainnet",
       payload: {
         type: "solana",
-        fromBlock: 259984950,
-        toBlock: 260000000,
+        fromBlock: 270000044,
+        toBlock: 270000047,
         fields: {
           block: {
             number: true,
@@ -19,7 +19,8 @@ export const QueryInterfaceSolanaProgramDeployments = () => {
           },
           instruction: {
             programId: true,
-            accounts: true
+            accounts: true,
+            transactionIndex: true
           }
         },
         instructions: [{
