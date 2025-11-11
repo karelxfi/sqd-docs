@@ -37,9 +37,7 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
         "err": true
       }
     },
-    "transactions": [{
-      "feePayer": ["9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"]
-    }]
+    "transactions": [{}]
   }'
 ```
 
@@ -49,8 +47,6 @@ import { DataSource } from "@subsquid/portal-client";
 const dataSource = new DataSource({
   network: "solana-mainnet",
 });
-
-const TARGET_ADDRESS = "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM";
 
 const blocks = await dataSource.getBlocks({
   from: 280000000,
@@ -63,11 +59,7 @@ const blocks = await dataSource.getBlocks({
       err: true,
     },
   },
-  transactions: [
-    {
-      feePayer: [TARGET_ADDRESS],
-    },
-  ],
+  transactions: [{}],
 });
 
 // Process transactions
@@ -90,8 +82,6 @@ import json
 url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
 headers = {"Content-Type": "application/json"}
 
-target_address = "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"
-
 payload = {
     "type": "solana",
     "fromBlock": 280000000,
@@ -107,9 +97,7 @@ payload = {
             "err": True
         }
     },
-    "transactions": [{
-        "feePayer": [target_address]
-    }]
+    "transactions": [{}]
 }
 
 response = requests.post(url, headers=headers, json=payload)
@@ -174,9 +162,7 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
         "feePayer": true
       }
     },
-    "transactions": [{
-      "feePayer": ["9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"]
-    }]
+    "transactions": [{}]
   }'
 ```
 

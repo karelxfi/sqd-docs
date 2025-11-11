@@ -325,3 +325,327 @@ return (
 
 
 
+export const QueryInterfaceSolanaQuickstart = () => {
+  const useCasesConfig = [
+    {
+      id: "solana-slots",
+      name: "Query Solana slots",
+      network: "solana-mainnet",
+      payload: {
+        type: "solana",
+        fromBlock: 280000000,
+        toBlock: 280000003,
+        fields: {
+          block: {
+            number: true,
+            timestamp: true
+          }
+        }
+      }
+    }
+  ];
+  const [queryFormat, setQueryFormat] = useState("curl");
+  const [useCase, setUseCase] = useState("solana-slots");
+  const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [viewMode, setViewMode] = useState("code");
+  const [copied, setCopied] = useState(false);
+
+const generateCurlCommand = (config) => {
+const url = `https://portal.sqd.dev/datasets/${config.network}/stream`;
+const payload = JSON.stringify(config.payload, null, 2);
+return `curl -X POST '${url}' \\\n  -H 'Content-Type: application/json' \\\n  -d '${payload}'`;
+};
+
+useEffect(() => {
+setViewMode("code");
+setResponse("");
+setError(null);
+}, [useCase]);
+
+const handleRun = async () => {
+const selectedUseCase = useCasesConfig.find(uc => uc.id === useCase);
+if (!selectedUseCase) return;
+
+    setViewMode("output");
+    setLoading(true);
+    setError(null);
+    setResponse('');
+
+    try {
+      const url = `https://portal.sqd.dev/datasets/${selectedUseCase.network}/stream`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(selectedUseCase.payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+      }
+
+      const text = await response.text();
+
+      if (text.trim()) {
+        const lines = text.trim().split('\n');
+        const parsedData = lines.map((line, index) => {
+          try {
+            return JSON.parse(line);
+          } catch (e) {
+            return { error: `Failed to parse line ${index + 1}`, raw: line };
+          }
+        });
+
+        const formattedOutput = parsedData
+          .map(obj => JSON.stringify(obj, null, 2))
+          .join('\n\n');
+
+        setResponse(formattedOutput);
+      } else {
+        setResponse('No data returned from API');
+      }
+    } catch (err) {
+      setError(err.message || 'An error occurred while fetching data');
+      setResponse('');
+    } finally {
+      setLoading(false);
+    }
+
+};
+
+return (
+
+<div className="not-prose w-full my-6 sm:my-8">
+
+      <div className="bg-white dark:bg-gray-950 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-800 shadow-sm">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-4">
+          <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 whitespace-nowrap">
+            Response
+          </label>
+
+          <div className="flex flex-wrap items-center gap-3 flex-1 w-full">
+            <div className="relative flex-shrink-0">
+              <select
+                value={queryFormat}
+                onChange={(e) => setQueryFormat(e.target.value)}
+                className="appearance-none bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#150671] dark:focus:ring-[#150671] cursor-pointer transition-all"
+              >
+                <option value="curl">curl</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+
+            <div className="relative flex-shrink-0 flex-1 min-w-[200px]">
+              <select
+                value={useCase}
+                onChange={(e) => setUseCase(e.target.value)}
+                className="appearance-none w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-2.5 pr-10 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#150671] dark:focus:ring-[#150671] cursor-pointer transition-all"
+              >
+                {useCasesConfig.map((uc) => (
+                  <option key={uc.id} value={uc.id}>
+                    {uc.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+
+            <button
+              onClick={handleRun}
+              type="button"
+              disabled={loading}
+              className="flex items-center gap-2 bg-[#150671] hover:bg-[#1a0a8a] dark:bg-[#150671] dark:hover:bg-[#1a0a8a] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold px-6 py-2.5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#150671] focus:ring-offset-2 dark:focus:ring-offset-gray-950 whitespace-nowrap shadow-sm hover:shadow-md"
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                  </svg>
+                  RUN
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+            <p className="text-sm text-red-800 dark:text-red-200 font-medium">Error: {error}</p>
+          </div>
+        )}
+
+        <div className="mt-4 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden h-[450px] flex flex-col">
+          <div className="bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-2.5 flex items-center justify-between">
+            <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+              {viewMode === "code" ? "Request" : "Response"}
+            </span>
+            <button
+              onClick={() => {
+                const textToCopy = viewMode === "code"
+                  ? generateCurlCommand(useCasesConfig.find(uc => uc.id === useCase))
+                  : response;
+                navigator.clipboard.writeText(textToCopy);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
+              className={`flex items-center gap-1.5 transition-colors ${
+                copied
+                  ? "text-[#150671] dark:text-[#b19cd9]"
+                  : "text-gray-500 hover:text-[#150671] dark:text-gray-400 dark:hover:text-[#b19cd9]"
+              }`}
+              title={copied ? "Copied!" : "Copy to clipboard"}
+            >
+              {copied ? (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-xs font-medium">Copied!</span>
+                </>
+              ) : (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              )}
+            </button>
+          </div>
+          <div className="flex-1 overflow-auto p-3 bg-gray-50 dark:bg-gray-950">
+            {loading ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-sm text-gray-500 dark:text-gray-400">Fetching data from Portal API...</div>
+              </div>
+            ) : viewMode === "code" ? (
+              <div key={`code-${useCase}`} style={{ position: 'relative' }}>
+                <pre style={{
+                  margin: 0,
+                  padding: '1rem',
+                  background: '#f6f8fa',
+                  borderRadius: '0.75rem',
+                  overflow: 'auto',
+                  fontSize: '0.875rem',
+                  lineHeight: '1.5',
+                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                  color: '#24292f'
+                }}>
+                  <code key={`curl-code-${useCase}`} style={{ counterReset: 'line' }}>
+                    {generateCurlCommand(useCasesConfig.find(uc => uc.id === useCase)).trim().split('\n').map((line, i) => (
+                      <div key={`curl-line-${i}`} style={{
+                        display: 'flex',
+                        position: 'relative',
+                        paddingLeft: '3.5em',
+                        minHeight: '1.5em',
+                        lineHeight: '1.5'
+                      }}>
+                        <span style={{
+                          position: 'absolute',
+                          left: 0,
+                          width: '2.5em',
+                          textAlign: 'right',
+                          color: '#6e7781',
+                          userSelect: 'none',
+                          paddingRight: '1em',
+                          lineHeight: '1.5'
+                        }}>{i + 1}</span>
+                        <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: '#24292f', lineHeight: '1.5' }}>
+                          {line.includes('curl') && <span style={{ color: '#8250df' }}>{line}</span>}
+                          {!line.includes('curl') && line.match(/^\s*-[XHd]/) && (
+                            <>
+                              <span style={{ color: '#150671' }}>{line.match(/^\s*-[XHd]/)[0]}</span>
+                              <span style={{ color: '#24292f' }}>{line.substring(line.match(/^\s*-[XHd]/)[0].length)}</span>
+                            </>
+                          )}
+                          {!line.includes('curl') && !line.match(/^\s*-[XHd]/) && line.match(/'[^']*'/) && (
+                            <>
+                              {line.split(/'([^']*)'/).map((part, j) =>
+                                j % 2 === 1 ? <span key={`curl-part-${i}-${j}`} style={{ color: '#0a3069' }}>'{part}'</span> : <span key={`curl-part-${i}-${j}`} style={{ color: '#24292f' }}>{part}</span>
+                              )}
+                            </>
+                          )}
+                          {!line.includes('curl') && !line.match(/^\s*-[XHd]/) && !line.match(/'[^']*'/) && <span style={{ color: '#24292f' }}>{line}</span>}
+                        </span>
+                      </div>
+                    ))}
+                  </code>
+                </pre>
+              </div>
+            ) : response ? (
+              <div key={`response-${useCase}-${response.length}`} style={{ position: 'relative' }}>
+                <pre style={{
+                  margin: 0,
+                  padding: '1rem',
+                  background: '#f6f8fa',
+                  borderRadius: '0.75rem',
+                  overflow: 'auto',
+                  fontSize: '0.875rem',
+                  lineHeight: '1.5',
+                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                  color: '#24292f'
+                }}>
+                  <code key={`response-code-${useCase}-${response.length}`}>
+                    {response.split('\n').map((line, i) => (
+                      <div key={`response-line-${i}`} style={{
+                        display: 'flex',
+                        position: 'relative',
+                        paddingLeft: '3.5em',
+                        minHeight: '1.5em',
+                        lineHeight: '1.5'
+                      }}>
+                        <span style={{
+                          position: 'absolute',
+                          left: 0,
+                          width: '2.5em',
+                          textAlign: 'right',
+                          color: '#6e7781',
+                          userSelect: 'none',
+                          paddingRight: '1em',
+                          lineHeight: '1.5'
+                        }}>{i + 1}</span>
+                        <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: '#24292f', lineHeight: '1.5' }}>
+                          {line.match(/"[^"]+":/) ? (
+                            <>
+                              {line.split(/("[^"]+":)/).map((part, j) =>
+                                part.match(/^"[^"]+":$/) ? <span key={`resp-part-${i}-${j}`} style={{ color: '#150671' }}>{part}</span> :
+                                part.match(/^"[^"]+"$/) ? <span key={`resp-part-${i}-${j}`} style={{ color: '#0a3069' }}>{part}</span> :
+                                <span key={`resp-part-${i}-${j}`} style={{ color: '#24292f' }}>{part}</span>
+                              )}
+                            </>
+                          ) : <span style={{ color: '#24292f' }}>{line}</span>}
+                        </span>
+                      </div>
+                    ))}
+                  </code>
+                </pre>
+              </div>
+            ) : (
+              <div className="text-sm text-gray-500 dark:text-gray-400 text-center h-full flex items-center justify-center">
+                No data returned from API
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+
+);
+
+};
+
