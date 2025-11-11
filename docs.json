@@ -15,14 +15,6 @@
     "eyebrows": "breadcrumbs",
     "codeblocks": "system"
   },
-  "banner": {
-    "content": "\u26a0\ufe0f Documentation is a work in progress. To provide feedback, use the \"Report to Linear\" button.",
-    "dismissible": true,
-    "style": {
-      "backgroundColor": "#111111",
-      "textColor": "#FFFFFF"
-    }
-  },
   "colors": {
     "primary": "#111111",
     "light": "#000000",
@@ -97,7 +89,19 @@
                           "en/portal/evm/examples/state-diffs"
                         ]
                       },
-                      "en/portal/evm/api"
+                      {
+                        "group": "API Reference",
+                        "icon": "code",
+                        "openapi": "en/api/evm/openapi.yaml",
+                        "directory": "api",
+                        "pages": [
+                          "GET /metadata",
+                          "POST /stream",
+                          "POST /finalized-stream",
+                          "GET /head",
+                          "GET /finalized-head"
+                        ]
+                      }
                     ]
                   },
                   {
@@ -262,7 +266,113 @@
                 "dropdown": "Solana",
                 "description": "Solana and SVM compatible chains",
                 "icon": "globe",
-                "href": "https://docs.soldexer.dev/get-started/introduction"
+                "groups": [
+                  {
+                    "group": "Raw Portal API",
+                    "tag": "NEW",
+                    "icon": "network-wired",
+                    "pages": [
+                      "en/portal/solana/overview",
+                      "en/portal/solana/quickstart",
+                      {
+                        "group": "Examples",
+                        "pages": [
+                          "en/portal/solana/examples/query-instructions",
+                          "en/portal/solana/examples/query-transactions",
+                          "en/portal/solana/examples/query-logs",
+                          "en/portal/solana/examples/token-transfers",
+                          "en/portal/solana/examples/dex-swaps",
+                          "en/portal/solana/examples/program-deployments"
+                        ]
+                      },
+                      {
+                        "group": "API Reference",
+                        "icon": "code",
+                        "openapi": "en/api/solana/openapi.yaml",
+                        "directory": "api",
+                        "pages": [
+                          "GET /metadata",
+                          "POST /stream",
+                          "POST /finalized-stream",
+                          "GET /head",
+                          "GET /finalized-head"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Pipes SDK",
+                    "tag": "BETA",
+                    "icon": "bars-staggered",
+                    "pages": [
+                      "en/sdk/pipes-sdk/solana/quickstart",
+                      "en/sdk/pipes-sdk/solana/basics",
+                      "en/sdk/pipes-sdk/solana/stateful-indexing",
+                      "en/sdk/pipes-sdk/solana/quality-of-life",
+                      {
+                        "group": "Examples",
+                        "pages": [
+                          "en/sdk/pipes-sdk/solana/examples/getting-started",
+                          "en/sdk/pipes-sdk/solana/examples/instruction-decoding",
+                          "en/sdk/pipes-sdk/solana/examples/dex-swaps",
+                          "en/sdk/pipes-sdk/solana/examples/indexing-latency",
+                          "en/sdk/pipes-sdk/solana/examples/data-persistence",
+                          "en/sdk/pipes-sdk/solana/examples/performance",
+                          "en/sdk/pipes-sdk/solana/examples/production"
+                        ]
+                      },
+                      {
+                        "group": "Reference",
+                        "pages": [
+                          "en/sdk/pipes-sdk/solana/reference/sources",
+                          "en/sdk/pipes-sdk/solana/reference/query-builder",
+                          "en/sdk/pipes-sdk/solana/reference/instruction-decoder",
+                          "en/sdk/pipes-sdk/solana/reference/transformers-targets",
+                          "en/sdk/pipes-sdk/solana/reference/types-methods"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Squid SDK",
+                    "icon": "globe",
+                    "pages": [
+                      "en/sdk/squid-sdk/solana/quickstart",
+                      {
+                        "group": "How-to-start",
+                        "pages": [
+                          "en/sdk/squid-sdk/solana/how-to-start/indexing-orca",
+                          "en/sdk/squid-sdk/solana/how-to-start/cli-cheatsheet"
+                        ]
+                      },
+                      {
+                        "group": "Reference",
+                        "pages": [
+                          {
+                            "group": "solana-batch processor",
+                            "pages": [
+                              "en/sdk/squid-sdk/solana/sdk/solana-batch/general",
+                              "en/sdk/squid-sdk/solana/sdk/solana-batch/instructions",
+                              "en/sdk/squid-sdk/solana/sdk/solana-batch/transactions",
+                              "en/sdk/squid-sdk/solana/sdk/solana-batch/logs",
+                              "en/sdk/squid-sdk/solana/sdk/solana-batch/balances",
+                              "en/sdk/squid-sdk/solana/sdk/solana-batch/token-balances",
+                              "en/sdk/squid-sdk/solana/sdk/solana-batch/rewards",
+                              "en/sdk/squid-sdk/solana/sdk/solana-batch/field-selection",
+                              "en/sdk/squid-sdk/solana/sdk/solana-batch/context-interfaces"
+                            ]
+                          },
+                          {
+                            "group": "solana-typegen package",
+                            "pages": [
+                              "en/sdk/squid-sdk/solana/sdk/typegen"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "dropdown": "Substrate",

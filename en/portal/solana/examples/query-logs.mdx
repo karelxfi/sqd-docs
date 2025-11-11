@@ -1,0 +1,252 @@
+---
+title: "Query Log Messages"
+description: "Retrieve program log messages using Portal"
+---
+
+Monitor log messages emitted by Solana programs to debug program execution, track state changes, or analyze program behavior.
+
+## Use Case
+
+Log message queries help you:
+
+- Debug program execution
+- Track program state changes
+- Monitor program events
+- Analyze program behavior patterns
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
+      "log": {
+        "programId": true,
+        "message": true,
+        "kind": true,
+        "transactionIndex": true
+      }
+    },
+    "logs": [{
+      "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "solana-mainnet",
+});
+
+// Orca Whirlpool program ID
+const WHIRLPOOL_PROGRAM = "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc";
+
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    block: { number: true, timestamp: true },
+    log: {
+      programId: true,
+      message: true,
+      kind: true,
+      transactionIndex: true,
+    },
+  },
+  logs: [
+    {
+      programId: [WHIRLPOOL_PROGRAM],
+    },
+  ],
+});
+
+// Process logs
+for (const block of blocks) {
+  for (const log of block.logs) {
+    console.log({
+      slot: block.header.number,
+      timestamp: block.header.timestamp,
+      programId: log.programId,
+      message: log.message,
+      kind: log.kind,
+      txIndex: log.transactionIndex,
+    });
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+# Orca Whirlpool program ID
+whirlpool_program = "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
+
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        },
+        "log": {
+            "programId": True,
+            "message": True,
+            "kind": True,
+            "transactionIndex": True
+        }
+    },
+    "logs": [{
+        "programId": [whirlpool_program]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for log in block.get('logs', []):
+        print({
+            "slot": block['header']['number'],
+            "timestamp": block['header']['timestamp'],
+            "programId": log['programId'],
+            "message": log['message'],
+            "kind": log['kind'],
+            "txIndex": log['transactionIndex']
+        })
+```
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `programId` | Filter logs by program address |
+| `kind` | Log kind: `log`, `data`, or `other` |
+| `message` | Log message content |
+| `transactionIndex` | Transaction index (use to match with transactions array) |
+
+## Expected Output
+
+```json
+{
+  "header": {
+    "number": 259985000,
+    "timestamp": 1697544779
+  },
+  "logs": [
+    {
+      "programId": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
+      "message": "Program log: Swap executed",
+      "kind": "log",
+      "transactionIndex": 0
+    }
+  ]
+}
+```
+
+## Filter by Log Kind
+
+Query specific types of log messages:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "log": {
+        "programId": true,
+        "message": true,
+        "kind": true
+      }
+    },
+    "logs": [{
+      "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+      "kind": ["log"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    log: { programId: true, message: true, kind: true },
+  },
+  logs: [
+    {
+      programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+      kind: ["log"], // Only text logs, not data logs
+    },
+  ],
+});
+```
+
+```python Python
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "log": {
+            "programId": True,
+            "message": True,
+            "kind": True
+        }
+    },
+    "logs": [{
+        "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+        "kind": ["log"]
+    }]
+}
+```
+</CodeGroup>
+
+## Performance Tips
+
+1. **Filter by program**: Query logs from specific programs
+2. **Filter by kind**: Reduce results to specific log types
+3. **Request minimal fields**: Omit unnecessary fields to improve performance
+4. **Use slot ranges**: Process data in manageable batches
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Instructions" icon="code" href="/en/portal/solana/examples/query-instructions">
+  Track program instructions
+</Card>
+
+<Card title="Query Transactions" icon="arrow-right-arrow-left" href="/en/portal/solana/examples/query-transactions">
+  Monitor wallet activity
+</Card>
+
+<Card title="DEX Swaps" icon="repeat" href="/en/portal/solana/examples/dex-swaps">
+  Track DEX trading activity
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/portal/solana/api">
+  View complete API docs
+</Card>
+</CardGroup>
+

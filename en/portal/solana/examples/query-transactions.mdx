@@ -1,0 +1,236 @@
+---
+title: "Query Transactions"
+description: "Monitor wallet activity and transaction flows using Portal"
+---
+
+Retrieve all transactions sent by or to a specific address to track wallet activity, exchange flows, or program interactions.
+
+## Use Case
+
+Transaction queries help you:
+
+- Track incoming transactions to wallets or exchanges
+- Monitor program interactions
+- Analyze transaction patterns
+- Build transaction history feeds
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
+      "transaction": {
+        "signatures": true,
+        "feePayer": true,
+        "err": true
+      }
+    },
+    "transactions": [{
+      "feePayer": ["YourWalletAddressHere"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "solana-mainnet",
+});
+
+const TARGET_ADDRESS = "YourWalletAddressHere";
+
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    block: { number: true, timestamp: true },
+    transaction: {
+      signatures: true,
+      feePayer: true,
+      err: true,
+    },
+  },
+  transactions: [
+    {
+      feePayer: [TARGET_ADDRESS],
+    },
+  ],
+});
+
+// Process transactions
+for (const block of blocks) {
+  for (const tx of block.transactions) {
+    console.log({
+      slot: block.header.number,
+      signatures: tx.signatures,
+      feePayer: tx.feePayer,
+      success: tx.err === null,
+    });
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+target_address = "YourWalletAddressHere"
+
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        },
+        "transaction": {
+            "signatures": True,
+            "feePayer": True,
+            "err": True
+        }
+    },
+    "transactions": [{
+        "feePayer": [target_address]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for tx in block.get('transactions', []):
+        print({
+            "slot": block['header']['number'],
+            "signatures": tx['signatures'],
+            "feePayer": tx['feePayer'],
+            "success": tx['err'] is None
+        })
+```
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `feePayer` | Filter transactions by fee payer address |
+| `signatures` | Transaction signatures (base58-encoded) |
+| `err` | Transaction error (null if successful) |
+
+## Expected Output
+
+```json
+{
+  "header": {
+    "number": 259985000,
+    "timestamp": 1697544779
+  },
+  "transactions": [
+    {
+      "signatures": ["5j7s8K9L..."],
+      "feePayer": "YourWalletAddressHere",
+      "err": null
+    }
+  ]
+}
+```
+
+## Monitor Outgoing Transactions
+
+Track transactions from a specific wallet:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "transaction": {
+        "signatures": true,
+        "feePayer": true
+      }
+    },
+    "transactions": [{
+      "feePayer": ["YourWalletAddressHere"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    transaction: { signatures: true, feePayer: true },
+  },
+  transactions: [
+    {
+      feePayer: ["YourWalletAddressHere"],
+    },
+  ],
+});
+```
+
+```python Python
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "transaction": {
+            "signatures": True,
+            "feePayer": True
+        }
+    },
+    "transactions": [{
+        "feePayer": ["YourWalletAddressHere"]
+    }]
+}
+```
+</CodeGroup>
+
+## Performance Tips
+
+1. **Filter by fee payer**: Reduces results to transactions from specific wallets
+2. **Request minimal fields**: Omit unnecessary fields to improve performance
+3. **Check error status**: Filter failed transactions in post-processing if needed
+4. **Use slot ranges**: Process data in manageable batches
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Instructions" icon="code" href="/en/portal/solana/examples/query-instructions">
+  Track program instructions
+</Card>
+
+<Card title="Query Logs" icon="file-lines" href="/en/portal/solana/examples/query-logs">
+  Retrieve program log messages
+</Card>
+
+<Card title="Token Transfers" icon="coins" href="/en/portal/solana/examples/token-transfers">
+  Monitor SPL token activity
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/portal/solana/api">
+  View complete API docs
+</Card>
+</CardGroup>
+

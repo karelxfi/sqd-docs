@@ -1,0 +1,313 @@
+---
+title: "Query Instructions"
+description: "Track program instructions using Portal"
+---
+
+Monitor instructions from specific Solana programs to build program analytics or analyze instruction patterns.
+
+## Use Case
+
+Instruction queries help you:
+
+- Track program interactions and usage
+- Monitor specific program activity
+- Analyze instruction patterns
+- Build program analytics dashboards
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
+      "instruction": {
+        "programId": true,
+        "accounts": true,
+        "data": true,
+        "transactionIndex": true
+      }
+    },
+    "instructions": [{
+      "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "solana-mainnet",
+});
+
+// Orca Whirlpool program ID
+const WHIRLPOOL_PROGRAM = "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc";
+
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    block: { number: true, timestamp: true },
+    instruction: {
+      programId: true,
+      accounts: true,
+      data: true,
+      transactionIndex: true,
+    },
+  },
+  instructions: [
+    {
+      programId: [WHIRLPOOL_PROGRAM],
+    },
+  ],
+});
+
+// Process instructions
+for (const block of blocks) {
+  for (const instruction of block.instructions) {
+    console.log({
+      slot: block.header.number,
+      timestamp: block.header.timestamp,
+      programId: instruction.programId,
+      accounts: instruction.accounts,
+      txIndex: instruction.transactionIndex,
+    });
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+# Orca Whirlpool program ID
+whirlpool_program = "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
+
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        },
+        "instruction": {
+            "programId": True,
+            "accounts": True,
+            "data": True,
+            "transactionIndex": True
+        }
+    },
+    "instructions": [{
+        "programId": [whirlpool_program]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for instruction in block.get('instructions', []):
+        print({
+            "slot": block['header']['number'],
+            "timestamp": block['header']['timestamp'],
+            "programId": instruction['programId'],
+            "accounts": instruction['accounts'],
+            "txIndex": instruction['transactionIndex']
+        })
+```
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `programId` | Filter instructions by program address |
+| `d8` | Filter by 8-byte instruction discriminator |
+| `accounts` | Filter by account addresses used in instruction |
+| `data` | Instruction data payload |
+| `transactionIndex` | Transaction index (use to match with transactions array) |
+
+## Expected Output
+
+```json
+{
+  "header": {
+    "number": 259985000,
+    "timestamp": 1697544779
+  },
+  "instructions": [
+    {
+      "programId": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
+      "accounts": ["7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm", "..."],
+      "data": "base58encodeddata...",
+      "transactionIndex": 0
+    }
+  ]
+}
+```
+
+## Filter by Instruction Discriminator
+
+Query only specific instruction types (e.g., swap instructions):
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "instruction": {
+        "programId": true,
+        "data": true
+      }
+    },
+    "instructions": [{
+      "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+      "d8": ["0xf8c69e91e17587c8"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    instruction: { programId: true, data: true },
+  },
+  instructions: [
+    {
+      programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"], // Orca Whirlpool
+      d8: ["0xf8c69e91e17587c8"], // Swap instruction discriminator
+    },
+  ],
+});
+```
+
+```python Python
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "instruction": {
+            "programId": True,
+            "data": True
+        }
+    },
+    "instructions": [{
+        "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+        "d8": ["0xf8c69e91e17587c8"]
+    }]
+}
+```
+</CodeGroup>
+
+<Tip>
+Instruction discriminators are typically the first 8 bytes of the instruction data. They identify the specific instruction type within a program.
+</Tip>
+
+## Filter by Account
+
+Query instructions involving specific accounts:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "instruction": {
+        "programId": true,
+        "accounts": true
+      }
+    },
+    "instructions": [{
+      "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+      "accounts": ["7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    instruction: { programId: true, accounts: true },
+  },
+  instructions: [
+    {
+      programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+      accounts: ["7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm"], // Specific pool
+    },
+  ],
+});
+```
+
+```python Python
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "instruction": {
+            "programId": True,
+            "accounts": True
+        }
+    },
+    "instructions": [{
+        "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+        "accounts": ["7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm"]
+    }]
+}
+```
+</CodeGroup>
+
+## Performance Tips
+
+1. **Combine filters**: Use both `programId` and `d8` for specific instruction types
+2. **Filter by accounts**: Reduce results to specific program instances
+3. **Request minimal fields**: Omit `data` if you don't need instruction payload
+4. **Use slot ranges**: Process data in 10k-50k slot batches
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Transactions" icon="arrow-right-arrow-left" href="/en/portal/solana/examples/query-transactions">
+  Track wallet activity
+</Card>
+
+<Card title="Query Logs" icon="file-lines" href="/en/portal/solana/examples/query-logs">
+  Retrieve program log messages
+</Card>
+
+<Card title="DEX Swaps" icon="repeat" href="/en/portal/solana/examples/dex-swaps">
+  Track DEX trading activity
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/portal/solana/api">
+  View complete API docs
+</Card>
+</CardGroup>
+

@@ -10,7 +10,7 @@ description: >-
 The method documentation is also available inline and can be accessed via suggestions in most IDEs.
 </Tip>
 
-The following setters configure the global settings of `DataSourceBuilder` for Solana Procesor. They return the modified instance and can be chained.
+The following setters configure the global settings of `DataSourceBuilder` for Solana Processor. They return the modified instance and can be chained.
 
 One or both of [`setGateway()`](#set-gateway) or [`setRpcEndpoint()`](#set-rpc) must be called to make the data source usable. `setRpcEndpoint()` is required if you need real-time data; `setGateway()` is required if you want to get historical data from SQD Network at high speed. All other methods are optional.
  - If you add both a SQD Network gateway and an RPC endpoint, the processor will obtain as much data as is currently available from the gateway, then switch to ingesting recent data via RPC.
@@ -18,7 +18,7 @@ One or both of [`setGateway()`](#set-gateway) or [`setRpcEndpoint()`](#set-rpc) 
 
 ### `setGateway(url: string | GatewaySettings)` \{#set-gateway\}
 
-Use a [SQD Network](subsquid-network) gateway. The argument is either a string URL of the gateway or
+Use a [SQD Network](/en/network/overview) gateway. The argument is either a string URL of the gateway or
 
 ```typescript
 {
@@ -29,7 +29,7 @@ Use a [SQD Network](subsquid-network) gateway. The argument is either a string U
 
 ### `setRpc(settings?: RpcSettings)` \{#set-rpc\}
 
-Adds a RPC data source. If added, it will be used for [RPC ingestion](sdk/resources/unfinalized-blocks). The argument format is:
+Adds a RPC data source. If added, it will be used for [RPC ingestion](/en/sdk/squid-sdk/features/unfinalized-blocks). The argument format is:
 
 ```typescript
 type RpcSettings = {

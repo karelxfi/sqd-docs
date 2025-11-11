@@ -1,0 +1,278 @@
+---
+title: "Monitor Program Deployments"
+description: "Track new Solana program deployments using Portal"
+---
+
+Monitor new program deployments on Solana to track program launches, analyze deployment trends, or build program discovery tools.
+
+## Use Case
+
+Program deployment tracking enables you:
+
+- Track new program launches
+- Monitor program upgrade activity
+- Analyze deployment trends
+- Build program discovery dashboards
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
+      "transaction": {
+        "signatures": true,
+        "feePayer": true
+      },
+      "instruction": {
+        "programId": true,
+        "accounts": true
+      }
+    },
+    "instructions": [{
+      "programId": ["BPFLoaderUpgradeab1e11111111111111111111111"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "solana-mainnet",
+});
+
+// BPF Upgradeable Loader program ID
+const BPF_UPGRADEABLE_LOADER = "BPFLoaderUpgradeab1e11111111111111111111111";
+
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    block: { number: true, timestamp: true },
+    transaction: {
+      signatures: true,
+      feePayer: true,
+    },
+    instruction: {
+      programId: true,
+      accounts: true,
+      transactionIndex: true,
+    },
+  },
+  instructions: [
+    {
+      programId: [BPF_UPGRADEABLE_LOADER],
+    },
+  ],
+});
+
+// Process deployments
+for (const block of blocks) {
+  for (const instruction of block.instructions) {
+    // The program account is typically the first account
+    const programAccount = instruction.accounts[0];
+    console.log({
+      slot: block.header.number,
+      timestamp: block.header.timestamp,
+      programAccount: programAccount,
+      txIndex: instruction.transactionIndex,
+      deployer: block.transactions[instruction.transactionIndex]?.feePayer,
+    });
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+# BPF Upgradeable Loader program ID
+bpf_upgradeable_loader = "BPFLoaderUpgradeab1e11111111111111111111111"
+
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        },
+        "transaction": {
+            "signatures": True,
+            "feePayer": True
+        },
+        "instruction": {
+            "programId": True,
+            "accounts": True
+        }
+    },
+    "instructions": [{
+        "programId": [bpf_upgradeable_loader]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for instruction in block.get('instructions', []):
+        program_account = instruction['accounts'][0] if instruction['accounts'] else None
+        print({
+            "slot": block['header']['number'],
+            "timestamp": block['header']['timestamp'],
+            "programAccount": program_account,
+            "txIndex": instruction.get('transactionIndex')
+        })
+```
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `programId` | BPF Upgradeable Loader program ID for deployments |
+| `accounts` | Instruction accounts (first account is typically the program) |
+| `transactionIndex` | Transaction index (use to match with transactions array) |
+
+<Note>
+Program deployments on Solana use the BPF Upgradeable Loader program. Different instruction types within this program indicate deployments, upgrades, or closures.
+</Note>
+
+## Expected Output
+
+```json
+{
+  "header": {
+    "number": 259985000,
+    "timestamp": 1697544779
+  },
+  "instructions": [
+    {
+      "programId": "BPFLoaderUpgradeab1e11111111111111111111111",
+      "accounts": ["NewProgramAddress...", "..."],
+      "transactionIndex": 0
+    }
+  ]
+}
+```
+
+## Filter by Deployer
+
+Track deployments from specific addresses:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "transaction": {
+        "signatures": true,
+        "feePayer": true
+      },
+      "instruction": {
+        "programId": true,
+        "accounts": true,
+        "transactionIndex": true
+      }
+    },
+    "instructions": [{
+      "programId": ["BPFLoaderUpgradeab1e11111111111111111111111"]
+    }],
+    "transactions": [{
+      "feePayer": ["DeployerAddressHere"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    transaction: { signatures: true, feePayer: true },
+    instruction: { programId: true, accounts: true, transactionIndex: true },
+  },
+  instructions: [
+    {
+      programId: ["BPFLoaderUpgradeab1e11111111111111111111111"],
+    },
+  ],
+  transactions: [
+    {
+      feePayer: ["DeployerAddressHere"],
+    },
+  ],
+});
+```
+
+```python Python
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "transaction": {
+            "signatures": True,
+            "feePayer": True
+        },
+        "instruction": {
+            "programId": True,
+            "accounts": True,
+            "transactionIndex": True
+        }
+    },
+    "instructions": [{
+        "programId": ["BPFLoaderUpgradeab1e11111111111111111111111"]
+    }],
+    "transactions": [{
+        "feePayer": ["DeployerAddressHere"]
+    }]
+}
+```
+</CodeGroup>
+
+## Performance Tips
+
+1. **Filter by deployer**: Query deployments from specific addresses
+2. **Use slot ranges**: Process data in manageable batches
+3. **Request minimal fields**: Only request fields you need
+4. **Combine filters**: Use both program and transaction filters for precision
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Instructions" icon="code" href="/en/portal/solana/examples/query-instructions">
+  Track program instructions
+</Card>
+
+<Card title="Query Transactions" icon="arrow-right-arrow-left" href="/en/portal/solana/examples/query-transactions">
+  Monitor wallet activity
+</Card>
+
+<Card title="DEX Swaps" icon="repeat" href="/en/portal/solana/examples/dex-swaps">
+  Track DEX trading activity
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/portal/solana/api">
+  View complete API docs
+</Card>
+</CardGroup>
+

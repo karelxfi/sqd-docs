@@ -1,0 +1,640 @@
+---
+title: "Portal API Reference"
+description: "Quick reference for Portal HTTP API with links to complete specification"
+---
+
+This page provides a quick reference for the Portal API. For the complete OpenAPI specification with all fields and options:
+
+<Card
+  title="Complete Solana API Specification"
+  icon="book-open"
+  href="/api/solana/"
+  className="mb-8"
+>
+  View the full OpenAPI documentation with all available fields, filters, and
+  detailed schemas →
+</Card>
+
+## Base URL
+
+All Portal requests are made to:
+
+```
+https://portal.sqd.dev/datasets/{network}
+```
+
+Replace `{network}` with your target blockchain (e.g., `solana-mainnet`).
+
+## Core Endpoints
+
+<CardGroup cols={3}>
+  <Card title="POST /stream" icon="wave-pulse">
+    Stream blockchain data with filters. Includes unfinalized blocks.
+  </Card>
+
+{" "}
+
+  <Card title="POST /finalized-stream" icon="check-circle">
+    Stream only finalized blocks. Use for production pipelines requiring
+    certainty.
+  </Card>
+
+  <Card title="GET /metadata" icon="info-circle">
+    Get dataset information: slot range, finality rules, and network details.
+  </Card>
+</CardGroup>
+
+## Installation
+
+```bash
+npm install @subsquid/portal-client
+```
+
+## Quick Start Examples
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 259985000,
+    "fields": {
+      "block": { "number": true, "timestamp": true },
+      "instruction": { "programId": true, "accounts": true, "data": true }
+    }
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "solana-mainnet",
+});
+
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 259985000,
+  fields: {
+    block: { number: true, timestamp: true },
+    instruction: { programId: true, accounts: true, data: true },
+  },
+});
+```
+
+```python Python
+import requests
+
+url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 259985000,
+    "fields": {
+        "block": {"number": True, "timestamp": True},
+        "instruction": {"programId": True, "accounts": True, "data": True}
+    }
+}
+
+response = requests.post(url, headers=headers, json=payload)
+```
+
+</CodeGroup>
+
+## Available Fields
+
+### Block Fields
+
+Select which block header fields to retrieve:
+
+```typescript
+fields: {
+  block: {
+    number: true,          // Slot number (field name: number)
+    hash: true,            // Block hash
+    parentHash: true,      // Parent block hash
+    timestamp: true,       // Unix timestamp
+    height: true,          // Block height
+    parentSlot: true,      // Parent slot number
+  }
+}
+```
+
+### Transaction Fields
+
+Select transaction data fields:
+
+```typescript
+fields: {
+  transaction: {
+    signatures: true,      // Transaction signatures (base58)
+    feePayer: true,        // Fee payer address
+    err: true,             // Transaction error (null if successful)
+    version: true,         // Transaction version
+    accountKeys: true,     // Account keys
+    recentBlockhash: true, // Recent blockhash
+    fee: true,             // Transaction fee
+    computeUnitsConsumed: true, // Compute units consumed
+  }
+}
+```
+
+### Instruction Fields
+
+Select instruction data fields:
+
+```typescript
+fields: {
+  instruction: {
+    programId: true,       // Program address
+    accounts: true,        // Account addresses
+    data: true,            // Instruction data (base58)
+    transactionIndex: true, // Transaction index (use to match with transactions)
+    instructionAddress: true,  // Instruction address in call tree
+    isCommitted: true,     // Whether instruction succeeded
+  }
+}
+```
+
+### Log Fields
+
+Select log message fields:
+
+```typescript
+fields: {
+  log: {
+    programId: true,       // Program address
+    message: true,         // Log message
+    kind: true,            // Log kind (log, data, other)
+    transactionIndex: true, // Transaction index (use to match with transactions)
+    instructionAddress: true,  // Instruction address
+  }
+}
+```
+
+### Token Balance Fields
+
+Select token balance fields:
+
+```typescript
+fields: {
+  tokenBalance: {
+    account: true,         // Token account address
+    preMint: true,         // Mint before transaction
+    postMint: true,        // Mint after transaction
+    preAmount: true,       // Balance before transaction
+    postAmount: true,      // Balance after transaction
+    preOwner: true,        // Owner before transaction
+    postOwner: true,       // Owner after transaction
+  }
+}
+```
+
+### Balance Fields
+
+Select SOL balance fields:
+
+```typescript
+fields: {
+  balance: {
+    account: true,         // Account address
+    pre: true,             // Balance before transaction
+    post: true,            // Balance after transaction
+  }
+}
+```
+
+### Reward Fields
+
+Select reward fields:
+
+```typescript
+fields: {
+  reward: {
+    pubkey: true,          // Reward recipient
+    lamports: true,        // Reward amount
+    rewardType: true,      // Reward type
+    postBalance: true,     // Balance after reward
+  }
+}
+```
+
+## Filtering Options
+
+### Instruction Filters
+
+Filter instructions by program, discriminator, or accounts:
+
+```typescript
+instructions: [
+  {
+    programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"], // Orca Whirlpool
+    d8: ["0xf8c69e91e17587c8"], // Swap instruction discriminator
+    accounts: ["7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm"], // Specific pool
+  },
+];
+```
+
+**Filter logic:**
+
+- Multiple program IDs in one object = OR
+- Multiple discriminators in one object = OR
+- Multiple filter objects = OR
+
+### Transaction Filters
+
+Filter transactions by fee payer:
+
+```typescript
+transactions: [
+  {
+    feePayer: ["YourWalletAddressHere"], // Fee payer addresses
+  },
+];
+```
+
+### Log Filters
+
+Filter logs by program and kind:
+
+```typescript
+logs: [
+  {
+    programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+    kind: ["log"], // log, data, or other
+  },
+];
+```
+
+### Token Balance Filters
+
+Filter token balances by mint or account:
+
+```typescript
+tokenBalances: [
+  {
+    preMint: ["EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"], // USDC
+    account: ["TokenAccountAddress..."],
+  },
+];
+```
+
+## Network Selection
+
+Specify the Solana network when creating the data source:
+
+```typescript
+// Solana mainnet
+const solana = new DataSource({ network: "solana-mainnet" });
+```
+
+<Card title="View All Networks" icon="database" href="/en/data/networks">
+  See complete list of supported Solana networks
+</Card>
+
+## Query Patterns
+
+### Pattern 1: Range Query
+
+Query a specific slot range:
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    /* fields */
+  },
+  instructions: [
+    /* filters */
+  ],
+});
+```
+
+### Pattern 2: Batch Processing
+
+Process large ranges in batches:
+
+```typescript
+const BATCH_SIZE = 10000;
+
+for (let i = startSlot; i < endSlot; i += BATCH_SIZE) {
+  const blocks = await dataSource.getBlocks({
+    from: i,
+    to: Math.min(i + BATCH_SIZE, endSlot),
+    fields: {
+      /* fields */
+    },
+  });
+
+  // Process blocks
+  await processBlocks(blocks);
+}
+```
+
+### Pattern 3: Multi-Program Query
+
+Query multiple programs simultaneously:
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    instruction: { programId: true, accounts: true, data: true },
+  },
+  instructions: [
+    {
+      programId: [
+        "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc", // Orca Whirlpool
+        "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA", // SPL Token
+      ],
+    },
+  ],
+});
+```
+
+## Performance Optimization
+
+### 1. Request Only Needed Fields
+
+```typescript
+// Good: Minimal fields
+fields: {
+  instruction: {
+    programId: true,
+    accounts: true,
+  }
+}
+
+// Avoid: Requesting unnecessary fields
+fields: {
+  instruction: {
+    programId: true,
+    accounts: true,
+    data: true,        // Only if needed
+    transactionIndex: true,     // Only if needed (use to match with transactions)
+  }
+}
+```
+
+### 2. Use Specific Filters
+
+```typescript
+// Good: Filter at Portal level
+instructions: [
+  {
+    programId: ["SpecificProgram"],
+    d8: ["SpecificDiscriminator"],
+  },
+];
+
+// Avoid: Fetching everything and filtering in code
+instructions: []; // Gets all instructions
+```
+
+### 3. Optimal Batch Sizes
+
+```typescript
+// Good: 10k-50k slots per query for most use cases
+const BATCH_SIZE = 10000;
+
+// Adjust based on:
+// - More filters = larger batches OK
+// - More fields = smaller batches
+// - More activity (mainnet) = smaller batches
+```
+
+### 4. Parallel Queries
+
+```typescript
+// Process multiple ranges in parallel
+const ranges = [
+  { from: 259984950, to: 260000000 },
+  { from: 260000000, to: 260015000 },
+  { from: 260015000, to: 260030000 },
+];
+
+const results = await Promise.all(
+  ranges.map((range) =>
+    dataSource.getBlocks({
+      from: range.from,
+      to: range.to,
+      fields: {
+        /* fields */
+      },
+    })
+  )
+);
+```
+
+## Error Handling
+
+```typescript
+try {
+  const blocks = await dataSource.getBlocks({
+    from: 259984950,
+    to: 260000000,
+    fields: {
+      /* fields */
+    },
+  });
+} catch (error) {
+  if (error.code === "RATE_LIMIT_EXCEEDED") {
+    // Handle rate limiting (Public Portal)
+    console.error("Rate limit exceeded, waiting...");
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+  } else if (error.code === "INVALID_SLOT_RANGE") {
+    // Handle invalid range
+    console.error("Invalid slot range");
+  } else if (error.code === "NETWORK_ERROR") {
+    // Handle network issues
+    console.error("Network error, retrying...");
+  } else {
+    // Handle other errors
+    console.error("Unknown error:", error);
+  }
+}
+```
+
+## Common Use Cases
+
+### Use Case 1: Instruction Monitoring
+
+Monitor specific program instructions:
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: latestProcessedSlot + 1,
+  fields: {
+    block: { number: true, timestamp: true },
+    instruction: { programId: true, accounts: true, data: true },
+  },
+  instructions: [
+    {
+      programId: [PROGRAM_ADDRESS],
+      d8: [INSTRUCTION_DISCRIMINATOR],
+    },
+  ],
+});
+```
+
+### Use Case 2: Transaction Tracking
+
+Track transactions from/to specific addresses:
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: startSlot,
+  to: endSlot,
+  fields: {
+    transaction: { signatures: true, feePayer: true },
+  },
+  transactions: [
+    {
+      feePayer: [WATCHED_ADDRESS],
+    },
+  ],
+});
+```
+
+### Use Case 3: Analytics Pipeline
+
+Build analytics on blockchain data:
+
+```typescript
+const blocks = await dataSource.getBlocks({
+  from: startSlot,
+  to: endSlot,
+  fields: {
+    block: { number: true, timestamp: true },
+    transaction: { fee: true },
+  },
+});
+
+// Aggregate statistics
+const stats = blocks.map((block) => ({
+  slot: block.header.number,
+  txCount: block.transactions.length,
+  totalFees: block.transactions.reduce(
+    (sum, tx) => sum + BigInt(tx.fee || 0),
+    0n
+  ),
+}));
+```
+
+## Request Structure Reference
+
+Every Portal request follows this structure:
+
+```typescript
+{
+  type: "solana",              // Chain type
+  fromBlock: number,            // Starting slot number (inclusive, field name: fromBlock)
+  toBlock?: number,             // Ending slot number (inclusive, optional, field name: toBlock)
+  fields: {                    // What data to return
+    block?: { ... },
+    transaction?: { ... },
+    instruction?: { ... },
+    log?: { ... },
+    tokenBalance?: { ... },
+    balance?: { ... },
+    reward?: { ... }
+  },
+  instructions?: [...],        // Filter by instructions
+  transactions?: [...],       // Filter by transactions
+  logs?: [...],               // Filter by logs
+  tokenBalances?: [...],      // Filter by token balances
+  balances?: [...],           // Filter by balances
+  rewards?: [...]             // Filter by rewards
+}
+```
+
+## Response Format
+
+Portal returns **newline-delimited JSON (NDJSON)**, with one block per line:
+
+```json
+{"header": {"number": 259984950, ...}, "instructions": [...], "transactions": [...]}
+{"header": {"number": 259984951, ...}, "instructions": [...], "transactions": [...]}
+{"header": {"number": 259984952, ...}, "instructions": [...], "transactions": [...]}
+```
+
+This format enables constant-memory streaming of arbitrary ranges.
+
+## Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Batch Processing">
+    Process large slot ranges by splitting into manageable chunks:
+    
+    ```typescript
+    const BATCH_SIZE = 10000;
+    for (let from = startSlot; from < endSlot; from += BATCH_SIZE) {
+      const to = Math.min(from + BATCH_SIZE, endSlot);
+      const blocks = await fetch(/* ... */);
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Real-time Streaming">
+    Stream new blocks as they arrive using /finalized-stream:
+    
+    ```typescript
+    const response = await fetch(
+      'https://portal.sqd.dev/datasets/solana-mainnet/finalized-stream',
+      { method: 'POST', body: JSON.stringify({
+        type: 'solana',
+        fromBlock: latestProcessedSlot + 1,
+        fields: { /* ... */ }
+      })}
+    );
+    ```
+  </Accordion>
+  
+  <Accordion title="Error Handling">
+    Handle rate limits and network errors gracefully:
+    
+    ```typescript
+    try {
+      const response = await fetch(/* ... */);
+      if (!response.ok) {
+        if (response.status === 429) {
+          // Rate limited - wait and retry
+          await sleep(10000);
+        }
+      }
+    } catch (error) {
+      // Network error - implement retry logic
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Complete API Specification
+
+For the complete OpenAPI specification with all available fields, options, and detailed schemas:
+
+<Card title="Full Solana API Specification" icon="file-code" href="/api/solana/">
+  View complete OpenAPI documentation with all endpoints, fields, and options →
+</Card>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="View Examples" icon="code" href="/en/portal/solana/examples/query-instructions">
+    Explore practical Portal examples for common use cases
+  </Card>
+
+  <Card title="Supported Networks" icon="database" href="/en/data/networks">
+    See complete list of supported Solana networks
+  </Card>
+  
+  <Card title="Quickstart Guide" icon="rocket" href="/en/portal/solana/quickstart">
+    Make your first Portal request in 5 minutes
+  </Card>
+</CardGroup>
+

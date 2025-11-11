@@ -1,0 +1,189 @@
+---
+title: "Portal Overview"
+sidebarTitle: "Overview"
+description: "Access raw Solana blockchain data through Portal's HTTP API"
+---
+
+Portal provides direct access to raw Solana blockchain data. Query slots, transactions, instructions, logs, token balances, and rewards with performance that scales beyond traditional RPC limitations.
+
+<Info>
+  Looking for the main Portal overview? See [Portal
+  Overview](/en/portal/overview) for concepts, deployment options, and
+  comparisons.
+</Info>
+
+## Solana-Specific Features
+
+Portal supports the full range of Solana data types:
+
+<CardGroup cols={2}>
+  <Card title="Instructions" icon="code">
+    Query program instructions with account and discriminator filtering. Track DEX swaps, token transfers, and custom program interactions.
+  </Card>
+
+{" "}
+
+  <Card title="Transactions" icon="arrow-right-arrow-left">
+    Access transaction details including signatures, fee payers, and execution
+    status. Filter by signature or fee payer address.
+  </Card>
+
+{" "}
+
+  <Card title="Log Messages" icon="file-lines">
+    Retrieve program log messages for debugging and monitoring. Track program execution and state changes.
+  </Card>
+
+  <Card title="Token Balances" icon="coins">
+    Track SPL token balance changes. Monitor token transfers, mints, and burns across accounts.
+  </Card>
+</CardGroup>
+
+## Quick Start
+
+Get started with Portal in 5 minutes:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 259985000,
+    "fields": {
+      "block": { "number": true, "timestamp": true },
+      "instruction": { "programId": true, "accounts": true, "data": true }
+    }
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "solana-mainnet",
+});
+
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 259985000,
+  fields: {
+    block: { number: true, timestamp: true },
+    instruction: { programId: true, accounts: true, data: true },
+  },
+});
+```
+
+```python Python
+import requests
+
+url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 259985000,
+    "fields": {
+        "block": {"number": True, "timestamp": True},
+        "instruction": {"programId": True, "accounts": True, "data": True}
+    }
+}
+
+response = requests.post(url, headers=headers, json=payload)
+```
+
+</CodeGroup>
+
+## Common Use Cases
+
+<CardGroup cols={2}>
+  <Card title="DEX Analytics" icon="chart-line" href="/en/portal/solana/examples/dex-swaps">
+    Track DEX swaps, liquidity pool activity, and trading patterns. Use instructions to analyze complex DeFi interactions.
+  </Card>
+
+{" "}
+
+  <Card
+    title="Token Transfer Tracking"
+    icon="coins"
+    href="/en/portal/solana/examples/token-transfers"
+  >
+    Monitor SPL token transfers, mints, and burns. Track token movements across
+    accounts and programs.
+  </Card>
+
+{" "}
+
+  <Card
+    title="Program Instruction Monitoring"
+    icon="code"
+    href="/en/portal/solana/examples/query-instructions"
+  >
+    Track program instructions, monitor specific programs, and analyze
+    instruction patterns. Essential for program analytics.
+  </Card>
+
+  <Card title="Transaction Monitoring" icon="wallet" href="/en/portal/solana/examples/query-transactions">
+    Track wallet activity, monitor specific addresses, and analyze transaction
+    patterns. Essential for compliance and security.
+  </Card>
+</CardGroup>
+
+## Access Methods
+
+Choose how you want to access Portal:
+
+<AccordionGroup>
+  <Accordion title="Public Portal (Free)" icon="globe">
+    **Best for:** Development and testing
+    
+    - Free access with rate limits (20 requests per 10 seconds)
+    - No setup required
+    - Access to all supported networks
+    
+    **Endpoint:** `https://portal.sqd.dev`
+  </Accordion>
+
+{" "}
+
+  <Accordion title="Cloud Portal" icon="cloud">
+    **Best for:** Production applications - Higher rate limits - Integrated with
+    SQD Cloud deployment - Pay-as-you-go pricing - Production-ready infrastructure
+    <Card title="Learn More" icon="cloud" href="/en/cloud/overview">
+      Explore Cloud Portal
+    </Card>
+  </Accordion>
+
+  <Accordion title="Self-Hosted Portal" icon="server">
+    **Best for:** Maximum sovereignty
+    
+    - No rate limits
+    - Full control over infrastructure
+    - Run next to your own node
+    - Open-source implementation
+    
+    <Card title="Self-Hosting Guide" icon="server" href="/en/portal/self-hosting">
+      Set up your Portal instance
+    </Card>
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="Quickstart" icon="rocket" href="/en/portal/solana/quickstart">
+    Make your first Portal request in 5 minutes
+  </Card>
+
+{" "}
+
+  <Card title="API Reference" icon="book" href="/en/portal/solana/api">
+    Complete API reference with all fields and filters
+  </Card>
+
+  <Card title="Examples" icon="code" href="/en/portal/solana/examples/query-instructions">
+    Practical examples for common use cases
+  </Card>
+</CardGroup>
+

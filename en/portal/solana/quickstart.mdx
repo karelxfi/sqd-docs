@@ -1,0 +1,357 @@
+---
+title: "Portal Quickstart"
+sidebarTitle: "Quickstart"
+description: "Make your first Portal request in 5 minutes"
+---
+
+import { QueryInterfaceQuickstart } from "/snippets/query-interface-quickstart.mdx";
+
+Make your first Portal request to access raw Solana blockchain data in under 5 minutes. No setup required—just HTTP requests.
+
+## What You'll Build
+
+In this quickstart, you'll:
+
+1. Make a simple Portal request using curl (no installation required)
+2. Query recent Solana slots
+3. Filter instructions from a specific program
+
+<Info>
+  This guide uses the **Public Portal** endpoint, which is free and
+  rate-limited. Perfect for getting started.
+</Info>
+
+## Step 1: Your First Request
+
+Let's query the last 50 slots from Solana mainnet. Copy and paste this command:
+
+<Tabs>
+<Tab title="curl">
+```bash
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 259985000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      }
+    }
+  }'
+```
+
+<Check>
+  You should see a stream of JSON objects, one per block, showing slot numbers
+  and timestamps.
+</Check>
+
+<Info>Try it yourself with the interactive query interface below:</Info>
+
+<QueryInterfaceQuickstart />
+</Tab>
+
+<Tab title="TypeScript">
+First, install the client:
+
+```bash
+npm install @subsquid/portal-client
+```
+
+Then run this code:
+
+```typescript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "solana-mainnet",
+});
+
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 259985000,
+  fields: {
+    block: {
+      number: true,
+      timestamp: true,
+    },
+  },
+});
+
+console.log(`Retrieved ${blocks.length} blocks`);
+blocks.forEach((block) => {
+  console.log(`Slot ${block.header.number}: ${new Date(block.header.timestamp * 1000).toISOString()}`);
+});
+```
+
+</Tab>
+
+<Tab title="Python">
+First, install requests:
+
+```bash
+pip install requests
+```
+
+Then run this code:
+
+```python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 259985000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        }
+    }
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+# Response is newline-delimited JSON
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    print(f"Slot {block['header']['number']}: {block['header']['timestamp']}")
+```
+
+</Tab>
+</Tabs>
+
+## Step 2: Understanding the Request
+
+Let's break down what you just sent:
+
+```typescript
+{
+  "type": "solana",              // Chain type (Solana)
+  "fromBlock": 259984950,         // Starting slot number (inclusive, field name: fromBlock)
+  "toBlock": 259985000,           // Ending slot number (inclusive, field name: toBlock)
+  "fields": {                    // What data to return
+    "block": {
+      "number": true,             // Slot number (field name: number)
+      "timestamp": true          // Block timestamp
+    }
+  }
+}
+```
+
+<Tip>
+  Portal only returns the fields you request. This keeps responses fast and
+  bandwidth-efficient.
+</Tip>
+
+## Step 3: Understanding the Response
+
+Portal returns **newline-delimited JSON (NDJSON)**. Each line is a complete JSON object representing one block:
+
+```json
+{
+  "header": {
+    "number": 259984950,
+    "timestamp": 1693066895
+  }
+}
+{
+  "header": {
+    "number": 259984951,
+    "timestamp": 1693066896
+  }
+}
+{
+  "header": {
+    "number": 259984952,
+    "timestamp": 1693066897
+  }
+}
+```
+
+<Note>
+  This format enables **constant-memory streaming** of massive ranges. You can
+  process millions of slots without loading everything into RAM.
+</Note>
+
+## Step 4: Filter Instructions
+
+Track instructions from the Orca Whirlpool program:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "instruction": {
+        "programId": true,
+        "accounts": true,
+        "data": true,
+        "transactionIndex": true
+      }
+    },
+    "instructions": [{
+      "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "solana-mainnet",
+});
+
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    instruction: {
+      programId: true,
+      accounts: true,
+      data: true,
+      transactionIndex: true,
+    },
+  },
+  instructions: [
+    {
+      programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"], // Orca Whirlpool
+    },
+  ],
+});
+
+for (const block of blocks) {
+  for (const instruction of block.instructions) {
+    console.log(`Instruction from ${instruction.programId} at tx index ${instruction.transactionIndex}`);
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "instruction": {
+            "programId": True,
+            "accounts": True,
+            "data": True,
+            "transactionIndex": True
+        }
+    },
+    "instructions": [{
+        "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for instruction in block.get('instructions', []):
+        print(f"Instruction from {instruction['programId']} at tx index {instruction['transactionIndex']}")
+```
+
+</CodeGroup>
+
+<Check>
+  You should see instructions from the Orca Whirlpool program. Portal filtered the
+  data before sending, saving bandwidth.
+</Check>
+
+## What You Learned
+
+In 5 minutes, you:
+
+- ✓ Made HTTP requests to Portal
+- ✓ Queried arbitrary slot ranges
+- ✓ Filtered program instructions
+- ✓ Processed newline-delimited JSON responses
+
+## Rate Limits
+
+The Public Portal is rate-limited:
+
+- **20 requests per 10 seconds**
+- Perfect for development and testing
+
+<CardGroup cols={2}>
+  <Card title="Cloud Portal" icon="cloud" href="/en/cloud/overview">
+    Production-ready managed access with higher limits
+  </Card>
+
+  <Card title="Self-Host Portal" icon="server" href="/en/portal/self-hosting">
+    Run your own Portal instance with no rate limits
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="book" href="/en/portal/solana/api">
+    Complete reference with all fields and filters
+  </Card>
+
+{" "}
+
+  <Card
+    title="View Examples"
+    icon="code"
+    href="/en/portal/solana/examples/query-instructions"
+  >
+    Practical examples for common use cases
+  </Card>
+
+  <Card title="Use with SDK" icon="brackets-curly" href="/en/sdk/overview">
+    Build type-safe indexers with Portal as the data source
+  </Card>
+</CardGroup>
+
+### Popular Examples
+
+<CardGroup cols={2}>
+  <Card title="Query Instructions" icon="code" href="/en/portal/solana/examples/query-instructions">
+    Track program instructions
+  </Card>
+
+{" "}
+
+  <Card
+    title="Query Transactions"
+    icon="arrow-right-arrow-left"
+    href="/en/portal/solana/examples/query-transactions"
+  >
+    Monitor wallet activity
+  </Card>
+
+{" "}
+
+  <Card
+    title="Track Token Transfers"
+    icon="coins"
+    href="/en/portal/solana/examples/token-transfers"
+  >
+    Index SPL token activity
+  </Card>
+
+  <Card title="Index DEX Swaps" icon="repeat" href="/en/portal/solana/examples/dex-swaps">
+    Build DEX analytics
+  </Card>
+</CardGroup>
+

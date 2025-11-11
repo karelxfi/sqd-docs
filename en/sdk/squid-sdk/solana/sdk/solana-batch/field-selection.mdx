@@ -22,7 +22,7 @@ Set the fields to be retrieved for data items of each supported type. The `optio
 }
 ```
 
-Every field selector is a collection of boolean fields, typically mapping one-to-one to the fields of data items within the batch context [iterables](solana-indexing/sdk/solana-batch/context-interfaces). Defining a field of a field selector of a given type and setting it to true will cause the processor to populate the corresponding field of all data items of that type. Here is a definition of a processor that requests `signatures` and `err` fields for transactions and the `data` field for instructions:
+Every field selector is a collection of boolean fields, typically mapping one-to-one to the fields of data items within the batch context [iterables](/en/sdk/squid-sdk/solana/sdk/solana-batch/context-interfaces). Defining a field of a field selector of a given type and setting it to true will cause the processor to populate the corresponding field of all data items of that type. Here is a definition of a processor that requests `signatures` and `err` fields for transactions and the `data` field for instructions:
 
 ```typescript
 const dataSource = new DataSourceBuilder()
@@ -60,7 +60,7 @@ dataSource
   .build()
 ```
 
-After populating the convenience reference fields with `augmentBlock()` from `@subsquid/solana-objects`, `signatures` and `err` fields would be available both within the transaction items of the `transactions` iterable of [block data](solana-indexing/sdk/solana-batch/context-interfaces) and within the transaction items that provide parent transaction information for the instructions matching the `addInstruction()` data request:
+After populating the convenience reference fields with `augmentBlock()` from `@subsquid/solana-objects`, `signatures` and `err` fields would be available both within the transaction items of the `transactions` iterable of [block data](/en/sdk/squid-sdk/solana/sdk/solana-batch/context-interfaces) and within the transaction items that provide parent transaction information for the instructions matching the `addInstruction()` data request:
 
 ```typescript
 run(dataSource, database, async (ctx) => {
@@ -331,7 +331,7 @@ const dataSource = new DataSourceBuilder()
   })
   .build();
 
-processor.run(new TypeormDatabase(), async (ctx) => {
+run(dataSource, new TypeormDatabase(), async (ctx) => {
   // Simply output all the items in the batch.
   // It is guaranteed to have all the data matching the data requests,
   // but not guaranteed to not have any other data.

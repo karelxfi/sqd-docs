@@ -1,0 +1,280 @@
+---
+title: "Track Token Transfers"
+description: "Monitor SPL token transfers using Portal"
+---
+
+Track SPL token transfers to build token analytics, monitor wallet activity, or analyze token flow patterns.
+
+## Use Case
+
+Token transfer tracking enables you to:
+
+- Build token transfer analytics and volume trackers
+- Monitor wallet token activity
+- Analyze transfer patterns
+- Track token mints and burns
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
+      "tokenBalance": {
+        "account": true,
+        "preMint": true,
+        "postMint": true,
+        "preAmount": true,
+        "postAmount": true,
+        "preOwner": true,
+        "postOwner": true
+      }
+    },
+    "tokenBalances": [{
+      "preMint": ["EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "solana-mainnet",
+});
+
+// USDC mint address
+const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    block: { number: true, timestamp: true },
+    tokenBalance: {
+      account: true,
+      preMint: true,
+      postMint: true,
+      preAmount: true,
+      postAmount: true,
+      preOwner: true,
+      postOwner: true,
+    },
+  },
+  tokenBalances: [
+    {
+      preMint: [USDC_MINT],
+    },
+  ],
+});
+
+// Process token transfers
+for (const block of blocks) {
+  for (const balance of block.tokenBalances) {
+    if (balance.preAmount !== balance.postAmount) {
+      const amount = BigInt(balance.postAmount) - BigInt(balance.preAmount);
+      console.log({
+        slot: block.header.number,
+        timestamp: block.header.timestamp,
+        account: balance.account,
+        mint: balance.postMint,
+        from: balance.preOwner,
+        to: balance.postOwner,
+        amount: amount.toString(),
+      });
+    }
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+# USDC mint address
+usdc_mint = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        },
+        "tokenBalance": {
+            "account": True,
+            "preMint": True,
+            "postMint": True,
+            "preAmount": True,
+            "postAmount": True,
+            "preOwner": True,
+            "postOwner": True
+        }
+    },
+    "tokenBalances": [{
+        "preMint": [usdc_mint]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for balance in block.get('tokenBalances', []):
+        if balance['preAmount'] != balance['postAmount']:
+            amount = int(balance['postAmount']) - int(balance['preAmount'])
+            print({
+                "slot": block['header']['number'],
+                "timestamp": block['header']['timestamp'],
+                "account": balance['account'],
+                "mint": balance['postMint'],
+                "from": balance['preOwner'],
+                "to": balance['postOwner'],
+                "amount": amount
+            })
+```
+
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter    | Description                                |
+| ------------ | ------------------------------------------ |
+| `preMint`    | Token mint address before the transaction  |
+| `postMint`   | Token mint address after the transaction   |
+| `preAmount`  | Token balance before the transaction       |
+| `postAmount` | Token balance after the transaction        |
+| `preOwner`   | Token account owner before the transaction |
+| `postOwner`  | Token account owner after the transaction  |
+| `account`    | Token account address                      |
+
+## Expected Output
+
+```json
+{
+  "header": {
+    "number": 259985000,
+    "timestamp": 1697544779
+  },
+  "tokenBalances": [
+    {
+      "account": "TokenAccountAddress...",
+      "preMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "postMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "preAmount": "1000000",
+      "postAmount": "2000000",
+      "preOwner": "SenderAddress...",
+      "postOwner": "RecipientAddress..."
+    }
+  ]
+}
+```
+
+## Track Specific Token Account
+
+Monitor transfers for a specific token account:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "tokenBalance": {
+        "account": true,
+        "preAmount": true,
+        "postAmount": true
+      }
+    },
+    "tokenBalances": [{
+      "account": ["SpecificTokenAccountAddress"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    tokenBalance: { account: true, preAmount: true, postAmount: true },
+  },
+  tokenBalances: [
+    {
+      account: ["SpecificTokenAccountAddress"],
+    },
+  ],
+});
+```
+
+```python Python
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "tokenBalance": {
+            "account": True,
+            "preAmount": True,
+            "postAmount": True
+        }
+    },
+    "tokenBalances": [{
+        "account": ["SpecificTokenAccountAddress"]
+    }]
+}
+```
+
+</CodeGroup>
+
+## Performance Tips
+
+1. **Filter by mint**: Query specific tokens instead of all transfers
+2. **Use slot ranges**: Process data in 10k-50k slot batches
+3. **Request minimal fields**: Only request fields you need
+4. **Filter by account**: Monitor specific token accounts
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Instructions" icon="code" href="/en/portal/solana/examples/query-instructions">
+  Track program instructions
+</Card>
+
+<Card
+  title="DEX Swaps"
+  icon="repeat"
+  href="/en/portal/solana/examples/dex-swaps"
+>
+  Track DEX trading activity
+</Card>
+
+<Card
+  title="Query Transactions"
+  icon="arrow-right-arrow-left"
+  href="/en/portal/solana/examples/query-transactions"
+>
+  Monitor wallet activity
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/portal/solana/api">
+  View complete API docs
+</Card>
+</CardGroup>

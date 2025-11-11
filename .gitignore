@@ -1,1 +1,9 @@
 portal.mdx
+
+# External projects
+pipes-sdk/
+docs-mintlify/
+
+# IDE directories
+.cursor/
+.claude/

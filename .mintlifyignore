@@ -1,0 +1,3 @@
+# Ignore pipes-sdk directory - it's a separate project with its own tsconfig.json
+pipes-sdk/
+

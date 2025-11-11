@@ -1,0 +1,287 @@
+---
+title: "Index DEX Swaps"
+description: "Track decentralized exchange trading activity using Portal"
+---
+
+Monitor Orca Whirlpool swap instructions to build DEX analytics dashboards, analyze liquidity patterns, or create price feeds.
+
+## Use Case
+
+DEX swap tracking enables you to:
+
+- Build DEX trading analytics and volume trackers
+- Monitor liquidity pool activity
+- Analyze trading patterns and arbitrage
+- Create real-time price feeds
+
+## Code Example
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
+      "instruction": {
+        "programId": true,
+        "accounts": true,
+        "data": true,
+        "transactionIndex": true
+      }
+    },
+    "instructions": [{
+      "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+      "d8": ["0xf8c69e91e17587c8"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+import { DataSource } from "@subsquid/portal-client";
+
+const dataSource = new DataSource({
+  network: "solana-mainnet",
+});
+
+// Orca Whirlpool program ID
+const WHIRLPOOL_PROGRAM = "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc";
+// Swap instruction discriminator (first 8 bytes)
+const SWAP_D8 = "0xf8c69e91e17587c8";
+
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    block: { number: true, timestamp: true },
+    instruction: {
+      programId: true,
+      accounts: true,
+      data: true,
+      transactionIndex: true,
+    },
+  },
+  instructions: [
+    {
+      programId: [WHIRLPOOL_PROGRAM],
+      d8: [SWAP_D8],
+    },
+  ],
+});
+
+// Process swaps
+for (const block of blocks) {
+  for (const instruction of block.instructions) {
+    console.log({
+      slot: block.header.number,
+      timestamp: block.header.timestamp,
+      pool: instruction.accounts[2], // Whirlpool account (typically at index 2)
+      txIndex: instruction.transactionIndex,
+      // Decode swap amounts from instruction.data as needed
+    });
+  }
+}
+```
+
+```python Python
+import requests
+import json
+
+url = "https://portal.sqd.dev/datasets/solana-mainnet/stream"
+headers = {"Content-Type": "application/json"}
+
+# Orca Whirlpool program ID
+whirlpool_program = "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
+# Swap instruction discriminator
+swap_d8 = "0xf8c69e91e17587c8"
+
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "block": {
+            "number": True,
+            "timestamp": True
+        },
+        "instruction": {
+            "programId": True,
+            "accounts": True,
+            "data": True,
+            "transactionIndex": True
+        }
+    },
+    "instructions": [{
+        "programId": [whirlpool_program],
+        "d8": [swap_d8]
+    }]
+}
+
+response = requests.post(url, headers=headers, json=payload)
+
+for line in response.text.strip().split('\n'):
+    block = json.loads(line)
+    for instruction in block.get('instructions', []):
+        print({
+            "slot": block['header']['number'],
+            "timestamp": block['header']['timestamp'],
+            "pool": instruction['accounts'][2] if len(instruction['accounts']) > 2 else None,
+            "txIndex": instruction['transactionIndex']
+        })
+```
+
+</CodeGroup>
+
+## Key Parameters
+
+| Parameter   | Description                                                 |
+| ----------- | ----------------------------------------------------------- |
+| `programId` | DEX program address (e.g., Orca Whirlpool)                  |
+| `d8`        | 8-byte instruction discriminator for swap instruction       |
+| `accounts`  | Instruction account addresses (includes pool, tokens, etc.) |
+| `data`      | Instruction data payload (contains swap amounts)            |
+
+<Note>
+  Different DEX protocols use different instruction discriminators. Check the
+  program IDL to find the correct discriminator for your target DEX.
+</Note>
+
+## Expected Output
+
+```json
+{
+  "header": {
+    "number": 259985000,
+    "timestamp": 1697544779
+  },
+  "instructions": [
+    {
+      "programId": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
+      "accounts": ["7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm", "..."],
+      "data": "base58encodeddata...",
+      "transactionIndex": 0
+    }
+  ]
+}
+```
+
+## Track Specific Pool
+
+Monitor swaps for a specific trading pair:
+
+<CodeGroup>
+```bash curl
+curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+      "instruction": {
+        "programId": true,
+        "accounts": true,
+        "data": true
+      }
+    },
+    "instructions": [{
+      "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+      "d8": ["0xf8c69e91e17587c8"],
+      "accounts": ["7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm"]
+    }]
+  }'
+```
+
+```typescript TypeScript
+const USDC_SOL_POOL = "7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm"; // USDC/SOL pool
+
+const blocks = await dataSource.getBlocks({
+  from: 259984950,
+  to: 260000000,
+  fields: {
+    instruction: { programId: true, accounts: true, data: true },
+  },
+  instructions: [
+    {
+      programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+      d8: ["0xf8c69e91e17587c8"],
+      accounts: [USDC_SOL_POOL], // Filter by pool account
+    },
+  ],
+});
+```
+
+```python Python
+usdc_sol_pool = "7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJnm"
+
+payload = {
+    "type": "solana",
+    "fromBlock": 259984950,
+    "toBlock": 260000000,
+    "fields": {
+        "instruction": {
+            "programId": True,
+            "accounts": True,
+            "data": True
+        }
+    },
+    "instructions": [{
+        "programId": ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"],
+        "d8": ["0xf8c69e91e17587c8"],
+        "accounts": [usdc_sol_pool]
+    }]
+}
+```
+
+</CodeGroup>
+
+## Decode Swap Amounts
+
+Swap amounts are encoded in the `data` field. Here's how to decode them for Orca Whirlpool:
+
+<Tip>
+  Use the Solana typegen tool to generate TypeScript decoders from program IDLs.
+  See the [Solana SDK typegen
+  documentation](/en/sdk/squid-sdk/solana/sdk/typegen) for details.
+</Tip>
+
+## Performance Tips
+
+1. **Filter by pool address**: Query specific pools instead of all swaps
+2. **Use slot ranges**: Process data in 10k-50k slot batches
+3. **Decode off-chain**: Decode swap amounts in your application, not in the query
+4. **Combine with token balances**: Use token balances to track actual amounts transferred
+
+## Related Examples
+
+<CardGroup cols={2}>
+<Card title="Query Instructions" icon="code" href="/en/portal/solana/examples/query-instructions">
+  General instruction querying
+</Card>
+
+<Card
+  title="Token Transfers"
+  icon="coins"
+  href="/en/portal/solana/examples/token-transfers"
+>
+  Track token movements
+</Card>
+
+<Card
+  title="Query Transactions"
+  icon="arrow-right-arrow-left"
+  href="/en/portal/solana/examples/query-transactions"
+>
+  Monitor wallet activity
+</Card>
+
+<Card title="API Reference" icon="book" href="/en/portal/solana/api">
+  View complete API docs
+</Card>
+</CardGroup>
