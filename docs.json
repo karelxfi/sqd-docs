@@ -34,12 +34,6 @@
   },
   "contextual": {
     "options": [
-      {
-        "title": "Report to Linear",
-        "description": "Report an issue or feedback",
-        "icon": "flag",
-        "href": "https://linear.app/sqd-ai/new?template=c2828c13-dc56-48a8-9842-6d7503bcca0f"
-      },
       "copy",
       "view",
       "chatgpt",
@@ -49,20 +43,6 @@
     ]
   },
   "navigation": {
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Blog",
-          "icon": "newspaper",
-          "href": "https://blog.sqd.dev"
-        },
-        {
-          "anchor": "Changelog",
-          "icon": "list",
-          "href": "https://product.sqd.ai"
-        }
-      ]
-    },
     "versions": [
       {
         "version": "1.0",
