@@ -1,0 +1,305 @@
+---
+title: "Performance"
+description: "Optimize Solana pipe performance"
+---
+
+## Portal Caching
+
+Cache Portal responses locally for faster iteration.
+
+**Use case**: Speed up development by caching Portal data.
+
+**Performance**: 55s first run → 35s cached run
+
+```ts
+import { createTarget } from "@sqd-pipes/pipes";
+import {
+  createSolanaPortalSource,
+  createSolanaInstructionDecoder,
+} from "@sqd-pipes/pipes/solana";
+import { sqliteCacheAdapter } from "@sqd-pipes/pipes/portal-cache";
+import * as orcaWhirlpool from "./abi/orca_whirlpool/index.js";
+
+const source = createSolanaPortalSource({
+  portal: "https://portal.sqd.dev/datasets/solana-mainnet",
+  cache: {
+    adapter: await sqliteCacheAdapter({
+      path: "./portal-cache.sqlite",
+    }),
+  },
+});
+
+const decoder = createSolanaInstructionDecoder({
+  profiler: { id: "Decoding" },
+  programId: orcaWhirlpool.programId,
+  instructions: { swap: orcaWhirlpool.instructions.swap },
+  range: { from: 200000000, to: 201000000 },
+});
+
+const target = createTarget({
+  write: async ({ ctx: { logger }, read }) => {
+    for await (const { data } of read()) {
+      logger.info(`Got ${data.swap.length} swaps`);
+    }
+  },
+});
+
+await source.pipe(decoder).pipeTo(target);
+```
+
+## Composite Pipes
+
+Process multiple data streams simultaneously.
+
+**Use case**: Index multiple programs in one pipe for better efficiency.
+
+```ts expandable
+import {
+  createSolanaPortalSource,
+  createSolanaInstructionDecoder,
+} from "@sqd-pipes/pipes/solana";
+import * as orcaWhirlpool from "./abi/orca_whirlpool/index.js";
+import * as raydiumAmm from "./abi/raydium-amm/index.js";
+
+const source = createSolanaPortalSource({
+  portal: "https://portal.sqd.dev/datasets/solana-mainnet",
+});
+
+const pipeline = source.pipeComposite({
+  orca: createSolanaInstructionDecoder({
+    range: { from: 200000000, to: 201000000 },
+    programId: orcaWhirlpool.programId,
+    instructions: { swap: orcaWhirlpool.instructions.swap },
+  }),
+  raydium: createSolanaInstructionDecoder({
+    range: { from: 200000000, to: 201000000 },
+    programId: raydiumAmm.programId,
+    instructions: { swapBaseIn: raydiumAmm.instructions.swapBaseIn },
+  }),
+});
+
+const target = createTarget({
+  write: async ({ ctx: { logger }, read }) => {
+    for await (const { data } of read()) {
+      logger.info({
+        orcaSwaps: data.orca.swap.length,
+        raydiumSwaps: data.raydium.swapBaseIn.length,
+      });
+    }
+  },
+});
+
+await pipeline.pipeTo(target);
+```
+
+## Custom Metrics
+
+Track performance metrics.
+
+**Use case**: Monitor throughput and processing speed.
+
+```ts expandable
+import { createTarget } from "@sqd-pipes/pipes";
+import {
+  createSolanaPortalSource,
+  createSolanaInstructionDecoder,
+} from "@sqd-pipes/pipes/solana";
+import * as orcaWhirlpool from "./abi/orca_whirlpool/index.js";
+
+const metrics = {
+  slotsProcessed: 0,
+  instructionsDecoded: 0,
+  startTime: Date.now(),
+  lastLogTime: Date.now(),
+};
+
+const source = createSolanaPortalSource({
+  portal: "https://portal.sqd.dev/datasets/solana-mainnet",
+});
+
+const decoder = createSolanaInstructionDecoder({
+  range: { from: 200000000, to: 201000000 },
+  programId: orcaWhirlpool.programId,
+  instructions: { swap: orcaWhirlpool.instructions.swap },
+});
+
+const target = createTarget({
+  write: async ({ ctx: { profiler, logger }, read }) => {
+    for await (const { data } of read()) {
+      const span = profiler.start("processing");
+
+      // Update metrics
+      metrics.instructionsDecoded += data.swap.length;
+      metrics.slotsProcessed += 1;
+
+      // Log every 5 seconds
+      const now = Date.now();
+      if (now - metrics.lastLogTime > 5000) {
+        const elapsed = (now - metrics.startTime) / 1000;
+        const instructionsPerSec = metrics.instructionsDecoded / elapsed;
+        const slotsPerSec = metrics.slotsProcessed / elapsed;
+
+        logger.info({
+          slots: metrics.slotsProcessed,
+          instructions: metrics.instructionsDecoded,
+          sps: slotsPerSec.toFixed(2),
+          ips: instructionsPerSec.toFixed(2),
+        });
+
+        metrics.lastLogTime = now;
+      }
+
+      await processData(data);
+      span.end();
+    }
+  },
+});
+
+await source.pipe(decoder).pipeTo(target);
+```
+
+## Indexing Latency
+
+Measure time from slot production to indexing.
+
+**Use case**: Track real-time indexing performance.
+
+```ts expandable
+import { createTarget } from "@sqd-pipes/pipes";
+import {
+  createSolanaPortalSource,
+  createSolanaInstructionDecoder,
+} from "@sqd-pipes/pipes/solana";
+import * as orcaWhirlpool from "./abi/orca_whirlpool/index.js";
+
+const source = createSolanaPortalSource({
+  portal: "https://portal.sqd.dev/datasets/solana-mainnet",
+});
+
+const decoder = createSolanaInstructionDecoder({
+  range: { from: "latest" },
+  programId: orcaWhirlpool.programId,
+  instructions: { swap: orcaWhirlpool.instructions.swap },
+});
+
+const latencies: number[] = [];
+
+const target = createTarget({
+  write: async ({ ctx: { logger }, read }) => {
+    for await (const { data } of read()) {
+      for (const swap of data.swap) {
+        const slotTime = swap.timestamp.getTime();
+        const now = Date.now();
+        const latency = now - slotTime;
+
+        latencies.push(latency);
+
+        if (latencies.length % 100 === 0) {
+          const avg = latencies.reduce((a, b) => a + b, 0) / latencies.length;
+          const min = Math.min(...latencies);
+          const max = Math.max(...latencies);
+
+          logger.info({
+            avgLatencyMs: avg.toFixed(0),
+            avgLatencySec: (avg / 1000).toFixed(2),
+            minSec: (min / 1000).toFixed(2),
+            maxSec: (max / 1000).toFixed(2),
+            samples: latencies.length,
+          });
+        }
+      }
+    }
+  },
+});
+
+await source.pipe(decoder).pipeTo(target);
+```
+
+## Profiler Usage
+
+Use built-in profiler to identify bottlenecks.
+
+**Use case**: Measure and optimize specific pipe stages.
+
+```ts
+import { createTarget } from "@sqd-pipes/pipes";
+import {
+  createSolanaPortalSource,
+  createSolanaInstructionDecoder,
+} from "@sqd-pipes/pipes/solana";
+import * as orcaWhirlpool from "./abi/orca_whirlpool/index.js";
+
+const source = createSolanaPortalSource({
+  portal: "https://portal.sqd.dev/datasets/solana-mainnet",
+});
+
+const decoder = createSolanaInstructionDecoder({
+  profiler: { id: "Orca Decoding" },
+  range: { from: 200000000, to: 200001000 },
+  programId: orcaWhirlpool.programId,
+  instructions: { swap: orcaWhirlpool.instructions.swap },
+});
+
+const target = createTarget({
+  write: async ({ ctx: { profiler, logger }, read }) => {
+    for await (const { data } of read()) {
+      const transformSpan = profiler.start("transform");
+      const transformed = data.swap.map((s) => ({
+        slot: s.blockNumber,
+        txHash: s.transaction.signatures[0],
+        programId: s.programId,
+      }));
+      transformSpan.end();
+
+      const saveSpan = profiler.start("database-save");
+      await database.insertBatch(transformed);
+      saveSpan.end();
+
+      logger.info(`Processed ${transformed.length} swaps`);
+    }
+  },
+});
+
+await source.pipe(decoder).pipeTo(target);
+```
+
+### Profile Output
+
+```
+Orca Decoding: 1.2s
+transform: 0.3s
+database-save: 0.8s
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Indexing Latency"
+    icon="clock"
+    href="/en/sdk/pipes-sdk/solana/examples/indexing-latency"
+  >
+    Monitor latency
+  </Card>
+
+  <Card
+    title="Production"
+    icon="server"
+    href="/en/sdk/pipes-sdk/solana/examples/production"
+  >
+    Production patterns
+  </Card>
+
+  <Card
+    title="Quality of Life"
+    icon="wand-magic-sparkles"
+    href="/en/sdk/pipes-sdk/solana/quality-of-life"
+  >
+    Advanced optimizations
+  </Card>
+
+  <Card title="Reference" icon="book" href="/en/sdk/pipes-sdk/solana/reference/sources">
+    API reference
+  </Card>
+</CardGroup>
+

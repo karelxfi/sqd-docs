@@ -1,0 +1,54 @@
+---
+title: "Sources"
+description: "API reference for Solana sources"
+---
+
+## createSolanaPortalSource
+
+Create a Portal source for Solana chains.
+
+```ts
+createSolanaPortalSource(config: SolanaPortalSourceConfig): Source
+```
+
+**Parameters:**
+
+- `portal`: Portal API URL
+- `query`: SolanaQueryBuilder instance or PortalRange (optional)
+- `cursor`: Resume from slot `{ number: number }` (optional)
+- `cache`: Cache adapter `{ adapter: CacheAdapter }` (optional)
+- `logger`: Custom logger (optional)
+- `metrics`: Metrics server (optional)
+- `progress`: Progress tracker options (optional)
+
+**Example:**
+
+```ts
+const source = createSolanaPortalSource({
+  portal: "https://portal.sqd.dev/datasets/solana-mainnet",
+  query: queryBuilder,
+  cursor: { number: 200000000 },
+  cache: { adapter: await sqliteCacheAdapter({ path: "./cache.sqlite" }) },
+});
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Transformers & Targets"
+    icon="arrow-right"
+    href="/en/sdk/pipes-sdk/solana/reference/transformers-targets"
+  >
+    Transformers and targets
+  </Card>
+
+  <Card
+    title="Query Builder"
+    icon="filter"
+    href="/en/sdk/pipes-sdk/solana/reference/query-builder"
+  >
+    Query builder API
+  </Card>
+</CardGroup>
+

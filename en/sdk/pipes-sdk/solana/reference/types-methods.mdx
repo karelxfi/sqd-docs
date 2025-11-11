@@ -1,0 +1,174 @@
+---
+title: "Types & Pipe Methods"
+description: "API reference for types and pipe methods"
+---
+
+## Types
+
+### DecodedInstruction
+
+```ts
+interface DecodedInstruction<D> {
+  instruction: D; // Decoded instruction data
+  programId: string;
+  blockNumber: number; // Slot number
+  timestamp: Date;
+  transaction: Transaction;
+  innerInstructions: Instruction[];
+  rawInstruction: Instruction;
+  tokenBalances: TokenBalance[];
+}
+```
+
+### SolanaPortalData
+
+```ts
+interface SolanaPortalData<Q> {
+  blocks: Array<{
+    header: {
+      slot: number;
+      hash: string;
+      timestamp: number;
+      // ... other fields
+    };
+    instructions: Array<{
+      programId: string;
+      data: string;
+      accounts: string[];
+      transactionHash: string;
+      instructionAddress: number[];
+    }>;
+    transactions: Array<{
+      hash: string;
+      signatures: string[];
+      feePayer: string;
+      // ... other fields
+    }>;
+    logs: Array<{
+      programId: string;
+      message: string;
+      kind: string;
+      transactionHash: string;
+    }>;
+  }>;
+}
+```
+
+### Context
+
+```ts
+interface Context {
+  logger: Logger;
+  profiler: Profiler;
+}
+```
+
+### Logger
+
+```ts
+interface Logger {
+  info(message: string | object, ...args: any[]): void;
+  warn(message: string | object, ...args: any[]): void;
+  error(message: string | object, ...args: any[]): void;
+}
+```
+
+### Profiler
+
+```ts
+interface Profiler {
+  start(id: string): Span;
+}
+
+interface Span {
+  end(): void;
+}
+```
+
+### BlockCursor
+
+```ts
+interface BlockCursor {
+  number: number; // Slot number for Solana
+  hash: string;
+}
+```
+
+## Pipe Methods
+
+### pipe
+
+Chain a transformer.
+
+```ts
+source.pipe(transformer);
+```
+
+### pipeComposite
+
+Chain multiple transformers.
+
+```ts
+source.pipeComposite({
+  orcaSwaps: transformer1,
+  raydiumSwaps: transformer2,
+});
+```
+
+### pipeTo
+
+Connect to a target.
+
+```ts
+source.pipeTo(target);
+```
+
+<Note>
+`pipeTo` is a terminal step. You cannot continue piping after calling this method.
+</Note>
+
+## Complete Type Example
+
+```ts
+import type {
+  Source,
+  Transformer,
+  Target,
+  Context,
+  DecodedInstruction,
+  BlockCursor,
+} from "@sqd-pipes/pipes";
+
+import type {
+  SolanaPortalData,
+  SolanaPortalSourceConfig,
+  SolanaInstructionDecoderConfig,
+  SolanaQueryBuilder,
+} from "@sqd-pipes/pipes/solana";
+
+import type {
+  ClickhouseTargetConfig,
+  Store,
+} from "@sqd-pipes/pipes/targets/clickhouse";
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Sources"
+    icon="arrow-left"
+    href="/en/sdk/pipes-sdk/solana/reference/sources"
+  >
+    Sources
+  </Card>
+
+  <Card
+    title="Query Builder"
+    icon="filter"
+    href="/en/sdk/pipes-sdk/solana/reference/query-builder"
+  >
+    Query builder API
+  </Card>
+</CardGroup>
+

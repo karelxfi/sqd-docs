@@ -1,0 +1,298 @@
+---
+title: "Quality of Life"
+description: "Advanced patterns and optimizations for production Solana pipes"
+---
+
+## Composite Pipes
+
+Process multiple data streams simultaneously across different DEX programs.
+
+```ts
+const pipeline = source.pipeComposite({
+  orcaSwaps: createSolanaInstructionDecoder({
+    range: { from: 200000000 },
+    programId: orcaWhirlpool.programId,
+    instructions: { swap: orcaWhirlpool.instructions.swap },
+  }),
+  raydiumSwaps: createSolanaInstructionDecoder({
+    range: { from: 200000000 },
+    programId: raydiumAmm.programId,
+    instructions: { swapBaseIn: raydiumAmm.instructions.swapBaseIn },
+  }),
+});
+
+for await (const { data } of pipeline) {
+  console.log(`Orca Swaps: ${data.orcaSwaps.swap.length}`);
+  console.log(`Raydium Swaps: ${data.raydiumSwaps.swapBaseIn.length}`);
+}
+```
+
+## Portal Caching
+
+Cache Portal responses locally for faster iteration.
+
+```ts
+import { sqliteCacheAdapter } from "@sqd-pipes/pipes/portal-cache";
+
+const source = createSolanaPortalSource({
+  portal: "https://portal.sqd.dev/datasets/solana-mainnet",
+  cache: {
+    adapter: await sqliteCacheAdapter({
+      path: "./portal-cache.sqlite",
+    }),
+  },
+});
+```
+
+### Performance
+
+- **First run**: 55s (fetch from Portal)
+- **Cached run**: 35s (fetch from SQLite)
+
+### When to Use
+
+- Development iteration
+- Testing pipelines
+- Repeated processing of same slots
+
+## Custom Logging
+
+Integrate custom log transports.
+
+```ts
+import pino from "pino";
+
+const customLogger = pino({
+  transport: {
+    target: "pino-pretty",
+    options: {
+      colorize: true,
+      translateTime: "HH:MM:ss",
+    },
+  },
+});
+
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    // Override ctx.logger
+    const logger = customLogger;
+
+    for await (const { data } of read()) {
+      logger.info({ count: data.length }, "Processed batch");
+    }
+  },
+});
+```
+
+## Custom Metrics
+
+Track custom performance metrics.
+
+```ts
+const metrics = {
+  slotsProcessed: 0,
+  instructionsDecoded: 0,
+  startTime: Date.now(),
+};
+
+const target = createTarget({
+  write: async ({ ctx: { profiler }, read }) => {
+    for await (const { data } of read()) {
+      const span = profiler.start("processing");
+
+      metrics.slotsProcessed += data.blocks?.length || 0;
+      metrics.instructionsDecoded += data.swap?.length || 0;
+
+      await processData(data);
+
+      span.end();
+
+      // Log metrics
+      if (metrics.slotsProcessed % 100 === 0) {
+        const elapsed = (Date.now() - metrics.startTime) / 1000;
+        const sps = metrics.slotsProcessed / elapsed;
+        console.log({
+          slots: metrics.slotsProcessed,
+          instructions: metrics.instructionsDecoded,
+          slotsPerSec: sps.toFixed(2),
+        });
+      }
+    }
+  },
+});
+```
+
+### Profiler Usage
+
+```ts
+write: async ({ ctx: { profiler }, read }) => {
+  for await (const { data } of read()) {
+    const decodeSpan = profiler.start("decode");
+    const decoded = decodeInstructions(data);
+    decodeSpan.end();
+
+    const saveSpan = profiler.start("save");
+    await database.insert(decoded);
+    saveSpan.end();
+  }
+};
+```
+
+## Indexing Latency
+
+Measure time from slot production to indexing.
+
+```ts
+const target = createTarget({
+  write: async ({ ctx: { logger }, read }) => {
+    for await (const { data } of read()) {
+      for (const swap of data.swap) {
+        const slotTime = swap.timestamp.getTime();
+        const now = Date.now();
+        const latency = now - slotTime;
+
+        logger.info({
+          slot: swap.blockNumber,
+          latencyMs: latency,
+          latencySec: (latency / 1000).toFixed(2),
+        });
+      }
+    }
+  },
+});
+```
+
+## RPC Latency Monitoring
+
+Monitor latency between Portal and external RPC providers.
+
+```ts
+import { createSolanaRpcLatencyWatcher } from '@sqd-pipes/pipes/solana'
+
+const stream = createSolanaPortalSource({
+  portal: 'https://portal.sqd.dev/datasets/solana-mainnet',
+  query: { from: 'latest' },
+}).pipe(
+  createSolanaRpcLatencyWatcher({
+    rpcUrl: ['https://api.mainnet-beta.solana.com'],
+  }).pipe({
+    profiler: { id: 'expose metrics' },
+    transform: (data, { metrics }) => {
+      if (!data) return
+
+      for (const rpc of data.rpc) {
+        metrics
+          .gauge({
+            name: 'rpc_latency_ms',
+            help: 'RPC Latency in ms',
+            labelNames: ['url'],
+          })
+          .set({ url: rpc.url }, data.rpc[0].portalDelayMs)
+      }
+
+      return data
+    },
+  }),
+)
+
+for await (const { data } of stream) {
+  if (!data) continue
+  console.log(`Slot: ${data.number} / ${data.timestamp.toString()}`)
+  console.table(data.rpc)
+}
+```
+
+## Combining Patterns
+
+```ts expandable
+// Portal caching + Composite pipes + Custom metrics
+const source = createSolanaPortalSource({
+  portal: 'https://portal.sqd.dev/datasets/solana-mainnet',
+  cache: {
+    adapter: await sqliteCacheAdapter({ path: './cache.sqlite' })
+  }
+})
+
+const metrics = {
+  orcaSwaps: 0,
+  raydiumSwaps: 0
+}
+
+const pipeline = source.pipeComposite({
+  orcaSwaps: createSolanaInstructionDecoder({
+    profiler: { id: 'Orca' },
+    range: { from: 200000000 },
+    programId: orcaWhirlpool.programId,
+    instructions: { swap: orcaWhirlpool.instructions.swap }
+  }),
+  raydiumSwaps: createSolanaInstructionDecoder({
+    profiler: { id: 'Raydium' },
+    range: { from: 200000000 },
+    programId: raydiumAmm.programId,
+    instructions: { swapBaseIn: raydiumAmm.instructions.swapBaseIn }
+  })
+})
+
+const target = createClickhouseTarget({
+  client,
+  onData: async ({store, data, ctx}) => {
+    metrics.orcaSwaps += data.orcaSwaps.swap.length
+    metrics.raydiumSwaps += data.raydiumSwaps.swapBaseIn.length
+
+    ctx.logger.info(metrics)
+
+    store.insert({
+      table: 'orca_swaps',
+      values: data.orcaSwaps.swap.map(s => ({...})),
+      format: 'JSONEachRow'
+    })
+
+    store.insert({
+      table: 'raydium_swaps',
+      values: data.raydiumSwaps.swapBaseIn.map(s => ({...})),
+      format: 'JSONEachRow'
+    })
+  },
+  onRollback: async ({store, cursor}) => {
+    await store.removeAllRows({
+      tables: ['orca_swaps', 'raydium_swaps'],
+      where: `slot_number > ${cursor.number}`
+    })
+  }
+})
+
+await pipeline.pipeTo(target)
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Examples"
+    icon="lightbulb"
+    href="/en/sdk/pipes-sdk/solana/examples/dex-swaps"
+  >
+    DEX swap examples
+  </Card>
+
+  <Card
+    title="Performance"
+    icon="rocket"
+    href="/en/sdk/pipes-sdk/solana/examples/performance"
+  >
+    Performance examples
+  </Card>
+
+  <Card title="Reference" icon="book" href="/en/sdk/pipes-sdk/solana/reference/sources">
+    Full API reference
+  </Card>
+
+  <Card
+    title="Stateful Indexing"
+    icon="database"
+    href="/en/sdk/pipes-sdk/solana/stateful-indexing"
+  >
+    Handle cursors and forks
+  </Card>
+</CardGroup>
+
