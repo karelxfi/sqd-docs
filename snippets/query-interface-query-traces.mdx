@@ -1,25 +1,36 @@
-export const QueryInterfaceQuickstart = () => {
+export const QueryInterfaceQueryTraces = () => {
   const useCasesConfig = [
     {
-      id: "ethereum-blocks",
-      name: "Query Ethereum blocks",
+      id: "call-traces",
+      name: "Query call traces",
       network: "ethereum-mainnet",
       payload: {
         type: "evm",
         fromBlock: 18000000,
-        toBlock: 18001000,
+        toBlock: 18000010,
         fields: {
           block: {
-            number: true,
-            timestamp: true,
-            gasUsed: true
+            number: true
+          },
+          trace: {
+            type: true,
+            callFrom: true,
+            callTo: true,
+            callValue: true,
+            callInput: true,
+            callResultOutput: true,
+            callResultGasUsed: true,
+            error: true
           }
-        }
+        },
+        traces: [{
+          type: ["call", "delegatecall"]
+        }]
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("ethereum-blocks");
+  const [useCase, setUseCase] = useState("call-traces");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -275,7 +286,7 @@ return (
                   color: '#24292f'
                 }}>
                   <code key={`response-code-${useCase}-${response.length}`}>
-                    {response.split('\n').map((line, i) => (
+                    {response.trim().split('\n').map((line, i) => (
                       <div key={`response-line-${i}`} style={{
                         display: 'flex',
                         position: 'relative',
@@ -321,7 +332,4 @@ return (
 
 );
 };
-
-
-
 

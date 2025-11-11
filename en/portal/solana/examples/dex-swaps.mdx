@@ -3,6 +3,8 @@ title: "Index DEX Swaps"
 description: "Track decentralized exchange trading activity using Portal"
 ---
 
+import { QueryInterfaceSolanaDexSwaps } from "/snippets/query-interface-solana-dex-swaps.mdx";
+
 Monitor Orca Whirlpool swap instructions to build DEX analytics dashboards, analyze liquidity patterns, or create price feeds.
 
 ## Use Case
@@ -137,6 +139,10 @@ for line in response.text.strip().split('\n'):
 ```
 
 </CodeGroup>
+
+<Info>Try it yourself with the interactive query interface below:</Info>
+
+<QueryInterfaceSolanaDexSwaps />
 
 ## Key Parameters
 

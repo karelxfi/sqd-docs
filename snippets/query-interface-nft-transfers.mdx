@@ -1,25 +1,37 @@
-export const QueryInterfaceQuickstart = () => {
+export const QueryInterfaceNftTransfers = () => {
   const useCasesConfig = [
     {
-      id: "ethereum-blocks",
-      name: "Query Ethereum blocks",
+      id: "nft-transfers",
+      name: "Track NFT transfers",
       network: "ethereum-mainnet",
       payload: {
         type: "evm",
         fromBlock: 18000000,
-        toBlock: 18001000,
+        toBlock: 18000010,
         fields: {
           block: {
             number: true,
-            timestamp: true,
-            gasUsed: true
+            timestamp: true
+          },
+          log: {
+            address: true,
+            topics: true,
+            transactionHash: true
           }
-        }
+        },
+        logs: [{
+          address: [
+            "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D",
+            "0x60E4d786628Fea6478F785A6d7e704777c86a7c6",
+            "0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB"
+          ],
+          topic0: ["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"]
+        }]
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("ethereum-blocks");
+  const [useCase, setUseCase] = useState("nft-transfers");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -275,7 +287,7 @@ return (
                   color: '#24292f'
                 }}>
                   <code key={`response-code-${useCase}-${response.length}`}>
-                    {response.split('\n').map((line, i) => (
+                    {response.trim().split('\n').map((line, i) => (
                       <div key={`response-line-${i}`} style={{
                         display: 'flex',
                         position: 'relative',
@@ -321,7 +333,4 @@ return (
 
 );
 };
-
-
-
 

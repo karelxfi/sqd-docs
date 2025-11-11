@@ -1,25 +1,33 @@
-export const QueryInterfaceQuickstart = () => {
+export const QueryInterfaceSolanaQueryLogs = () => {
   const useCasesConfig = [
     {
-      id: "ethereum-blocks",
-      name: "Query Ethereum blocks",
-      network: "ethereum-mainnet",
+      id: "whirlpool-logs",
+      name: "Query Orca Whirlpool logs",
+      network: "solana-mainnet",
       payload: {
-        type: "evm",
-        fromBlock: 18000000,
-        toBlock: 18001000,
+        type: "solana",
+        fromBlock: 259984950,
+        toBlock: 259984960,
         fields: {
           block: {
             number: true,
-            timestamp: true,
-            gasUsed: true
+            timestamp: true
+          },
+          log: {
+            programId: true,
+            message: true,
+            kind: true,
+            transactionIndex: true
           }
-        }
+        },
+        logs: [{
+          programId: ["whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"]
+        }]
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("ethereum-blocks");
+  const [useCase, setUseCase] = useState("whirlpool-logs");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -275,7 +283,7 @@ return (
                   color: '#24292f'
                 }}>
                   <code key={`response-code-${useCase}-${response.length}`}>
-                    {response.split('\n').map((line, i) => (
+                    {response.trim().split('\n').map((line, i) => (
                       <div key={`response-line-${i}`} style={{
                         display: 'flex',
                         position: 'relative',
@@ -321,7 +329,4 @@ return (
 
 );
 };
-
-
-
 

@@ -3,6 +3,8 @@ title: "Query Log Messages"
 description: "Retrieve program log messages using Portal"
 ---
 
+import { QueryInterfaceSolanaQueryLogs } from "/snippets/query-interface-solana-query-logs.mdx";
+
 Monitor log messages emitted by Solana programs to debug program execution, track state changes, or analyze program behavior.
 
 ## Use Case
@@ -132,6 +134,10 @@ for line in response.text.strip().split('\n'):
         })
 ```
 </CodeGroup>
+
+<Info>Try it yourself with the interactive query interface below:</Info>
+
+<QueryInterfaceSolanaQueryLogs />
 
 ## Key Parameters
 

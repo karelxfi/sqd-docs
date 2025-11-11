@@ -3,6 +3,8 @@ title: "Query Transactions"
 description: "Monitor wallet activity and transaction flows using Portal"
 ---
 
+import { QueryInterfaceSolanaQueryTransactions } from "/snippets/query-interface-solana-query-transactions.mdx";
+
 Retrieve all transactions sent by or to a specific address to track wallet activity, exchange flows, or program interactions.
 
 ## Use Case
@@ -123,6 +125,10 @@ for line in response.text.strip().split('\n'):
         })
 ```
 </CodeGroup>
+
+<Info>Try it yourself with the interactive query interface below:</Info>
+
+<QueryInterfaceSolanaQueryTransactions />
 
 ## Key Parameters
 

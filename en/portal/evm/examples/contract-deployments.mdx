@@ -3,6 +3,8 @@ title: "Monitor Contract Deployments"
 description: "Track new smart contract deployments using Portal"
 ---
 
+import { QueryInterfaceContractDeployments } from "/snippets/query-interface-contract-deployments.mdx";
+
 Find all new smart contract deployments in a block range to track protocol launches, analyze deployment patterns, or monitor for security research.
 
 ## Use Case
@@ -134,6 +136,10 @@ for line in response.text.strip().split('\n'):
             })
 ```
 </CodeGroup>
+
+<Info>Try it yourself with the interactive query interface below:</Info>
+
+<QueryInterfaceContractDeployments />
 
 ## Key Parameters
 

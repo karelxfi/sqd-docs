@@ -1,25 +1,33 @@
-export const QueryInterfaceQuickstart = () => {
+export const QueryInterfaceDexSwaps = () => {
   const useCasesConfig = [
     {
-      id: "ethereum-blocks",
-      name: "Query Ethereum blocks",
+      id: "uniswap-v3-swaps",
+      name: "Track Uniswap V3 Swap events",
       network: "ethereum-mainnet",
       payload: {
         type: "evm",
-        fromBlock: 18000000,
-        toBlock: 18001000,
+        fromBlock: 12369621,
+        toBlock: 12369631,
         fields: {
           block: {
             number: true,
-            timestamp: true,
-            gasUsed: true
+            timestamp: true
+          },
+          log: {
+            address: true,
+            topics: true,
+            data: true,
+            transactionHash: true
           }
-        }
+        },
+        logs: [{
+          topic0: ["0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67"]
+        }]
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("ethereum-blocks");
+  const [useCase, setUseCase] = useState("uniswap-v3-swaps");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -275,7 +283,7 @@ return (
                   color: '#24292f'
                 }}>
                   <code key={`response-code-${useCase}-${response.length}`}>
-                    {response.split('\n').map((line, i) => (
+                    {response.trim().split('\n').map((line, i) => (
                       <div key={`response-line-${i}`} style={{
                         display: 'flex',
                         position: 'relative',
@@ -321,7 +329,4 @@ return (
 
 );
 };
-
-
-
 

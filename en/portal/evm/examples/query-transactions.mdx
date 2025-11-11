@@ -3,6 +3,8 @@ title: "Query Transactions"
 description: "Monitor wallet activity and transaction flows using Portal"
 ---
 
+import { QueryInterfaceQueryTransactions } from "/snippets/query-interface-query-transactions.mdx";
+
 Retrieve all transactions sent to a specific address to track wallet activity, exchange flows, or smart contract interactions.
 
 ## Use Case
@@ -139,6 +141,10 @@ for line in response.text.strip().split('\n'):
         })
 ```
 </CodeGroup>
+
+<Info>Try it yourself with the interactive query interface below:</Info>
+
+<QueryInterfaceQueryTransactions />
 
 ## Key Parameters
 

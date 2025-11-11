@@ -1,25 +1,35 @@
-export const QueryInterfaceQuickstart = () => {
+export const QueryInterfaceSolanaProgramDeployments = () => {
   const useCasesConfig = [
     {
-      id: "ethereum-blocks",
-      name: "Query Ethereum blocks",
-      network: "ethereum-mainnet",
+      id: "program-deployments",
+      name: "Track program deployments",
+      network: "solana-mainnet",
       payload: {
-        type: "evm",
-        fromBlock: 18000000,
-        toBlock: 18001000,
+        type: "solana",
+        fromBlock: 259984950,
+        toBlock: 259984960,
         fields: {
           block: {
             number: true,
-            timestamp: true,
-            gasUsed: true
+            timestamp: true
+          },
+          transaction: {
+            signatures: true,
+            feePayer: true
+          },
+          instruction: {
+            programId: true,
+            accounts: true
           }
-        }
+        },
+        instructions: [{
+          programId: ["BPFLoaderUpgradeab1e11111111111111111111111"]
+        }]
       }
     }
   ];
   const [queryFormat, setQueryFormat] = useState("curl");
-  const [useCase, setUseCase] = useState("ethereum-blocks");
+  const [useCase, setUseCase] = useState("program-deployments");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -275,7 +285,7 @@ return (
                   color: '#24292f'
                 }}>
                   <code key={`response-code-${useCase}-${response.length}`}>
-                    {response.split('\n').map((line, i) => (
+                    {response.trim().split('\n').map((line, i) => (
                       <div key={`response-line-${i}`} style={{
                         display: 'flex',
                         position: 'relative',
@@ -321,7 +331,4 @@ return (
 
 );
 };
-
-
-
 

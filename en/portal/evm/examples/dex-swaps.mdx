@@ -3,6 +3,8 @@ title: "Index DEX Swaps"
 description: "Track decentralized exchange trading activity using Portal"
 ---
 
+import { QueryInterfaceDexSwaps } from "/snippets/query-interface-dex-swaps.mdx";
+
 Monitor Uniswap V3 Swap events to build DEX analytics dashboards, analyze liquidity patterns, or create price feeds.
 
 ## Use Case
@@ -139,6 +141,10 @@ for line in response.text.strip().split('\n'):
         })
 ```
 </CodeGroup>
+
+<Info>Try it yourself with the interactive query interface below:</Info>
+
+<QueryInterfaceDexSwaps />
 
 ## Key Parameters
 

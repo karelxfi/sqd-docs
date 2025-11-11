@@ -3,6 +3,8 @@ title: "Track NFT Transfers"
 description: "Monitor ERC-721 and ERC-1155 NFT transfers using Portal"
 ---
 
+import { QueryInterfaceNftTransfers } from "/snippets/query-interface-nft-transfers.mdx";
+
 Monitor ERC-721 Transfer events across multiple NFT collections to track collection activity, analyze whale movements, or build NFT analytics platforms.
 
 ## Use Case
@@ -154,6 +156,10 @@ for line in response.text.strip().split('\n'):
         })
 ```
 </CodeGroup>
+
+<Info>Try it yourself with the interactive query interface below:</Info>
+
+<QueryInterfaceNftTransfers />
 
 ## Key Parameters
 

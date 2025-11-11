@@ -3,6 +3,8 @@ title: "Query Event Logs"
 description: "Track smart contract events like ERC-20 transfers using Portal"
 ---
 
+import { QueryInterfaceQueryLogs } from "/snippets/query-interface-query-logs.mdx";
+
 Monitor USDC Transfer events on Ethereum mainnet to build a token tracker or analyze transfer patterns.
 
 ## Use Case
@@ -144,6 +146,10 @@ for line in response.text.strip().split('\n'):
 ```
 
 </CodeGroup>
+
+<Info>Try it yourself with the interactive query interface below:</Info>
+
+<QueryInterfaceQueryLogs />
 
 ## Key Parameters
 

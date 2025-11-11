@@ -3,6 +3,8 @@ title: "Query Traces"
 description: "Analyze internal transactions and call traces using Portal"
 ---
 
+import { QueryInterfaceQueryTraces } from "/snippets/query-interface-query-traces.mdx";
+
 Track internal transactions (traces) to analyze complex contract interactions, value flows through multiple contracts, and delegatecall patterns.
 
 ## Use Case
@@ -139,6 +141,10 @@ for line in response.text.strip().split('\n'):
             })
 ```
 </CodeGroup>
+
+<Info>Try it yourself with the interactive query interface below:</Info>
+
+<QueryInterfaceQueryTraces />
 
 ## Key Parameters
 

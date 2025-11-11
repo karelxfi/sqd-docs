@@ -3,6 +3,8 @@ title: "Query State Diffs"
 description: "Track storage state changes for smart contracts using Portal"
 ---
 
+import { QueryInterfaceStateDiffs } from "/snippets/query-interface-state-diffs.mdx";
+
 Track storage state changes for smart contracts to monitor specific storage slots, analyze contract state evolution, or track ownership changes.
 
 ## Use Case
@@ -119,6 +121,10 @@ for line in response.text.strip().split('\n'):
             })
 ```
 </CodeGroup>
+
+<Info>Try it yourself with the interactive query interface below:</Info>
+
+<QueryInterfaceStateDiffs />
 
 ## Key Parameters
 
