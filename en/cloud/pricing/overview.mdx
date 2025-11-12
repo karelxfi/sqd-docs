@@ -1,0 +1,41 @@
+---
+title: "Pricing Overview"
+sidebarTitle: "Overview"
+description: "Subscription types and pay-as-you-go prices"
+---
+
+import { CostCalculator } from "/snippets/cloud/cost-calculator.mdx";
+import { CostCalculatorTest } from "/snippets/cloud/cost-calculator-test.mdx";
+
+# SQD Cloud Pricing
+
+<Tip>
+  Use our [cost calculator](https://www.sqd.dev/cloud#calculator) if you need a
+  quick estimate
+</Tip>
+
+## Estimate Your Costs
+
+<CostCalculatorTest />
+
+<CostCalculator />
+
+## Free squids
+
+Each account gets a playground [organization](/en/cloud/resources/organizations) where a single free squid can be deployed. Certain limitations apply; check the [playground organization](/en/cloud/resources/organizations/#playgrounds) section for details.
+
+## Billing
+
+SQD bills [organizations](/en/cloud/resources/organizations) for the resources used by their squids. To deploy production-ready squids and [configure](/en/cloud/reference/scale) their resources, the organization must have a [Professional status](/en/cloud/resources/organizations/#professional-organizations). All such organizations receive the following perks:
+
+- unmetered GraphQL API requests
+- deploying any number of pay-as-you-go [dedicated](/en/cloud/reference/scale/#dedicated) squids
+- deploying any number of pay-as-you-go [collocated](/en/cloud/reference/scale/#dedicated) squids
+- free 2M [RPC addon](/en/cloud/resources/rpc-proxy) requests monthly + just `$2/1M` afterwards
+- priority support
+
+Other resources used by squids are priced as described below. Billing typically occurs on the first day of each month.
+
+We do provide enterprise discounts. If your use case requires a lot of resources or an individual SLA, [book a demo](https://calendly.com/d/yzj-48g-bf7/subsquid-demo) to get a personal quote.
+
+For detailed pricing information, see [Pricing Details & Examples](/en/cloud/pricing/pricing-details).

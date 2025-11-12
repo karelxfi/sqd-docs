@@ -1,0 +1,34 @@
+---
+title: "Pricing FAQ"
+sidebarTitle: "FAQ"
+description: "Frequently asked questions about SQD Cloud pricing"
+---
+
+# Pricing FAQ
+
+<AccordionGroup>
+<Accordion title="What is the difference between collocated and dedicated squids? Why are collocated squids much cheaper?">
+
+Collocated squids share compute resources which means that it may be unresponsive if the neighbour squid is under high load.
+While we do our best to ensure that the resources are shared fairly, we strongly recommend dedicated services for production use.
+
+</Accordion>
+
+<Accordion title="I deployed my squid yesterday, will it be billed for the whole month?">
+
+No, only the actual hours the squid has been running will be billed.
+
+</Accordion>
+
+<Accordion title="How do I configure the profiles for my squid?">
+
+Use the [manifest-based deployments](/en/cloud/reference/manifest/) and [the profile reference](/en/cloud/reference/scale/).
+
+</Accordion>
+
+<Accordion title="How can I use the provided RPC package? How do I set the rate limits for it?">
+
+Please look at the [RPC addon docs](/en/cloud/resources/rpc-proxy/).
+
+</Accordion>
+</AccordionGroup>

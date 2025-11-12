@@ -91,7 +91,6 @@
                       },
                       {
                         "group": "API Reference",
-                        "icon": "code",
                         "openapi": "en/api/evm/openapi.yaml",
                         "directory": "api",
                         "pages": [
@@ -287,7 +286,6 @@
                       },
                       {
                         "group": "API Reference",
-                        "icon": "code",
                         "openapi": "en/api/solana/openapi.yaml",
                         "directory": "api",
                         "pages": [
@@ -549,13 +547,23 @@
           {
             "tab": "Deploy",
             "icon": "cloud",
+            "pages": [
+              "en/cloud/overview"
+            ],
             "groups": [
               {
-                "group": "Cloud",
+                "group": "Managed",
                 "icon": "cloud",
                 "pages": [
                   "en/cloud/overview",
-                  "en/cloud/pricing",
+                  {
+                    "group": "Pricing",
+                    "pages": [
+                      "en/cloud/pricing/overview",
+                      "en/cloud/pricing/pricing-details",
+                      "en/cloud/pricing/faq"
+                    ]
+                  },
                   {
                     "group": "Configuration",
                     "pages": [
@@ -623,7 +631,8 @@
                 "group": "Self-Hosting",
                 "icon": "server",
                 "pages": [
-                  "en/sdk/squid-sdk/features/self-hosting"
+                  "en/sdk/squid-sdk/features/self-hosting",
+                  "en/portal/self-hosting/accessing-portal"
                 ]
               }
             ]

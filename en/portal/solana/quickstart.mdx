@@ -33,7 +33,7 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
   -d '{
     "type": "solana",
     "fromBlock": 259984800,
-    "toBlock": 259985000,
+    "toBlock": 259984801,
     "fields": {
       "block": {
         "number": true,
@@ -44,7 +44,8 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
         "feePayer": true,
         "err": true
       }
-    }
+    },
+    "transactions": [{}]
   }'
 ```
 
@@ -53,13 +54,6 @@ curl -X POST 'https://portal.sqd.dev/datasets/solana-mainnet/stream' \
   timestamps, and transaction data including signatures, fee payers, and success
   status.
 </Check>
-
-<Note>
-  **Solana block production**: Not every slot produces a block. Solana uses a
-  leader schedule where only certain validators produce blocks in their assigned
-  slots. You'll typically see blocks in about 50-80% of slots, which is why we
-  query a larger range to get meaningful results.
-</Note>
 
 <Info>Try it yourself with the interactive query interface below:</Info>
 
@@ -96,6 +90,7 @@ const blocks = await dataSource.getBlocks({
       err: true,
     },
   },
+  transactions: [{}],
 });
 
 console.log(`Retrieved ${blocks.length} blocks`);
@@ -141,7 +136,8 @@ payload = {
             "feePayer": True,
             "err": True
         }
-    }
+    },
+    "transactions": [{}]
 }
 
 response = requests.post(url, headers=headers, json=payload)
@@ -178,7 +174,8 @@ Let's break down what you just sent:
       "feePayer": true,          // Fee payer address
       "err": true                // Error status (null if successful)
     }
-  }
+  },
+  "transactions": [{}]            // Include transactions filter (empty object = all transactions)
 }
 ```
 

@@ -322,9 +322,6 @@ return (
 );
 };
 
-
-
-
 export const QueryInterfaceSolanaQuickstart = () => {
   const useCasesConfig = [
     {
@@ -334,7 +331,7 @@ export const QueryInterfaceSolanaQuickstart = () => {
       payload: {
         type: "solana",
         fromBlock: 259984800,
-        toBlock: 259985000,
+        toBlock: 259984801,
         fields: {
           block: {
             number: true,
@@ -345,7 +342,8 @@ export const QueryInterfaceSolanaQuickstart = () => {
             feePayer: true,
             err: true
           }
-        }
+        },
+        transactions: [{}]
       }
     }
   ];
@@ -653,4 +651,3 @@ return (
 );
 
 };
-

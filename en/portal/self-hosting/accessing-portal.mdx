@@ -1,0 +1,70 @@
+---
+title: "Accessing a Portal"
+description: "Choose between self-hosted or managed Portal endpoints for your data pipeline"
+---
+
+# Accessing a Portal
+
+When building data pipelines with Portal, you have two options for accessing Portal endpoints:
+
+## Option 1: Self-Hosted Portal
+
+Run your own Portal instance for complete control over your data access infrastructure.
+
+**Best for:**
+- Private or custom networks
+- Teams with strict data sovereignty requirements
+- Maximum control over infrastructure
+- No external dependencies
+
+**Key benefits:**
+- Complete control over data access
+- No rate limits (subject to your own infrastructure)
+- Works with any EVM or Solana chain
+- Open-source implementation you can audit and modify
+
+<Card title="Self-Hosting Guide" icon="server" href="/en/portal/self-hosting">
+  Learn how to deploy your own Portal instance
+</Card>
+
+## Option 2: Managed Portal
+
+Use SQD-hosted Portal endpoints for instant access without infrastructure management.
+
+**Best for:**
+- Getting started quickly
+- Production apps without infrastructure overhead
+- Teams who want to focus on building rather than operations
+
+**Key benefits:**
+- Instant access—no infrastructure to manage
+- Production-ready with high availability
+- Free tier available for development
+- Access to 200+ networks with zero setup
+
+<Card title="Portal Overview" icon="rocket" href="/en/portal/overview">
+  Learn more about managed Portal endpoints
+</Card>
+
+## Choosing the Right Option
+
+Both options use the same Portal API interface, so your code remains the same regardless of which option you choose. The decision depends on your specific requirements:
+
+- **Choose self-hosted** if you need complete control, have custom infrastructure requirements, or want to avoid external dependencies
+- **Choose managed** if you want to get started quickly, prefer not to manage infrastructure, or need production-ready endpoints immediately
+
+<Tip>
+  You can start with managed endpoints for development and switch to self-hosted later if needed. The API interface is identical, so migration is straightforward.
+</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Self-Hosting Guide" icon="server" href="/en/portal/self-hosting">
+    Set up your own Portal instance
+  </Card>
+  <Card title="Portal Quickstart" icon="rocket" href="/en/portal/evm/quickstart">
+    Get started with managed endpoints
+  </Card>
+</CardGroup>
+
