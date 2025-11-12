@@ -69,10 +69,11 @@ Portal solves these problems with an HTTP interface purpose-built for data extra
 ## How Portal Works
 
 <Frame>
-  <img
+  <video
+    controls
+    className="w-full aspect-video rounded-xl"
     src="/videos/portal-diagram.mp4"
-    alt="Portal architecture diagram showing data flow from RPC and data ingestors through hotblocks storage and workers to clients"
-  />
+  ></video>
 </Frame>
 
 Portal sits between blockchain nodes and your data pipeline, providing an HTTP API optimized for high-throughput data extraction. It handles the complexity of pagination, finality tracking, and reorg compensation so you don't have to.
