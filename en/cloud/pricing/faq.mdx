@@ -7,28 +7,161 @@ description: "Frequently asked questions about SQD Cloud pricing"
 # Pricing FAQ
 
 <AccordionGroup>
-<Accordion title="What is the difference between collocated and dedicated squids? Why are collocated squids much cheaper?">
 
-Collocated squids share compute resources which means that it may be unresponsive if the neighbour squid is under high load.
-While we do our best to ensure that the resources are shared fairly, we strongly recommend dedicated services for production use.
+<Accordion title="How does billing work? When am I charged?">
 
-</Accordion>
+SQD Cloud uses hourly billing for compute resources and monthly billing for storage. You're only charged for the actual time your squids are running.
 
-<Accordion title="I deployed my squid yesterday, will it be billed for the whole month?">
+**Billing cycle:** Charges are calculated and billed on the first day of each month for the previous month's usage.
 
-No, only the actual hours the squid has been running will be billed.
+**Prorated charges:** If you deploy a squid mid-month, you only pay for the hours it actually runs. For example, a squid running for 360 hours (half a month) costs exactly half of the monthly rate.
 
-</Accordion>
-
-<Accordion title="How do I configure the profiles for my squid?">
-
-Use the [manifest-based deployments](/en/cloud/reference/manifest/) and [the profile reference](/en/cloud/reference/scale/).
+<Note>
+You can monitor your current usage and estimated costs in the SQD Cloud dashboard at any time.
+</Note>
 
 </Accordion>
 
-<Accordion title="How can I use the provided RPC package? How do I set the rate limits for it?">
+<Accordion title="What is the difference between collocated and dedicated squids?">
 
-Please look at the [RPC addon docs](/en/cloud/resources/rpc-proxy/).
+**Collocated squids** share compute resources with other squids on the same infrastructure. This makes them much cheaper (`$0.02/hr` vs separate service costs) but means performance is not guaranteed. If a neighboring squid experiences high load, your squid may become slow or unresponsive.
+
+**Dedicated squids** have guaranteed compute resources that are never shared. Each service (API, processor, database) runs on its own allocated resources with predictable performance.
+
+<Warning>
+We strongly recommend dedicated squids for production use. Collocated squids are perfect for development, testing, and staging environments.
+</Warning>
 
 </Accordion>
+
+<Accordion title="How do I estimate my costs before deploying?">
+
+Use our [interactive cost calculator](/en/cloud/pricing/overview#estimate-your-costs) to estimate costs based on your configuration. You can also review [real-world examples](/en/cloud/pricing/pricing-details#real-world-cost-examples) for common deployment scenarios.
+
+<Tip>
+Start with smaller profiles and monitor your actual resource usage. You can easily scale up if needed. It's better to start small and grow than to overprovision from the start.
+</Tip>
+
+</Accordion>
+
+<Accordion title="Can I change my squid's compute profiles after deployment?">
+
+Yes! You can modify your squid's compute profiles at any time using [manifest-based deployments](/en/cloud/reference/manifest/).
+
+Simply update your manifest file with the new profiles and redeploy. The new pricing takes effect immediately. See the [profile reference](/en/cloud/reference/scale/) for all available options and their specifications.
+
+<Info>
+Profile changes require a brief redeployment. Plan accordingly for production squids to minimize downtime.
+</Info>
+
+</Accordion>
+
+<Accordion title="How is database storage billed? Can I reduce storage costs?">
+
+Database storage is billed at `$0.50 per GB per month` based on actual usage. This applies to both dedicated and collocated squids.
+
+**Cost optimization strategies:**
+- Implement data retention policies to remove old data you no longer need
+- Optimize your database schema to reduce redundancy
+- Use appropriate data types (e.g., integers instead of strings where possible)
+- Archive historical data to external storage (S3, BigQuery) if you don't need it for queries
+- Monitor your storage usage in the Cloud dashboard
+
+<Tip>
+For data-heavy applications, consider a processor-only squid that exports to external storage instead of maintaining a large database.
+</Tip>
+
+</Accordion>
+
+<Accordion title="What are the 2M free RPC requests? How do I use them?">
+
+Professional organizations include 2 million RPC requests per month at no additional cost through the [RPC addon](/en/cloud/resources/rpc-proxy). This allows your squids to make blockchain RPC calls without managing your own RPC infrastructure.
+
+**Overage pricing:** If you exceed 2M requests, additional requests cost `$2.00 per million`.
+
+**How to use:** Configure the RPC proxy in your squid to route requests through SQD's infrastructure. See the [RPC addon documentation](/en/cloud/resources/rpc-proxy/) for setup instructions and rate limiting configuration.
+
+</Accordion>
+
+<Accordion title="What happens when I hibernate a squid?">
+
+When you hibernate a squid, all compute services (API, processor, database) are paused. You only pay for storage costs (`$0.50/GB/month`) while the squid is hibernated.
+
+**Benefits:**
+- Preserve your squid's data and configuration
+- Eliminate compute costs when not needed
+- Resume quickly when you need the squid again
+
+**Perfect for:**
+- Seasonal applications that aren't needed year-round
+- Development squids used only during working hours
+- Backup squids kept ready but not actively running
+
+<Info>
+Hibernation and resumption are instant operations. You can hibernate and wake squids as often as needed.
+</Info>
+
+</Accordion>
+
+<Accordion title="How do I decide between collocated and dedicated for my use case?">
+
+Choose based on your performance requirements and budget:
+
+**Use collocated when:**
+- Developing or testing new features
+- Running staging environments
+- Building proof-of-concepts or MVPs
+- Budget is the primary concern
+- Occasional slowness is acceptable
+
+**Use dedicated when:**
+- Running production applications
+- Serving end users who expect consistent performance
+- Processing time-sensitive data
+- You need guaranteed response times
+- Reliability is critical to your application
+
+<Check>
+Most teams use collocated for development and dedicated for production. This gives you cost-effective testing while ensuring production reliability.
+</Check>
+
+</Accordion>
+
+<Accordion title="Are there any hidden fees or charges I should know about?">
+
+No hidden fees! SQD Cloud pricing is transparent and predictable.
+
+**What you pay for:**
+- Compute (hourly rates for API, processor, database)
+- Storage (monthly rate per GB)
+- RPC requests (only above 2M/month)
+
+**What's free:**
+- Data egress (outbound traffic)
+- GraphQL API requests (unlimited)
+- SQD Network data access
+- Deployments and redeployments
+- Monitoring and logs
+
+<Note>
+The only variable costs are compute time and storage. Everything else is included with no additional charges.
+</Note>
+
+</Accordion>
+
+<Accordion title="Do you offer discounts for high-volume usage or long-term commitments?">
+
+Yes! We offer enterprise plans with volume discounts, custom SLAs, and dedicated infrastructure for high-volume use cases.
+
+**Enterprise benefits may include:**
+- Volume-based pricing discounts
+- Custom SLA terms
+- Dedicated support channels
+- Architecture consultation
+- Priority feature requests
+
+[Book a demo](https://calendly.com/d/yzj-48g-bf7/subsquid-demo) to discuss your requirements and get a personalized quote.
+
+</Accordion>
+
 </AccordionGroup>

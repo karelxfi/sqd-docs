@@ -6,133 +6,258 @@ description: "Detailed pricing information, SLAs, and example calculations"
 
 # Pricing Details & Examples
 
-## Pay-as-you-go prices
+SQD Cloud pricing is straightforward: you pay only for the compute and storage resources your squids consume. The SQD Network provides data at no charge, making your costs predictable and transparent.
 
-The pricing is based solely on the resources consumed by the squid, as the SQD Network data is provided free of charge.
-The total squid price is the sum of compute and database storage prices.
+<Note>
+  **Good news:** Data egress is completely free. No charges for outbound traffic
+  or API responses.
+</Note>
 
-Data egress is not billed.
+## Pay-as-you-go Pricing
 
-### Storage
+Your total monthly cost is the sum of:
 
-Database storage is billed at `0.5$/mo` per Gigabyte, both for dedicated and collocated squids.
+- **Compute costs**: Hourly rates for API, processor, and database services
+- **Storage costs**: Monthly rate per GB of database storage
+- **RPC costs**: Only if you exceed the 2M free monthly requests
 
-### Compute for dedicated squids
+<Tabs>
+<Tab title="API & Processor">
 
-Dedicated squids have separate [compute profiles](/en/cloud/reference/scale/#services) for the Postgres database and API/processor services:
+### API and Processor Compute
 
-#### API/Processor
+Both API and processor services use the same pricing structure. They are configured and billed independently.
 
-- `small`: `0.04$/hr`
-- `medium`: `0.08$/hr`
-- `large`: `0.15$/hr`
-- `xlarge`: `0.30$/hr`
-- `2xlarge`: `0.60$/hr`
+| Profile     | Price per Hour | Monthly Cost (24/7) | Best For                                                           |
+| ----------- | -------------- | ------------------- | ------------------------------------------------------------------ |
+| **small**   | `$0.04`        | `~$29`              | Development, low-traffic APIs, simple data processing              |
+| **medium**  | `$0.08`        | `~$58`              | Production APIs with moderate traffic, standard indexing workloads |
+| **large**   | `$0.15`        | `~$108`             | High-traffic APIs, complex data transformations                    |
+| **xlarge**  | `$0.30`        | `~$216`             | Very high traffic, intensive processing requirements               |
+| **2xlarge** | `$0.60`        | `~$432`             | Enterprise-scale applications, maximum performance needs           |
 
-API and processor are configured and billed separately. Also, if you use API replicas your cost is multiplied by the number of replicas. For example, running a small processor plus two replicas of medium API costs `0.04+2*0.08=0.20$/hr`.
+<Info>
+  **API Replicas:** If you run multiple API replicas, each replica is billed
+  separately. For example, 2 replicas of medium API = `2 × $0.08 = $0.16/hr`.
+</Info>
 
-Full profile descriptions are available [here](/en/cloud/reference/scale/#api) for the API and [here](/en/cloud/reference/scale/#processor) for the processor.
+Full specifications and resource allocations:
 
-#### Database
+- [API service profiles](/en/cloud/reference/scale/#api)
+- [Processor service profiles](/en/cloud/reference/scale/#processor)
 
-- `small`: `0.08$/hr`
-- `medium`: `0.16$/hr`
-- `large`: `0.33$/hr`
-- `xlarge`: `0.66$/hr`
-- `2xlarge`: `1.32$/hr`
+</Tab>
 
-Profiles are described [here](/en/cloud/reference/pg/#scaling). Combine with the [cost of storage](/en/cloud/pricing/pricing-details/#storage) to get the full price of maintaining the database.
+<Tab title="Database">
 
-### Hibernated squids
+### Database Compute
 
-For hibernated squids only the [storage costs](/en/cloud/pricing/pricing-details/#storage) are charged.
+Dedicated Postgres database instances with guaranteed resources.
 
-### Multi-processor squids
+| Profile     | Price per Hour | Monthly Cost (24/7) | vCPU | RAM  | Best For                                   |
+| ----------- | -------------- | ------------------- | ---- | ---- | ------------------------------------------ |
+| **small**   | `$0.08`        | `~$58`              | 1    | 2GB  | Small datasets, development                |
+| **medium**  | `$0.16`        | `~$115`             | 2    | 4GB  | Medium datasets, moderate query load       |
+| **large**   | `$0.33`        | `~$238`             | 4    | 8GB  | Large datasets, high query throughput      |
+| **xlarge**  | `$0.66`        | `~$475`             | 8    | 16GB | Very large datasets, complex queries       |
+| **2xlarge** | `$1.32`        | `~$950`             | 16   | 32GB | Enterprise-scale data, maximum performance |
 
-For multi-processor squids each processor is charged separately according to the compute profile.
+<Note>
+  Database costs include both compute (above) and storage (billed separately at
+  `$0.50/GB/month`). See the [database scaling
+  reference](/en/cloud/reference/pg/#scaling) for detailed specifications.
+</Note>
 
-### Collocated (development) squids
+</Tab>
 
-Collocated squids share compute resources and thus their performance is NOT guaranteed. We do not recommend using
-collocated squids in production, but it's a good fit for development and testing.
-Compute is billed at a flat rate of `$0.02/hr` (`~$15/mo`) per each collocated squid (API + processor + DB).
-It is not possible to additionally configure a collocated squid except for the storage.
+<Tab title="Storage & Other">
 
-### RPC requests
+### Database Storage
 
-The premium plan already includes a package of 2M requests per month. Above that, it is `$2/1M` requests.
+Storage is billed monthly based on actual usage.
 
-## SLAs
+**Price:** `$0.50 per GB per month`
 
-Our SLA only applies to [dedicated](/en/cloud/reference/scale/#dedicated) squids deployed to [Professional organizations](/en/cloud/resources/organizations/#professional-organizations).
+Applies to both dedicated and collocated squids.
 
-We align with the [SLAs of the Google Cloud Platform](https://cloud.google.com/compute/sla) and will reduce the bill based on the following schedule:
+<Tip>
+  Monitor your storage usage in the Cloud dashboard. Optimize your schema and
+  data retention policies to control costs.
+</Tip>
 
-| Uptime            | Rebate |
-| ----------------- | ------ |
-| 95.00% - < 99.50% | 10%    |
-| 90.00% - < 95.00% | 25%    |
-| < 90.00%          | 100%   |
+### Collocated Squids (Development)
 
-Note that the SLA applies only to the provisioning of the SQD Cloud services (API availability, provisioning of compute resources) and DOES NOT apply to client code. In particular, if a squid is stuck due to a bug or an upstream SQD Network/RPC issue, the SLA discounts don't apply. Similarly, the client is responsible for provisioning compute profiles adequate to the expected traffic.
+Collocated squids bundle API, processor, and database into a single shared-resource deployment.
 
-For Enterprise plan customers, individual SLA terms may be negotiated.
+**Compute:** `$0.02/hr` (`~$15/month`)  
+**Storage:** `$0.50/GB/month` (same as dedicated)
 
-## Examples
+<Warning>
+  Collocated squids share compute resources and performance is **not
+  guaranteed**. They're perfect for development and testing but **not
+  recommended for production** use.
+</Warning>
 
-### Small dedicated squid
+### RPC Requests
 
-- 1x API service (small)
-- 1x processor (small)
-- 1x DB (small)
+Professional organizations include 2 million RPC requests per month at no additional cost.
+
+**Overage pricing:** `$2.00 per million requests`
+
+See [RPC addon documentation](/en/cloud/resources/rpc-proxy) for configuration details.
+
+### Hibernated Squids
+
+Hibernated squids are paused and only incur storage costs. No compute charges apply.
+
+**Cost:** Storage only (`$0.50/GB/month`)
+
+<Info>
+  Hibernation is perfect for squids you want to keep available but don't need
+  running continuously.
+</Info>
+
+### Multi-Processor Squids
+
+Each processor in a multi-processor squid is billed independently based on its configured profile.
+
+**Example:** 2 small processors + 1 medium processor = `2 × $0.04 + $0.08 = $0.16/hr`
+
+</Tab>
+</Tabs>
+
+## Service Level Agreement (SLA)
+
+Our SLA applies to [dedicated](/en/cloud/reference/scale/#dedicated) squids deployed to [Professional organizations](/en/cloud/resources/organizations/#professional-organizations).
+
+We align with the [SLAs of the Google Cloud Platform](https://cloud.google.com/compute/sla) and provide bill reductions based on uptime:
+
+| Uptime Percentage | Bill Reduction |
+| ----------------- | -------------- |
+| 95.00% - < 99.50% | 10%            |
+| 90.00% - < 95.00% | 25%            |
+| < 90.00%          | 100%           |
+
+<Warning>
+  The SLA covers SQD Cloud infrastructure (API availability, compute
+  provisioning) but **does not** cover issues caused by client code, bugs in
+  your squid, or upstream problems with SQD Network/RPC providers. You're
+  responsible for provisioning adequate compute resources for your expected
+  traffic.
+</Warning>
+
+<Info>
+  Enterprise customers can negotiate custom SLA terms. [Contact
+  us](https://calendly.com/d/yzj-48g-bf7/subsquid-demo) to discuss your
+  requirements.
+</Info>
+
+## Real-World Cost Examples
+
+Use these examples to understand how different deployment configurations translate to monthly costs. All examples assume 24/7 operation (720 hours per month).
+
+<CardGroup cols={2}>
+<Card title="Small Dedicated Squid" icon="seedling">
+
+**Use case:** Personal project or small application with moderate data requirements and low traffic.
+
+**Configuration:**
+
+- 1× API service (small)
+- 1× Processor (small)
+- 1× Database (small)
 - 50GB storage
 
-Runs 24/7 (720 hours a month).
+| Component         | Rate       | Monthly Cost  |
+| ----------------- | ---------- | ------------- |
+| API (small)       | `$0.04/hr` | `$28.80`      |
+| Processor (small) | `$0.04/hr` | `$28.80`      |
+| Database (small)  | `$0.08/hr` | `$57.60`      |
+| Storage (50GB)    | `$0.50/GB` | `$25.00`      |
+| **Total**         | **—**      | **`$140.20`** |
 
-| Service           | `$/hr`  | `$/mo`       |
-| ----------------- | ------- | ------------ |
-| API (small)       | `$0.04` |              |
-| Processor (small) | `$0.04` |              |
-| Database (small)  | `$0.08` |              |
-| Compute total     | `$0.16` | `$115.2`     |
-| Storage           |         | `$25`        |
-| **Total**         |         | **`$140.2`** |
+<Check>
+  Perfect for side projects, MVPs, and applications with predictable
+  low-to-moderate traffic.
+</Check>
 
-### Processor-only squid
+</Card>
 
-A squid writing parquet files to an external s3 bucket. No database or API is provisioned.
+<Card title="Development Squid" icon="flask">
 
-- 1x processor (small)
+**Use case:** Testing, development, or staging environment where performance guarantees aren't critical.
 
-| Service           | `$/hr`  | `$/mo`      |
-| ----------------- | ------- | ----------- |
-| Processor (small) | `$0.04` |             |
-| Compute total     | `$0.04` | `$28.8`     |
-| **Total**         |         | **`$28.8`** |
+**Configuration:**
 
-### Large production squid
+- Collocated (API + Processor + DB)
+- 50GB storage
 
-- 2x API service (medium)
-- 1x processor (small)
-- 1x DB (large)
+| Component          | Rate       | Monthly Cost |
+| ------------------ | ---------- | ------------ |
+| Collocated compute | `$0.02/hr` | `$14.40`     |
+| Storage (50GB)     | `$0.50/GB` | `$25.00`     |
+| **Total**          | **—**      | **`$39.40`** |
+
+<Check>
+  Most cost-effective option for non-production environments and
+  experimentation.
+</Check>
+
+</Card>
+
+<Card title="Production Squid" icon="rocket">
+
+**Use case:** Production application with high traffic, requiring load balancing and robust data processing.
+
+**Configuration:**
+
+- 2× API service (medium) - for redundancy
+- 1× Processor (small)
+- 1× Database (large)
 - 500GB storage
 
-| Service           | `$/hr`  | `$/mo`       |
-| ----------------- | ------- | ------------ |
-| 2xAPI (medium)    | `$0.16` |              |
-| Processor (small) | `$0.4`  |              |
-| Database (large)  | `$0.33` |              |
-| Compute total     | `$0.53` | `$381.6`     |
-| Storage           |         | `$250`       |
-| **Total**         |         | **`$631.6`** |
+| Component         | Rate       | Monthly Cost  |
+| ----------------- | ---------- | ------------- |
+| 2× API (medium)   | `$0.16/hr` | `$115.20`     |
+| Processor (small) | `$0.04/hr` | `$28.80`      |
+| Database (large)  | `$0.33/hr` | `$237.60`     |
+| Storage (500GB)   | `$0.50/GB` | `$250.00`     |
+| **Total**         | **—**      | **`$631.60`** |
 
-### Test collocated squid:
+<Check>
+  Ideal for production applications with significant traffic and data processing
+  needs.
+</Check>
 
-- API + processor + DB (collocated)
-- 50GB storage
+</Card>
 
-| Service       | `$/hr` | `$/mo`    |
-| ------------- | ------ | --------- |
-| Compute total | `0.02` | `$15`     |
-| Storage       |        | `$25`     |
-| **Total**     |        | **`$40`** |
+<Card title="Data Export Pipeline" icon="database">
+
+**Use case:** Processor-only squid that indexes blockchain data and exports to external storage (S3, BigQuery, etc.). No API or database needed.
+
+**Configuration:**
+
+- 1× Processor (small)
+- No database or API
+- Minimal storage
+
+| Component         | Rate       | Monthly Cost |
+| ----------------- | ---------- | ------------ |
+| Processor (small) | `$0.04/hr` | `$28.80`     |
+| **Total**         | **—**      | **`$28.80`** |
+
+<Check>
+  Most economical option for data pipelines that don't need to serve queries.
+</Check>
+
+</Card>
+</CardGroup>
+
+<Tip>
+  **Cost optimization tips:** - Start with smaller profiles and scale up based
+  on actual usage - Use collocated squids for development and testing - Consider
+  hibernating squids that don't need to run 24/7 - Monitor storage usage and
+  implement data retention policies - Use the [cost
+  calculator](/en/cloud/pricing/overview#estimate-your-costs) to model different
+  scenarios
+</Tip>
