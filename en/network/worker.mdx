@@ -123,7 +123,6 @@ The script will:
 - Data directory at `<DATA_DIR_PATH>`
 - Key file at `<KEY_PATH>`
 - `.env` file with default configuration
-- `.mainnet.env` file
 - `docker-compose.yaml` file for running the worker
 
 <Info>
@@ -149,7 +148,7 @@ Your peer ID is: 12D3KooWPfotj6qQapKeWg4RZysUjEeswLEpiSjgv16LgNTyYFTW. Now you c
 
 <Step title="Optional: Customize configuration" icon="gear">
 
-If needed, edit the generated `.env` and `.mainnet.env` files to:
+If needed, edit the generated `.env` file to:
 
 - Set a custom Prometheus port
 - Use your own RPC provider
@@ -163,10 +162,10 @@ If needed, edit the generated `.env` and `.mainnet.env` files to:
 ## Worker Registration
 
 <Info>
-  By registering a worker, you commit your tokens for approximately 14 days
+  By registering a worker, you lock your tokens in the smart contract.
+  Once you want to withdraw them, you'll have to wait for approximately 14 days
   (100,000 Ethereum blocks) plus the time until the end of the current
-  [epoch](subsquid-network/faq/#epoch) (up to 20 minutes). Withdrawal is not
-  possible during this period.
+  [epoch](subsquid-network/faq/#epoch) (up to 20 minutes).
 </Info>
 
 Before running your worker node, you must register it on-chain.
@@ -274,7 +273,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 Load the configuration files generated during setup:
 
 ```bash
-source .mainnet.env
 source .env
 ```
 
@@ -283,7 +281,7 @@ source .env
 Clone the worker repository (this may take a few minutes):
 
 ```bash
-git clone --depth 1 --branch v1.0.0 https://github.com/subsquid/worker-rs.git
+git clone --depth 1 https://github.com/subsquid/worker-rs.git
 ```
 
 ### Build the Worker
@@ -297,10 +295,10 @@ cargo build --release
 
 ### Run the Worker
 
-Start the worker using `nohup`:
+Start the worker:
 
 ```bash
-nohup cargo run --release -- --port $PROMETHEUS_PORT p2p
+cargo run --release
 ```
 
 <Tip>
@@ -388,7 +386,7 @@ Jailing is a scheduler-side mechanism that ensures data chunk availability acros
 <Info>
   Jailed workers continue serving queries from downloaded chunks and earning
   rewards. Jailing is temporary—workers are automatically unjailed within
-  approximately 3 hours.
+  approximately 20 minutes once they're reliable again.
 </Info>
 
 ### Impact on Rewards
@@ -417,7 +415,7 @@ Check your worker logs to identify which issue applies:
 
 <Tip>
   If your worker stays online consistently and maintains good connectivity, it's
-  unlikely to be jailed frequently.
+  unlikely to be jailed.
 </Tip>
 
 ## Troubleshooting
@@ -431,7 +429,7 @@ Your peer ID can be found in several places:
 
 2. **Worker logs:**
    - **Docker setup:** Run `docker compose logs`
-   - **Source build:** Check the `network.log` file
+   - **Source build:** Check the output of the worker process
 
 Look for a log line like this:
 
@@ -479,6 +477,7 @@ Yes! You can migrate your worker to a new server:
 1. Copy the key file (at `<KEY_PATH>`) to the new server
 2. Set up the new data directory
 3. Start the worker on the new server
+4. Make sure the worker on the old server is not running anymore
 
 <Info>
   You don't need to re-register your worker when moving to a new server.
@@ -507,7 +506,8 @@ This is normal behavior. Wait a few minutes—the logs will start showing data d
 
 <Accordion title="How do I check that my worker is updated to the latest version?">
 
-Check the [pings endpoint](https://scheduler.mainnet.subsquid.io/workers/pings) and search for your peer ID to view the current version.
+Find your worker in the [network app](https://network.subsquid.io/) and look at the "version" column.
+If the version is outdated, there will be a warning sign besides it.
 
 </Accordion>
 
@@ -528,28 +528,13 @@ This is a Docker issue, not a worker problem.
 
 </Accordion>
 
-<Accordion title="How do I check if my worker is up-to-date and running?">
-
-1. Copy your peer ID
-2. Visit the [pings page](https://scheduler.mainnet.subsquid.io/workers/pings)
-3. Search for your peer ID
-
-**Your worker is healthy if:**
-
-- Last ping timestamp is within 1 minute
-- Listed version matches the most recent release
-
-<Check>If both conditions are met, your worker is running properly.</Check>
-
-</Accordion>
-
 <Accordion title="I'm getting 'Clone succeeded, but checkout failed' when cloning the worker repo">
 
 Manually check out the correct version:
 
 ```bash
 cd worker-rs
-git checkout v1.0.0
+git checkout v2.0.0
 ```
 
 </Accordion>
