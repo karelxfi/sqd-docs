@@ -1,0 +1,295 @@
+---
+title: "SQD vs Competitors"
+sidebarTitle: "SQD vs Competitors"
+description: "Compare SQD to other blockchain indexing solutions like The Graph, Envio, and Ponder"
+---
+
+This guide compares SQD to other blockchain indexing platforms to help you understand our unique advantages and make an informed decision.
+
+## SQD vs The Graph
+
+[The Graph](https://thegraph.com) is the most established blockchain indexing protocol. Here's how SQD compares:
+
+### Architecture Philosophy
+
+<Tabs>
+<Tab title="The Graph">
+**Black-Box Execution Model**
+
+The Graph uses a closed execution model:
+
+- Subgraphs are compiled to WASM
+- Data comes directly from archival nodes
+- Postgres database is sealed (GraphQL-only access)
+- AssemblyScript language (compiled to WASM)
+- Fixed data flow and processing model
+
+```typescript
+// The Graph subgraph handler
+export function handleTransfer(event: TransferEvent): void {
+  let transfer = new Transfer(event.transaction.hash.toHex());
+  transfer.from = event.params.from;
+  transfer.to = event.params.to;
+  transfer.value = event.params.value;
+  transfer.save(); // Must use the built-in save pattern
+}
+```
+
+</Tab>
+
+<Tab title="SQD">
+**Open Modular Architecture**
+
+SQD uses an open, flexible approach:
+
+- Separated data layer (SQD Network/Portal)
+- Client-side processing in TypeScript
+- Multiple data target options
+- Full database access (not sealed)
+- Extensible with custom logic
+
+```typescript
+// SQD processor handler
+processor.run(db, async (ctx) => {
+  const transfers = [];
+  for (let block of ctx.blocks) {
+    for (let log of block.logs) {
+      let { from, to, value } = abi.events.Transfer.decode(log);
+
+      // Full flexibility: call APIs, complex logic, etc.
+      const metadata = await fetchFromIPFS(log.data);
+
+      transfers.push(new Transfer({ from, to, value, metadata }));
+    }
+  }
+  await ctx.store.insert(transfers); // Or use raw SQL, or any storage
+});
+```
+
+</Tab>
+</Tabs>
+
+### Feature Matrix
+
+|                                      |                         SQD (Portal + Squid SDK)                          |             The Graph             |
+| :----------------------------------: | :-----------------------------------------------------------------------: | :-------------------------------: |
+|       **Programming language**       |                                TypeScript                                 | AssemblyScript (compiled to WASM) |
+|          **Indexing speed**          |                                ~1k-50k bps                                |           ~100-150 bps            |
+|       **ABI-based generator**        |                                    Yes                                    |                Yes                |
+| **Real-time indexing** (unfinalized) |                                    Yes                                    |                No                 |
+|          **Off-chain data**          |                                    Yes                                    |                No                 |
+|           **Data targets**           |                               Customizable                                |           Postgres-only           |
+|    **Customizable DB migrations**    |                                    Yes                                    |                No                 |
+|    **Factory contract indexing**     |                            Yes, via wildcards                             |                Yes                |
+|     **Multi-contract indexing**      |                                    Yes                                    |              Limited              |
+|      **Analytic data targets**       |                          BigQuery, Parquet, CSV                           |                No                 |
+|           **Local setup**            |                                   Easy                                    |      Requires archival node       |
+|           **GraphQL API**            |                           Generated from schema                           |       Generated from schema       |
+|   **Custom resolvers & mutations**   |                                    Yes                                    |                No                 |
+|          **Subscriptions**           |                                    Yes                                    |          Via middleware           |
+|          **Hosted service**          |                                    Yes                                    |        Yes (being sunset)         |
+|       **Secret env variables**       |                                    Yes                                    |                No                 |
+|             **Payment**              |                            Fiat, subscription                             |        GRT, pay-per-query         |
+|         **Decentralization**         | Decentralized data sourcing via SQD Network, opt-in decentralized targets |         The Graph network         |
+
+### Performance Comparison
+
+<Tabs>
+<Tab title="Indexing Speed">
+**SQD: 1,000-50,000 blocks/second**
+- Optimized data retrieval from SQD Network
+- Efficient batch processing
+- Parallel processing support
+
+**The Graph: 100-150 blocks/second**
+
+- Direct archival node queries
+- Sequential processing model
+- WASM execution overhead
+
+<Tip>
+For a large NFT collection starting from genesis, SQD can complete initial sync in minutes vs. hours with The Graph.
+</Tip>
+</Tab>
+
+<Tab title="Development Speed">
+**SQD:**
+```bash
+sqd init my-indexer -t erc721
+cd my-indexer
+npm install
+docker compose up -d
+npm run build && node -r dotenv/config lib/main.js
+# Running in ~2 minutes
+```
+
+**The Graph:**
+
+```bash
+graph init my-subgraph
+cd my-subgraph
+npm install
+# Need to set up and sync archival node (hours/days)
+# Or wait for hosted service deployment
+graph deploy
+```
+
+</Tab>
+</Tabs>
+
+### Cost Comparison
+
+<Tabs>
+<Tab title="SQD">
+**Subscription-Based Pricing**
+
+- Predictable monthly costs
+- Pay for compute resources, not queries
+- Free tier available for development
+- Enterprise plans for production
+
+[View SQD Cloud pricing](/en/cloud/pricing/overview)
+
+</Tab>
+
+<Tab title="The Graph">
+**Pay-Per-Query Model**
+
+- Pay in GRT tokens per query
+- Costs vary with usage
+- Requires managing GRT token balance
+- Hosted service being sunset
+
+</Tab>
+</Tabs>
+
+## SQD vs Envio
+
+[Envio](https://envio.dev) is a newer indexing framework focused on performance and developer experience.
+
+<Warning>
+  Detailed comparison coming soon. The table below contains placeholder
+  information pending comprehensive research.
+</Warning>
+
+| Feature                  | SQD                          | Envio               |
+| ------------------------ | ---------------------------- | ------------------- |
+| **Programming Language** | TypeScript                   | ReScript/TypeScript |
+| **Indexing Speed**       | ~1k-50k bps                  | TBD                 |
+| **Data Source**          | SQD Network + RPC            | TBD                 |
+| **Database Options**     | PostgreSQL, BigQuery, Files  | TBD                 |
+| **GraphQL API**          | Auto-generated               | TBD                 |
+| **Real-time Indexing**   | Yes (unfinalized blocks)     | TBD                 |
+| **Multi-chain Support**  | EVM, Substrate, Solana, Fuel | TBD                 |
+| **Local Development**    | Docker Compose included      | TBD                 |
+| **Cloud Deployment**     | SQD Cloud                    | TBD                 |
+| **Pricing Model**        | Subscription-based           | TBD                 |
+
+<Note>
+  We're actively researching Envio's capabilities. If you have experience with
+  both platforms, [contribute to this
+  comparison](https://github.com/subsquid/squid-sdk).
+</Note>
+
+## SQD vs Ponder
+
+[Ponder](https://ponder.sh) is a TypeScript-first indexing framework with a focus on simplicity.
+
+<Warning>
+  Detailed comparison coming soon. The table below contains placeholder
+  information pending comprehensive research.
+</Warning>
+
+| Feature                  | SQD                          | Ponder     |
+| ------------------------ | ---------------------------- | ---------- |
+| **Programming Language** | TypeScript                   | TypeScript |
+| **Indexing Speed**       | ~1k-50k bps                  | TBD        |
+| **Data Source**          | SQD Network + RPC            | TBD        |
+| **Database Options**     | PostgreSQL, BigQuery, Files  | TBD        |
+| **GraphQL API**          | Auto-generated               | TBD        |
+| **Real-time Indexing**   | Yes (unfinalized blocks)     | TBD        |
+| **Multi-chain Support**  | EVM, Substrate, Solana, Fuel | TBD        |
+| **Local Development**    | Docker Compose included      | TBD        |
+| **Cloud Deployment**     | SQD Cloud                    | TBD        |
+| **Pricing Model**        | Subscription-based           | TBD        |
+
+<Note>
+  We're actively researching Ponder's capabilities. If you have experience with
+  both platforms, [contribute to this
+  comparison](https://github.com/subsquid/squid-sdk).
+</Note>
+
+## Key Differentiators for SQD
+
+Across all comparisons, SQD offers unique advantages:
+
+<CardGroup cols={2}>
+<Card title="Modular Architecture" icon="cubes">
+  Separate data layer (Portal) from processing (SDKs) for maximum flexibility
+</Card>
+
+<Card title="Multiple SDKs" icon="code">
+  Choose between Pipes (lightweight) and Squid (full framework) based on your
+  needs
+</Card>
+
+<Card title="Multi-Chain Native" icon="link">
+  First-class support for EVM, Substrate, Solana, Fuel, Tron, and Starknet
+</Card>
+
+<Card title="Performance Focused" icon="gauge-high">
+  10-50x faster than RPC, optimized batch processing
+</Card>
+
+<Card title="TypeScript Native" icon="code">
+  Full TypeScript support, not compiled or constrained languages
+</Card>
+
+<Card title="Flexible Data Targets" icon="database">
+  PostgreSQL, BigQuery, CSV, JSON, Parquet, or custom destinations
+</Card>
+
+<Card title="Open Development Model" icon="code-branch">
+  Full database access, external APIs, custom logic, IPFS integration
+</Card>
+
+<Card title="Predictable Pricing" icon="dollar-sign">
+  Subscription-based costs, not per-query charges
+</Card>
+</CardGroup>
+
+## Migration Guides
+
+If you're considering migrating from another platform to SQD:
+
+<CardGroup cols={2}>
+<Card title="Migrate from The Graph" icon="arrow-right" href="/en/sdk/squid-sdk/evm/guides/migration/migrate-from-thegraph">
+  Step-by-step guide to migrate your subgraph to SQD
+</Card>
+
+<Card title="Contact Us" icon="message" href="https://t.me/HydraDevs">
+  Get personalized migration support from our team
+</Card>
+</CardGroup>
+
+## Next Steps
+
+Ready to try SQD? Choose your starting point:
+
+<CardGroup cols={3}>
+<Card title="Portal Quickstart" icon="network-wired" href="/en/portal/evm/quickstart">
+  Start with raw data access
+</Card>
+
+<Card
+  title="Pipes SDK Quickstart"
+  icon="bars-staggered"
+  href="/en/sdk/pipes-sdk/quickstart"
+>
+  Build a custom pipeline
+</Card>
+
+<Card title="Squid SDK Quickstart" icon="server" href="/en/sdk/squid-sdk/evm/quickstart">
+  Create a full-stack indexer
+</Card>
+</CardGroup>

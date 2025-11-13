@@ -10,56 +10,56 @@ export const CostCalculator = () => {
   const rpcFreeMonthly = 2000000;
   const hoursPerMonth = 720;
 
-  const clampInt = (v, min, max = Number.MAX_SAFE_INTEGER) =>
-    Number.isFinite(v) ? Math.min(Math.max(Math.trunc(v), min), max) : min;
-  const clampFloat = (v, min, max = Number.MAX_SAFE_INTEGER) =>
-    Number.isFinite(v) ? Math.min(Math.max(v, min), max) : min;
-  const formatCurrency = (n) =>
-    new Intl.NumberFormat(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(n);
+const clampInt = (v, min, max = Number.MAX_SAFE_INTEGER) =>
+Number.isFinite(v) ? Math.min(Math.max(Math.trunc(v), min), max) : min;
+const clampFloat = (v, min, max = Number.MAX_SAFE_INTEGER) =>
+Number.isFinite(v) ? Math.min(Math.max(v, min), max) : min;
+const formatCurrency = (n) =>
+new Intl.NumberFormat(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(n);
 
-  const [squidType, setSquidType] = useState("dedicated");
-  const [apiProfile, setApiProfile] = useState("small");
-  const [apiReplicas, setApiReplicas] = useState(1);
-  const [processorProfile, setProcessorProfile] = useState("small");
-  const [processorCount, setProcessorCount] = useState(1);
-  const [databaseProfile, setDatabaseProfile] = useState("small");
-  const [storageGB, setStorageGB] = useState(50);
-  const [rpcRequestsM, setRpcRequestsM] = useState(0);
-  const [hibernated, setHibernated] = useState(false);
+const [squidType, setSquidType] = useState("dedicated");
+const [apiProfile, setApiProfile] = useState("small");
+const [apiReplicas, setApiReplicas] = useState(1);
+const [processorProfile, setProcessorProfile] = useState("small");
+const [processorCount, setProcessorCount] = useState(1);
+const [databaseProfile, setDatabaseProfile] = useState("small");
+const [storageGB, setStorageGB] = useState(50);
+const [rpcRequestsM, setRpcRequestsM] = useState(0);
+const [hibernated, setHibernated] = useState(false);
 
-  const rpcRequests = (rpcRequestsM || 0) * 1000000;
+const rpcRequests = (rpcRequestsM || 0) \* 1000000;
 
-  const computeCost = (() => {
-    if (hibernated) return 0;
-    if (squidType === "collocated") {
-      return collocatedComputePrice * hoursPerMonth;
-    }
-    const apiCost = computePrices.api[apiProfile] * clampInt(apiReplicas || 1, 1) * hoursPerMonth;
-    const processorCost = computePrices.processor[processorProfile] * clampInt(processorCount || 1, 1) * hoursPerMonth;
-    const databaseCost = computePrices.database[databaseProfile] * hoursPerMonth;
-    return apiCost + processorCost + databaseCost;
-  })();
+const computeCost = (() => {
+if (hibernated) return 0;
+if (squidType === "collocated") {
+return collocatedComputePrice _ hoursPerMonth;
+}
+const apiCost = computePrices.api[apiProfile] _ clampInt(apiReplicas || 1, 1) _ hoursPerMonth;
+const processorCost = computePrices.processor[processorProfile] _ clampInt(processorCount || 1, 1) _ hoursPerMonth;
+const databaseCost = computePrices.database[databaseProfile] _ hoursPerMonth;
+return apiCost + processorCost + databaseCost;
+})();
 
-  const storageCost = clampFloat(storageGB || 0, 0) * storagePricePerGB;
+const storageCost = clampFloat(storageGB || 0, 0) \* storagePricePerGB;
 
-  const rpcCost = (() => {
-    const req = clampInt(rpcRequests, 0);
-    if (req <= rpcFreeMonthly) return 0;
-    const excess = req - rpcFreeMonthly;
-    return (excess / 1000000) * rpcPricePerMillion;
-  })();
+const rpcCost = (() => {
+const req = clampInt(rpcRequests, 0);
+if (req <= rpcFreeMonthly) return 0;
+const excess = req - rpcFreeMonthly;
+return (excess / 1000000) \* rpcPricePerMillion;
+})();
 
-  const totalCost = computeCost + storageCost + rpcCost;
+const totalCost = computeCost + storageCost + rpcCost;
 
-  const profileOptions = ["small", "medium", "large", "xlarge", "2xlarge"];
+const profileOptions = ["small", "medium", "large", "xlarge", "2xlarge"];
 
-  return (
-    <div className="not-prose w-full my-6 sm:my-8">
-      <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-900 shadow-sm">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Cost Calculator</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Estimate your monthly costs</p>
-        </div>
+return (
+<div className="not-prose w-full my-6 sm:my-8">
+<div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-white dark:bg-gray-900 shadow-sm">
+<div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+<h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Cost Calculator</h3>
+<p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Estimate your monthly costs</p>
+</div>
 
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -248,5 +248,6 @@ export const CostCalculator = () => {
         </div>
       </div>
     </div>
-  );
+
+);
 };

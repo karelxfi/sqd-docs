@@ -67,7 +67,8 @@
                     "icon": "circle-info",
                     "pages": [
                       "en/sdk/overview",
-                      "en/sdk/comparison"
+                      "en/sdk/options-comparison",
+                      "en/sdk/competitor-comparison"
                     ]
                   },
                   {
@@ -91,8 +92,8 @@
                       },
                       {
                         "group": "API Reference",
-                        "openapi": "en/api/evm/openapi.yaml",
-                        "directory": "api",
+                        "openapi": "en/api/build/evm/openapi.yaml",
+                        "directory": "api/build",
                         "pages": [
                           "GET /metadata",
                           "POST /stream",
@@ -286,8 +287,8 @@
                       },
                       {
                         "group": "API Reference",
-                        "openapi": "en/api/solana/openapi.yaml",
-                        "directory": "api",
+                        "openapi": "en/api/build/solana/openapi.yaml",
+                        "directory": "api/build/solana",
                         "pages": [
                           "GET /metadata",
                           "POST /stream",
@@ -681,8 +682,8 @@
                   {
                     "group": "Portal API Reference",
                     "icon": "code",
-                    "openapi": "en/api/evm/openapi.yaml",
-                    "directory": "api",
+                    "openapi": "en/api/catalog/evm/openapi.yaml",
+                    "directory": "api/catalog",
                     "pages": [
                       "GET /metadata",
                       "POST /stream",
@@ -980,8 +981,8 @@
                   {
                     "group": "Portal API Reference",
                     "icon": "code",
-                    "openapi": "en/api/solana/openapi.yaml",
-                    "directory": "api/solana",
+                    "openapi": "en/api/catalog/solana/openapi.yaml",
+                    "directory": "api/catalog/solana",
                     "pages": [
                       "GET /metadata",
                       "POST /stream",
@@ -1721,6 +1722,15 @@
                   "en/other/glossary/glossary",
                   "en/other/faq",
                   "en/other/contracts"
+                ]
+              },
+              {
+                "group": "SQD 101",
+                "icon": "graduation-cap",
+                "pages": [
+                  "en/other/sqd-101/portal",
+                  "en/other/sqd-101/network",
+                  "en/other/sqd-101/sdk"
                 ]
               },
               {

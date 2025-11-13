@@ -1,111 +1,60 @@
 ---
 title: "Overview"
 sidebarTitle: "Overview"
-description: "TypeScript libraries for building blockchain data pipelines with transformation, decoding, and persistence"
+description: "Choose how you want to access blockchain data: Portal API, Pipes SDK, or Squid SDK"
 mode: "wide"
 ---
 
-# SDK overview
+SQD offers three ways to access blockchain data. Choose the one that fits your needs.
 
-**TypeScript libraries that transform raw Portal data into actionable insights**
+<CardGroup cols={3}>
+  <Card title="Portal API" icon="network-wired" href="/en/portal/evm/quickstart">
+    Direct HTTP access to raw blockchain data. Query using simple HTTP requests in any programming language.
 
-Our SDK provides type-safe TypeScript libraries for building blockchain data pipelines. While Portal gives you raw blockchain data, the SDK adds data transformation, decoding, and persistence capabilities on top of it.
+**Key features:**
+- Language-agnostic HTTP API
+- 10-50x faster than RPC
+- Minimal setup required
+- Full control over processing
 
-## How SDK Relates to Portal
-
-<Frame>
-  <img
-    src="/images/portal-overview.gif"
-    alt="Portal data flow showing raw blockchain data being transformed by SDK and stored in your database"
-  />
-</Frame>
-
-- **Portal** provides the raw blockchain data through HTTP API
-- **SDK** uses Portal as its data source and adds:
-  - Event and transaction decoding
-  - Type-safe data transformation
-  - Batch processing capabilities
-  - Database persistence
-  - Real-time data ingestion
-
-<Info>
-  SDK uses Portal under the hood. When you use SDK, you're still accessing
-  blockchain data through Portal—the SDK just makes it easier to work with.
-</Info>
-
-## Key Benefits
-
-- **Type Safety** - Full TypeScript support with auto-generated types from ABIs
-- **Automatic Decoding** - Decode logs, transactions, and state changes automatically
-- **Flexible Persistence** - Write to PostgreSQL, ClickHouse, files, or custom targets
-- **High Performance** - Optimized batch processing with backpressure handling
-- **Developer Experience** - Hot reload, local development, comprehensive tooling
-
-## Two SDK Options
-
-SQD offers two SDKs to match your needs:
-
-<Frame>
-  <img
-    src="/images/sqd-comp.gif"
-    alt="Comparison diagram showing Pipes SDK (lightweight and flexible) vs Squid SDK (full-featured framework) architectures"
-  />
-</Frame>
-
-<CardGroup cols={2}>
-  <Card title="Pipes SDK" icon="pipe" href="/en/sdk/pipes-sdk/quickstart">
-    <strong>Streaming library for custom pipelines</strong>
-
-    <ul>
-      <li>Lightweight and flexible</li>
-      <li>Stream data to any target</li>
-      <li>Maintain full control over data flow</li>
-      <li>Ideal for ETL pipelines</li>
-    </ul>
-
-    <p>
-      <strong>Best for:</strong> Custom data pipelines, analytics, non-PostgreSQL targets
-    </p>
-
+**Best for:** Analytics, data lakes, custom pipelines in any language
   </Card>
 
-  <Card title="Squid SDK" icon="squid" href="/en/sdk/squid-sdk/evm/quickstart">
-    <strong>Complete framework with GraphQL</strong>
+  <Card title="Pipes SDK" icon="bars-staggered" href="/en/sdk/pipes-sdk/quickstart">
+    Lightweight TypeScript streaming library for custom data pipelines with automatic decoding and type safety.
 
-    <ul>
-      <li>Full-featured indexer framework</li>
-      <li>Built-in PostgreSQL + GraphQL</li>
-      <li>Schema-driven development workflow</li>
-      <li>Cloud deployment ready</li>
-    </ul>
+**Key features:**
+- Flexible streaming architecture
+- Use any database or target
+- Full control over data flow
+- Minimal dependencies
 
-    <p>
-      <strong>Best for:</strong> Full-stack indexers, GraphQL APIs, traditional web apps
-    </p>
+**Best for:** Custom pipelines, existing codebases, non-PostgreSQL databases
+  </Card>
 
+  <Card title="Squid SDK" icon="server" href="/en/sdk/squid-sdk/evm/quickstart">
+    Complete TypeScript framework with built-in PostgreSQL and auto-generated GraphQL API.
+
+**Key features:**
+- Built-in PostgreSQL + GraphQL
+- Auto-generated types and migrations
+- CLI tools and scaffolding
+- Cloud deployment ready
+
+**Best for:** dApp backends, GraphQL APIs, rapid development
   </Card>
 </CardGroup>
 
-## Choosing the Right Tool
+---
 
-Use **SDKs** when you need automatic ABI decoding, data transformation, database persistence, or type-safe development. Use **Portal** directly for non-TypeScript languages, maximum HTTP control, or simple data extraction. For detailed comparisons between Portal, Pipes SDK, and Squid SDK, see our [comparison guide](/en/sdk/comparison).
+## Need Help Deciding?
 
-## Next Steps
-
-<CardGroup cols={3}>
-  <Card title="Choose Your SDK" icon="fork" href="/en/sdk/comparison">
-    Compare Pipes SDK and Squid SDK in detail.
+<CardGroup cols={2}>
+  <Card title="Compare SQD Options" icon="scale-balanced" href="/en/sdk/options-comparison">
+    Detailed comparison of Portal API, Pipes SDK, and Squid SDK with decision matrices and use cases
   </Card>
-
-  <Card title="Pipes Quickstart" icon="pipe" href="/en/sdk/pipes-sdk/quickstart">
-    Build your first data pipeline with Pipes SDK.
-  </Card>
-
-  <Card
-    title="Squid Quickstart"
-    icon="squid"
-    href="/en/sdk/squid-sdk/evm/quickstart"
-  >
-    Create a full-stack indexer with Squid SDK.
+  
+  <Card title="Compare vs Competitors" icon="chart-line" href="/en/sdk/competitor-comparison">
+    See how SQD compares to The Graph, Envio, Ponder, and other indexing platforms
   </Card>
 </CardGroup>
