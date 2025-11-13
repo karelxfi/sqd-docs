@@ -684,7 +684,7 @@
             ]
           },
           {
-            "tab": "Supported Networks",
+            "tab": "Networks & Schemas",
             "icon": "database",
             "dropdowns": [
               {
