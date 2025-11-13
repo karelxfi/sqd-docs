@@ -176,6 +176,27 @@ write: async ({ ctx: { profiler }, read }) => {
 };
 ```
 
+## Pipeline Monitoring UI
+
+Visualize pipeline metrics and performance in real-time.
+
+```bash
+npm install @sqd-pipes/pipe-ui
+# or
+pnpm add @sqd-pipes/pipe-ui
+```
+
+The `@sqd-pipes/pipe-ui` package provides a web-based dashboard for monitoring your pipeline's performance, profiling data, and metrics.
+
+```ts
+import { startPipeUI } from "@sqd-pipes/pipe-ui";
+
+// Start the monitoring UI on port 3000
+startPipeUI({ port: 3000 });
+```
+
+Access the dashboard at `http://localhost:3000` to view real-time metrics, profiling data, and pipeline status.
+
 ## Indexing Latency
 
 Measure time from block production to indexing.
@@ -330,17 +351,25 @@ await pipeline.pipeTo(target)
     Factory examples
   </Card>
 
-  <Card
-    title="Performance"
-    icon="rocket"
-    href="/en/sdk/pipes-sdk/examples/performance"
-  >
-    Performance examples
-  </Card>
+{" "}
 
-  <Card title="Reference" icon="book" href="/en/sdk/pipes-sdk/reference/reference">
-    Full API reference
-  </Card>
+<Card
+  title="Performance"
+  icon="rocket"
+  href="/en/sdk/pipes-sdk/examples/performance"
+>
+  Performance examples
+</Card>
+
+{" "}
+
+<Card
+  title="Reference"
+  icon="book"
+  href="/en/sdk/pipes-sdk/reference/reference"
+>
+  Full API reference
+</Card>
 
   <Card
     title="Stateful Indexing"
@@ -350,8 +379,3 @@ await pipeline.pipeTo(target)
     Handle cursors and forks
   </Card>
 </CardGroup>
-
-
-
-
-

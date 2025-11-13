@@ -1,0 +1,713 @@
+---
+title: "Cursor AI Rules"
+description: "Comprehensive AI coding rules for Pipes SDK development in Cursor"
+---
+
+Copy the code block below to your `.cursorrules` file or create a new file in `.cursor/rules/pipes-sdk.md`:
+
+````markdown
+# Pipes SDK Development Rules
+
+## Architecture
+
+- Use Source → Transformer → Target pipeline pattern
+- Chain with .pipe() for single, .pipeComposite() for multiple transformers
+- pipeTo() is terminal - cannot continue piping after
+
+## Query Building
+
+- Always use EvmQueryBuilder or SolanaQueryBuilder
+- block.number and block.hash are REQUIRED fields
+- Only request fields you need for performance
+
+## Decoders
+
+- Prefer createEvmDecoder/createSolanaInstructionDecoder over manual queries
+- Decoders automatically build queries - no need for separate QueryBuilder
+- Always include profiler: { id: 'meaningful-name' }
+- Implement onError handler for graceful failures
+
+## Sources
+
+- Use finalized streams in production: /datasets/{network}/finalized
+- Add cache adapter for development: sqliteCacheAdapter({ path: './cache.sqlite' })
+- Resume with cursor: { blockNumber: lastProcessed }
+
+## Targets
+
+- Always implement onRollback handler for production
+- Save cursor with data in same transaction
+- Use batch processing for performance (batch 1000+ items)
+- Log errors with context: ctx.logger.error({ error, cursor }, 'message')
+
+## Factory Pattern
+
+- Use createEvmFactory for dynamic contract discovery
+- Pass factory to decoder contracts parameter
+- Access factory event via decoded.factory?.event
+
+## Type Safety
+
+- Import types: DecodedEvent, EvmPortalData, Transformer
+- Let TypeScript infer event types from ABI
+- Type transformer inputs/outputs explicitly
+
+## Error Handling
+
+- Implement onError in decoders for decode failures
+- Wrap database operations in try-catch
+- Re-throw errors to halt pipeline on critical failures
+- Log with structured context: { error, cursor, data }
+
+## Performance
+
+- Minimize field selection in addFields()
+- Use cache during development
+- Batch database writes (1000+ items)
+- Enable profiler for all components
+
+## Observability
+
+- Add profiler to all decoders and transformers
+- Use ctx.logger for structured logging
+- Start metrics server: createMetricsServer({ port: 9090 })
+- Log at appropriate levels: debug, info, warn, error
+
+## Common Patterns
+
+```typescript
+// Basic pipeline
+const source = createEvmPortalSource({ portal, query });
+const decoder = createEvmDecoder({ range, contracts, events });
+const target = createTarget({ write, onRollback });
+await source.pipe(decoder).pipeTo(target);
+
+// Composite transformers
+const stream = source.pipeComposite({
+  transfers: transferTransformer,
+  swaps: swapTransformer,
+});
+
+// Factory pattern
+const factory = createEvmFactory({ address, event, range });
+const decoder = createEvmDecoder({ range, contracts: factory, events });
+
+// Stateful target
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    for await (const { data, cursor } of read()) {
+      await db.transaction(async (tx) => {
+        await tx.insert(data);
+        await tx.updateCursor(cursor);
+      });
+    }
+  },
+  onRollback: async ({ ctx, cursor }) => {
+    await db.deleteAfter(cursor.number);
+  },
+});
+```
+````
+
+## Anti-patterns
+
+- ❌ Manual query building when using decoders
+- ❌ Missing onRollback in production targets
+- ❌ Over-fetching fields in queries
+- ❌ No error handling in targets
+- ❌ Missing cursor persistence
+- ❌ Using non-finalized streams in production without rollback handling
+
+````
+
+---
+
+## Detailed Documentation
+
+### Overview
+
+Pipes SDK is a TypeScript library for streaming blockchain data from Portal API, transforming it, and persisting to any target. The architecture follows a composable pipeline pattern: **Source → Transformer → Target**.
+
+## Core Architecture Rules
+
+### Pipeline Pattern
+
+Always structure code as a pipeline of composable components:
+
+```ts
+// Basic pattern
+const source = createEvmPortalSource({ portal, query })
+const transformer = createTransformer({ transform })
+const target = createTarget({ write })
+
+await source.pipe(transformer).pipeTo(target)
+
+// Or chain directly
+await source
+  .pipe(decoder)
+  .pipe(transformer)
+  .pipeTo(target)
+````
+
+<Warning>
+  `pipeTo()` is terminal - you cannot continue piping after calling it.
+</Warning>
+
+### Query Builder
+
+Always use `EvmQueryBuilder` or `SolanaQueryBuilder` for data queries:
+
+```ts
+import { EvmQueryBuilder } from "@sqd-pipes/pipes/evm";
+
+const query = new EvmQueryBuilder()
+  .addFields({
+    block: { number: true, hash: true }, // REQUIRED
+    log: { address: true, topics: true, data: true },
+  })
+  .addLog({
+    request: { address: ["0x..."], topic0: ["0x..."] },
+    range: { from: 20000000 },
+  });
+```
+
+<Note>
+  `block.number` and `block.hash` are always required in field selection.
+</Note>
+
+### Decoders Over Manual Queries
+
+When decoding events or instructions, prefer built-in decoders over manual query building:
+
+```ts
+// GOOD: Use decoder (automatically builds query)
+const decoder = createEvmDecoder({
+  range: { from: 20000000 },
+  contracts: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+  events: { transfer: commonAbis.erc20.events.Transfer },
+});
+
+// AVOID: Manual query + manual decoding
+const query = new EvmQueryBuilder()
+  .addFields({
+    /* ... */
+  })
+  .addLog({
+    /* ... */
+  });
+```
+
+## Source Configuration
+
+### Portal Source Creation
+
+```ts
+import { createEvmPortalSource } from "@sqd-pipes/pipes/evm";
+
+const source = createEvmPortalSource({
+  portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
+  query: queryBuilder, // optional if using decoder
+  cursor: { blockNumber: 20000000 }, // resume from block
+  cache: {
+    adapter: await sqliteCacheAdapter({ path: "./cache.sqlite" }),
+  },
+});
+```
+
+<Tip>
+  Use cache adapters during development to avoid re-fetching data on restarts.
+</Tip>
+
+### Finalized vs Real-time Streams
+
+```ts
+// Development: Real-time with potential reorgs
+portal: "https://portal.sqd.dev/datasets/ethereum-mainnet";
+
+// Production: Finalized blocks only
+portal: "https://portal.sqd.dev/datasets/ethereum-mainnet/finalized";
+```
+
+<Warning>
+  Always use finalized streams in production or implement `onRollback` handlers.
+</Warning>
+
+## Decoder Patterns
+
+### EVM Event Decoding
+
+```ts
+import { createEvmDecoder, commonAbis } from "@sqd-pipes/pipes/evm";
+
+const decoder = createEvmDecoder({
+  range: { from: 20000000, to: 20001000 },
+  contracts: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"],
+  events: {
+    transfer: commonAbis.erc20.events.Transfer,
+    approval: commonAbis.erc20.events.Approval,
+  },
+  profiler: { id: "erc20-decoder" },
+  onError: async (ctx, error) => {
+    ctx.logger.error(error, "Decoding failed");
+  },
+});
+
+// Access decoded data
+for await (const { data } of source.pipe(decoder)) {
+  data.transfer; // DecodedEvent<Transfer>[]
+  data.approval; // DecodedEvent<Approval>[]
+}
+```
+
+### Custom ABI Usage
+
+```ts
+import { Abi } from "@subsquid/evm-abi";
+
+const customAbi = Abi.fromJson([
+  /* ABI JSON */
+]);
+
+const decoder = createEvmDecoder({
+  range: { from: "latest" },
+  contracts: ["0x..."],
+  events: {
+    myEvent: customAbi.events.MyEvent,
+  },
+});
+```
+
+### Solana Instruction Decoding
+
+```ts
+import { createSolanaInstructionDecoder } from "@sqd-pipes/pipes/solana";
+
+const decoder = createSolanaInstructionDecoder({
+  range: { from: 250000000 },
+  programs: ["JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"],
+  instructions: {
+    swap: jupiterAbi.instructions.swap,
+  },
+});
+```
+
+## Transformer Patterns
+
+### Basic Transformer
+
+```ts
+import { createTransformer } from "@sqd-pipes/pipes";
+
+const transformer = createTransformer({
+  transform: async (data) => {
+    return data.blocks.flatMap((block) =>
+      block.logs.map((log) => ({
+        blockNumber: block.header.number,
+        address: log.address,
+        data: log.data,
+      }))
+    );
+  },
+});
+```
+
+### Composite Transformers
+
+Use `pipeComposite()` for multiple parallel transformers:
+
+```ts
+const compositeStream = source.pipeComposite({
+  transfers: createTransformer({
+    transform: async (data) => extractTransfers(data),
+  }),
+  swaps: createTransformer({
+    transform: async (data) => extractSwaps(data),
+  }),
+});
+
+for await (const { data } of compositeStream) {
+  data.transfers; // Transfer[]
+  data.swaps; // Swap[]
+}
+```
+
+## Target Patterns
+
+### Basic Target
+
+```ts
+import { createTarget } from "@sqd-pipes/pipes";
+
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    for await (const { data, cursor } of read()) {
+      await database.save(data);
+      await database.saveCursor(cursor);
+    }
+  },
+});
+```
+
+### Stateful Target with Rollback Handling
+
+```ts
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    for await (const { data, cursor } of read()) {
+      await db.transaction(async (tx) => {
+        await tx.insert(data);
+        await tx.updateCursor(cursor);
+      });
+    }
+  },
+  onRollback: async ({ ctx, cursor }) => {
+    ctx.logger.warn({ cursor }, "Rolling back to cursor");
+    await db.deleteDataAfter(cursor.number);
+  },
+});
+```
+
+<Warning>
+  Always implement `onRollback` for production targets to handle chain
+  reorganizations.
+</Warning>
+
+### ClickHouse Target
+
+```ts
+import { createClickhouseTarget } from "@sqd-pipes/pipes/targets/clickhouse";
+
+const target = createClickhouseTarget({
+  client: clickhouse,
+  table: "transfers",
+  columns: {
+    block_number: "UInt64",
+    timestamp: "DateTime",
+    from_address: "String",
+    to_address: "String",
+    value: "UInt256",
+  },
+  transform: (event) => ({
+    block_number: event.blockNumber,
+    timestamp: event.timestamp,
+    from_address: event.event.from,
+    to_address: event.event.to,
+    value: event.event.value.toString(),
+  }),
+});
+```
+
+## Factory Pattern
+
+Use factories for dynamic contract discovery (e.g., Uniswap pairs):
+
+```ts
+import { createEvmFactory } from "@sqd-pipes/pipes/evm";
+
+const factory = createEvmFactory({
+  address: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f", // Uniswap V2
+  event: uniswapV2Abi.events.PairCreated,
+  range: { from: 10000835 },
+});
+
+const decoder = createEvmDecoder({
+  range: { from: 10000835 },
+  contracts: factory, // Pass factory instead of addresses
+  events: {
+    swap: uniswapV2PairAbi.events.Swap,
+    sync: uniswapV2PairAbi.events.Sync,
+  },
+});
+
+// Access factory event in decoded data
+for await (const { data } of source.pipe(decoder)) {
+  for (const swap of data.swap) {
+    swap.factory?.event; // PairCreated event
+    swap.factory?.contract; // Pair address
+  }
+}
+```
+
+## Type Safety
+
+### Proper Generic Usage
+
+```ts
+import type {
+  DecodedEvent,
+  EvmPortalData,
+  Transformer,
+} from "@sqd-pipes/pipes/evm";
+
+// Type your transformers
+const transformer: Transformer<
+  EvmPortalData<typeof fields>,
+  MyOutputType
+> = createTransformer({
+  transform: async (data) => {
+    // data is properly typed
+    return processData(data);
+  },
+});
+```
+
+### Event Type Inference
+
+```ts
+// Types are automatically inferred
+const decoder = createEvmDecoder({
+  range: { from: 20000000 },
+  contracts: ["0x..."],
+  events: { transfer: commonAbis.erc20.events.Transfer },
+});
+
+// data.transfer is typed as DecodedEvent<Transfer>[]
+for await (const { data } of source.pipe(decoder)) {
+  data.transfer.forEach((t) => {
+    t.event.from; // string (typed)
+    t.event.to; // string (typed)
+    t.event.value; // bigint (typed)
+  });
+}
+```
+
+## Error Handling
+
+### Decoder Error Handling
+
+```ts
+const decoder = createEvmDecoder({
+  range: { from: 20000000 },
+  contracts: ["0x..."],
+  events: { transfer: commonAbis.erc20.events.Transfer },
+  onError: async (ctx, error) => {
+    ctx.logger.error({ error }, "Failed to decode event");
+    // Continue processing or throw to halt
+  },
+});
+```
+
+### Target Error Handling
+
+```ts
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    for await (const { data, cursor } of read()) {
+      try {
+        await database.save(data);
+      } catch (error) {
+        ctx.logger.error({ error, cursor }, "Write failed");
+        throw error; // Re-throw to halt pipeline
+      }
+    }
+  },
+});
+```
+
+## Observability
+
+### Profiler Usage
+
+```ts
+const decoder = createEvmDecoder({
+  range: { from: 20000000 },
+  contracts: ["0x..."],
+  events: { transfer: commonAbis.erc20.events.Transfer },
+  profiler: { id: "transfer-decoder" },
+});
+
+const transformer = createTransformer({
+  profiler: { id: "data-transformer" },
+  transform: async (data) => processData(data),
+});
+```
+
+### Logger Access
+
+```ts
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    ctx.logger.info("Starting write operation");
+
+    for await (const { data, cursor } of read()) {
+      ctx.logger.debug({ cursor }, "Processing batch");
+      await database.save(data);
+    }
+
+    ctx.logger.info("Write operation completed");
+  },
+});
+```
+
+### Metrics Integration
+
+```ts
+import { createMetricsServer } from "@sqd-pipes/pipes";
+
+// Start metrics server
+const metricsServer = createMetricsServer({ port: 9090 });
+
+// Metrics are automatically collected from profilers
+// Access at http://localhost:9090/metrics
+```
+
+## Performance Optimization
+
+### Field Selection
+
+Only request fields you need:
+
+```ts
+// GOOD: Minimal fields
+.addFields({
+  block: { number: true, hash: true },
+  log: { address: true, topics: true, data: true }
+})
+
+// AVOID: Over-fetching
+.addFields({
+  block: { /* all fields */ },
+  log: { /* all fields */ },
+  transaction: { /* all fields */ }
+})
+```
+
+### Batch Processing
+
+```ts
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    const batch = [];
+
+    for await (const { data } of read()) {
+      batch.push(...data);
+
+      if (batch.length >= 1000) {
+        await database.batchInsert(batch);
+        batch.length = 0;
+      }
+    }
+
+    if (batch.length > 0) {
+      await database.batchInsert(batch);
+    }
+  },
+});
+```
+
+### Cache Configuration
+
+```ts
+import { sqliteCacheAdapter } from "@sqd-pipes/pipes/drivers/sqlite";
+
+const source = createEvmPortalSource({
+  portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
+  cache: {
+    adapter: await sqliteCacheAdapter({
+      path: "./cache.sqlite",
+      maxSize: 1000, // Cache last 1000 blocks
+    }),
+  },
+});
+```
+
+## Testing Patterns
+
+### Unit Testing Transformers
+
+```ts
+import { describe, it, expect } from "vitest";
+
+describe("transformer", () => {
+  it("should transform data correctly", async () => {
+    const transformer = createTransformer({
+      transform: async (data) => extractTransfers(data),
+    });
+
+    const mockData = {
+      blocks: [
+        /* mock blocks */
+      ],
+    };
+    const result = await transformer.transform(mockData);
+
+    expect(result).toHaveLength(5);
+    expect(result[0]).toHaveProperty("from");
+  });
+});
+```
+
+### Integration Testing
+
+```ts
+import { createTestBlockStream } from "@sqd-pipes/pipes/tests";
+
+const testStream = createTestBlockStream([
+  {
+    number: 1,
+    hash: "0x...",
+    logs: [
+      /* ... */
+    ],
+  },
+  {
+    number: 2,
+    hash: "0x...",
+    logs: [
+      /* ... */
+    ],
+  },
+]);
+
+const results = [];
+for await (const { data } of testStream.pipe(decoder)) {
+  results.push(data);
+}
+
+expect(results).toHaveLength(2);
+```
+
+## Common Patterns
+
+### Resume from Cursor
+
+```ts
+// Load last processed block
+const lastBlock = await database.getLastProcessedBlock();
+
+const source = createEvmPortalSource({
+  portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
+  cursor: lastBlock ? { blockNumber: lastBlock } : undefined,
+});
+```
+
+### Range-based Processing
+
+```ts
+// Process specific block range
+const decoder = createEvmDecoder({
+  range: { from: 20000000, to: 20001000 },
+  contracts: ["0x..."],
+  events: { transfer: commonAbis.erc20.events.Transfer },
+});
+
+// Process from latest
+const decoder = createEvmDecoder({
+  range: { from: "latest" },
+  contracts: ["0x..."],
+  events: { transfer: commonAbis.erc20.events.Transfer },
+});
+```
+
+### Direct Iteration
+
+```ts
+// Iterate source directly without target
+for await (const { data, cursor } of source.pipe(decoder)) {
+  console.log(`Block ${cursor.number}: ${data.transfer.length} transfers`);
+
+  for (const transfer of data.transfer) {
+    console.log(`${transfer.event.from} → ${transfer.event.to}`);
+  }
+}
+```

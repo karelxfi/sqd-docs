@@ -1,0 +1,192 @@
+---
+title: "Spray Client"
+description: "WebSocket client for real-time Solana data streaming"
+---
+
+Spray is a WebSocket-based client that streams real-time Solana blockchain data from Geyser endpoints. It provides filtered, low-latency access to blocks, transactions, instructions, and balance changes.
+
+## Installation
+
+Run Spray using Docker:
+
+```bash
+docker pull subsquid/spray:latest
+docker run -p 3000:3000 -v $(pwd)/config.yaml:/config.yaml subsquid/spray:latest /config.yaml
+```
+
+## Configuration
+
+Create a `config.yaml` file to define your data sources:
+
+```yaml
+sources:
+  mainnet:
+    url: grpc://your-geyser-endpoint:10000
+    x_token: your-token  # optional
+    x_access_token: your-access-token  # optional
+
+port: 3000  # optional, defaults to 3000
+```
+
+Multiple sources can be configured for redundancy. Spray automatically deduplicates data from multiple sources.
+
+## Subscription API
+
+Spray exposes a JSON-RPC 2.0 WebSocket API on the configured port.
+
+### Subscribe to Data
+
+**Method:** `spraySubscribe`
+
+**Request:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "spraySubscribe",
+  "params": [{
+    "includeAllBlocks": false,
+    "fields": {
+      "block": {
+        "number": true,
+        "hash": true,
+        "timestamp": true
+      },
+      "transaction": {
+        "transactionIndex": true,
+        "signatures": true,
+        "err": true,
+        "fee": true
+      },
+      "instruction": {
+        "programId": true,
+        "accounts": true,
+        "data": true
+      }
+    },
+    "transactions": [{
+      "feePayer": ["address1", "address2"]
+    }],
+    "instructions": [{
+      "programId": ["program1", "program2"],
+      "d8": ["0x0102030405060708"],
+      "a0": ["account1"]
+    }],
+    "balances": [{
+      "account": ["address1"]
+    }],
+    "tokenBalances": [{
+      "preMint": ["mint1"],
+      "postMint": ["mint2"]
+    }]
+  }]
+}
+```
+
+### Query Parameters
+
+**Top-level options:**
+- `includeAllBlocks` (boolean) - Include all block headers, not just blocks with matching transactions
+- `fields` (object) - Specify which fields to include in responses
+
+**Filter arrays:**
+- `transactions` - Array of transaction filters
+- `instructions` - Array of instruction filters
+- `balances` - Array of balance change filters
+- `tokenBalances` - Array of token balance change filters
+
+**Transaction filters:**
+- `feePayer` - Filter by fee payer addresses
+- `mentionsAccount` - Filter by any mentioned account
+- `instructions` - Include all instructions
+- `logs` - Include transaction logs
+- `balances` - Include balance changes
+- `tokenBalances` - Include token balance changes
+
+**Instruction filters:**
+- `programId` - Filter by program ID
+- `discriminator` - Filter by instruction discriminator (variable length)
+- `d1`, `d2`, `d4`, `d8` - Filter by fixed-length discriminators (1, 2, 4, 8 bytes)
+- `mentionsAccount` - Filter by any account in instruction
+- `a0` through `a15` - Filter by specific account positions
+- `isCommitted` - Filter by commitment status
+- `transaction` - Include parent transaction
+- `transactionInstructions` - Include all instructions from transaction
+- `innerInstructions` - Include inner instructions
+- `parentInstructions` - Include parent instructions
+
+**Balance filters:**
+- `account` - Filter by account address
+- `transaction` - Include parent transaction
+- `transactionInstructions` - Include transaction instructions
+
+**Token balance filters:**
+- `account` - Filter by account address
+- `preMint`, `postMint` - Filter by token mint (before/after)
+- `preProgramId`, `postProgramId` - Filter by token program
+- `preOwner`, `postOwner` - Filter by token owner
+- `transaction` - Include parent transaction
+- `transactionInstructions` - Include transaction instructions
+
+### Response Format
+
+Spray sends JSON messages for each matching block or transaction:
+
+**Block message:**
+```json
+{
+  "type": "block",
+  "slot": 123456789,
+  "header": {
+    "number": 123456789,
+    "hash": "...",
+    "timestamp": 1234567890
+  }
+}
+```
+
+**Transaction message:**
+```json
+{
+  "type": "transaction",
+  "slot": 123456789,
+  "transactionIndex": 42,
+  "transaction": {
+    "signatures": ["..."],
+    "fee": "5000"
+  },
+  "instructions": [...],
+  "balances": [...],
+  "tokenBalances": [...]
+}
+```
+
+### Unsubscribe
+
+**Method:** `sprayUnsubscribe`
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "sprayUnsubscribe",
+  "params": ["subscription_id"]
+}
+```
+
+## Metrics
+
+Spray exposes Prometheus metrics at `/metrics`:
+
+- `spray_blocks_published` - Number of blocks pushed to subscriptions
+- `spray_transactions_published` - Number of transactions pushed to subscriptions
+- `spray_last_block` - Last published block number
+- `spray_active_subscriptions` - Number of active client subscriptions
+- `spray_data_source_errors` - Number of data source connection errors
+- `spray_mapping_errors` - Number of data mapping errors
+
+## Source Code
+
+Spray is open source and available at [github.com/subsquid/spray](https://github.com/subsquid/spray).
+

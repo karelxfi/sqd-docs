@@ -1,0 +1,53 @@
+---
+title: "Overview"
+description: "Introduction to local EVM devnet indexing"
+---
+
+# Local EVM Devnet Setup
+
+Index your local devnet data and query it using the SQD Portal API. This setup allows you to run a complete indexing stack on your machine using Docker.
+
+## What This Provides
+
+A local deployment that:
+
+- Ingests blockchain data from your RPC endpoint
+- Stores blocks with full transaction details, receipts, traces, and state diffs
+- Exposes the Portal API for querying your local chain data
+- Works with any EVM-compatible devnet or testnet
+
+## Prerequisites
+
+Before starting, ensure you have:
+
+- **Docker** and **Docker Compose** installed on your system
+- Access to an **EVM RPC endpoint** (local devnet or testnet URL)
+- **Sufficient disk space** - the setup stores the entire blockchain locally
+
+<Note>
+For production devnets with significant block history, allocate at least 50GB of disk space initially and monitor growth.
+</Note>
+
+## Architecture
+
+The setup runs two Docker services:
+
+### hotblocks-service
+
+Connects to your RPC endpoint and fetches blockchain data including:
+- Block headers and transactions
+- Transaction receipts
+- Execution traces
+- State diffs
+
+### hotblocks-db
+
+Stores the blockchain data and provides:
+- Portal API query interface on port 8000
+- Efficient data retrieval and filtering
+- Same API as the public SQD network
+
+## Next Steps
+
+Continue to the [Configuration](/en/data/catalog/evm-local-setup/configuration) page to set up your Docker services.
+

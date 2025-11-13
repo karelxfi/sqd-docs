@@ -1,6 +1,6 @@
 ---
 title: "Choosing Your SQD Tool"
-sidebarTitle: "Compare Options"
+sidebarTitle: "Portal vs SDKs"
 description: "Compare Portal API, Pipes SDK, and Squid SDK to choose the right tool for your blockchain data needs"
 ---
 
@@ -32,7 +32,9 @@ SQD provides three tools for working with blockchain data, each serving differen
   - Real-time data ingestion
 
 <Info>
-  Both SDKs use Portal under the hood. When you use an SDK, you're still accessing blockchain data through Portal—the SDK just makes it easier to work with.
+  Both SDKs use Portal under the hood. When you use an SDK, you're still
+  accessing blockchain data through Portal—the SDK just makes it easier to work
+  with.
 </Info>
 
 ## Portal API vs SDKs
@@ -94,27 +96,28 @@ import { createTarget } from "@sqd-pipes/pipes";
 import { createEvmPortalSource, EvmQueryBuilder } from "@sqd-pipes/pipes/evm";
 
 const queryBuilder = new EvmQueryBuilder()
-  .addFields({ block: { number: true, hash: true }, log: { data: true } })
-  .addLog({
-    request: { address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"] },
-    range: { from: 20000000, to: 20001000 }
-  });
+.addFields({ block: { number: true, hash: true }, log: { data: true } })
+.addLog({
+request: { address: ["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"] },
+range: { from: 20000000, to: 20001000 }
+});
 
 const source = createEvmPortalSource({
-  portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
-  query: queryBuilder
+portal: "https://portal.sqd.dev/datasets/ethereum-mainnet",
+query: queryBuilder
 });
 
 const target = createTarget({
-  write: async ({ read }) => {
-    for await (const { data } of read()) {
-      // Transform and persist to your database
-    }
-  }
+write: async ({ read }) => {
+for await (const { data } of read()) {
+// Transform and persist to your database
+}
+}
 });
 
 await source.pipeTo(target);
-```
+
+````
 
 ```typescript Squid SDK Example
 import { EvmBatchProcessor } from "@subsquid/evm-processor";
@@ -139,7 +142,7 @@ processor.run(db, async (ctx) => {
   }
   await ctx.store.insert(transfers);
 });
-```
+````
 
 </CodeGroup>
 
@@ -332,19 +335,28 @@ Although designed with modularity in mind, many components became tightly couple
 </Accordion>
 
 <Accordion title="Lack of Documentation and Tests">
-Insufficient documentation and internal test coverage made introducing changes risky and time-consuming. Developers faced significant friction when trying to extend or modify the SDK's behavior.
+  Insufficient documentation and internal test coverage made introducing changes
+  risky and time-consuming. Developers faced significant friction when trying to
+  extend or modify the SDK's behavior.
 </Accordion>
 
 <Accordion title="Standalone Design Limitations">
-The SDK was built to function as a standalone process, making it challenging to embed into existing applications or workflows. This architectural decision limited flexibility for teams wanting to integrate blockchain indexing into their existing codebases.
+  The SDK was built to function as a standalone process, making it challenging
+  to embed into existing applications or workflows. This architectural decision
+  limited flexibility for teams wanting to integrate blockchain indexing into
+  their existing codebases.
 </Accordion>
 
 <Accordion title="Rigid and Opinionated Approach">
-The framework enforced a very opinionated development style with limited room for customization. Developers often found themselves constrained by the SDK's assumptions rather than supported by its abstractions.
+  The framework enforced a very opinionated development style with limited room
+  for customization. Developers often found themselves constrained by the SDK's
+  assumptions rather than supported by its abstractions.
 </Accordion>
 
 <Accordion title="No Client-Side Testing Framework">
-The absence of a built-in testing framework for client applications increased friction for developers who needed to validate their integrations and business logic.
+  The absence of a built-in testing framework for client applications increased
+  friction for developers who needed to validate their integrations and business
+  logic.
 </Accordion>
 
 <Accordion title="Limited Community Adoption">
@@ -362,19 +374,25 @@ Enable developers to concentrate on application-specific business logic rather t
 </Card>
 
 <Card title="Code Reusability" icon="recycle">
-Promote code sharing and maintainability by extracting common functionality into reusable, composable packages.
+  Promote code sharing and maintainability by extracting common functionality
+  into reusable, composable packages.
 </Card>
 
 <Card title="Built-in Extensions" icon="puzzle-piece">
-Provide ready-to-use extensions for common tasks including Portal caching layers, factory contract handling, and database integrations (PostgreSQL, ClickHouse, Kafka).
+  Provide ready-to-use extensions for common tasks including Portal caching
+  layers, factory contract handling, and database integrations (PostgreSQL,
+  ClickHouse, Kafka).
 </Card>
 
 <Card title="Community-Friendly Architecture" icon="users">
-Design a plugin system that makes it easy for developers to create and share extensions, fostering a vibrant ecosystem of community contributions.
+  Design a plugin system that makes it easy for developers to create and share
+  extensions, fostering a vibrant ecosystem of community contributions.
 </Card>
 
 <Card title="Better Observability" icon="chart-line">
-Include first-class support for custom metrics, profiling tools, and centralized logging services to help developers monitor and optimize their indexers.
+  Include first-class support for custom metrics, profiling tools, and
+  centralized logging services to help developers monitor and optimize their
+  indexers.
 </Card>
 
 <Card title="Modern Runtime Support" icon="bolt">
@@ -383,7 +401,9 @@ Ensure compatibility with modern JavaScript runtimes like Bun for faster develop
 </CardGroup>
 
 <Info>
-Pipes SDK maintains backward compatibility with Squid SDK's data sources (Portal) while offering a completely redesigned developer experience focused on flexibility, composability, and ease of use.
+  Pipes SDK maintains backward compatibility with Squid SDK's data sources
+  (Portal) while offering a completely redesigned developer experience focused
+  on flexibility, composability, and ease of use.
 </Info>
 
 ## Key Benefits by Tool
@@ -431,4 +451,3 @@ Now that you understand the differences, choose your path:
   Create a full-featured indexer with GraphQL API
 </Card>
 </CardGroup>
-

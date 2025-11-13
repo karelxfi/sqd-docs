@@ -1,7 +1,7 @@
 ---
 title: "SQD Network"
 sidebarTitle: "Overview"
-description: "Access blockchain data through decentralized infrastructure and private data lake"
+description: "Decentralized data lake serving historical blockchain data for 200+ networks"
 ---
 
 <Frame>
@@ -11,7 +11,7 @@ description: "Access blockchain data through decentralized infrastructure and pr
   />
 </Frame>
 
-SQD Network is a distributed query engine and data lake that powers the SQD ecosystem. It serves historical blockchain data for 2000+ networks, enabling you to access data at near-zero cost with granular filtering and efficient batch processing.
+SQD Network is a distributed query engine and data lake that powers the SQD ecosystem. It serves historical blockchain data for 200+ networks, enabling you to access data at near-zero cost with granular filtering and efficient batch processing.
 
 <Info>
   SQD Network provides superior data access compared to conventional chain node
@@ -19,83 +19,99 @@ SQD Network is a distributed query engine and data lake that powers the SQD ecos
   query multiple blocks simultaneously.
 </Info>
 
-## Network Variants
+## How SQD Network Works
 
-SQD Network operates in two independent configurations:
+SQD Network stores blockchain data in a distributed data lake, making it available through **SQD Portal**—a high-performance data access interface that fetches data chunks from multiple worker nodes in parallel.
 
-1. **Decentralized permissionless network** - A fully decentralized network where anyone can participate
-2. **Private network** - A permissioned network operated by Subsquid Labs GmbH, trusted by 400+ production indexers. See the [list of supported networks](/en/data/networks/overview)
+Portal exposes a streaming HTTP API optimized for data extraction at scale. It handles pagination, finality tracking, and reorg compensation automatically, so you can focus on building your application rather than managing infrastructure complexity.
 
-Both variants are freely accessible and use the same API.
+You can access the network in three ways:
+
+1. **Use managed Portal endpoints** - SQD-hosted endpoints provide instant access to 200+ networks with zero setup
+2. **Self-host Portal** - Run your own Portal instance alongside your nodes for complete data sovereignty
+3. **Use the SDK** - Build production indexers with TypeScript SDKs that abstract Portal's API into a developer-friendly interface
 
 <Tip>
-  Network developers: Want to see your chain supported by SQD? Fill out our
-  [integration form](https://forms.gle/ioVNFiPjZgvUNunY9) or contact us in the
-  [SquidDevs Telegram chat](https://t.me/HydraDevs).
+  Learn more about Portal and how it transforms blockchain data access in the
+  [Portal overview](/en/portal/overview).
 </Tip>
 
-## Permissionless Public Network
+## Network Options
 
-The decentralized version of SQD Network is now in mainnet. It serves data for almost [all networks](/en/data/networks/overview) supported by the [private cluster](#open-private-network), with the temporary exception of Solana.
+SQD Network operates in two configurations, both freely accessible and using the same Portal API:
 
-The latest data access node—SQD Portal—fetches data chunks from multiple worker nodes in parallel and exposes a streaming API. It is currently in closed beta.
+<div className="overflow-x-auto my-8">
+  <table className="w-full text-sm border-collapse">
+    <thead>
+      <tr className="border-b-2 border-slate-300 dark:border-slate-600">
+        <th className="text-left p-3 font-semibold text-gray-900 dark:text-white">
+          Feature
+        </th>
+        <th className="text-left p-3 font-semibold text-gray-900 dark:text-white">
+          Permissionless Network
+        </th>
+        <th className="text-left p-3 font-semibold text-gray-900 dark:text-white">
+          Private Network
+        </th>
+      </tr>
+    </thead>
+    <tbody className="text-gray-700 dark:text-gray-400">
+      <tr className="border-b border-slate-200 dark:border-slate-700">
+        <td className="p-3 font-medium">Status</td>
+        <td className="p-3">Mainnet (Portal in public beta)</td>
+        <td className="p-3">Production-ready</td>
+      </tr>
+      <tr className="border-b border-slate-200 dark:border-slate-700">
+        <td className="p-3 font-medium">Infrastructure</td>
+        <td className="p-3">Fully decentralized</td>
+        <td className="p-3">Operated by Subsquid Labs GmbH</td>
+      </tr>
+      <tr className="border-b border-slate-200 dark:border-slate-700">
+        <td className="p-3 font-medium">Participation</td>
+        <td className="p-3">Anyone can run workers or delegate</td>
+        <td className="p-3">Permissioned</td>
+      </tr>
+      <tr className="border-b border-slate-200 dark:border-slate-700">
+        <td className="p-3 font-medium">Networks supported</td>
+        <td className="p-3">Almost all</td>
+        <td className="p-3">200+ networks</td>
+      </tr>
 
-### How to Participate
+    </tbody>
 
-You can participate in the public network in two ways:
+  </table>
+</div>
 
-- **[Run a worker node](/en/network/worker)** - Contribute storage and compute resources to the network and earn SQD tokens
-- **[Delegate SQD tokens](/en/network/delegate)** - Reward high-performing workers and share in their profits
+<Note>
+  Both networks are free to query. See the [complete list of supported
+  networks](/en/data/networks/evm) for gateway URLs and network details.
+</Note>
 
-## Open Private Network
+## Participate in the Permissionless Network
 
-SQD's private data lake (formerly known as Archives) is a production-ready fork of early SQD Network running on SQD infrastructure. It provides reliable data access while the permissionless network matures.
+The decentralized network is now in mainnet, and you can participate in two ways:
 
-<Info>
-  The gateway of this private network is public and free to query. Access
-  gateway URLs via [`sqd gateways list`](/en/sdk/squid-sdk/tools/cli/gateways)
-  or browse the [complete gateways list](/en/data/networks/overview).
-</Info>
+<CardGroup cols={2}>
+  <Card title="Run a Worker Node" icon="server" href="/en/network/worker">
+    Contribute storage and compute resources to the network and earn SQD tokens
+  </Card>
+  <Card title="Delegate SQD Tokens" icon="coins" href="/en/network/delegate">
+    Reward high-performing workers and share in their profits
+  </Card>
+</CardGroup>
 
-### Using Gateways in Your Indexer
+## Get Started with SQD Network
 
-<Tabs>
-<Tab title="EVM">
+Ready to build with SQD Network? Choose your path:
 
-List all supported EVM networks:
-
-```bash
-sqd gateways list -t evm
-```
-
-Configure your [squid's](/en/sdk/overview) [`EvmBatchProcessor`](/en/sdk/squid-sdk/evm/reference/batch-processor):
-
-```typescript processor.ts
-const processor = new EvmBatchProcessor().setGateway(
-  "https://v2.archive.subsquid.io/network/ethereum-mainnet"
-);
-```
-
-Browse [EVM gateways](/en/data/networks/evm).
-
-</Tab>
-<Tab title="Substrate">
-
-List all supported Substrate networks:
-
-```bash
-sqd gateways list -t substrate
-```
-
-Configure your [squid's](/en/sdk/overview) [`SubstrateBatchProcessor`](/en/sdk/squid-sdk/substrate/reference/general):
-
-```typescript processor.ts
-const processor = new SubstrateBatchProcessor().setGateway(
-  "https://v2.archive.subsquid.io/network/phala"
-);
-```
-
-Browse [Substrate gateways](/en/data/networks/substrate).
-
-</Tab>
-</Tabs>
+<CardGroup cols={3}>
+  <Card title="Portal API" icon="plug" href="/en/portal/evm/quickstart">
+    Query blockchain data directly via HTTP API
+  </Card>
+  <Card title="Build with SDK" icon="code" href="/en/sdk/overview">
+    Create production indexers with TypeScript SDKs
+  </Card>
+  <Card title="Browse Networks" icon="globe" href="/en/data/networks/evm">
+    View all 200+ supported networks and gateway URLs
+  </Card>
+</CardGroup>

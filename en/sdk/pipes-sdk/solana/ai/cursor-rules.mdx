@@ -1,0 +1,663 @@
+---
+title: "Cursor AI Rules (Solana)"
+description: "Comprehensive AI coding rules for Solana Pipes SDK development in Cursor"
+---
+
+This page provides Cursor-specific rules for developing with Pipes SDK on Solana. Copy the rules at the bottom to your `.cursorrules` file or `.cursor/rules/` directory.
+
+## Overview
+
+Pipes SDK for Solana streams blockchain data from Portal API, decodes instructions and events, and persists to any target. The architecture follows: **Source → Decoder/Transformer → Target**.
+
+## Core Architecture Rules
+
+### Pipeline Pattern
+
+```ts
+// Basic Solana pipeline
+const source = createSolanaPortalSource({ portal, query })
+const decoder = createSolanaInstructionDecoder({ range, programs, instructions })
+const target = createTarget({ write, onRollback })
+
+await source.pipe(decoder).pipeTo(target)
+```
+
+### Query Builder
+
+Always use `SolanaQueryBuilder` for Solana data queries:
+
+```ts
+import { SolanaQueryBuilder } from '@sqd-pipes/pipes/solana'
+
+const query = new SolanaQueryBuilder()
+  .addFields({
+    block: { slot: true, hash: true }, // REQUIRED
+    instruction: { programId: true, data: true, accounts: true }
+  })
+  .addInstruction({
+    request: {
+      programId: ['JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4'], // Jupiter
+      d8: ['0xf8c69e91e17587c8'] // Swap instruction discriminator
+    },
+    range: { from: 250000000 }
+  })
+```
+
+<Note>
+`block.slot` and `block.hash` are always required in field selection for Solana.
+</Note>
+
+## Instruction Decoding
+
+### Preferred Pattern: Instruction Decoder
+
+```ts
+import { createSolanaInstructionDecoder } from '@sqd-pipes/pipes/solana'
+
+const decoder = createSolanaInstructionDecoder({
+  range: { from: 250000000 },
+  programs: ['JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4'],
+  instructions: {
+    swap: jupiterAbi.instructions.swap,
+    route: jupiterAbi.instructions.route
+  },
+  profiler: { id: 'jupiter-decoder' },
+  onError: async (ctx, error) => {
+    ctx.logger.error({ error }, 'Failed to decode instruction')
+  }
+})
+
+// Access decoded instructions
+for await (const { data } of source.pipe(decoder)) {
+  data.swap   // DecodedInstruction<Swap>[]
+  data.route  // DecodedInstruction<Route>[]
+}
+```
+
+### Decoded Instruction Structure
+
+```ts
+interface DecodedInstruction<T> {
+  slot: number
+  timestamp: Date
+  programId: string
+  transactionHash: string
+  instructionIndex: number
+  instruction: T // Decoded instruction data
+  rawInstruction: {
+    programId: string
+    data: string
+    accounts: string[]
+  }
+}
+```
+
+## Source Configuration
+
+### Solana Portal Source
+
+```ts
+import { createSolanaPortalSource } from '@sqd-pipes/pipes/solana'
+
+const source = createSolanaPortalSource({
+  portal: 'https://portal.sqd.dev/datasets/solana-mainnet',
+  query: queryBuilder, // optional if using decoder
+  cursor: { slot: 250000000 }, // resume from slot
+  cache: {
+    adapter: await sqliteCacheAdapter({ path: './cache.sqlite' })
+  }
+})
+```
+
+### Finalized vs Real-time
+
+```ts
+// Development: Real-time
+portal: 'https://portal.sqd.dev/datasets/solana-mainnet'
+
+// Production: Finalized slots only
+portal: 'https://portal.sqd.dev/datasets/solana-mainnet/finalized'
+```
+
+<Warning>
+Always use finalized streams in production or implement `onRollback` handlers.
+</Warning>
+
+## Solana-Specific Patterns
+
+### Account Filtering
+
+```ts
+const query = new SolanaQueryBuilder()
+  .addFields({
+    block: { slot: true, hash: true },
+    instruction: { programId: true, data: true, accounts: true }
+  })
+  .addInstruction({
+    request: {
+      programId: ['PROGRAM_ID'],
+      // Filter by specific accounts
+      a0: ['ACCOUNT_ADDRESS'], // First account
+      a1: ['ACCOUNT_ADDRESS']  // Second account
+    },
+    range: { from: 250000000 }
+  })
+```
+
+### Transaction Data
+
+```ts
+const query = new SolanaQueryBuilder()
+  .addFields({
+    block: { slot: true, hash: true, timestamp: true },
+    transaction: {
+      signature: true,
+      fee: true,
+      err: true,
+      computeUnitsConsumed: true
+    },
+    instruction: {
+      programId: true,
+      data: true,
+      accounts: true
+    }
+  })
+  .addTransaction({
+    request: {
+      feePayer: ['FEE_PAYER_ADDRESS']
+    },
+    range: { from: 250000000 }
+  })
+```
+
+### Log Filtering
+
+```ts
+const query = new SolanaQueryBuilder()
+  .addFields({
+    block: { slot: true, hash: true },
+    log: { programId: true, kind: true, message: true }
+  })
+  .addLog({
+    request: {
+      programId: ['PROGRAM_ID'],
+      kind: ['log', 'data'] // Filter by log type
+    },
+    range: { from: 250000000 }
+  })
+```
+
+## Transformer Patterns
+
+### Basic Transformer
+
+```ts
+import { createTransformer } from '@sqd-pipes/pipes'
+
+const transformer = createTransformer({
+  transform: async (data) => {
+    return data.blocks.flatMap(block =>
+      block.instructions.map(ix => ({
+        slot: block.header.slot,
+        timestamp: new Date(block.header.timestamp * 1000),
+        programId: ix.programId,
+        data: ix.data,
+        accounts: ix.accounts
+      }))
+    )
+  }
+})
+```
+
+### Token Balance Tracking
+
+```ts
+const transformer = createTransformer({
+  transform: async (data) => {
+    const balanceChanges = []
+    
+    for (const block of data.blocks) {
+      for (const tx of block.transactions) {
+        // Extract pre/post token balances
+        const preBalances = tx.meta?.preTokenBalances || []
+        const postBalances = tx.meta?.postTokenBalances || []
+        
+        for (let i = 0; i < postBalances.length; i++) {
+          const pre = preBalances[i]?.uiTokenAmount.uiAmount || 0
+          const post = postBalances[i].uiTokenAmount.uiAmount
+          
+          if (pre !== post) {
+            balanceChanges.push({
+              slot: block.header.slot,
+              signature: tx.signature,
+              mint: postBalances[i].mint,
+              owner: postBalances[i].owner,
+              change: post - pre
+            })
+          }
+        }
+      }
+    }
+    
+    return balanceChanges
+  }
+})
+```
+
+## Target Patterns
+
+### Stateful Target with Slot Tracking
+
+```ts
+import { createTarget } from '@sqd-pipes/pipes'
+
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    for await (const { data, cursor } of read()) {
+      await db.transaction(async tx => {
+        await tx.insert('instructions', data)
+        await tx.upsert('indexer_state', {
+          last_slot: cursor.slot,
+          last_hash: cursor.hash,
+          updated_at: new Date()
+        })
+      })
+      
+      ctx.logger.info({ slot: cursor.slot }, 'Processed slot')
+    }
+  },
+  onRollback: async ({ ctx, cursor }) => {
+    ctx.logger.warn({ cursor }, 'Rolling back to slot')
+    await db.deleteWhere('slot', '>', cursor.slot)
+  }
+})
+```
+
+<Warning>
+Always implement `onRollback` for production targets to handle slot reorganizations.
+</Warning>
+
+## Common Solana Use Cases
+
+### DEX Swap Tracking
+
+```ts
+const decoder = createSolanaInstructionDecoder({
+  range: { from: 250000000 },
+  programs: [
+    'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4', // Jupiter
+    'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc'  // Orca Whirlpool
+  ],
+  instructions: {
+    jupiterSwap: jupiterAbi.instructions.swap,
+    orcaSwap: orcaAbi.instructions.swap
+  }
+})
+
+for await (const { data } of source.pipe(decoder)) {
+  // Process Jupiter swaps
+  for (const swap of data.jupiterSwap) {
+    console.log('Jupiter swap:', {
+      slot: swap.slot,
+      amountIn: swap.instruction.amountIn,
+      minimumAmountOut: swap.instruction.minimumAmountOut
+    })
+  }
+  
+  // Process Orca swaps
+  for (const swap of data.orcaSwap) {
+    console.log('Orca swap:', {
+      slot: swap.slot,
+      amount: swap.instruction.amount,
+      otherAmountThreshold: swap.instruction.otherAmountThreshold
+    })
+  }
+}
+```
+
+### Token Transfer Tracking
+
+```ts
+const decoder = createSolanaInstructionDecoder({
+  range: { from: 250000000 },
+  programs: ['TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'],
+  instructions: {
+    transfer: tokenProgramAbi.instructions.transfer,
+    transferChecked: tokenProgramAbi.instructions.transferChecked
+  }
+})
+
+for await (const { data } of source.pipe(decoder)) {
+  for (const transfer of data.transfer) {
+    console.log('Token transfer:', {
+      slot: transfer.slot,
+      from: transfer.rawInstruction.accounts[0],
+      to: transfer.rawInstruction.accounts[1],
+      amount: transfer.instruction.amount
+    })
+  }
+}
+```
+
+### NFT Minting Tracking
+
+```ts
+const decoder = createSolanaInstructionDecoder({
+  range: { from: 250000000 },
+  programs: ['metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'], // Metaplex
+  instructions: {
+    createMetadataAccount: metaplexAbi.instructions.createMetadataAccountV3,
+    mintNft: metaplexAbi.instructions.mintNewEditionFromMasterEditionViaToken
+  }
+})
+```
+
+## Performance Optimization
+
+### Minimize Field Selection
+
+```ts
+// GOOD: Only needed fields
+.addFields({
+  block: { slot: true, hash: true },
+  instruction: { programId: true, data: true }
+})
+
+// AVOID: Over-fetching
+.addFields({
+  block: { /* all fields */ },
+  instruction: { /* all fields */ },
+  transaction: { /* all fields */ }
+})
+```
+
+### Instruction Discriminator Filtering
+
+Use discriminators (d8) for precise filtering:
+
+```ts
+.addInstruction({
+  request: {
+    programId: ['PROGRAM_ID'],
+    d8: ['0xf8c69e91e17587c8'] // Specific instruction discriminator
+  }
+})
+```
+
+### Batch Processing
+
+```ts
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    const batch = []
+    const BATCH_SIZE = 1000
+    
+    for await (const { data, cursor } of read()) {
+      batch.push(...data)
+      
+      if (batch.length >= BATCH_SIZE) {
+        await db.batchInsert('swaps', batch)
+        await db.updateCursor(cursor)
+        batch.length = 0
+      }
+    }
+    
+    if (batch.length > 0) {
+      await db.batchInsert('swaps', batch)
+    }
+  }
+})
+```
+
+## Error Handling
+
+### Decoder Error Handling
+
+```ts
+const decoder = createSolanaInstructionDecoder({
+  range: { from: 250000000 },
+  programs: ['PROGRAM_ID'],
+  instructions: { swap: abi.instructions.swap },
+  onError: async (ctx, error) => {
+    ctx.logger.error({
+      error: error.message,
+      slot: ctx.block?.slot,
+      instruction: ctx.instruction?.data
+    }, 'Decode error')
+    
+    // Continue processing or throw to halt
+  }
+})
+```
+
+### Target Error Handling
+
+```ts
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    for await (const { data, cursor } of read()) {
+      try {
+        await database.save(data)
+      } catch (error) {
+        ctx.logger.error({ error, cursor }, 'Database error')
+        throw error // Re-throw to halt pipeline
+      }
+    }
+  }
+})
+```
+
+## Observability
+
+### Profiler Usage
+
+```ts
+const decoder = createSolanaInstructionDecoder({
+  profiler: { id: 'jupiter-swaps' },
+  // ...
+})
+
+const transformer = createTransformer({
+  profiler: { id: 'swap-processor' },
+  // ...
+})
+```
+
+### Logger Access
+
+```ts
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    ctx.logger.info('Starting processing')
+    
+    for await (const { data, cursor } of read()) {
+      ctx.logger.debug({ slot: cursor.slot }, 'Processing slot')
+      await database.save(data)
+    }
+  }
+})
+```
+
+## Type Safety
+
+### Instruction Type Inference
+
+```ts
+// Types are automatically inferred from ABI
+const decoder = createSolanaInstructionDecoder({
+  range: { from: 250000000 },
+  programs: ['PROGRAM_ID'],
+  instructions: {
+    swap: jupiterAbi.instructions.swap
+  }
+})
+
+// TypeScript knows the exact shape
+for await (const { data } of source.pipe(decoder)) {
+  data.swap.forEach(s => {
+    s.instruction.amountIn           // bigint (typed)
+    s.instruction.minimumAmountOut   // bigint (typed)
+    s.slot                           // number (typed)
+    s.timestamp                      // Date (typed)
+  })
+}
+```
+
+## Common Patterns
+
+### Resume from Cursor
+
+```ts
+// Load last processed slot
+const lastSlot = await database.getLastProcessedSlot()
+
+const source = createSolanaPortalSource({
+  portal: 'https://portal.sqd.dev/datasets/solana-mainnet',
+  cursor: lastSlot ? { slot: lastSlot } : undefined
+})
+```
+
+### Range-based Processing
+
+```ts
+// Process specific slot range
+const decoder = createSolanaInstructionDecoder({
+  range: { from: 250000000, to: 250001000 },
+  programs: ['PROGRAM_ID'],
+  instructions: { swap: abi.instructions.swap }
+})
+
+// Process from latest
+const decoder = createSolanaInstructionDecoder({
+  range: { from: 'latest' },
+  programs: ['PROGRAM_ID'],
+  instructions: { swap: abi.instructions.swap }
+})
+```
+
+### Direct Iteration
+
+```ts
+// Iterate source directly without target
+for await (const { data, cursor } of source.pipe(decoder)) {
+  console.log(`Slot ${cursor.slot}: ${data.swap.length} swaps`)
+  
+  for (const swap of data.swap) {
+    console.log(`Amount: ${swap.instruction.amountIn}`)
+  }
+}
+```
+
+---
+
+## Copy-Ready .cursorrules Format
+
+Copy the following to your `.cursorrules` file or create a file in `.cursor/rules/pipes-sdk-solana.md`:
+
+```markdown
+# Pipes SDK Solana Development Rules
+
+## Architecture
+- Use Source → Decoder/Transformer → Target pipeline pattern
+- Chain with .pipe() for single, .pipeComposite() for multiple transformers
+- pipeTo() is terminal - cannot continue piping after
+
+## Query Building
+- Always use SolanaQueryBuilder for Solana queries
+- block.slot and block.hash are REQUIRED fields
+- Only request fields you need for performance
+- Use d8 discriminators for precise instruction filtering
+
+## Instruction Decoding
+- Prefer createSolanaInstructionDecoder over manual queries
+- Decoder automatically builds queries - no need for separate QueryBuilder
+- Always include profiler: { id: 'meaningful-name' }
+- Implement onError handler for graceful failures
+- Types are automatically inferred from instruction ABIs
+
+## Sources
+- Use finalized streams in production: /datasets/solana-mainnet/finalized
+- Add cache adapter for development: sqliteCacheAdapter({ path: './cache.sqlite' })
+- Resume with cursor: { slot: lastProcessed }
+
+## Targets
+- Always implement onRollback handler for production
+- Save cursor (slot) with data in same transaction
+- Use batch processing for performance (batch 1000+ items)
+- Log errors with context: ctx.logger.error({ error, cursor }, 'message')
+
+## Solana-Specific
+- Use slot instead of block number
+- Filter instructions by programId and d8 discriminator
+- Track token balances via preTokenBalances/postTokenBalances
+- Access accounts via rawInstruction.accounts array
+- Use instruction discriminators for precise filtering
+
+## Type Safety
+- Import types: DecodedInstruction, SolanaPortalData, Transformer
+- Let TypeScript infer instruction types from ABI
+- Type transformer inputs/outputs explicitly
+
+## Error Handling
+- Implement onError in decoders for decode failures
+- Wrap database operations in try-catch
+- Re-throw errors to halt pipeline on critical failures
+- Log with structured context: { error, cursor, data }
+
+## Performance
+- Minimize field selection in addFields()
+- Use d8 discriminators for instruction filtering
+- Use cache during development
+- Batch database writes (1000+ items)
+- Enable profiler for all components
+
+## Observability
+- Add profiler to all decoders and transformers
+- Use ctx.logger for structured logging
+- Start metrics server: createMetricsServer({ port: 9090 })
+- Log at appropriate levels: debug, info, warn, error
+
+## Common Patterns
+```typescript
+// Basic pipeline
+const source = createSolanaPortalSource({ portal, query })
+const decoder = createSolanaInstructionDecoder({ range, programs, instructions })
+const target = createTarget({ write, onRollback })
+await source.pipe(decoder).pipeTo(target)
+
+// Instruction decoding
+const decoder = createSolanaInstructionDecoder({
+  range: { from: 250000000 },
+  programs: ['PROGRAM_ID'],
+  instructions: {
+    swap: abi.instructions.swap
+  },
+  profiler: { id: 'decoder-name' }
+})
+
+// Stateful target
+const target = createTarget({
+  write: async ({ ctx, read }) => {
+    for await (const { data, cursor } of read()) {
+      await db.transaction(async tx => {
+        await tx.insert(data)
+        await tx.updateCursor({ slot: cursor.slot })
+      })
+    }
+  },
+  onRollback: async ({ ctx, cursor }) => {
+    await db.deleteWhere('slot', '>', cursor.slot)
+  }
+})
+```
+
+## Anti-patterns
+- ❌ Manual query building when using decoders
+- ❌ Missing onRollback in production targets
+- ❌ Over-fetching fields in queries
+- ❌ No error handling in targets
+- ❌ Missing cursor (slot) persistence
+- ❌ Using non-finalized streams in production without rollback handling
+- ❌ Not using d8 discriminators for instruction filtering
+```
+

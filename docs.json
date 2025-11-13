@@ -123,6 +123,12 @@
                           "en/sdk/pipes-sdk/reference/factories-utilities",
                           "en/sdk/pipes-sdk/reference/types-methods"
                         ]
+                      },
+                      {
+                        "group": "AI",
+                        "pages": [
+                          "en/sdk/pipes-sdk/ai/cursor-rules"
+                        ]
                       }
                     ]
                   },
@@ -275,6 +281,13 @@
                       "en/portal/solana/overview",
                       "en/portal/solana/quickstart",
                       {
+                        "group": "Clients",
+                        "tag": "BETA",
+                        "pages": [
+                          "en/portal/solana/spray-client"
+                        ]
+                      },
+                      {
                         "group": "Examples",
                         "pages": [
                           "en/portal/solana/examples/query-instructions",
@@ -328,6 +341,12 @@
                           "en/sdk/pipes-sdk/solana/reference/instruction-decoder",
                           "en/sdk/pipes-sdk/solana/reference/transformers-targets",
                           "en/sdk/pipes-sdk/solana/reference/types-methods"
+                        ]
+                      },
+                      {
+                        "group": "AI",
+                        "pages": [
+                          "en/sdk/pipes-sdk/solana/ai/cursor-rules"
                         ]
                       }
                     ]
@@ -557,6 +576,7 @@
                 "icon": "cloud",
                 "pages": [
                   "en/cloud/overview",
+                  "en/cloud/deployment-guide",
                   {
                     "group": "Pricing",
                     "pages": [
@@ -693,6 +713,16 @@
                     ]
                   },
                   {
+                    "group": "Local Setup",
+                    "tag": "BETA",
+                    "icon": "docker",
+                    "pages": [
+                      "en/data/catalog/evm-local-setup/overview",
+                      "en/data/catalog/evm-local-setup/configuration",
+                      "en/data/catalog/evm-local-setup/usage"
+                    ]
+                  },
+                  {
                     "group": "Supported Networks",
                     "icon": "globe",
                     "pages": [
@@ -795,6 +825,13 @@
                         ]
                       },
                       {
+                        "group": "Dancelight",
+                        "pages": [
+                          "en/data/catalog/evm/dancelight-testnet/overview",
+                          "en/data/catalog/evm/dancelight-testnet/schema"
+                        ]
+                      },
+                      {
                         "group": "Ethereum",
                         "pages": [
                           "en/data/catalog/evm/ethereum-mainnet/overview",
@@ -813,6 +850,13 @@
                         "pages": [
                           "en/data/catalog/evm/ethereum-sepolia/overview",
                           "en/data/catalog/evm/ethereum-sepolia/schema"
+                        ]
+                      },
+                      {
+                        "group": "Ethereum Hoodi",
+                        "pages": [
+                          "en/data/catalog/evm/ethereum-hoodi/overview",
+                          "en/data/catalog/evm/ethereum-hoodi/schema"
                         ]
                       },
                       {
@@ -837,10 +881,38 @@
                         ]
                       },
                       {
+                        "group": "Hedera Mainnet",
+                        "pages": [
+                          "en/data/catalog/evm/hedera-mainnet/overview",
+                          "en/data/catalog/evm/hedera-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Hemi Mainnet",
+                        "pages": [
+                          "en/data/catalog/evm/hemi-mainnet/overview",
+                          "en/data/catalog/evm/hemi-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Hemi Testnet",
+                        "pages": [
+                          "en/data/catalog/evm/hemi-testnet/overview",
+                          "en/data/catalog/evm/hemi-testnet/schema"
+                        ]
+                      },
+                      {
                         "group": "Ink Mainnet",
                         "pages": [
                           "en/data/catalog/evm/ink-mainnet/overview",
                           "en/data/catalog/evm/ink-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Ink Sepolia",
+                        "pages": [
+                          "en/data/catalog/evm/ink-sepolia/overview",
+                          "en/data/catalog/evm/ink-sepolia/schema"
                         ]
                       },
                       {
@@ -862,6 +934,13 @@
                         "pages": [
                           "en/data/catalog/evm/mantle-mainnet/overview",
                           "en/data/catalog/evm/mantle-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Mega Testnet",
+                        "pages": [
+                          "en/data/catalog/evm/mega-testnet/overview",
+                          "en/data/catalog/evm/mega-testnet/schema"
                         ]
                       },
                       {
@@ -907,6 +986,34 @@
                         ]
                       },
                       {
+                        "group": "Plume Devnet",
+                        "pages": [
+                          "en/data/catalog/evm/plume-devnet/overview",
+                          "en/data/catalog/evm/plume-devnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Plume Mainnet (Legacy)",
+                        "pages": [
+                          "en/data/catalog/evm/plume-legacy/overview",
+                          "en/data/catalog/evm/plume-legacy/schema"
+                        ]
+                      },
+                      {
+                        "group": "Plume Testnet",
+                        "pages": [
+                          "en/data/catalog/evm/plume-testnet/overview",
+                          "en/data/catalog/evm/plume-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Poseidon Testnet",
+                        "pages": [
+                          "en/data/catalog/evm/poseidon-testnet/overview",
+                          "en/data/catalog/evm/poseidon-testnet/schema"
+                        ]
+                      },
+                      {
                         "group": "Scroll",
                         "pages": [
                           "en/data/catalog/evm/scroll-mainnet/overview",
@@ -925,6 +1032,20 @@
                         "pages": [
                           "en/data/catalog/evm/sonic-testnet/overview",
                           "en/data/catalog/evm/sonic-testnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Soneium Mainnet",
+                        "pages": [
+                          "en/data/catalog/evm/soneium-mainnet/overview",
+                          "en/data/catalog/evm/soneium-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Soneium Minato Testnet",
+                        "pages": [
+                          "en/data/catalog/evm/soneium-minato-testnet/overview",
+                          "en/data/catalog/evm/soneium-minato-testnet/schema"
                         ]
                       },
                       {
@@ -1000,6 +1121,13 @@
                         "pages": [
                           "en/data/catalog/solana/solana-mainnet/overview",
                           "en/data/catalog/solana/solana-mainnet/schema"
+                        ]
+                      },
+                      {
+                        "group": "Solana Devnet",
+                        "pages": [
+                          "en/data/catalog/solana/solana-devnet/overview",
+                          "en/data/catalog/solana/solana-devnet/schema"
                         ]
                       },
                       {
@@ -1746,8 +1874,7 @@
                 "group": "Case Studies & Examples",
                 "icon": "chart-line",
                 "pages": [
-                  "en/other/case-studies",
-                  "en/other/showcase/showcase"
+                  "en/other/case-studies"
                 ]
               },
               {
@@ -1790,6 +1917,30 @@
         "language": "fr",
         "pages": [
           "fr/404"
+        ]
+      },
+      {
+        "language": "ru",
+        "pages": [
+          "ru/404"
+        ]
+      },
+      {
+        "language": "pt-BR",
+        "pages": [
+          "pt-BR/404"
+        ]
+      },
+      {
+        "language": "zh",
+        "pages": [
+          "zh/404"
+        ]
+      },
+      {
+        "language": "ja",
+        "pages": [
+          "ja/404"
         ]
       }
     ]

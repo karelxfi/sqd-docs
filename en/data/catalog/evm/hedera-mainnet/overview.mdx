@@ -1,0 +1,97 @@
+---
+title: "Overview"
+description: "Data catalog and field definitions for Hedera Mainnet"
+---
+
+## Network Information
+
+- **Network ID**: `hedera-mainnet`
+- **Chain ID**: 295
+- **Portal Status**: Not Available
+- **Real-time Streaming**: Not Available
+- **State Diffs**: Not Available
+- **Traces**: Not Available
+
+## Endpoints
+
+<Warning>
+  V2 archives will be sunset soon. [Migrate to Portal
+  →](/en/portal/migration/cloud-portal-evm)
+</Warning>
+
+<Tabs>
+<Tab title="V2 Archive (Legacy)">
+### V2 Archive Endpoint
+
+```
+https://v2.archive.subsquid.io/network/hedera-mainnet
+```
+
+<Warning>
+  **Legacy**: Rate limited at 50 req/10s per IP. Will be sunset soon.
+</Warning>
+
+### Usage
+
+```typescript
+import { EvmBatchProcessor } from "@subsquid/evm-processor";
+
+const processor = new EvmBatchProcessor()
+  .setGateway("https://v2.archive.subsquid.io/network/hedera-mainnet")
+  .setRpcEndpoint("<your_rpc_endpoint>")
+  .setFinalityConfirmation(75)
+  .setBlockRange({ from: 0 });
+```
+
+</Tab>
+</Tabs>
+
+## Quick Start
+
+Get started indexing Hedera Mainnet data in minutes:
+
+<CardGroup cols={2}>
+  <Card
+    title="Squid SDK Quickstart"
+    icon="server"
+    href="/en/sdk/squid-sdk/evm/quickstart"
+  >
+    Create a full-stack indexer with GraphQL API
+  </Card>
+  <Card
+    title="EVM Indexing Guide"
+    icon="book"
+    href="/en/sdk/squid-sdk/evm/configuration"
+  >
+    Learn about EVM data indexing
+  </Card>
+</CardGroup>
+
+## Schema Reference
+
+<Card
+  title="View Schema"
+  icon="database"
+  href="/en/data/catalog/evm/hedera-mainnet/schema"
+>
+  See complete field definitions for blocks, transactions, logs
+</Card>
+
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="EVM API Reference" icon="code" href="/api/catalog/dataset-metadata">
+    Complete API documentation
+  </Card>
+  <Card
+    title="Migration Guide"
+    icon="arrow-right"
+    href="/en/portal/migration/cloud-portal-evm"
+  >
+    Migrate from v2 archives to Portal
+  </Card>
+  <Card title="Portal Overview" icon="network-wired" href="/en/portal/overview">
+    Learn about Portal infrastructure
+  </Card>
+</CardGroup>
+

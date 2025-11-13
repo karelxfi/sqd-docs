@@ -1,0 +1,201 @@
+---
+title: "Usage"
+description: "Run and query your local EVM indexer"
+---
+
+# Usage
+
+Start your local indexer and query blockchain data using the Portal API.
+
+## Starting the Services
+
+<Steps>
+<Step title="Set your RPC endpoint">
+Export the RPC URL as an environment variable:
+
+```bash
+export RPC_URL=https://your-rpc-endpoint-url
+```
+
+**Examples:**
+- Local devnet: `http://localhost:8545`
+- Local Hardhat: `http://127.0.0.1:8545`
+- Remote testnet: `https://sepolia.infura.io/v3/YOUR_KEY`
+</Step>
+
+<Step title="Start the services">
+Launch both services in detached mode:
+
+```bash
+docker-compose up -d
+```
+
+The services will start syncing blocks from your RPC endpoint.
+</Step>
+
+<Step title="Verify services are running">
+Check the logs to confirm syncing has started:
+
+```bash
+docker-compose logs -f
+```
+
+You should see block ingestion activity. Press `Ctrl+C` to exit the logs.
+
+<Check>
+Look for log entries showing block numbers being processed. This confirms the indexer is working.
+</Check>
+</Step>
+</Steps>
+
+## Querying Your Data
+
+Once running, the Portal API is available at `http://localhost:8000`.
+
+### Basic Query Example
+
+Fetch all blocks with their basic information:
+
+```bash
+curl "http://localhost:8000/datasets/my-devnet/stream" \
+  -H "Content-Type: application/json" \
+  --compressed \
+  -d '{
+    "type": "evm",
+    "fields": {
+      "block": {
+        "timestamp": true,
+        "number": true,
+        "hash": true
+      }
+    },
+    "includeAllBlocks": true,
+    "fromBlock": 0
+  }'
+```
+
+### Query Transactions
+
+Fetch blocks with transaction details:
+
+```bash
+curl "http://localhost:8000/datasets/my-devnet/stream" \
+  -H "Content-Type: application/json" \
+  --compressed \
+  -d '{
+    "type": "evm",
+    "fields": {
+      "block": {
+        "number": true,
+        "timestamp": true
+      },
+      "transaction": {
+        "hash": true,
+        "from": true,
+        "to": true,
+        "value": true
+      }
+    },
+    "fromBlock": 0
+  }'
+```
+
+### Query Logs
+
+Fetch event logs from specific contracts:
+
+```bash
+curl "http://localhost:8000/datasets/my-devnet/stream" \
+  -H "Content-Type: application/json" \
+  --compressed \
+  -d '{
+    "type": "evm",
+    "fields": {
+      "log": {
+        "address": true,
+        "topics": true,
+        "data": true
+      }
+    },
+    "logs": [
+      {
+        "address": ["0xYourContractAddress"]
+      }
+    ],
+    "fromBlock": 0
+  }'
+```
+
+<Note>
+Replace `my-devnet` in the URL with your dataset name from `config.yaml` if you used a different name.
+</Note>
+
+## API Reference
+
+Your local setup exposes the same Portal API endpoints as the public network.
+
+For complete endpoint documentation and query options, see the [Portal API Reference](/en/api/catalog/evm/openapi.yaml).
+
+## Stopping the Services
+
+Stop the services while preserving data:
+
+```bash
+docker-compose down
+```
+
+The blockchain data remains in the `db-data` volume and will be available when you restart.
+
+## Cleanup
+
+To remove all data and free disk space:
+
+```bash
+docker-compose down -v
+```
+
+<Warning>
+The `-v` flag deletes the blockchain data volume permanently. You'll need to re-sync from scratch if you start the services again.
+</Warning>
+
+## Troubleshooting
+
+### Services won't start
+
+**Check RPC connectivity:**
+```bash
+curl -X POST $RPC_URL \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
+```
+
+If this fails, verify your RPC endpoint is accessible.
+
+### No blocks appearing
+
+**Check hotblocks-service logs:**
+```bash
+docker-compose logs hotblocks-service
+```
+
+Look for connection errors or RPC issues.
+
+### Out of disk space
+
+**Check volume size:**
+```bash
+docker system df -v
+```
+
+Consider using the `Head` retention strategy in `config.yaml` to limit storage.
+
+### Port 8000 already in use
+
+Modify the port mapping in `docker-compose.yaml`:
+```yaml
+ports:
+  - "8001:8000"  # Use port 8001 instead
+```
+
+Then access the API at `http://localhost:8001`.
+

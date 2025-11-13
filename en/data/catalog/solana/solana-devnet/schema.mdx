@@ -1,0 +1,68 @@
+---
+title: "Schema"
+description: "Complete data schema and field reference for Solana Devnet"
+---
+
+# Solana Devnet Data Schema
+
+Solana Devnet datasets provide comprehensive on-chain data indexed and queryable through Portal and v2 archives.
+
+## Available Data Types
+
+<AccordionGroup>
+<Accordion title="Blocks">
+Block data contains metadata about each block in the chain.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `slot` | integer | Block slot number |
+| `height` | integer | Block height |
+| `hash` | string | Block hash |
+| `parent_hash` | string | Parent block hash |
+| `parent_slot` | integer | Parent block slot |
+| `timestamp` | integer | Block timestamp |
+| `rewards` | array | Block rewards |
+</Accordion>
+
+<Accordion title="Transactions">
+Transaction data includes all executed transactions with their details.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `index` | integer | Transaction index in block |
+| `signature` | string | Transaction signature |
+| `account_keys` | array | Account keys involved |
+| `recent_blockhash` | string | Recent blockhash used |
+| `fee` | integer | Transaction fee |
+| `success` | boolean | Whether transaction succeeded |
+| `error` | object | Error information if failed |
+</Accordion>
+
+<Accordion title="Instructions">
+Instructions executed within transactions.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `index` | integer | Instruction index |
+| `transaction_index` | integer | Parent transaction index |
+| `program_id` | string | Program ID |
+| `accounts` | array | Accounts involved |
+| `data` | string | Instruction data |
+| `inner_instructions` | array | Inner instructions |
+</Accordion>
+
+<Accordion title="Account Updates">
+Changes to account states.
+
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| `account` | string | Account address |
+| `lamports` | integer | Account balance in lamports |
+| `owner` | string | Account owner program |
+| `executable` | boolean | Whether account is executable |
+| `rent_epoch` | integer | Rent epoch |
+| `data` | string | Account data |
+</Accordion>
+
+</AccordionGroup>
+

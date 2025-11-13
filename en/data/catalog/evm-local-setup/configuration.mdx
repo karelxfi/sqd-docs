@@ -1,0 +1,152 @@
+---
+title: "Configuration"
+description: "Configure Docker services for local EVM indexing"
+---
+
+# Configuration
+
+Set up the configuration files needed to run your local EVM indexer.
+
+## Dataset Configuration
+
+Create a `config.yaml` file to define your dataset:
+
+```yaml config.yaml
+my-devnet:
+  kind: evm
+  retention_strategy:
+    FromBlock:
+      number: 0
+    # Alternative: retain last N blocks
+    # Head: 500
+  data_sources:
+    - http://hotblocks-service:3000
+```
+
+### Configuration Options
+
+**`kind`**
+- Set to `evm` for Ethereum-compatible chains
+
+**`retention_strategy`**
+
+Choose one of two strategies:
+
+- `FromBlock`: Keep all blocks starting from the specified block number
+  ```yaml
+  FromBlock:
+    number: 0  # Start from genesis
+  ```
+
+- `Head`: Keep only the most recent N blocks (rolling window)
+  ```yaml
+  Head: 500  # Keep last 500 blocks
+  ```
+
+**`data_sources`**
+- Internal service URL (use `http://hotblocks-service:3000` as shown)
+- This connects to the hotblocks-service container
+
+## Docker Compose Configuration
+
+Create a `docker-compose.yaml` file:
+
+```yaml docker-compose.yaml
+services:
+  # Loads data from RPC and serves full blocks
+  hotblocks-service:
+    image: subsquid/evm-hotblocks-service:4229b9b2
+    environment:
+      SQD_INFO: "*"
+    command: >
+      --http-rpc ${RPC_URL}
+      --receipts
+      --traces
+      --diffs
+      --use-debug-api-for-statediffs
+      --verify-tx-sender
+      --verify-tx-root
+      --verify-logs-bloom
+      --block-cache-size 10
+    # Optional verification flags:
+    # --verify-receipts-root
+    # --verify-block-hash
+
+  # Loads full blocks from hotblocks-service and provides query API
+  hotblocks-db:
+    image: subsquid/data-hotblocks:a8e7c369
+    environment:
+      RUST_LOG: "info"
+    command: >
+      --datasets /app/config.yaml
+      --db /run/db
+      --port 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config.yaml:/app/config.yaml
+      - db-data:/run/db
+    depends_on:
+      - hotblocks-service
+
+volumes:
+  db-data:
+```
+
+## Service Details
+
+### hotblocks-service
+
+Fetches blockchain data from your RPC endpoint.
+
+**Key command flags:**
+
+- `--http-rpc ${RPC_URL}` - Your RPC endpoint (set via environment variable)
+- `--receipts` - Fetch transaction receipts
+- `--traces` - Fetch execution traces
+- `--diffs` - Fetch state diffs
+- `--use-debug-api-for-statediffs` - Use debug API for state diff extraction
+- `--verify-tx-sender` - Verify transaction sender addresses
+- `--verify-tx-root` - Verify transaction root hashes
+- `--verify-logs-bloom` - Verify logs bloom filters
+- `--block-cache-size 10` - Cache 10 blocks in memory
+
+**Optional verification flags** (commented out by default):
+- `--verify-receipts-root` - Verify receipts root hash
+- `--verify-block-hash` - Verify block hash
+
+<Tip>
+Enable additional verification flags for maximum data integrity, but note they may increase processing time.
+</Tip>
+
+### hotblocks-db
+
+Stores blockchain data and exposes the query API.
+
+**Configuration:**
+
+- `--datasets /app/config.yaml` - Path to dataset configuration
+- `--db /run/db` - Database storage location
+- `--port 8000` - API server port
+- **Volumes:**
+  - `./config.yaml:/app/config.yaml` - Mounts your config file
+  - `db-data:/run/db` - Persistent storage for blockchain data
+
+**Environment:**
+- `RUST_LOG: "info"` - Set logging level (options: `error`, `warn`, `info`, `debug`, `trace`)
+
+## Storage Considerations
+
+<Warning>
+The `db-data` volume stores the entire blockchain. Disk space usage grows continuously as new blocks are added.
+
+**Recommendations:**
+- Monitor disk usage regularly
+- Use the `Head` retention strategy for development/testing
+- Ensure adequate disk space before syncing production chains
+</Warning>
+
+## Next Steps
+
+Proceed to the [Usage](/en/data/catalog/evm-local-setup/usage) page to start the services and query your data.
+

@@ -7,11 +7,11 @@ mode: "wide"
 ## Network Overview
 
 <AccordionGroup>
-<Accordion title="What's SQD Network?">
+<Accordion title="What is SQD Network?">
 
-SQD Network is a huge and growing compute cluster consisting of 2500+ decentralized workers.
+SQD Network is a decentralized data lake focused on making blockchain data accessible, regardless of scale. It's a huge and growing compute cluster consisting of 2500+ decentralized workers.
 
-Each worker has 1 TB of storage and is equipped with a powerful query engine, allowing them to serve queries to the Network.
+Each worker has 1 TB of storage and is equipped with a powerful query engine, allowing them to serve queries to the Network. [Worker nodes](../network/worker) store the data and run queries on their local data chunks, while data access nodes (called _SQD Portals_) request partial query results from multiple workers, concatenate the outputs, and expose a stream-based API.
 
 Decentralization means that the workers are not controlled by a single party but are supported by independent operators across the globe.
 
@@ -77,12 +77,6 @@ Switch to the Network gives multiple benefits:
 - "hotblocks" included — no need to bring your own RPCs anymore
 - permissionless access
 - much bigger datasets, like the full history of Solana and Eclipse
-
-</Accordion>
-
-<Accordion title="What is SQD Network?">
-
-SQD Network is a decentralized data lake focused on making blockchain data accessible, regardless of scale. [Worker nodes](../network/worker) store the data and run queries on their local data chunks, while data access nodes (called _SQD Portals_) request partial query results from multiple workers, concatenate the outputs, and expose a stream-based API.
 
 </Accordion>
 
@@ -184,6 +178,12 @@ Yes. When you delegate SQD or register a worker, your tokens will be locked for 
 <Warning>Your tokens cannot be withdrawn during the lockup period.</Warning>
 
 </Accordion>
+
+<Accordion title="Can I delegate to multiple workers at once?">
+
+Yes, you can split your SQD tokens and delegate to multiple workers. This can help diversify your risk across different operators.
+
+</Accordion>
 </AccordionGroup>
 
 ## Development
@@ -192,6 +192,18 @@ Yes. When you delegate SQD or register a worker, your tokens will be locked for 
 <Accordion title="How do I deploy a simple squid indexer?">
 
 You can start your first squid indexer in under 5 minutes using our templates! Learn more in the [development guide](../sdk/squid-sdk/evm/quickstart).
+
+</Accordion>
+
+<Accordion title="Do I need to know how to code to use SQD?">
+
+It depends on what you want to do. To delegate tokens and earn rewards, no coding is required. To build indexers or query blockchain data, you'll need programming knowledge. SQD offers three options: Portal API (works with any language), Pipes SDK (TypeScript), and Squid SDK (TypeScript with built-in database and GraphQL).
+
+</Accordion>
+
+<Accordion title="What's the difference between Portal API, Pipes SDK, and Squid SDK?">
+
+Portal API provides raw blockchain data via HTTP in any language. Pipes SDK is a lightweight TypeScript library for custom data pipelines. Squid SDK is a complete TypeScript framework with built-in PostgreSQL and auto-generated GraphQL API. Choose based on your needs: Portal for simple queries, Pipes for custom pipelines, Squid for full dApp backends.
 
 </Accordion>
 </AccordionGroup>
@@ -217,10 +229,6 @@ SQD Network currently supports:
 
 View the [complete list of supported networks](../data/networks/overview).
 
-<Tip>
-  Want to request support for a new ecosystem? Reach out in the [SquidDevs
-  Telegram](https://t.me/HydraDevs).
-</Tip>
 </Accordion>
 
 </AccordionGroup>
